@@ -7,19 +7,23 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
+import java.util.stream.Stream;
 
 public record LootQuestReward(List<ResourceLocation> loot) implements QuestReward {
-    public static final MapCodec<LootQuestReward> CODEC = ResourceLocation.CODEC.listOf().fieldOf("loot").xmap(LootQuestReward::new, LootQuestReward::loot);
+    public static final String KEY = "loot";
+
+    public static final MapCodec<LootQuestReward> MAP_CODEC = ResourceLocation.CODEC.listOf().fieldOf("loot").xmap(LootQuestReward::new, LootQuestReward::loot);
 
     @Override
-    public void reward(ServerPlayer player) {
+    public Stream<Item> reward(ServerPlayer player) {
         LootContext lootContext = new LootContext.Builder(player.getLevel())
                 .withParameter(LootContextParams.THIS_ENTITY, player)
                 .withParameter(LootContextParams.ORIGIN, player.position())
@@ -27,9 +31,12 @@ public record LootQuestReward(List<ResourceLocation> loot) implements QuestRewar
                 .create(LootContextParamSets.ADVANCEMENT_REWARD);
 
         boolean inventoryChanged = false;
+        List<Item> itemsRewarded = new ArrayList<>();
 
         for (ResourceLocation resourceLocation : loot()) {
             for (ItemStack itemStack : player.server.getLootTables().get(resourceLocation).getRandomItems(lootContext)) {
+                itemsRewarded.add(itemStack.getItem());
+
                 if (player.addItem(itemStack)) {
                     player.level.playSound(
                             null,
@@ -57,10 +64,12 @@ public record LootQuestReward(List<ResourceLocation> loot) implements QuestRewar
         if (inventoryChanged) {
             player.containerMenu.broadcastChanges();
         }
+
+        return itemsRewarded.stream();
     }
 
     @Override
     public Codec<? extends QuestReward> codec() {
-        return CODEC.codec();
+        return MAP_CODEC.codec();
     }
 }

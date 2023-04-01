@@ -21,8 +21,8 @@ public abstract class SimpleCriterionTriggerMixin<T extends CriterionTriggerInst
         Hercules.grantCriteria(player, player.server.registryAccess().registryOrThrow(Hercules.QUEST_CONDITION_REGISTRY_KEY)
                 .stream()
                 .flatMap(condition -> condition.allCriteria()
-                        .filter(criterion -> getId().equals(Objects.requireNonNull(criterion.getTrigger()).getCriterion()))
-                        .filter(criterion -> testTrigger.test((T) criterion.getTrigger()))
+                        .filter(criterion -> getId().equals(Objects.requireNonNull(criterion.value().getTrigger()).getCriterion()))
+                        .filter(criterion -> testTrigger.test((T) criterion.value().getTrigger()))
                 )
         );
     }

@@ -2,8 +2,13 @@ package earth.terrarium.hercules.forge;
 
 import com.mojang.serialization.Codec;
 import earth.terrarium.hercules.Hercules;
+import earth.terrarium.hercules.condition.AllOfQuestCondition;
+import earth.terrarium.hercules.condition.AnyOfQuestCondition;
 import earth.terrarium.hercules.condition.QuestCondition;
+import earth.terrarium.hercules.reward.FunctionQuestReward;
+import earth.terrarium.hercules.reward.LootQuestReward;
 import earth.terrarium.hercules.reward.QuestReward;
+import earth.terrarium.hercules.reward.RecipesQuestReward;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.IForgeRegistry;
@@ -25,4 +30,13 @@ public class HerculesForge {
             new RegistryBuilder<Codec<? extends QuestReward>>()
                     .setName(Hercules.QUEST_REWARD_TYPE_REGISTRY_KEY.location())
     );
+
+    public HerculesForge() {
+        CONDITION_REGISTRAR.register(AllOfQuestCondition.KEY, AllOfQuestCondition.MAP_CODEC::codec);
+        CONDITION_REGISTRAR.register(AnyOfQuestCondition.KEY, AnyOfQuestCondition.MAP_CODEC::codec);
+
+        REWARD_REGISTRAR.register(LootQuestReward.KEY, LootQuestReward.MAP_CODEC::codec);
+        REWARD_REGISTRAR.register(RecipesQuestReward.KEY, RecipesQuestReward.MAP_CODEC::codec);
+        REWARD_REGISTRAR.register(FunctionQuestReward.KEY, () -> FunctionQuestReward.CODEC);
+    }
 }

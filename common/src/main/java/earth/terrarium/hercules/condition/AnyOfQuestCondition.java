@@ -9,7 +9,9 @@ import net.minecraft.core.Holder;
 import java.util.List;
 import java.util.stream.Stream;
 
-public record AnyOfQuestCondition(List<Either<Holder<Criterion>, QuestCondition>> criteria) implements QuestCondition {
+public record AnyOfQuestCondition(List<Either<Holder<Criterion>, Holder<QuestCondition>>> criteria) implements QuestCondition {
+    public static final String KEY = "any_of";
+
     public static final MapCodec<AnyOfQuestCondition> MAP_CODEC = QuestCondition.simple(AnyOfQuestCondition::new);
 
     @Override

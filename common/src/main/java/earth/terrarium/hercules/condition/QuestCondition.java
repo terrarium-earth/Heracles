@@ -6,13 +6,16 @@ import com.mojang.serialization.MapCodec;
 import earth.terrarium.hercules.Hercules;
 import net.minecraft.advancements.Criterion;
 import net.minecraft.core.Holder;
+import net.minecraft.resources.RegistryFileCodec;
 
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
 public interface QuestCondition {
-    Codec<QuestCondition> CODEC = Hercules.getConditionRegistryCodec().dispatchStable(QuestCondition::codec, Function.identity());
+    Codec<QuestCondition> DIRECT_CODEC = Hercules.getConditionRegistryCodec().dispatchStable(QuestCondition::codec, Function.identity());
+
+    Codec<Holder<QuestCondition>> CODEC = RegistryFileCodec.create(Hercules.QUEST_CONDITION_REGISTRY_KEY, DIRECT_CODEC, false);
 
     boolean isAcquired(Stream<Criterion> criteria);
 
@@ -21,19 +24,19 @@ public interface QuestCondition {
                 .stream()
                 .anyMatch(condition -> condition.map(
                         it -> it.value().equals(criterion),
-                        it -> it.isAcquired(Stream.of(criterion))
+                        it -> it.value().isAcquired(Stream.of(criterion))
                 ));
     }
 
     Codec<? extends QuestCondition> codec();
 
-    List<Either<Holder<Criterion>, QuestCondition>> criteria();
+    List<Either<Holder<Criterion>, Holder<QuestCondition>>> criteria();
 
-    default Stream<Criterion> allCriteria() {
-        return criteria().stream().flatMap(condition -> condition.map(criterion -> Stream.of(criterion.value()), QuestCondition::allCriteria));
+    default Stream<Holder<Criterion>> allCriteria() {
+        return criteria().stream().flatMap(condition -> condition.map(Stream::of, questCondition -> questCondition.value().allCriteria()));
     }
 
-    static <T extends QuestCondition> MapCodec<T> simple(Function<List<Either<Holder<Criterion>, QuestCondition>>, T> factory) {
+    static <T extends QuestCondition> MapCodec<T> simple(Function<List<Either<Holder<Criterion>, Holder<QuestCondition>>>, T> factory) {
         return Codec.either(CriterionCodecs.CODEC, CODEC)
                 .listOf()
                 .fieldOf("criteria")

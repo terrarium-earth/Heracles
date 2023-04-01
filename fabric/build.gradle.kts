@@ -1,3 +1,7 @@
+classExtensions {
+    registerForSourceSet(sourceSets.main.get(), "earth.terrarium.hercules.fabric.extensions")
+}
+
 dependencies {
     val minecraftVersion: String by project
     val fabricLoaderVersion: String by project

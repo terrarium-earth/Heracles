@@ -1,6 +1,7 @@
-package earth.terrarium.hercules.mixin;
+package earth.terrarium.heracles.mixin;
 
-import earth.terrarium.hercules.Hercules;
+import earth.terrarium.heracles.Heracles;
+import earth.terrarium.heracles.resource.QuestConditionManager;
 import net.minecraft.advancements.CriterionTrigger;
 import net.minecraft.advancements.CriterionTriggerInstance;
 import net.minecraft.advancements.critereon.SimpleCriterionTrigger;
@@ -17,12 +18,12 @@ import java.util.function.Predicate;
 public abstract class SimpleCriterionTriggerMixin<T extends CriterionTriggerInstance> implements CriterionTrigger<T> {
     @SuppressWarnings("unchecked")
     @Inject(method = "trigger", at = @At("HEAD"))
-    private void trigger(ServerPlayer player, Predicate<T> testTrigger, CallbackInfo ci) {
-        Hercules.grantCriteria(player, player.server.registryAccess().registryOrThrow(Hercules.QUEST_CONDITION_REGISTRY_KEY)
+    private void heracles$trigger(ServerPlayer player, Predicate<T> testTrigger, CallbackInfo ci) {
+        Heracles.grantCriteria(player, QuestConditionManager.getInstance().getConditions().values()
                 .stream()
                 .flatMap(condition -> condition.allCriteria()
-                        .filter(criterion -> getId().equals(Objects.requireNonNull(criterion.value().getTrigger()).getCriterion()))
-                        .filter(criterion -> testTrigger.test((T) criterion.value().getTrigger()))
+                        .filter(criterion -> getId().equals(Objects.requireNonNull(criterion.getTrigger()).getCriterion()))
+                        .filter(criterion -> testTrigger.test((T) criterion.getTrigger()))
                 )
         );
     }

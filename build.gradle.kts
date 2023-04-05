@@ -4,7 +4,7 @@ import net.fabricmc.loom.task.RemapJarTask
 plugins {
     java
     id("jvm-class-extensions") version "1.3"
-    id("dev.architectury.loom") version "1.0-SNAPSHOT" apply false
+    id("dev.architectury.loom") version "1.1-SNAPSHOT" apply false
     id("io.github.juuxel.loom-quiltflower") version "1.8.0" apply false
 }
 

@@ -1,5 +1,5 @@
 classExtensions {
-    registerForSourceSet(sourceSets.main.get(), "earth.terrarium.hercules.fabric.extensions")
+    registerForSourceSet(sourceSets.main.get(), "earth.terrarium.heracles.fabric.extensions")
 }
 
 dependencies {

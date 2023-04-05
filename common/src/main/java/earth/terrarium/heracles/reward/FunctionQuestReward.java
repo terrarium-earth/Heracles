@@ -1,4 +1,4 @@
-package earth.terrarium.hercules.reward;
+package earth.terrarium.heracles.reward;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;

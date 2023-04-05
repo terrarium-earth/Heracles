@@ -1,10 +1,10 @@
-package earth.terrarium.hercules.client;
+package earth.terrarium.heracles.client;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.datafixers.util.Pair;
-import earth.terrarium.hercules.Hercules;
-import earth.terrarium.hercules.Quest;
+import earth.terrarium.heracles.Heracles;
+import earth.terrarium.heracles.Quest;
 import net.minecraft.client.gui.components.toasts.Toast;
 import net.minecraft.client.gui.components.toasts.ToastComponent;
 import net.minecraft.client.renderer.GameRenderer;
@@ -22,7 +22,7 @@ import java.util.Set;
 
 public class QuestCompletedToast implements Toast {
     private static final long DISPLAY_TIME = 5000L;
-    private static final Component TITLE_TEXT = Component.translatable("rewards." + Hercules.MOD_ID + ".toast");
+    private static final Component TITLE_TEXT = Component.translatable("rewards." + Heracles.MOD_ID + ".toast");
     private final Map<Quest, Set<Item>> questItems = new LinkedHashMap<>();
     private List<Pair<Quest, ItemStack>> renderItems;
     private long lastChanged;

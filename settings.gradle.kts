@@ -1,6 +1,6 @@
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
-rootProject.name = "hercules"
+rootProject.name = "heracles"
 
 pluginManagement {
     repositories {

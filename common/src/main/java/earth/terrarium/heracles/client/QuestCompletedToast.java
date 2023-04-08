@@ -5,12 +5,14 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.datafixers.util.Pair;
 import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.Quest;
+import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.gui.components.toasts.Toast;
 import net.minecraft.client.gui.components.toasts.ToastComponent;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -32,6 +34,7 @@ public class QuestCompletedToast implements Toast {
     }
 
     @Override
+    @NotNull
     public Toast.Visibility render(PoseStack poseStack, ToastComponent toastComponent, long timeSinceLastVisible) {
         if (renderItems == null) {
             lastChanged = timeSinceLastVisible;
@@ -68,11 +71,11 @@ public class QuestCompletedToast implements Toast {
             RenderSystem.setShaderTexture(0, TEXTURE);
             RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
 
-            toastComponent.blit(poseStack, 0, 0, 0, 32, width(), height());
+            GuiComponent.blit(poseStack, 0, 0, 0, 32, width(), height());
             toastComponent.getMinecraft().font.draw(poseStack, TITLE_TEXT, 30.0F, 7.0F, 0xFF500050);
             toastComponent.getMinecraft().font.draw(poseStack, entry.getFirst().rewardText(), 30.0F, 18.0F, 0xFF000000);
 
-            toastComponent.getMinecraft().getItemRenderer().renderAndDecorateFakeItem(entry.getSecond(), 8, 8);
+            toastComponent.getMinecraft().getItemRenderer().renderAndDecorateFakeItem(new PoseStack(), entry.getSecond(), 8, 8);
 
             return timeSinceLastVisible - lastChanged >= DISPLAY_TIME * questItems.size() ? Toast.Visibility.HIDE : Toast.Visibility.SHOW;
         }

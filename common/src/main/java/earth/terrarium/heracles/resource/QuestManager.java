@@ -1,5 +1,6 @@
 package earth.terrarium.heracles.resource;
 
+import com.google.common.collect.BiMap;
 import earth.terrarium.heracles.Quest;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.storage.loot.PredicateManager;
@@ -19,7 +20,7 @@ public class QuestManager extends CodecResourceReloader<Quest> {
         return instance;
     }
 
-    public Map<ResourceLocation, Quest> getQuests() {
+    public BiMap<ResourceLocation, Quest> getQuests() {
         return getValues();
     }
 }

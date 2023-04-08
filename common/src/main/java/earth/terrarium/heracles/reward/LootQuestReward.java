@@ -56,7 +56,7 @@ public record LootQuestReward(List<ResourceLocation> loot) implements QuestRewar
                 ItemEntity item = player.drop(itemStack, false);
                 if (item != null) {
                     item.setNoPickUpDelay();
-                    item.setOwner(player.getUUID());
+                    item.setThrower(player.getUUID());
                 }
             }
         }

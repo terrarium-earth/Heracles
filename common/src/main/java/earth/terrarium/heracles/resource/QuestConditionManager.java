@@ -11,6 +11,8 @@ public class QuestConditionManager extends CodecResourceReloader<QuestCondition>
 
     public QuestConditionManager(PredicateManager predicateManager) {
         super("quests/condition", QuestCondition::dispatchCodec, predicateManager);
+
+        instance = this;
     }
 
     public static QuestConditionManager getInstance() {

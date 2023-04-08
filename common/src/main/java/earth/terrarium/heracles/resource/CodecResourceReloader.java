@@ -1,5 +1,7 @@
 package earth.terrarium.heracles.resource;
 
+import com.google.common.collect.BiMap;
+import com.google.common.collect.HashBiMap;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
@@ -16,7 +18,6 @@ import net.minecraft.world.level.storage.loot.PredicateManager;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.function.Function;
 
@@ -24,11 +25,10 @@ public class CodecResourceReloader<T> extends SimpleJsonResourceReloadListener {
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
     private static final Logger LOGGER = LogManager.getLogger();
 
-    private final Map<ResourceLocation, T> values = new LinkedHashMap<>();
+    private final BiMap<ResourceLocation, T> values = HashBiMap.create();
     private final String key;
     private final Function<DeserializationContext, Codec<T>> codecFunction;
     private final PredicateManager predicateManager;
-
 
     public CodecResourceReloader(String key, Function<DeserializationContext, Codec<T>> codecFunction, PredicateManager predicateManager) {
         super(GSON, key);
@@ -56,7 +56,7 @@ public class CodecResourceReloader<T> extends SimpleJsonResourceReloadListener {
         }
     }
 
-    protected Map<ResourceLocation, T> getValues() {
+    protected BiMap<ResourceLocation, T> getValues() {
         return values;
     }
 }

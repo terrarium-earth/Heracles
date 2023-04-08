@@ -21,7 +21,7 @@ public record RecipesQuestReward(List<ResourceLocation> recipes) implements Ques
 
         return recipes.stream().map(player.server.getRecipeManager()::byKey)
                 .flatMap(Optional::stream)
-                .flatMap(recipe -> Stream.of(recipe.getToastSymbol().getItem(), recipe.getResultItem().getItem()));
+                .flatMap(recipe -> Stream.of(recipe.getToastSymbol().getItem(), recipe.getResultItem(player.server.registryAccess()).getItem()));
     }
 
     @Override

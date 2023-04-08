@@ -36,7 +36,7 @@ public interface QuestCondition {
     }
 
     static <T extends QuestCondition> MapCodec<T> simpleCodec(DeserializationContext deserializationContext, Function<List<Either<Criterion, QuestCondition>>, T> factory) {
-        return Codec.either(Heracles.criterionCodec(deserializationContext), dispatchCodec(deserializationContext))
+        return Codec.either(Criteria.criterionCodec(deserializationContext), dispatchCodec(deserializationContext))
                 .listOf()
                 .fieldOf("criteria")
                 .xmap(factory, T::criteria);

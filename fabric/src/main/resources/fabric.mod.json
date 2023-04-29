@@ -21,7 +21,8 @@
     ]
   },
   "mixins": [
-    "heracles.mixins.json"
+    "heracles.mixins.json",
+    "heracles-fabric.mixins.json"
   ],
 
   "depends": {

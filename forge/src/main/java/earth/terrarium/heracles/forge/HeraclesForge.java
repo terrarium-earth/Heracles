@@ -2,12 +2,11 @@ package earth.terrarium.heracles.forge;
 
 import com.mojang.serialization.Codec;
 import earth.terrarium.heracles.Heracles;
-import earth.terrarium.heracles.condition.PlayerAcquiredCriteria;
 import earth.terrarium.heracles.condition.AllOfQuestCondition;
 import earth.terrarium.heracles.condition.AnyOfQuestCondition;
+import earth.terrarium.heracles.condition.PlayerAcquiredCriteria;
 import earth.terrarium.heracles.condition.QuestCondition;
 import earth.terrarium.heracles.resource.CriteriaManager;
-import earth.terrarium.heracles.resource.QuestConditionManager;
 import earth.terrarium.heracles.resource.QuestManager;
 import earth.terrarium.heracles.reward.FunctionQuestReward;
 import earth.terrarium.heracles.reward.LootQuestReward;
@@ -16,11 +15,9 @@ import earth.terrarium.heracles.reward.RecipesQuestReward;
 import earth.terrarium.heracles.team.ScoreboardTeamProvider;
 import earth.terrarium.heracles.team.TeamProvider;
 import net.minecraft.advancements.critereon.DeserializationContext;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.ReloadableServerResources;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.storage.loot.PredicateManager;
-import net.minecraftforge.client.event.RegisterClientReloadListenersEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.CapabilityToken;
 import net.minecraftforge.common.capabilities.RegisterCapabilitiesEvent;
@@ -29,8 +26,6 @@ import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.network.simple.SimpleChannel;
-import net.minecraftforge.registries.DataPackRegistryEvent;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.IForgeRegistry;
 import net.minecraftforge.registries.RegistryBuilder;
@@ -92,10 +87,9 @@ public class HeraclesForge {
     }
 
     private static void addResourceReloaders(AddReloadListenerEvent event) {
-        PredicateManager predicateManager = event.getServerResources().getPredicateManager();
+        ReloadableServerResources resources = event.getServerResources();
 
-        event.addListener(new CriteriaManager(predicateManager));
-        event.addListener(new QuestConditionManager(predicateManager));
-        event.addListener(new QuestManager(predicateManager));
+        event.addListener(new CriteriaManager(resources::getPredicateManager));
+        event.addListener(new QuestManager(resources::getPredicateManager));
     }
 }

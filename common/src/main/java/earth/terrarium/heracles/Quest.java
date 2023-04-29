@@ -30,6 +30,12 @@ public record Quest(
     }
 
     public void reward(ServerPlayer player) {
-        Heracles.requestQuestCompletedToast(this, rewards().stream().flatMap(reward -> reward.value().reward(player)).distinct()::iterator);
+        Heracles.NETWORK_CHANNEL.sendToPlayer(
+                new QuestCompletePacket(
+                        this,
+                        rewards().stream().flatMap(reward -> reward.value().reward(player)).distinct().toList()
+                ),
+                player
+        );
     }
 }

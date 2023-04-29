@@ -10,10 +10,12 @@ import net.minecraft.advancements.critereon.DeserializationContext;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.msrandom.extensions.annotations.ImplementedByExtension;
 import org.apache.commons.lang3.NotImplementedException;
 
+import java.util.List;
 import java.util.function.Function;
 
 public class Heracles {
@@ -42,11 +44,6 @@ public class Heracles {
 
     @ImplementedByExtension
     public static Iterable<TeamProvider> getTeamProviders() {
-        throw new NotImplementedException();
-    }
-
-    @ImplementedByExtension
-    public static void requestQuestCompletedToast(Quest quest, Iterable<Item> items) {
         throw new NotImplementedException();
     }
 }

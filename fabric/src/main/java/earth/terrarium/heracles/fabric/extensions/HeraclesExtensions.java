@@ -2,40 +2,30 @@ package earth.terrarium.heracles.fabric.extensions;
 
 import com.mojang.serialization.Codec;
 import earth.terrarium.heracles.Heracles;
-import earth.terrarium.heracles.Quest;
 import earth.terrarium.heracles.condition.QuestCondition;
+import earth.terrarium.heracles.fabric.HeraclesFabric;
 import earth.terrarium.heracles.reward.QuestReward;
-import net.minecraft.advancements.Criterion;
+import earth.terrarium.heracles.team.TeamProvider;
 import net.minecraft.advancements.critereon.DeserializationContext;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.item.Item;
 import net.msrandom.extensions.annotations.ClassExtension;
-import net.msrandom.extensions.annotations.ImplementedByExtension;
 import net.msrandom.extensions.annotations.ImplementsBaseElement;
-import org.apache.commons.lang3.NotImplementedException;
 
 import java.util.function.Function;
-import java.util.stream.Stream;
 
 @ClassExtension(Heracles.class)
 public class HeraclesExtensions {
     @ImplementsBaseElement
-    public static void grantCriteria(ServerPlayer player, Stream<Criterion> criterion) {
-        throw new NotImplementedException();
-    }
-
-    @ImplementsBaseElement
     public static Codec<Function<DeserializationContext, Codec<? extends QuestCondition>>> getConditionRegistryCodec() {
-        throw new NotImplementedException();
+        return HeraclesFabric.CONDITION_REGISTRY.byNameCodec();
     }
 
     @ImplementsBaseElement
     public static Codec<Codec<? extends QuestReward>> getRewardRegistryCodec() {
-        throw new NotImplementedException();
+        return HeraclesFabric.REWARD_REGISTRY.byNameCodec();
     }
 
     @ImplementsBaseElement
-    public static void requestQuestCompletedToast(Quest quest, Iterable<Item> items) {
-        throw new NotImplementedException();
+    public static Iterable<TeamProvider> getTeamProviders() {
+        return HeraclesFabric.TEAM_PROVIDER_REGISTRY;
     }
 }

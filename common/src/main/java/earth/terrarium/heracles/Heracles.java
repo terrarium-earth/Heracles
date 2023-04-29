@@ -3,7 +3,6 @@ package earth.terrarium.heracles;
 import com.mojang.serialization.Codec;
 import com.teamresourceful.resourcefullib.common.networking.NetworkChannel;
 import com.teamresourceful.resourcefullib.common.networking.base.NetworkDirection;
-import earth.terrarium.heracles.client.QuestCompletePacketHandler;
 import earth.terrarium.heracles.condition.QuestCondition;
 import earth.terrarium.heracles.reward.QuestReward;
 import earth.terrarium.heracles.team.TeamProvider;

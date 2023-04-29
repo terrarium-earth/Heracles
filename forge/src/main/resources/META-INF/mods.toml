@@ -1,0 +1,25 @@
+modLoader="javafml"
+loaderVersion="[45,)"
+license="Terrarium License"
+
+[[mods]]
+modId="heracles"
+version="${file.jarVersion}"
+displayName="Heracles"
+
+description='''
+'''
+
+[[dependencies.heracles]]
+modId="forge"
+mandatory=true
+versionRange="[45,)"
+ordering="NONE"
+side="BOTH"
+
+[[dependencies.heracles]]
+modId="minecraft"
+mandatory=true
+versionRange="[1.19.4,1.20)"
+ordering="NONE"
+side="BOTH"

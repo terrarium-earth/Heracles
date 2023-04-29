@@ -41,7 +41,6 @@ import java.util.function.Supplier;
 @Mod(Heracles.MOD_ID)
 public class HeraclesForge {
     public static final CapabilityToken<PlayerAcquiredCriteria> ACQUIRED_CRITERIA_CAPABILITY_TOKEN = new CapabilityToken<>() {};
-    public static final ResourceLocation ACQUIRED_CRITERIA_CAPABILITY_KEY = new ResourceLocation(Heracles.MOD_ID, "acquired_criteria");
 
     private static final DeferredRegister<Function<DeserializationContext, Codec<? extends QuestCondition>>> CONDITION_TYPE_REGISTRAR = DeferredRegister.create(Heracles.QUEST_CONDITION_TYPE_REGISTRY_KEY, Heracles.MOD_ID);
     private static final DeferredRegister<Codec<? extends QuestReward>> REWARD_TYPE_REGISTRAR = DeferredRegister.create(Heracles.QUEST_REWARD_TYPE_REGISTRY_KEY, Heracles.MOD_ID);
@@ -89,7 +88,7 @@ public class HeraclesForge {
     private static void attachCapabilities(AttachCapabilitiesEvent<Entity> event) {
         if (!(event.getObject() instanceof Player)) return;
 
-        event.addCapability(ACQUIRED_CRITERIA_CAPABILITY_KEY, new PlayerAcquiredCriteriaCapability());
+        event.addCapability(PlayerAcquiredCriteria.KEY, new PlayerAcquiredCriteriaCapability());
     }
 
     private static void addResourceReloaders(AddReloadListenerEvent event) {

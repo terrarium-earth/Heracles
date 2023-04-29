@@ -1,0 +1,34 @@
+{
+  "schemaVersion": 1,
+  "id": "heracles",
+  "version": "${version}",
+
+  "name": "Heracles",
+  "description": "",
+  "authors": [
+    ""
+  ],
+
+  "license": "Terrarium Licence",
+
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "earth.terrarium.heracles.fabric.HeraclesFabric"
+    ],
+    "cardinal-components": [
+      "earth.terrarium.heracles.fabric.HeraclesComponents"
+    ]
+  },
+  "mixins": [
+    "heracles.mixins.json"
+  ],
+
+  "depends": {
+    "fabricloader": ">=0.14.19",
+    "fabric-api": "*",
+    "cardinal-components-entity": ">=5.0.0",
+    "minecraft": "~1.19.4",
+    "java": ">=17"
+  }
+}

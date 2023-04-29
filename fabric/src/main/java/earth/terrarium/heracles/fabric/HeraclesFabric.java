@@ -31,7 +31,7 @@ public class HeraclesFabric implements ModInitializer {
 
     private static PredicateManager predicateManager;
 
-    public static PredicateManager getPredicateManager() {
+    private static PredicateManager latestPredicateManager() {
         return predicateManager;
     }
 
@@ -44,8 +44,8 @@ public class HeraclesFabric implements ModInitializer {
         Heracles.init();
 
         ResourceManagerHelper resourceHelper = ResourceManagerHelper.get(PackType.SERVER_DATA);
-        resourceHelper.registerReloadListener(wrapListener(new ResourceLocation(Heracles.MOD_ID, "criteria_manager"), new CriteriaManager(HeraclesFabric::getPredicateManager)));
-        resourceHelper.registerReloadListener(wrapListener(new ResourceLocation(Heracles.MOD_ID, "quest_manager"), new QuestManager(HeraclesFabric::getPredicateManager)));
+        resourceHelper.registerReloadListener(wrapListener(new ResourceLocation(Heracles.MOD_ID, "criteria_manager"), new CriteriaManager(HeraclesFabric::latestPredicateManager)));
+        resourceHelper.registerReloadListener(wrapListener(new ResourceLocation(Heracles.MOD_ID, "quest_manager"), new QuestManager(HeraclesFabric::latestPredicateManager)));
     }
 
     private static IdentifiableResourceReloadListener wrapListener(ResourceLocation id, PreparableReloadListener listener) {

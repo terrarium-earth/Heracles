@@ -16,3 +16,11 @@ dependencies {
 
     include(modImplementation(group = "dev.onyxstudios.cardinal-components-api", name = "cardinal-components-entity", version = "5.1.0"))
 }
+
+tasks.processResources {
+    inputs.property("version", version)
+
+    filesMatching("fabric.mod.json") {
+        expand("version" to version)
+    }
+}

@@ -48,13 +48,6 @@ public class HeraclesForge {
     );
 
     public HeraclesForge() {
-        IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
-
-        //noinspection Convert2MethodRef
-        DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () ->
-            earth.terrarium.heracles.forge.HeraclesForgeClient.init()
-        );
-
         Heracles.init();
 
         CONDITION_TYPE_REGISTRAR.register(AllOfQuestCondition.KEY, AllOfQuestCondition.MAP_CODEC::codec);

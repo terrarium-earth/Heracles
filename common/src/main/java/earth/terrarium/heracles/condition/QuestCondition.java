@@ -12,6 +12,8 @@ import java.util.function.Function;
 import java.util.stream.Stream;
 
 public interface QuestCondition {
+    Codec<QuestCondition> CODEC = Heracles.getConditionRegistryCodec().dispatch(QuestCondition::codec, Function.identity());
+
     boolean isAcquired(Stream<Criterion> criteria);
 
     default boolean isAcquired(Criterion criterion) {
@@ -23,7 +25,7 @@ public interface QuestCondition {
                 ));
     }
 
-    QuestConditionCodec<? extends QuestCondition> codec();
+    Codec<? extends QuestCondition> codec();
 
     List<Either<Criterion, QuestCondition>> criteria();
 
@@ -31,16 +33,8 @@ public interface QuestCondition {
         return criteria().stream().flatMap(condition -> condition.map(Stream::of, QuestCondition::allCriteria));
     }
 
-    static Codec<QuestCondition> dispatchCodec(DeserializationContext deserializationContext) {
-        return Heracles.getConditionRegistryCodec().dispatch(QuestCondition::codec, codec -> codec.dataCodec().apply(deserializationContext));
-    }
-
-    static Codec<QuestCondition> dispatchNetworkCodec() {
-        return Heracles.getConditionRegistryCodec().dispatch(QuestCondition::codec, QuestConditionCodec::networkCodec);
-    }
-
-    static <T extends QuestCondition> MapCodec<T> simpleCodec(DeserializationContext deserializationContext, Function<List<Either<Criterion, QuestCondition>>, T> factory) {
-        return Codec.either(Criteria.criterionCodec(deserializationContext), dispatchCodec(deserializationContext))
+    static <T extends QuestCondition> MapCodec<T> simpleCodec(Function<List<Either<Criterion, QuestCondition>>, T> factory) {
+        return Codec.either(Criteria.criterionCodec(deserializationContext), CODEC)
                 .listOf()
                 .fieldOf("criteria")
                 .xmap(factory, T::criteria);
@@ -52,6 +46,4 @@ public interface QuestCondition {
                 .fieldOf("criteria")
                 .xmap(factory, T::criteria);
     }
-
-    record QuestConditionCodec<T extends QuestCondition>(Function<DeserializationContext, Codec<T>> dataCodec, Codec<T> networkCodec) {}
 }

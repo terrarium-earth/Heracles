@@ -25,7 +25,7 @@ import java.util.concurrent.Executor;
 import java.util.function.Function;
 
 public class HeraclesFabric implements ModInitializer {
-    public static final Registry<QuestCondition.QuestConditionCodec<?>> CONDITION_REGISTRY = FabricRegistryBuilder.createSimple(Heracles.QUEST_CONDITION_TYPE_REGISTRY_KEY).buildAndRegister();
+    public static final Registry<Codec<? extends QuestCondition>> CONDITION_REGISTRY = FabricRegistryBuilder.createSimple(Heracles.QUEST_CONDITION_TYPE_REGISTRY_KEY).buildAndRegister();
     public static final Registry<Codec<? extends QuestReward>> REWARD_REGISTRY = FabricRegistryBuilder.createSimple(Heracles.QUEST_REWARD_TYPE_REGISTRY_KEY).buildAndRegister();
     public static final Registry<TeamProvider> TEAM_PROVIDER_REGISTRY = FabricRegistryBuilder.createSimple(Heracles.TEAM_PROVIDER_REGISTRY_KEY).buildAndRegister();
 

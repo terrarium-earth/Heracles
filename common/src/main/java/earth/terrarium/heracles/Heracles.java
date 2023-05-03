@@ -20,7 +20,7 @@ public class Heracles {
     public static final String MOD_ID = "heracles";
     public static final NetworkChannel NETWORK_CHANNEL = new NetworkChannel(MOD_ID, 1, "main");
 
-    public static final ResourceKey<Registry<QuestCondition.QuestConditionCodec<?>>> QUEST_CONDITION_TYPE_REGISTRY_KEY = ResourceKey.createRegistryKey(new ResourceLocation(Heracles.MOD_ID, "quest_condition_type"));
+    public static final ResourceKey<Registry<Codec<? extends QuestCondition>>> QUEST_CONDITION_TYPE_REGISTRY_KEY = ResourceKey.createRegistryKey(new ResourceLocation(Heracles.MOD_ID, "quest_condition_type"));
 
     public static final ResourceKey<Registry<QuestReward>> QUEST_REWARD_REGISTRY_KEY = ResourceKey.createRegistryKey(new ResourceLocation(Heracles.MOD_ID, "quest_reward_type"));
     public static final ResourceKey<Registry<Codec<? extends QuestReward>>> QUEST_REWARD_TYPE_REGISTRY_KEY = ResourceKey.createRegistryKey(new ResourceLocation(Heracles.MOD_ID, "quests/reward"));
@@ -31,7 +31,7 @@ public class Heracles {
     }
 
     @ImplementedByExtension
-    public static Codec<QuestCondition.QuestConditionCodec<?>> getConditionRegistryCodec() {
+    public static Codec<Codec<? extends QuestCondition>> getConditionRegistryCodec() {
         throw new NotImplementedException();
     }
 

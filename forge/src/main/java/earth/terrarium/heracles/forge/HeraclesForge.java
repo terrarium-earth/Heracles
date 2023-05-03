@@ -35,12 +35,12 @@ import java.util.function.Supplier;
 public class HeraclesForge {
     public static final CapabilityToken<PlayerAcquiredCriteria> ACQUIRED_CRITERIA_CAPABILITY_TOKEN = new CapabilityToken<>() {};
 
-    private static final DeferredRegister<QuestCondition.QuestConditionCodec<?>> CONDITION_TYPE_REGISTRAR = DeferredRegister.create(Heracles.QUEST_CONDITION_TYPE_REGISTRY_KEY, Heracles.MOD_ID);
+    private static final DeferredRegister<Codec<? extends QuestCondition>> CONDITION_TYPE_REGISTRAR = DeferredRegister.create(Heracles.QUEST_CONDITION_TYPE_REGISTRY_KEY, Heracles.MOD_ID);
     private static final DeferredRegister<Codec<? extends QuestReward>> REWARD_TYPE_REGISTRAR = DeferredRegister.create(Heracles.QUEST_REWARD_TYPE_REGISTRY_KEY, Heracles.MOD_ID);
     private static final DeferredRegister<TeamProvider> TEAM_PROVIDER_REGISTRAR = DeferredRegister.create(Heracles.TEAM_PROVIDER_REGISTRY_KEY, Heracles.MOD_ID);
 
-    public static final Supplier<IForgeRegistry<QuestCondition.QuestConditionCodec<?>>> CONDITION_REGISTRY = CONDITION_TYPE_REGISTRAR.makeRegistry(() ->
-            new RegistryBuilder<QuestCondition.QuestConditionCodec<?>>()
+    public static final Supplier<IForgeRegistry<Codec<? extends QuestCondition>>> CONDITION_REGISTRY = CONDITION_TYPE_REGISTRAR.makeRegistry(() ->
+            new RegistryBuilder<Codec<? extends QuestCondition>>()
                     .setName(Heracles.QUEST_CONDITION_TYPE_REGISTRY_KEY.location())
     );
 
@@ -59,7 +59,7 @@ public class HeraclesForge {
 
         Heracles.init();
 
-        CONDITION_TYPE_REGISTRAR.register(AllOfQuestCondition.KEY, () -> AllOfQuestCondition.CODEC);
+        CONDITION_TYPE_REGISTRAR.register(AllOfQuestCondition.KEY, AllOfQuestCondition.MAP_CODEC::codec);
         CONDITION_TYPE_REGISTRAR.register(AnyOfQuestCondition.KEY, () -> AnyOfQuestCondition.CODEC);
 
         REWARD_TYPE_REGISTRAR.register(LootQuestReward.KEY, LootQuestReward.MAP_CODEC::codec);

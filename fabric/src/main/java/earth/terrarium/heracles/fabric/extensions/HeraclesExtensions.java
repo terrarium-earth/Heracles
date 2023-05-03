@@ -12,7 +12,7 @@ import net.msrandom.extensions.annotations.ImplementsBaseElement;
 @ClassExtension(Heracles.class)
 public class HeraclesExtensions {
     @ImplementsBaseElement
-    public static Codec<QuestCondition.QuestConditionCodec<?>> getConditionRegistryCodec() {
+    public static Codec<Codec<? extends QuestCondition>> getConditionRegistryCodec() {
         return HeraclesFabric.CONDITION_REGISTRY.byNameCodec();
     }
 

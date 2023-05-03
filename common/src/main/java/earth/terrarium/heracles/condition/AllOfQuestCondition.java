@@ -12,10 +12,7 @@ import java.util.stream.Stream;
 public record AllOfQuestCondition(List<Either<Criterion, QuestCondition>> criteria) implements QuestCondition {
     public static final String KEY = "all_of";
 
-    public static final QuestConditionCodec<AllOfQuestCondition> CODEC = new QuestConditionCodec<>(
-            deserializationContext -> QuestCondition.simpleCodec(deserializationContext, AllOfQuestCondition::new).codec(),
-            QuestCondition.simpleNetworkCodec(AllOfQuestCondition::new).codec()
-    );
+    public static final MapCodec<AllOfQuestCondition> MAP_CODEC = QuestCondition.simpleCodec(AllOfQuestCondition::new);
 
     @Override
     public boolean isAcquired(Stream<Criterion> criteria) {
@@ -23,7 +20,7 @@ public record AllOfQuestCondition(List<Either<Criterion, QuestCondition>> criter
     }
 
     @Override
-    public QuestConditionCodec<AllOfQuestCondition> codec() {
-        return CODEC;
+    public Codec<AllOfQuestCondition> codec() {
+        return MAP_CODEC.codec();
     }
 }

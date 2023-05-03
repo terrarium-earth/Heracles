@@ -19,6 +19,10 @@ public class Criteria {
         return CodecExtras.passthrough(Criterion::serializeToJson, json -> Criterion.criterionFromJson(json.getAsJsonObject(), deserializationContext));
     }
 
+    public static Codec<Criterion> networkCodec() {
+        return Codec.unit(new Criterion());
+    }
+
     public static void grantCriteria(ServerPlayer player, Stream<Criterion> criteria) {
         getAcquiredCriteria(player).acquireCriteria(criteria);
 

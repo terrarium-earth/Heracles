@@ -1,7 +1,9 @@
-package earth.terrarium.heracles;
+package earth.terrarium.heracles.network;
 
 import com.teamresourceful.resourcefullib.common.networking.base.Packet;
 import com.teamresourceful.resourcefullib.common.networking.base.PacketHandler;
+import earth.terrarium.heracles.Heracles;
+import earth.terrarium.heracles.Quest;
 import earth.terrarium.heracles.client.QuestCompletePacketHandler;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;

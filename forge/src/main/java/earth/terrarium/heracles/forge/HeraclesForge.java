@@ -14,7 +14,6 @@ import earth.terrarium.heracles.reward.QuestReward;
 import earth.terrarium.heracles.reward.RecipesQuestReward;
 import earth.terrarium.heracles.team.ScoreboardTeamProvider;
 import earth.terrarium.heracles.team.TeamProvider;
-import net.minecraft.advancements.critereon.DeserializationContext;
 import net.minecraft.server.ReloadableServerResources;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
@@ -30,19 +29,18 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.IForgeRegistry;
 import net.minecraftforge.registries.RegistryBuilder;
 
-import java.util.function.Function;
 import java.util.function.Supplier;
 
 @Mod(Heracles.MOD_ID)
 public class HeraclesForge {
     public static final CapabilityToken<PlayerAcquiredCriteria> ACQUIRED_CRITERIA_CAPABILITY_TOKEN = new CapabilityToken<>() {};
 
-    private static final DeferredRegister<Function<DeserializationContext, Codec<? extends QuestCondition>>> CONDITION_TYPE_REGISTRAR = DeferredRegister.create(Heracles.QUEST_CONDITION_TYPE_REGISTRY_KEY, Heracles.MOD_ID);
+    private static final DeferredRegister<QuestCondition.QuestConditionCodec<?>> CONDITION_TYPE_REGISTRAR = DeferredRegister.create(Heracles.QUEST_CONDITION_TYPE_REGISTRY_KEY, Heracles.MOD_ID);
     private static final DeferredRegister<Codec<? extends QuestReward>> REWARD_TYPE_REGISTRAR = DeferredRegister.create(Heracles.QUEST_REWARD_TYPE_REGISTRY_KEY, Heracles.MOD_ID);
     private static final DeferredRegister<TeamProvider> TEAM_PROVIDER_REGISTRAR = DeferredRegister.create(Heracles.TEAM_PROVIDER_REGISTRY_KEY, Heracles.MOD_ID);
 
-    public static final Supplier<IForgeRegistry<Function<DeserializationContext, Codec<? extends QuestCondition>>>> CONDITION_REGISTRY = CONDITION_TYPE_REGISTRAR.makeRegistry(() ->
-            new RegistryBuilder<Function<DeserializationContext, Codec<? extends QuestCondition>>>()
+    public static final Supplier<IForgeRegistry<QuestCondition.QuestConditionCodec<?>>> CONDITION_REGISTRY = CONDITION_TYPE_REGISTRAR.makeRegistry(() ->
+            new RegistryBuilder<QuestCondition.QuestConditionCodec<?>>()
                     .setName(Heracles.QUEST_CONDITION_TYPE_REGISTRY_KEY.location())
     );
 
@@ -61,8 +59,8 @@ public class HeraclesForge {
 
         Heracles.init();
 
-        CONDITION_TYPE_REGISTRAR.register(AllOfQuestCondition.KEY, () -> AllOfQuestCondition::simpleCodec);
-        CONDITION_TYPE_REGISTRAR.register(AnyOfQuestCondition.KEY, () -> AnyOfQuestCondition::simpleCodec);
+        CONDITION_TYPE_REGISTRAR.register(AllOfQuestCondition.KEY, () -> AllOfQuestCondition.CODEC);
+        CONDITION_TYPE_REGISTRAR.register(AnyOfQuestCondition.KEY, () -> AnyOfQuestCondition.CODEC);
 
         REWARD_TYPE_REGISTRAR.register(LootQuestReward.KEY, LootQuestReward.MAP_CODEC::codec);
         REWARD_TYPE_REGISTRAR.register(RecipesQuestReward.KEY, RecipesQuestReward.MAP_CODEC::codec);

@@ -23,7 +23,7 @@ public interface QuestCondition {
                 ));
     }
 
-    Codec<? extends QuestCondition> codec(DeserializationContext deserializationContext);
+    QuestConditionCodec<? extends QuestCondition> codec();
 
     List<Either<Criterion, QuestCondition>> criteria();
 
@@ -32,7 +32,11 @@ public interface QuestCondition {
     }
 
     static Codec<QuestCondition> dispatchCodec(DeserializationContext deserializationContext) {
-        return Heracles.getConditionRegistryCodec().dispatch(condition -> condition::codec, function -> function.apply(deserializationContext));
+        return Heracles.getConditionRegistryCodec().dispatch(QuestCondition::codec, codec -> codec.dataCodec().apply(deserializationContext));
+    }
+
+    static Codec<QuestCondition> dispatchNetworkCodec() {
+        return Heracles.getConditionRegistryCodec().dispatch(QuestCondition::codec, QuestConditionCodec::networkCodec);
     }
 
     static <T extends QuestCondition> MapCodec<T> simpleCodec(DeserializationContext deserializationContext, Function<List<Either<Criterion, QuestCondition>>, T> factory) {
@@ -41,4 +45,13 @@ public interface QuestCondition {
                 .fieldOf("criteria")
                 .xmap(factory, T::criteria);
     }
+
+    static <T extends QuestCondition> MapCodec<T> simpleNetworkCodec(Function<List<Either<Criterion, QuestCondition>>, T> factory) {
+        return Codec.either(Criteria.networkCodec(), dispatchNetworkCodec())
+                .listOf()
+                .fieldOf("criteria")
+                .xmap(factory, T::criteria);
+    }
+
+    record QuestConditionCodec<T extends QuestCondition>(Function<DeserializationContext, Codec<T>> dataCodec, Codec<T> networkCodec) {}
 }

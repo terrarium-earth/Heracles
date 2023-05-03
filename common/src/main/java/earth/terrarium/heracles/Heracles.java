@@ -4,25 +4,23 @@ import com.mojang.serialization.Codec;
 import com.teamresourceful.resourcefullib.common.networking.NetworkChannel;
 import com.teamresourceful.resourcefullib.common.networking.base.NetworkDirection;
 import earth.terrarium.heracles.condition.QuestCondition;
+import earth.terrarium.heracles.network.QuestCompletePacket;
 import earth.terrarium.heracles.reward.QuestReward;
 import earth.terrarium.heracles.team.TeamProvider;
 import net.minecraft.advancements.critereon.DeserializationContext;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
 import net.msrandom.extensions.annotations.ImplementedByExtension;
 import org.apache.commons.lang3.NotImplementedException;
 
-import java.util.List;
 import java.util.function.Function;
 
 public class Heracles {
     public static final String MOD_ID = "heracles";
     public static final NetworkChannel NETWORK_CHANNEL = new NetworkChannel(MOD_ID, 1, "main");
 
-    public static final ResourceKey<Registry<Function<DeserializationContext, Codec<? extends QuestCondition>>>> QUEST_CONDITION_TYPE_REGISTRY_KEY = ResourceKey.createRegistryKey(new ResourceLocation(Heracles.MOD_ID, "quest_condition_type"));
+    public static final ResourceKey<Registry<QuestCondition.QuestConditionCodec<?>>> QUEST_CONDITION_TYPE_REGISTRY_KEY = ResourceKey.createRegistryKey(new ResourceLocation(Heracles.MOD_ID, "quest_condition_type"));
 
     public static final ResourceKey<Registry<QuestReward>> QUEST_REWARD_REGISTRY_KEY = ResourceKey.createRegistryKey(new ResourceLocation(Heracles.MOD_ID, "quest_reward_type"));
     public static final ResourceKey<Registry<Codec<? extends QuestReward>>> QUEST_REWARD_TYPE_REGISTRY_KEY = ResourceKey.createRegistryKey(new ResourceLocation(Heracles.MOD_ID, "quests/reward"));
@@ -33,7 +31,7 @@ public class Heracles {
     }
 
     @ImplementedByExtension
-    public static Codec<Function<DeserializationContext, Codec<? extends QuestCondition>>> getConditionRegistryCodec() {
+    public static Codec<QuestCondition.QuestConditionCodec<?>> getConditionRegistryCodec() {
         throw new NotImplementedException();
     }
 

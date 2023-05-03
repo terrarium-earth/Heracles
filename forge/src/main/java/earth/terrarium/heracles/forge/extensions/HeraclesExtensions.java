@@ -22,7 +22,7 @@ import java.util.stream.Stream;
 @ClassExtension(Heracles.class)
 public class HeraclesExtensions {
     @ImplementsBaseElement
-    public static Codec<Function<DeserializationContext, Codec<? extends QuestCondition>>> getConditionRegistryCodec() {
+    public static Codec<QuestCondition.QuestConditionCodec<?>> getConditionRegistryCodec() {
         return HeraclesForge.CONDITION_REGISTRY.get().getCodec();
     }
 

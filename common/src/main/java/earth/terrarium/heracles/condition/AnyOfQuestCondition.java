@@ -12,21 +12,18 @@ import java.util.stream.Stream;
 public record AnyOfQuestCondition(List<Either<Criterion, QuestCondition>> criteria) implements QuestCondition {
     public static final String KEY = "any_of";
 
+    public static final QuestConditionCodec<AnyOfQuestCondition> CODEC = new QuestConditionCodec<>(
+            deserializationContext -> QuestCondition.simpleCodec(deserializationContext, AnyOfQuestCondition::new).codec(),
+            QuestCondition.simpleNetworkCodec(AnyOfQuestCondition::new).codec()
+    );
+
     @Override
     public boolean isAcquired(Stream<Criterion> criteria) {
         return criteria.anyMatch(this::isAcquired);
     }
 
     @Override
-    public Codec<? extends QuestCondition> codec(DeserializationContext deserializationContext) {
-        return simpleCodec(deserializationContext);
-    }
-
-    public static Codec<AnyOfQuestCondition> simpleCodec(DeserializationContext deserializationContext) {
-        return mapCodec(deserializationContext).codec();
-    }
-
-    public static MapCodec<AnyOfQuestCondition> mapCodec(DeserializationContext deserializationContext) {
-        return QuestCondition.simpleCodec(deserializationContext, AnyOfQuestCondition::new);
+    public QuestConditionCodec<AnyOfQuestCondition> codec() {
+        return CODEC;
     }
 }

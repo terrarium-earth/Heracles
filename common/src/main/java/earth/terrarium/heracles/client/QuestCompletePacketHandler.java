@@ -2,7 +2,7 @@ package earth.terrarium.heracles.client;
 
 import com.teamresourceful.resourcefullib.common.networking.base.PacketContext;
 import com.teamresourceful.resourcefullib.common.networking.base.PacketHandler;
-import earth.terrarium.heracles.QuestCompletePacket;
+import earth.terrarium.heracles.network.QuestCompletePacket;
 import earth.terrarium.heracles.resource.QuestManager;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.item.Item;

@@ -6,16 +6,13 @@ import earth.terrarium.heracles.condition.QuestCondition;
 import earth.terrarium.heracles.fabric.HeraclesFabric;
 import earth.terrarium.heracles.reward.QuestReward;
 import earth.terrarium.heracles.team.TeamProvider;
-import net.minecraft.advancements.critereon.DeserializationContext;
 import net.msrandom.extensions.annotations.ClassExtension;
 import net.msrandom.extensions.annotations.ImplementsBaseElement;
-
-import java.util.function.Function;
 
 @ClassExtension(Heracles.class)
 public class HeraclesExtensions {
     @ImplementsBaseElement
-    public static Codec<Function<DeserializationContext, Codec<? extends QuestCondition>>> getConditionRegistryCodec() {
+    public static Codec<QuestCondition.QuestConditionCodec<?>> getConditionRegistryCodec() {
         return HeraclesFabric.CONDITION_REGISTRY.byNameCodec();
     }
 

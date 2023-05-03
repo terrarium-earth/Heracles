@@ -5,6 +5,7 @@ import com.google.common.collect.HashBiMap;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
+import earth.terrarium.heracles.Heracles;
 import net.minecraft.advancements.Criterion;
 import net.minecraft.advancements.critereon.DeserializationContext;
 import net.minecraft.client.Minecraft;

@@ -21,46 +21,14 @@ import org.apache.logging.log4j.Logger;
 import java.util.Map;
 import java.util.function.Supplier;
 
-public class QuestManager extends SimpleJsonResourceReloadListener {
-    private static final Gson GSON = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
-    private static final Logger LOGGER = LogManager.getLogger();
-    private static final String KEY = "quests/quest";
-    private static QuestManager instance;
+public class QuestManager extends CodecResourceReloadListener<Quest> {
+    public static final QuestManager INSTANCE = new QuestManager();
 
-    private final BiMap<ResourceLocation, Quest> quests = HashBiMap.create();
-    private final Supplier<PredicateManager> predicateManager;
-
-    public QuestManager(Supplier<PredicateManager> predicateManager) {
-        super(GSON, KEY);
-
-        this.predicateManager = predicateManager;
-
-        instance = this;
-    }
-
-    public static QuestManager getInstance() {
-        return instance;
-    }
-
-    @Override
-    protected void apply(Map<ResourceLocation, JsonElement> object, ResourceManager resourceManager, ProfilerFiller profiler) {
-        quests.clear();
-
-        for (Map.Entry<ResourceLocation, JsonElement> entry : object.entrySet()) {
-            ResourceLocation id = new ResourceLocation(entry.getKey().getNamespace(), KEY + '/' + entry.getKey().getPath());
-            DeserializationContext context = new DeserializationContext(id, predicateManager.get());
-            DataResult<Quest> result = Quest.codec(context).parse(JsonOps.INSTANCE, entry.getValue());
-
-            var partialResult = result.get().right();
-            if (partialResult.isPresent()) {
-                LOGGER.error("Failed to load object " + id + " from codec", new JsonSyntaxException(partialResult.get().message()));
-            } else {
-                quests.put(entry.getKey(), result.get().left().orElseThrow());
-            }
-        }
+    public QuestManager() {
+        super(Quest.CODEC, "quests/quest");
     }
 
     public BiMap<ResourceLocation, Quest> getQuests() {
-        return quests;
+        return getValues();
     }
 }

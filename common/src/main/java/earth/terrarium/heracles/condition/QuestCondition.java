@@ -14,36 +14,29 @@ import java.util.stream.Stream;
 public interface QuestCondition {
     Codec<QuestCondition> CODEC = Heracles.getConditionRegistryCodec().dispatch(QuestCondition::codec, Function.identity());
 
-    boolean isAcquired(Stream<Criterion> criteria);
+    boolean isAcquired(Stream<QuestTask> tasks);
 
-    default boolean isAcquired(Criterion criterion) {
-        return criteria()
+    default boolean isAcquired(QuestTask task) {
+        return tasks()
                 .stream()
                 .anyMatch(condition -> condition.map(
-                        it -> it.equals(criterion),
-                        it -> it.isAcquired(Stream.of(criterion))
+                        it -> it.equals(task),
+                        it -> it.isAcquired(Stream.of(task))
                 ));
     }
 
     Codec<? extends QuestCondition> codec();
 
-    List<Either<Criterion, QuestCondition>> criteria();
+    List<Either<QuestTask, QuestCondition>> tasks();
 
-    default Stream<Criterion> allCriteria() {
-        return criteria().stream().flatMap(condition -> condition.map(Stream::of, QuestCondition::allCriteria));
+    default Stream<QuestTask> allTasks() {
+        return tasks().stream().flatMap(condition -> condition.map(Stream::of, QuestCondition::allTasks));
     }
 
-    static <T extends QuestCondition> MapCodec<T> simpleCodec(Function<List<Either<Criterion, QuestCondition>>, T> factory) {
-        return Codec.either(Criteria.criterionCodec(deserializationContext), CODEC)
+    static <T extends QuestCondition> MapCodec<T> simpleCodec(Function<List<Either<QuestTask, QuestCondition>>, T> factory) {
+        return Codec.either(QuestTask.CODEC, CODEC)
                 .listOf()
-                .fieldOf("criteria")
-                .xmap(factory, T::criteria);
-    }
-
-    static <T extends QuestCondition> MapCodec<T> simpleNetworkCodec(Function<List<Either<Criterion, QuestCondition>>, T> factory) {
-        return Codec.either(Criteria.networkCodec(), dispatchNetworkCodec())
-                .listOf()
-                .fieldOf("criteria")
-                .xmap(factory, T::criteria);
+                .fieldOf("tasks")
+                .xmap(factory, T::tasks);
     }
 }

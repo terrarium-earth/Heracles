@@ -28,7 +28,7 @@ public record SyncQuestsPacket(Map<ResourceLocation, Quest> quests) implements P
     }
 
     public static class Handler implements PacketHandler<SyncQuestsPacket> {
-        private static final Codec<Map<ResourceLocation, Quest>> QUEST_MAP_CODEC = Codec.unboundedMap(ResourceLocation.CODEC, Quest.networkCodec());
+        private static final Codec<Map<ResourceLocation, Quest>> QUEST_MAP_CODEC = Codec.unboundedMap(ResourceLocation.CODEC, Quest.CODEC);
 
         @Override
         public void encode(SyncQuestsPacket message, FriendlyByteBuf buffer) {

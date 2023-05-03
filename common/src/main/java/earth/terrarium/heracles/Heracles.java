@@ -2,6 +2,7 @@ package earth.terrarium.heracles;
 
 import com.mojang.serialization.Codec;
 import earth.terrarium.heracles.condition.QuestCondition;
+import earth.terrarium.heracles.condition.QuestTask;
 import earth.terrarium.heracles.network.NetworkHandler;
 import earth.terrarium.heracles.common.regisitries.ModMenus;
 import earth.terrarium.heracles.reward.QuestReward;
@@ -28,6 +29,11 @@ public class Heracles {
 
     @ImplementedByExtension
     public static Codec<Codec<? extends QuestCondition>> getConditionRegistryCodec() {
+        throw new NotImplementedException();
+    }
+
+    @ImplementedByExtension
+    public static Codec<Codec<? extends QuestTask>> getQuestTaskRegistryCodec() {
         throw new NotImplementedException();
     }
 

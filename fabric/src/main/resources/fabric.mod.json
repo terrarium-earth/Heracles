@@ -18,15 +18,8 @@
     ],
     "client": [
       "earth.terrarium.heracles.client.HeraclesClient::init"
-    ],
-    "cardinal-components": [
-      "earth.terrarium.heracles.fabric.HeraclesComponents"
     ]
   },
-  "mixins": [
-    "heracles.mixins.json",
-    "heracles-fabric.mixins.json"
-  ],
 
   "depends": {
     "fabricloader": ">=0.14.19",

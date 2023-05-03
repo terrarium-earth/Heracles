@@ -4,25 +4,18 @@ import com.mojang.serialization.Codec;
 import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.condition.AllOfQuestCondition;
 import earth.terrarium.heracles.condition.AnyOfQuestCondition;
-import earth.terrarium.heracles.condition.PlayerAcquiredCriteria;
 import earth.terrarium.heracles.condition.QuestCondition;
-import earth.terrarium.heracles.resource.CriteriaManager;
 import earth.terrarium.heracles.resource.QuestManager;
+import earth.terrarium.heracles.resource.QuestTaskManager;
 import earth.terrarium.heracles.reward.FunctionQuestReward;
 import earth.terrarium.heracles.reward.LootQuestReward;
 import earth.terrarium.heracles.reward.QuestReward;
 import earth.terrarium.heracles.reward.RecipesQuestReward;
 import earth.terrarium.heracles.team.ScoreboardTeamProvider;
 import earth.terrarium.heracles.team.TeamProvider;
-import net.minecraft.server.ReloadableServerResources;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.capabilities.CapabilityToken;
-import net.minecraftforge.common.capabilities.RegisterCapabilitiesEvent;
 import net.minecraftforge.event.AddReloadListenerEvent;
-import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.common.Mod;
@@ -35,14 +28,12 @@ import java.util.function.Supplier;
 
 @Mod(Heracles.MOD_ID)
 public class HeraclesForge {
-    public static final CapabilityToken<PlayerAcquiredCriteria> ACQUIRED_CRITERIA_CAPABILITY_TOKEN = new CapabilityToken<>() {};
-
-    private static final DeferredRegister<QuestCondition.QuestConditionCodec<?>> CONDITION_TYPE_REGISTRAR = DeferredRegister.create(Heracles.QUEST_CONDITION_TYPE_REGISTRY_KEY, Heracles.MOD_ID);
+    private static final DeferredRegister<Codec<? extends QuestCondition>> CONDITION_TYPE_REGISTRAR = DeferredRegister.create(Heracles.QUEST_CONDITION_TYPE_REGISTRY_KEY, Heracles.MOD_ID);
     private static final DeferredRegister<Codec<? extends QuestReward>> REWARD_TYPE_REGISTRAR = DeferredRegister.create(Heracles.QUEST_REWARD_TYPE_REGISTRY_KEY, Heracles.MOD_ID);
     private static final DeferredRegister<TeamProvider> TEAM_PROVIDER_REGISTRAR = DeferredRegister.create(Heracles.TEAM_PROVIDER_REGISTRY_KEY, Heracles.MOD_ID);
 
-    public static final Supplier<IForgeRegistry<QuestCondition.QuestConditionCodec<?>>> CONDITION_REGISTRY = CONDITION_TYPE_REGISTRAR.makeRegistry(() ->
-            new RegistryBuilder<QuestCondition.QuestConditionCodec<?>>()
+    public static final Supplier<IForgeRegistry<Codec<? extends QuestCondition>>> CONDITION_REGISTRY = CONDITION_TYPE_REGISTRAR.makeRegistry(() ->
+            new RegistryBuilder<Codec<? extends QuestCondition>>()
                     .setName(Heracles.QUEST_CONDITION_TYPE_REGISTRY_KEY.location())
     );
 
@@ -66,7 +57,7 @@ public class HeraclesForge {
 
         Heracles.init();
 
-        CONDITION_TYPE_REGISTRAR.register(AllOfQuestCondition.KEY, () -> AllOfQuestCondition.CODEC);
+        CONDITION_TYPE_REGISTRAR.register(AllOfQuestCondition.KEY, AllOfQuestCondition.MAP_CODEC::codec);
         CONDITION_TYPE_REGISTRAR.register(AnyOfQuestCondition.KEY, () -> AnyOfQuestCondition.CODEC);
 
         REWARD_TYPE_REGISTRAR.register(LootQuestReward.KEY, LootQuestReward.MAP_CODEC::codec);
@@ -75,26 +66,11 @@ public class HeraclesForge {
 
         TEAM_PROVIDER_REGISTRAR.register(ScoreboardTeamProvider.KEY, ScoreboardTeamProvider::new);
 
-        modEventBus.addListener(HeraclesForge::registerCapabilities);
-        modEventBus.addListener(HeraclesForge::attachCapabilities);
-
         MinecraftForge.EVENT_BUS.addListener(HeraclesForge::addResourceReloaders);
     }
 
-    private static void registerCapabilities(RegisterCapabilitiesEvent event) {
-        event.register(PlayerAcquiredCriteria.class);
-    }
-
-    private static void attachCapabilities(AttachCapabilitiesEvent<Entity> event) {
-        if (!(event.getObject() instanceof Player)) return;
-
-        event.addCapability(PlayerAcquiredCriteria.KEY, new PlayerAcquiredCriteriaCapability());
-    }
-
     private static void addResourceReloaders(AddReloadListenerEvent event) {
-        ReloadableServerResources resources = event.getServerResources();
-
-        event.addListener(new CriteriaManager(resources::getPredicateManager));
-        event.addListener(new QuestManager(resources::getPredicateManager));
+        event.addListener(QuestTaskManager.INSTANCE);
+        event.addListener(QuestManager.INSTANCE);
     }
 }

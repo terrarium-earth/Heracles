@@ -12,46 +12,31 @@ import java.util.function.Function;
 import java.util.stream.Stream;
 
 public interface QuestCondition {
-    boolean isAcquired(Stream<Criterion> criteria);
+    Codec<QuestCondition> CODEC = Heracles.getConditionRegistryCodec().dispatch(QuestCondition::codec, Function.identity());
 
-    default boolean isAcquired(Criterion criterion) {
-        return criteria()
+    boolean isAcquired(Stream<QuestTask> tasks);
+
+    default boolean isAcquired(QuestTask task) {
+        return tasks()
                 .stream()
                 .anyMatch(condition -> condition.map(
-                        it -> it.equals(criterion),
-                        it -> it.isAcquired(Stream.of(criterion))
+                        it -> it.equals(task),
+                        it -> it.isAcquired(Stream.of(task))
                 ));
     }
 
-    QuestConditionCodec<? extends QuestCondition> codec();
+    Codec<? extends QuestCondition> codec();
 
-    List<Either<Criterion, QuestCondition>> criteria();
+    List<Either<QuestTask, QuestCondition>> tasks();
 
-    default Stream<Criterion> allCriteria() {
-        return criteria().stream().flatMap(condition -> condition.map(Stream::of, QuestCondition::allCriteria));
+    default Stream<QuestTask> allTasks() {
+        return tasks().stream().flatMap(condition -> condition.map(Stream::of, QuestCondition::allTasks));
     }
 
-    static Codec<QuestCondition> dispatchCodec(DeserializationContext deserializationContext) {
-        return Heracles.getConditionRegistryCodec().dispatch(QuestCondition::codec, codec -> codec.dataCodec().apply(deserializationContext));
-    }
-
-    static Codec<QuestCondition> dispatchNetworkCodec() {
-        return Heracles.getConditionRegistryCodec().dispatch(QuestCondition::codec, QuestConditionCodec::networkCodec);
-    }
-
-    static <T extends QuestCondition> MapCodec<T> simpleCodec(DeserializationContext deserializationContext, Function<List<Either<Criterion, QuestCondition>>, T> factory) {
-        return Codec.either(Criteria.criterionCodec(deserializationContext), dispatchCodec(deserializationContext))
+    static <T extends QuestCondition> MapCodec<T> simpleCodec(Function<List<Either<QuestTask, QuestCondition>>, T> factory) {
+        return Codec.either(QuestTask.CODEC, CODEC)
                 .listOf()
-                .fieldOf("criteria")
-                .xmap(factory, T::criteria);
+                .fieldOf("tasks")
+                .xmap(factory, T::tasks);
     }
-
-    static <T extends QuestCondition> MapCodec<T> simpleNetworkCodec(Function<List<Either<Criterion, QuestCondition>>, T> factory) {
-        return Codec.either(Criteria.networkCodec(), dispatchNetworkCodec())
-                .listOf()
-                .fieldOf("criteria")
-                .xmap(factory, T::criteria);
-    }
-
-    record QuestConditionCodec<T extends QuestCondition>(Function<DeserializationContext, Codec<T>> dataCodec, Codec<T> networkCodec) {}
 }

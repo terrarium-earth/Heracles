@@ -4,6 +4,7 @@ import com.teamresourceful.resourcefullib.common.networking.NetworkChannel;
 import com.teamresourceful.resourcefullib.common.networking.base.NetworkDirection;
 import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.network.packets.QuestCompletePacket;
+import earth.terrarium.heracles.network.packets.SyncQuestsPacket;
 
 public class NetworkHandler {
 
@@ -11,6 +12,6 @@ public class NetworkHandler {
 
     public static void init() {
         CHANNEL.registerPacket(NetworkDirection.SERVER_TO_CLIENT, QuestCompletePacket.ID, QuestCompletePacket.HANDLER, QuestCompletePacket.class);
-        CHANNEL.registerPacket(NetworkDirection.SERVER_TO_CLIENT, QuestCompletePacket.ID, QuestCompletePacket.HANDLER, QuestCompletePacket.class);
+        CHANNEL.registerPacket(NetworkDirection.SERVER_TO_CLIENT, SyncQuestsPacket.ID, SyncQuestsPacket.HANDLER, SyncQuestsPacket.class);
     }
 }

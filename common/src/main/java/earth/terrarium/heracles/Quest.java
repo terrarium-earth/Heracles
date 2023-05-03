@@ -4,7 +4,8 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.teamresourceful.resourcefullib.common.codecs.CodecExtras;
 import earth.terrarium.heracles.condition.QuestCondition;
-import earth.terrarium.heracles.network.QuestCompletePacket;
+import earth.terrarium.heracles.network.NetworkHandler;
+import earth.terrarium.heracles.network.packets.QuestCompletePacket;
 import earth.terrarium.heracles.reward.QuestReward;
 import net.minecraft.advancements.critereon.DeserializationContext;
 import net.minecraft.core.HolderSet;
@@ -16,7 +17,7 @@ public record Quest(
         ResourceLocation parent,
         QuestCondition condition,
         Component title,
-        Component description,
+        String description,
         Component rewardText,
         HolderSet<QuestReward> rewards
 ) {
@@ -27,7 +28,7 @@ public record Quest(
                 ResourceLocation.CODEC.fieldOf("parent").forGetter(Quest::parent),
                 QuestCondition.dispatchCodec(deserializationContext).fieldOf("condition").forGetter(Quest::condition),
                 COMPONENT_CODEC.fieldOf("title").forGetter(Quest::title),
-                COMPONENT_CODEC.fieldOf("description").forGetter(Quest::description),
+                Codec.STRING.fieldOf("description").forGetter(Quest::description),
                 COMPONENT_CODEC.fieldOf("reward_text").forGetter(Quest::rewardText),
                 QuestReward.LIST_CODEC.fieldOf("rewards").forGetter(Quest::rewards)
         ).apply(instance, Quest::new));
@@ -38,14 +39,14 @@ public record Quest(
                 ResourceLocation.CODEC.fieldOf("parent").forGetter(Quest::parent),
                 QuestCondition.dispatchNetworkCodec().fieldOf("condition").forGetter(Quest::condition),
                 COMPONENT_CODEC.fieldOf("title").forGetter(Quest::title),
-                COMPONENT_CODEC.fieldOf("description").forGetter(Quest::description),
+                Codec.STRING.fieldOf("description").forGetter(Quest::description),
                 COMPONENT_CODEC.fieldOf("reward_text").forGetter(Quest::rewardText),
                 QuestReward.LIST_CODEC.fieldOf("rewards").forGetter(Quest::rewards)
         ).apply(instance, Quest::new));
     }
 
     public void reward(ServerPlayer player) {
-        Heracles.NETWORK_CHANNEL.sendToPlayer(
+        NetworkHandler.CHANNEL.sendToPlayer(
                 new QuestCompletePacket(
                         this,
                         rewards().stream().flatMap(reward -> reward.value().reward(player)).distinct().toList()

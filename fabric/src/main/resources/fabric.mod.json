@@ -16,6 +16,9 @@
     "main": [
       "earth.terrarium.heracles.fabric.HeraclesFabric"
     ],
+    "client": [
+      "earth.terrarium.heracles.client.HeraclesClient::init"
+    ],
     "cardinal-components": [
       "earth.terrarium.heracles.fabric.HeraclesComponents"
     ]
@@ -31,5 +34,10 @@
     "cardinal-components-entity": ">=5.0.0",
     "minecraft": "~1.19.4",
     "java": ">=17"
+  },
+  "custom": {
+    "cardinal-components": [
+      "heracles:acquired_criteria"
+    ]
   }
 }

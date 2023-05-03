@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 public class ClientQuests {
     private static final List<QuestEntry> ROOTS = new ArrayList<>();
@@ -16,6 +17,10 @@ public class ClientQuests {
 
     public static List<QuestEntry> getRoots() {
         return ROOTS;
+    }
+
+    public static Optional<QuestEntry> get(ResourceLocation key) {
+        return Optional.ofNullable(ENTRIES.get(key));
     }
 
     public static void sync(Map<ResourceLocation, Quest> quests) {

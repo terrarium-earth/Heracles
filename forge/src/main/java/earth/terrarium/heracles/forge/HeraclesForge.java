@@ -4,7 +4,6 @@ import com.mojang.serialization.Codec;
 import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.condition.AllOfQuestCondition;
 import earth.terrarium.heracles.condition.AnyOfQuestCondition;
-import earth.terrarium.heracles.condition.PlayerAcquiredCriteria;
 import earth.terrarium.heracles.condition.QuestCondition;
 import earth.terrarium.heracles.resource.QuestManager;
 import earth.terrarium.heracles.resource.QuestTaskManager;

@@ -30,14 +30,14 @@ public record QuestCompletePacket(Quest quest, List<Item> items) implements Pack
     public static class Handler implements PacketHandler<QuestCompletePacket> {
         @Override
         public void encode(QuestCompletePacket message, FriendlyByteBuf buffer) {
-            buffer.writeResourceLocation(QuestManager.getInstance().getQuests().inverse().get(message.quest()));
+            buffer.writeResourceLocation(QuestManager.INSTANCE.getQuests().inverse().get(message.quest()));
             buffer.writeCollection(message.items(), (buf, item) -> buf.writeVarInt(Item.getId(item)));
         }
 
         @Override
         public QuestCompletePacket decode(FriendlyByteBuf buffer) {
             return new QuestCompletePacket(
-                QuestManager.getInstance().getQuests().get(buffer.readResourceLocation()),
+                QuestManager.INSTANCE.getQuests().get(buffer.readResourceLocation()),
                 buffer.readList(buf -> Item.byId(buf.readVarInt()))
             );
         }

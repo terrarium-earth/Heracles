@@ -42,8 +42,8 @@ public class HeraclesFabric implements ModInitializer {
         Heracles.init();
 
         ResourceManagerHelper resourceHelper = ResourceManagerHelper.get(PackType.SERVER_DATA);
-        resourceHelper.registerReloadListener(wrapListener(new ResourceLocation(Heracles.MOD_ID, "criteria_manager"), new QuestTaskManager(HeraclesFabric::latestPredicateManager)));
-        resourceHelper.registerReloadListener(wrapListener(new ResourceLocation(Heracles.MOD_ID, "quest_manager"), new QuestManager(HeraclesFabric::latestPredicateManager)));
+        resourceHelper.registerReloadListener(wrapListener(new ResourceLocation(Heracles.MOD_ID, "criteria_manager"), QuestTaskManager.INSTANCE));
+        resourceHelper.registerReloadListener(wrapListener(new ResourceLocation(Heracles.MOD_ID, "quest_manager"), QuestManager.INSTANCE));
     }
 
     private static IdentifiableResourceReloadListener wrapListener(ResourceLocation id, PreparableReloadListener listener) {

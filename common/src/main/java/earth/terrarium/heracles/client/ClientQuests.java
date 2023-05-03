@@ -1,6 +1,7 @@
 package earth.terrarium.heracles.client;
 
 import earth.terrarium.heracles.Quest;
+import net.minecraft.Optionull;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector2d;
@@ -37,7 +38,7 @@ public class ClientQuests {
             Quest quest,
             Map<ResourceLocation, Quest> quests
     ) {
-        Quest parent = quest.parent() == null ? null : quests.get(quest.parent());
+        Quest parent = Optionull.map(quest.parent(), quests::get);
 
         QuestEntry parentEntry = parent == null ? null : addEntry(quest.parent(), parent, quests);
         QuestEntry entry = new QuestEntry(parentEntry, key, quest, new Vector2d(), new ArrayList<>());

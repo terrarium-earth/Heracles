@@ -17,12 +17,14 @@ import earth.terrarium.heracles.team.TeamProvider;
 import net.minecraft.server.ReloadableServerResources;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.CapabilityToken;
 import net.minecraftforge.common.capabilities.RegisterCapabilitiesEvent;
 import net.minecraftforge.event.AddReloadListenerEvent;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.DeferredRegister;
@@ -56,6 +58,11 @@ public class HeraclesForge {
 
     public HeraclesForge() {
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
+
+        //noinspection Convert2MethodRef
+        DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () ->
+            earth.terrarium.heracles.forge.HeraclesForgeClient.init()
+        );
 
         Heracles.init();
 

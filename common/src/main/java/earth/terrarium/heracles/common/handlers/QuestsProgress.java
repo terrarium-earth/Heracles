@@ -65,4 +65,8 @@ public record QuestsProgress(Map<ResourceLocation, QuestProgress> progress) {
     public boolean isClaimed(ResourceLocation id) {
         return Optionull.mapOrDefault(progress.get(id), QuestProgress::isClaimed, true);
     }
+
+    public QuestProgress getProgress(ResourceLocation id) {
+        return progress.getOrDefault(id, new QuestProgress());
+    }
 }

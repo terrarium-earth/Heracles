@@ -1,9 +1,8 @@
 package earth.terrarium.heracles.common.menus.quest;
 
 import earth.terrarium.heracles.api.Quest;
-import earth.terrarium.heracles.client.ClientQuests;
+import earth.terrarium.heracles.common.handlers.QuestProgress;
 import earth.terrarium.heracles.common.regisitries.ModMenus;
-import net.minecraft.Optionull;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -26,13 +25,12 @@ public class QuestMenu extends AbstractContainerMenu {
         this.content = content;
     }
 
-    public boolean isEditing() {
-        return this.content != null && this.content.editing();
+    public Quest quest() {
+        return this.content != null ? this.content.quest() : null;
     }
 
-    public Quest quest() {
-        Optional<ClientQuests.QuestEntry> entry = Optionull.mapOrDefault(Optionull.map(this.content, QuestContent::id), ClientQuests::get, Optional.empty());
-        return entry.map(ClientQuests.QuestEntry::value).orElse(null);
+    public QuestProgress progress() {
+        return this.content != null ? this.content.progress() : null;
     }
 
     @Override

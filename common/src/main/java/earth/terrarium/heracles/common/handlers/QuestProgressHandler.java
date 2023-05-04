@@ -1,6 +1,7 @@
 package earth.terrarium.heracles.common.handlers;
 
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtOps;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.level.saveddata.SavedData;
@@ -31,22 +32,8 @@ public class QuestProgressHandler extends SavedData {
         for (var entry : progress.entrySet()) {
             CompoundTag progress = new CompoundTag();
             for (var progressEntry : entry.getValue().progress().entrySet()) {
-                CompoundTag questProgress = new CompoundTag();
-                CompoundTag tasksProgress = new CompoundTag();
-                if (progressEntry.getValue().isClaimed()) {
-                    questProgress.putBoolean("claimed", true);
-                }
-                if (progressEntry.getValue().isComplete()) {
-                    questProgress.putBoolean("complete", true);
-                }
-                progressEntry.getValue().tasks().forEach((taskId, taskProgress) -> {
-                    CompoundTag task = new CompoundTag();
-                    task.putInt("progress", taskProgress.progress());
-                    task.putBoolean("complete", taskProgress.isComplete());
-                    tasksProgress.put(taskId, task);
-                });
-                questProgress.put("tasks", tasksProgress);
-                progress.put(progressEntry.getKey().toString(), questProgress);
+                progress.put(progressEntry.getKey().toString(), QuestProgress.CODEC.encodeStart(NbtOps.INSTANCE, progressEntry.getValue())
+                    .getOrThrow(false, System.err::println));
             }
             tag.put(entry.getKey().toString(), progress);
         }
@@ -59,20 +46,8 @@ public class QuestProgressHandler extends SavedData {
             CompoundTag progress = tag.getCompound(player);
             Map<ResourceLocation, QuestProgress> questProgress = new HashMap<>();
             for (var quest : progress.getAllKeys()) {
-                CompoundTag questTag = progress.getCompound(quest);
-                Map<String, TaskProgress> tasks = new HashMap<>();
-                for (var task : questTag.getAllKeys()) {
-                    CompoundTag taskTag = questTag.getCompound(task);
-                    tasks.put(task, new TaskProgress(
-                        taskTag.getInt("progress"),
-                        taskTag.getBoolean("complete")
-                    ));
-                }
-                questProgress.put(new ResourceLocation(quest), new QuestProgress(
-                    questTag.getBoolean("claimed"),
-                    questTag.getBoolean("complete"),
-                    tasks
-                ));
+                questProgress.put(new ResourceLocation(quest), QuestProgress.CODEC.parse(NbtOps.INSTANCE, progress.getCompound(quest))
+                    .getOrThrow(false, System.err::println));
             }
             this.progress.put(UUID.fromString(player), new QuestsProgress(questProgress));
         }

@@ -2,7 +2,6 @@ package earth.terrarium.heracles.api;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import com.teamresourceful.resourcefullib.common.codecs.CodecExtras;
 import earth.terrarium.heracles.api.rewards.QuestReward;
 import earth.terrarium.heracles.api.rewards.QuestRewards;
 import earth.terrarium.heracles.api.tasks.QuestTask;
@@ -15,6 +14,7 @@ import earth.terrarium.heracles.common.resource.QuestManager;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 
@@ -29,14 +29,13 @@ public record Quest(
     Component rewardText,
     List<QuestReward<?>> rewards
 ) {
-    private static final Codec<Component> COMPONENT_CODEC = CodecExtras.passthrough(Component.Serializer::toJsonTree, Component.Serializer::fromJson);
 
     public static Codec<Quest> CODEC = RecordCodecBuilder.create(instance -> instance.group(
         ResourceLocation.CODEC.fieldOf("parent").forGetter(Quest::parent),
-        COMPONENT_CODEC.fieldOf("title").forGetter(Quest::title),
+        ExtraCodecs.COMPONENT.fieldOf("title").forGetter(Quest::title),
         Codec.STRING.fieldOf("description").forGetter(Quest::description),
         QuestTasks.CODEC.listOf().fieldOf("tasks").forGetter(Quest::tasks),
-        COMPONENT_CODEC.fieldOf("reward_text").forGetter(Quest::rewardText),
+        ExtraCodecs.COMPONENT.fieldOf("reward_text").forGetter(Quest::rewardText),
         QuestRewards.CODEC.listOf().fieldOf("rewards").forGetter(Quest::rewards)
     ).apply(instance, Quest::new));
 

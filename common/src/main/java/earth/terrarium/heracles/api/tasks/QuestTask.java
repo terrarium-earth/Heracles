@@ -21,6 +21,6 @@ public interface QuestTask<I, T extends QuestTask<I, T>> {
      */
     int test(I input);
 
-    QuestTaskSerializer<T> serializer();
+    QuestTaskType<T> type();
 
 }

@@ -1,6 +1,6 @@
 package earth.terrarium.heracles.client;
 
-import earth.terrarium.heracles.Quest;
+import earth.terrarium.heracles.api.Quest;
 import net.minecraft.Optionull;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;

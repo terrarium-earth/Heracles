@@ -1,6 +1,6 @@
 package earth.terrarium.heracles.common.menus.quest;
 
-import earth.terrarium.heracles.Quest;
+import earth.terrarium.heracles.api.Quest;
 import earth.terrarium.heracles.client.ClientQuests;
 import earth.terrarium.heracles.common.regisitries.ModMenus;
 import net.minecraft.Optionull;

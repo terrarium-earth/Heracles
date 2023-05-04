@@ -14,7 +14,7 @@
   "environment": "*",
   "entrypoints": {
     "main": [
-      "earth.terrarium.heracles.fabric.HeraclesFabric"
+      "earth.terrarium.heracles.fabric.HeraclesFabric::init"
     ],
     "client": [
       "earth.terrarium.heracles.client.HeraclesClient::init"
@@ -27,10 +27,5 @@
     "cardinal-components-entity": ">=5.0.0",
     "minecraft": "~1.19.4",
     "java": ">=17"
-  },
-  "custom": {
-    "cardinal-components": [
-      "heracles:acquired_criteria"
-    ]
   }
 }

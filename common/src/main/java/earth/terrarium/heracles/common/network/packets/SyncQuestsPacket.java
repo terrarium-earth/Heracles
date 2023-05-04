@@ -1,4 +1,4 @@
-package earth.terrarium.heracles.network.packets;
+package earth.terrarium.heracles.common.network.packets;
 
 import com.mojang.serialization.Codec;
 import com.teamresourceful.resourcefullib.common.networking.PacketHelper;
@@ -6,7 +6,7 @@ import com.teamresourceful.resourcefullib.common.networking.base.Packet;
 import com.teamresourceful.resourcefullib.common.networking.base.PacketContext;
 import com.teamresourceful.resourcefullib.common.networking.base.PacketHandler;
 import earth.terrarium.heracles.Heracles;
-import earth.terrarium.heracles.Quest;
+import earth.terrarium.heracles.api.Quest;
 import earth.terrarium.heracles.client.ClientQuests;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;

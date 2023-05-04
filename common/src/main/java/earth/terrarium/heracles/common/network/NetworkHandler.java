@@ -1,10 +1,10 @@
-package earth.terrarium.heracles.network;
+package earth.terrarium.heracles.common.network;
 
 import com.teamresourceful.resourcefullib.common.networking.NetworkChannel;
 import com.teamresourceful.resourcefullib.common.networking.base.NetworkDirection;
 import earth.terrarium.heracles.Heracles;
-import earth.terrarium.heracles.network.packets.QuestCompletePacket;
-import earth.terrarium.heracles.network.packets.SyncQuestsPacket;
+import earth.terrarium.heracles.common.network.packets.QuestCompletePacket;
+import earth.terrarium.heracles.common.network.packets.SyncQuestsPacket;
 
 public class NetworkHandler {
 

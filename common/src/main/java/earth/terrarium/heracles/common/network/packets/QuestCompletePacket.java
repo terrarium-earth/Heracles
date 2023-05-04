@@ -1,12 +1,12 @@
-package earth.terrarium.heracles.network.packets;
+package earth.terrarium.heracles.common.network.packets;
 
 import com.teamresourceful.resourcefullib.common.networking.base.Packet;
 import com.teamresourceful.resourcefullib.common.networking.base.PacketContext;
 import com.teamresourceful.resourcefullib.common.networking.base.PacketHandler;
 import earth.terrarium.heracles.Heracles;
-import earth.terrarium.heracles.Quest;
+import earth.terrarium.heracles.api.Quest;
 import earth.terrarium.heracles.client.HeraclesClient;
-import earth.terrarium.heracles.resource.QuestManager;
+import earth.terrarium.heracles.common.resource.QuestManager;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
@@ -30,14 +30,14 @@ public record QuestCompletePacket(Quest quest, List<Item> items) implements Pack
     public static class Handler implements PacketHandler<QuestCompletePacket> {
         @Override
         public void encode(QuestCompletePacket message, FriendlyByteBuf buffer) {
-            buffer.writeResourceLocation(QuestManager.INSTANCE.getQuests().inverse().get(message.quest()));
+            buffer.writeResourceLocation(QuestManager.INSTANCE.getKey(message.quest()));
             buffer.writeCollection(message.items(), (buf, item) -> buf.writeVarInt(Item.getId(item)));
         }
 
         @Override
         public QuestCompletePacket decode(FriendlyByteBuf buffer) {
             return new QuestCompletePacket(
-                QuestManager.INSTANCE.getQuests().get(buffer.readResourceLocation()),
+                QuestManager.INSTANCE.get(buffer.readResourceLocation()),
                 buffer.readList(buf -> Item.byId(buf.readVarInt()))
             );
         }

@@ -1,49 +1,50 @@
 package earth.terrarium.heracles.fabric;
 
-import com.mojang.serialization.Codec;
 import earth.terrarium.heracles.Heracles;
-import earth.terrarium.heracles.condition.QuestCondition;
-import earth.terrarium.heracles.resource.QuestTaskManager;
-import earth.terrarium.heracles.resource.QuestManager;
-import earth.terrarium.heracles.reward.QuestReward;
-import earth.terrarium.heracles.team.TeamProvider;
-import net.fabricmc.api.ModInitializer;
+import earth.terrarium.heracles.common.menus.BasicContentMenuProvider;
+import earth.terrarium.heracles.common.menus.quest.QuestContent;
+import earth.terrarium.heracles.common.menus.quest.QuestMenu;
+import earth.terrarium.heracles.common.resource.QuestManager;
+import earth.terrarium.heracles.common.team.TeamProvider;
+import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder;
 import net.fabricmc.fabric.api.resource.IdentifiableResourceReloadListener;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
+import net.minecraft.commands.Commands;
 import net.minecraft.core.Registry;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.resources.PreparableReloadListener;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.profiling.ProfilerFiller;
-import net.minecraft.world.level.storage.loot.PredicateManager;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 
-public class HeraclesFabric implements ModInitializer {
-    public static final Registry<Codec<? extends QuestCondition>> CONDITION_REGISTRY = FabricRegistryBuilder.createSimple(Heracles.QUEST_CONDITION_TYPE_REGISTRY_KEY).buildAndRegister();
-    public static final Registry<Codec<? extends QuestReward>> REWARD_REGISTRY = FabricRegistryBuilder.createSimple(Heracles.QUEST_REWARD_TYPE_REGISTRY_KEY).buildAndRegister();
+public class HeraclesFabric {
     public static final Registry<TeamProvider> TEAM_PROVIDER_REGISTRY = FabricRegistryBuilder.createSimple(Heracles.TEAM_PROVIDER_REGISTRY_KEY).buildAndRegister();
 
-    private static PredicateManager predicateManager;
-
-    private static PredicateManager latestPredicateManager() {
-        return predicateManager;
-    }
-
-    public static void updatePredicateManager(PredicateManager predicateManager) {
-        HeraclesFabric.predicateManager = predicateManager;
-    }
-
-    @Override
-    public void onInitialize() {
+    public static void init() {
         Heracles.init();
 
         ResourceManagerHelper resourceHelper = ResourceManagerHelper.get(PackType.SERVER_DATA);
-        resourceHelper.registerReloadListener(wrapListener(new ResourceLocation(Heracles.MOD_ID, "criteria_manager"), QuestTaskManager.INSTANCE));
         resourceHelper.registerReloadListener(wrapListener(new ResourceLocation(Heracles.MOD_ID, "quest_manager"), QuestManager.INSTANCE));
+
+        CommandRegistrationCallback.EVENT.register((dispatcher, context, env) -> {
+            dispatcher.register(Commands.literal(Heracles.MOD_ID)
+                    .then(Commands.literal("test")
+                            .executes(context1 -> {
+                                BasicContentMenuProvider.open(
+                                    new QuestContent(new ResourceLocation("test"), true),
+                                    Component.literal("Test"),
+                                    QuestMenu::new,
+                                    context1.getSource().getPlayerOrException()
+                                );
+                                return 1;
+                            })
+                    ));
+        });
     }
 
     private static IdentifiableResourceReloadListener wrapListener(ResourceLocation id, PreparableReloadListener listener) {

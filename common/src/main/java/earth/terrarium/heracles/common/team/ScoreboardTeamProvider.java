@@ -15,14 +15,14 @@ public class ScoreboardTeamProvider implements TeamProvider {
     @Override
     public Stream<List<UUID>> getTeams(ServerPlayer player) {
         return Optionull.mapOrDefault(
-                player.getTeam(),
-                team -> Stream.of(team.getPlayers()
-                    .stream()
-                    .map(player.server.getProfileCache()::get)
-                    .flatMap(Optional::stream)
-                    .map(GameProfile::getId)
-                    .toList()),
-                Stream.of(List.of(player.getUUID()))
+            player.getTeam(),
+            team -> Stream.of(team.getPlayers()
+                .stream()
+                .map(player.server.getProfileCache()::get)
+                .flatMap(Optional::stream)
+                .map(GameProfile::getId)
+                .toList()),
+            Stream.of(List.of(player.getUUID()))
         );
     }
 }

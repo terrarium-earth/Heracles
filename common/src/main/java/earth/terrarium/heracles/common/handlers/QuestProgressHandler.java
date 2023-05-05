@@ -28,6 +28,11 @@ public class QuestProgressHandler extends SavedData {
     }
 
     @Override
+    public boolean isDirty() {
+        return true;
+    }
+
+    @Override
     public @NotNull CompoundTag save(CompoundTag tag) {
         for (var entry : progress.entrySet()) {
             CompoundTag progress = new CompoundTag();

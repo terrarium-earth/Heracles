@@ -14,7 +14,7 @@ public record KillEntityQuestTask(
     String id, RestrictedEntityPredicate entity, int target
 ) implements QuestTask<LivingEntity, KillEntityQuestTask> {
 
-    public static final QuestTaskType<KillEntityQuestTask> SERIALIZER = new Type();
+    public static final QuestTaskType<KillEntityQuestTask> TYPE = new Type();
 
     @Override
     public int test(LivingEntity input) {
@@ -26,7 +26,7 @@ public record KillEntityQuestTask(
 
     @Override
     public QuestTaskType<KillEntityQuestTask> type() {
-        return SERIALIZER;
+        return TYPE;
     }
 
     private static class Type implements QuestTaskType<KillEntityQuestTask> {
@@ -41,7 +41,7 @@ public record KillEntityQuestTask(
             return RecordCodecBuilder.create(instance -> instance.group(
                 Codec.STRING.fieldOf("id").forGetter(KillEntityQuestTask::id),
                 RestrictedEntityPredicate.CODEC.fieldOf("entity").forGetter(KillEntityQuestTask::entity),
-                Codec.INT.fieldOf("amount").forGetter(KillEntityQuestTask::target)
+                Codec.INT.fieldOf("amount").orElse(1).forGetter(KillEntityQuestTask::target)
             ).apply(instance, KillEntityQuestTask::new));
         }
     }

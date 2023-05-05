@@ -1,3 +1,17 @@
 {
-  "rewards.heracles.toast": "Quest Complete!"
+    "rewards.heracles.toast": "Quest Complete!",
+    "gui.heracles.tasks.title": "Quest Tasks",
+    "gui.heracles.tasks.description": "Complete all tasks",
+
+    "quest.heracles.in_progress": "In progress",
+    "quest.heracles.completed": "Completed",
+
+    "task.terrarium_heracles.kill_entity.title.singular": "Kill a %s",
+    "task.terrarium_heracles.kill_entity.title.plural": "Kill %ss",
+    "task.terrarium_heracles.kill_entity.desc.singular": "Kill %s %s",
+    "task.terrarium_heracles.kill_entity.desc.plural": "Kill %s %ss",
+    "task.terrarium_heracles.item.title.singular": "Gather a %s",
+    "task.terrarium_heracles.item.title.plural": "Gather %ss",
+    "task.terrarium_heracles.item.desc.singular": "Gather %s %s",
+    "task.terrarium_heracles.item.desc.plural": "Gather %s %ss"
 }

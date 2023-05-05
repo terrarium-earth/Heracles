@@ -23,7 +23,7 @@ public class QuestRewards {
 
     public static <R extends QuestReward<R>, T extends QuestRewardSerializer<R>> void register(T serializer) {
         if (SERIALIZERS.containsKey(serializer.id()))
-            throw new RuntimeException("Multiple quest reward serializers registered with same id '" + serializer.id() +"'");
+            throw new RuntimeException("Multiple quest reward serializers registered with same id '" + serializer.id() + "'");
         SERIALIZERS.put(serializer.id(), serializer);
     }
 }

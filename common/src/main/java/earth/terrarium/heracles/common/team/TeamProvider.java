@@ -11,6 +11,7 @@ import java.util.stream.StreamSupport;
 public interface TeamProvider {
     /**
      * Get the teams this provider includes
+     *
      * @param player The player to get the teams of
      * @return A stream of the teams represented as a list of players
      */
@@ -18,11 +19,12 @@ public interface TeamProvider {
 
     /**
      * Get all the teams associated with the player
+     *
      * @param player The player to get the teams of
      * @return A stream of the teams represented as a list of players
      */
     static Stream<List<UUID>> getAllTeams(ServerPlayer player) {
         return StreamSupport.stream(Heracles.getTeamProviders().spliterator(), false)
-                .flatMap(provider -> provider.getTeams(player));
+            .flatMap(provider -> provider.getTeams(player));
     }
 }

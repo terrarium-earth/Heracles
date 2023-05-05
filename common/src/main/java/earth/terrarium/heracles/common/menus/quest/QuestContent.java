@@ -9,7 +9,8 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
 
-public record QuestContent(ResourceLocation id, Quest quest, QuestProgress progress) implements MenuContent<QuestContent> {
+public record QuestContent(ResourceLocation id, Quest quest,
+                           QuestProgress progress) implements MenuContent<QuestContent> {
 
     public static final MenuContentSerializer<QuestContent> SERIALIZER = new Serializer();
 

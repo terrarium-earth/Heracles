@@ -2,6 +2,7 @@ package earth.terrarium.heracles.api.tasks;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
+import earth.terrarium.heracles.api.tasks.defaults.ItemQuestTask;
 import earth.terrarium.heracles.api.tasks.defaults.KillEntityQuestTask;
 import net.minecraft.resources.ResourceLocation;
 
@@ -24,11 +25,12 @@ public final class QuestTasks {
 
     public static <C extends QuestTask<?, C>, T extends QuestTaskType<C>> void register(T serializer) {
         if (SERIALIZERS.containsKey(serializer.id()))
-            throw new RuntimeException("Multiple quest task serializers registered with same id '" + serializer.id() +"'");
+            throw new RuntimeException("Multiple quest task serializers registered with same id '" + serializer.id() + "'");
         SERIALIZERS.put(serializer.id(), serializer);
     }
 
     static {
-        register(KillEntityQuestTask.SERIALIZER);
+        register(KillEntityQuestTask.TYPE);
+        register(ItemQuestTask.TYPE);
     }
 }

@@ -34,9 +34,9 @@ public class ClientQuests {
     }
 
     private static QuestEntry addEntry(
-            ResourceLocation key,
-            Quest quest,
-            Map<ResourceLocation, Quest> quests
+        ResourceLocation key,
+        Quest quest,
+        Map<ResourceLocation, Quest> quests
     ) {
         Quest parent = Optionull.map(quest.parent(), quests::get);
 
@@ -52,6 +52,7 @@ public class ClientQuests {
         return ENTRIES.computeIfAbsent(key, k -> entry);
     }
 
-    public record QuestEntry(@Nullable QuestEntry parent, ResourceLocation key, Quest value, Vector2d position, List<QuestEntry> children) {
+    public record QuestEntry(@Nullable QuestEntry parent, ResourceLocation key, Quest value, Vector2d position,
+                             List<QuestEntry> children) {
     }
 }

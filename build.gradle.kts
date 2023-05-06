@@ -35,6 +35,7 @@ subprojects {
 
     dependencies {
         val resourcefulLibVersion: String by project
+        val hermesLibVersion: String by project
 
         "minecraft"("::${minecraftVersion}")
 
@@ -48,6 +49,13 @@ subprojects {
         })
 
         "modApi"(group = "com.teamresourceful.resourcefullib", name = "resourcefullib-$name-$minecraftVersion", version = resourcefulLibVersion)
+        "include"("modImplementation"(
+            group = "earth.terrarium.hermes",
+            name = "hermes-$name-$minecraftVersion",
+            version = hermesLibVersion
+        )) {
+            isTransitive = false
+        }
     }
 
     tasks.jar {

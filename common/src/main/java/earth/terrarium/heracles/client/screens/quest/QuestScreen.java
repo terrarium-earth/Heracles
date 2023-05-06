@@ -10,12 +10,18 @@ import earth.terrarium.heracles.client.screens.quest.rewards.RewardListWidget;
 import earth.terrarium.heracles.client.screens.quest.tasks.TaskListWidget;
 import earth.terrarium.heracles.client.widgets.SelectableButton;
 import earth.terrarium.heracles.common.menus.quest.QuestMenu;
+import earth.terrarium.hermes.api.DefaultTagProvider;
+import earth.terrarium.hermes.api.TagProvider;
+import earth.terrarium.hermes.api.themes.DefaultTheme;
+import earth.terrarium.hermes.client.DocumentWidget;
 import net.minecraft.Optionull;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.components.ImageButton;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.entity.player.Inventory;
 import org.jetbrains.annotations.NotNull;
 
@@ -32,6 +38,8 @@ public class QuestScreen extends AbstractContainerCursorScreen<QuestMenu> {
 
     private TaskListWidget taskList;
     private RewardListWidget rewardList;
+    private DocumentWidget description;
+    private String descriptionError;
 
     public QuestScreen(QuestMenu menu, Inventory inventory, Component component) {
         super(menu, inventory, Optionull.mapOrDefault(menu.quest(), Quest::title, component));
@@ -79,6 +87,14 @@ public class QuestScreen extends AbstractContainerCursorScreen<QuestMenu> {
 
         this.rewardList = new RewardListWidget(contentX, contentY, contentWidth, contentHeight);
         this.rewardList.update(this.menu.id(), this.menu.quest());
+
+        try {
+            this.descriptionError = null;
+            TagProvider provider = new DefaultTagProvider();
+            this.description = new DocumentWidget(contentX, contentY, contentWidth, contentHeight, new DefaultTheme(), provider.parse(this.menu.quest().description()));
+        } catch (Exception e) {
+            this.descriptionError = e.getMessage();
+        }
     }
 
     private void clearSelected() {
@@ -102,6 +118,20 @@ public class QuestScreen extends AbstractContainerCursorScreen<QuestMenu> {
         }
         if (this.rewards != null && this.rewards.isSelected()) {
             this.rewardList.render(stack, mouseX, mouseY, partialTick);
+        }
+        if (this.description != null && this.overview.isSelected()) {
+            this.description.render(stack, mouseX, mouseY, partialTick);
+        }
+        if (this.descriptionError != null && this.overview.isSelected()) {
+            int contentX = (int) (this.width * 0.31f) + 20;
+            int contentY = 30;
+            int contentWidth = (int) (this.width * 0.63f) - 40;
+            int contentHeight = this.height - 45;
+            for (FormattedCharSequence sequence : Minecraft.getInstance().font.split(Component.literal(this.descriptionError), contentWidth)) {
+                int textWidth = this.font.width(sequence);
+                this.font.draw(stack, sequence, contentX + (contentWidth - textWidth) / 2f, contentY + (contentHeight - this.font.lineHeight) / 2f, 0xFF0000);
+                contentY += this.font.lineHeight;
+            }
         }
     }
 
@@ -130,6 +160,9 @@ public class QuestScreen extends AbstractContainerCursorScreen<QuestMenu> {
         }
         if (this.rewards != null && this.rewards.isSelected()) {
             children.add(this.rewardList);
+        }
+        if (this.description != null && this.overview.isSelected()) {
+            children.add(this.description);
         }
         children.addAll(super.children());
         return children;

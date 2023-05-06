@@ -1,8 +1,8 @@
-package earth.terrarium.heracles.common.handlers;
+package earth.terrarium.heracles.common.handlers.progress;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import earth.terrarium.heracles.api.Quest;
+import earth.terrarium.heracles.api.quests.Quest;
 import earth.terrarium.heracles.api.tasks.QuestTask;
 
 import java.util.HashMap;

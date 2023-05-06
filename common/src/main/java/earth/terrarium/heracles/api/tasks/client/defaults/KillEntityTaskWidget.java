@@ -8,7 +8,7 @@ import earth.terrarium.heracles.api.client.DisplayWidget;
 import earth.terrarium.heracles.api.client.WidgetUtils;
 import earth.terrarium.heracles.api.tasks.QuestTaskNumberFormatter;
 import earth.terrarium.heracles.api.tasks.defaults.KillEntityQuestTask;
-import earth.terrarium.heracles.common.handlers.TaskProgress;
+import earth.terrarium.heracles.common.handlers.progress.TaskProgress;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;

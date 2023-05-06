@@ -4,8 +4,10 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.teamresourceful.resourcefullib.client.scissor.ScissorBoxStack;
 import com.teamresourceful.resourcefullib.client.utils.RenderUtils;
 import earth.terrarium.heracles.api.client.DisplayWidget;
+import earth.terrarium.heracles.api.quests.Quest;
 import earth.terrarium.heracles.api.rewards.QuestReward;
 import earth.terrarium.heracles.api.rewards.client.QuestRewardWidgets;
+import earth.terrarium.heracles.client.ClientQuests;
 import earth.terrarium.heracles.client.screens.quest.HeadingWidget;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Renderable;
@@ -40,14 +42,21 @@ public class RewardListWidget extends AbstractContainerEventHandler implements R
         this.lastFullHeight = this.height;
     }
 
-    public void update(List<QuestReward<?>> rewards) {
+    public void update(String id, Quest quest) {
         this.widgets.clear();
         this.widgets.add(new HeadingWidget(Component.nullToEmpty("Rewards"), 0xFF00DD00));
-        for (QuestReward<?> reward : rewards) {
+        for (QuestReward<?> reward : quest.rewards()) {
             DisplayWidget widget = QuestRewardWidgets.create(reward);
             if (widget == null) continue;
             this.widgets.add(QuestRewardWidgets.create(reward));
         }
+        ClientQuests.get(id).ifPresent(entry -> {
+            if (entry.children().isEmpty()) return;
+            this.widgets.add(new HeadingWidget(Component.nullToEmpty("Dependents"), 0xFF000080));
+            for (ClientQuests.QuestEntry dependent : entry.children()) {
+                this.widgets.add(new QuestDependentWidget(dependent.value()));
+            }
+        });
     }
 
     @Override

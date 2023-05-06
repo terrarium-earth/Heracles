@@ -3,8 +3,8 @@ package earth.terrarium.heracles.common.menus.quest;
 import com.teamresourceful.resourcefullib.common.menu.MenuContent;
 import com.teamresourceful.resourcefullib.common.menu.MenuContentSerializer;
 import com.teamresourceful.resourcefullib.common.networking.PacketHelper;
-import earth.terrarium.heracles.api.Quest;
-import earth.terrarium.heracles.common.handlers.QuestProgress;
+import earth.terrarium.heracles.api.quests.Quest;
+import earth.terrarium.heracles.common.handlers.progress.QuestProgress;
 import net.minecraft.network.FriendlyByteBuf;
 import org.jetbrains.annotations.Nullable;
 

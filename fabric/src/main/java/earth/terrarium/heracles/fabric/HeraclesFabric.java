@@ -2,10 +2,10 @@ package earth.terrarium.heracles.fabric;
 
 import com.mojang.brigadier.arguments.StringArgumentType;
 import earth.terrarium.heracles.Heracles;
-import earth.terrarium.heracles.api.Quest;
+import earth.terrarium.heracles.api.quests.Quest;
 import earth.terrarium.heracles.api.tasks.defaults.KillEntityQuestTask;
-import earth.terrarium.heracles.common.handlers.QuestHandler;
-import earth.terrarium.heracles.common.handlers.QuestProgressHandler;
+import earth.terrarium.heracles.common.handlers.progress.QuestProgressHandler;
+import earth.terrarium.heracles.common.handlers.quests.QuestHandler;
 import earth.terrarium.heracles.common.menus.BasicContentMenuProvider;
 import earth.terrarium.heracles.common.menus.quest.QuestContent;
 import earth.terrarium.heracles.common.menus.quest.QuestMenu;

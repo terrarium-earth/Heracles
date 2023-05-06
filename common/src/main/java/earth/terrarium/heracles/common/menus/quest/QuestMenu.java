@@ -1,7 +1,7 @@
 package earth.terrarium.heracles.common.menus.quest;
 
-import earth.terrarium.heracles.api.Quest;
-import earth.terrarium.heracles.common.handlers.QuestProgress;
+import earth.terrarium.heracles.api.quests.Quest;
+import earth.terrarium.heracles.common.handlers.progress.QuestProgress;
 import earth.terrarium.heracles.common.regisitries.ModMenus;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -23,6 +23,10 @@ public class QuestMenu extends AbstractContainerMenu {
     public QuestMenu(int id, QuestContent content) {
         super(ModMenus.QUEST.get(), id);
         this.content = content;
+    }
+
+    public String id() {
+        return this.content != null ? this.content.id() : null;
     }
 
     public Quest quest() {

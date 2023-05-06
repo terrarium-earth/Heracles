@@ -1,6 +1,6 @@
 package earth.terrarium.heracles.client;
 
-import earth.terrarium.heracles.api.Quest;
+import earth.terrarium.heracles.api.quests.Quest;
 import earth.terrarium.heracles.client.screens.quest.QuestScreen;
 import earth.terrarium.heracles.common.regisitries.ModMenus;
 import net.minecraft.client.Minecraft;

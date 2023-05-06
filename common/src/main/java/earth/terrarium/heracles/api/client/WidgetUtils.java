@@ -1,7 +1,7 @@
 package earth.terrarium.heracles.api.client;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import earth.terrarium.heracles.common.handlers.TaskProgress;
+import earth.terrarium.heracles.common.handlers.progress.TaskProgress;
 import net.minecraft.client.gui.Gui;
 
 public final class WidgetUtils {

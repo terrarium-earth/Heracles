@@ -1,8 +1,6 @@
 package earth.terrarium.heracles.client;
 
-import earth.terrarium.heracles.api.Quest;
-import net.minecraft.Optionull;
-import org.jetbrains.annotations.Nullable;
+import earth.terrarium.heracles.api.quests.Quest;
 import org.joml.Vector2d;
 
 import java.util.*;
@@ -33,21 +31,31 @@ public class ClientQuests {
         Quest quest,
         Map<String, Quest> quests
     ) {
-        Quest parent = Optionull.map(quest.parent(), quests::get);
+        List<QuestEntry> dependencies = new ArrayList<>();
+        for (String dependency : quest.dependencies()) {
+            Quest dependent = quests.get(dependency);
+            if (dependent != null) {
+                QuestEntry dependencyEntry = addEntry(dependency, dependent, quests);
+                if (dependencyEntry != null) {
+                    dependencies.add(dependencyEntry);
+                }
+            }
+        }
 
-        QuestEntry parentEntry = parent == null ? null : addEntry(quest.parent(), parent, quests);
-        QuestEntry entry = new QuestEntry(parentEntry, key, quest, new Vector2d(), new ArrayList<>());
+        QuestEntry entry = new QuestEntry(dependencies, key, quest, new Vector2d(), new ArrayList<>());
 
-        if (parentEntry == null) {
+        if (dependencies.isEmpty()) {
             ROOTS.add(entry);
         } else {
-            parentEntry.children().add(entry);
+            for (QuestEntry dependency : dependencies) {
+                dependency.children().add(entry);
+            }
         }
 
         return ENTRIES.computeIfAbsent(key, k -> entry);
     }
 
-    public record QuestEntry(@Nullable QuestEntry parent, String key, Quest value, Vector2d position,
+    public record QuestEntry(List<QuestEntry> dependencies, String key, Quest value, Vector2d position,
                              List<QuestEntry> children) {
     }
 }

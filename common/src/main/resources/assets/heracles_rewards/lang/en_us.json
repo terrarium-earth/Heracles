@@ -1,4 +1,7 @@
 {
+    "gui.heracles.rewards.unlocks_quest.title": "Unlocks %s",
+    "gui.heracles.rewards.unlocks_quest.desc": "Grants you access to a new quest.",
+
     "reward.heracles.xp.title.singular": "Receive an xp %s",
     "reward.heracles.xp.title.plural": "Receive xp %ss",
     "reward.heracles.xp.desc.singular": "Receive xp %s %s",

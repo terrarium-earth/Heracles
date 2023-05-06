@@ -1,6 +1,7 @@
-package earth.terrarium.heracles.common.handlers;
+package earth.terrarium.heracles.common.handlers.quests;
 
-import earth.terrarium.heracles.api.Quest;
+import earth.terrarium.heracles.api.quests.Quest;
+import earth.terrarium.heracles.common.handlers.progress.QuestsProgress;
 
 import java.util.ArrayList;
 import java.util.List;

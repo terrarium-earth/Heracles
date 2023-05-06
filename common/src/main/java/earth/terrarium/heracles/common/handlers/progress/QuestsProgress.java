@@ -1,8 +1,10 @@
-package earth.terrarium.heracles.common.handlers;
+package earth.terrarium.heracles.common.handlers.progress;
 
 import com.google.common.collect.Maps;
-import earth.terrarium.heracles.api.Quest;
+import earth.terrarium.heracles.api.quests.Quest;
 import earth.terrarium.heracles.api.tasks.QuestTask;
+import earth.terrarium.heracles.common.handlers.quests.CompletableQuests;
+import earth.terrarium.heracles.common.handlers.quests.QuestHandler;
 import earth.terrarium.heracles.common.team.TeamProvider;
 import net.minecraft.Optionull;
 import net.minecraft.server.level.ServerPlayer;
@@ -23,7 +25,7 @@ public record QuestsProgress(Map<String, QuestProgress> progress, CompletableQue
             QuestProgress questProgress = getProgress(id);
             Quest quest = QuestHandler.get(id);
             for (QuestTask<?, ?> task : quest.tasks()) {
-                if (taskType.isInstance(task.getClass())) {
+                if (task.getClass().isAssignableFrom(taskType)) {
                     TaskProgress progress = questProgress.getTask(task.id());
                     if (progress.isComplete()) continue;
                     progress.addProgress(taskType.cast(task), input);

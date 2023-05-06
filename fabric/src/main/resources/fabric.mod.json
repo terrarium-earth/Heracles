@@ -22,7 +22,8 @@
   },
 
   "mixins": [
-    "heracles.mixins.json"
+    "heracles.mixins.json",
+    "heracles-common.mixins.json"
   ],
 
   "depends": {

@@ -1,4 +1,4 @@
-package earth.terrarium.heracles.common.handlers;
+package earth.terrarium.heracles.common.handlers.progress;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;

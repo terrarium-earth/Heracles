@@ -1,4 +1,4 @@
-package earth.terrarium.heracles.common.handlers;
+package earth.terrarium.heracles.common.handlers.quests;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
@@ -8,7 +8,7 @@ import com.mojang.serialization.JsonOps;
 import com.teamresourceful.resourcefullib.common.lib.Constants;
 import com.teamresourceful.resourcefullib.common.utils.FileUtils;
 import earth.terrarium.heracles.Heracles;
-import earth.terrarium.heracles.api.Quest;
+import earth.terrarium.heracles.api.quests.Quest;
 import org.slf4j.Logger;
 
 import java.io.File;

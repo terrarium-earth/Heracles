@@ -1,7 +1,7 @@
 package earth.terrarium.heracles.forge;
 
 import earth.terrarium.heracles.Heracles;
-import earth.terrarium.heracles.common.handlers.QuestHandler;
+import earth.terrarium.heracles.common.handlers.quests.QuestHandler;
 import earth.terrarium.heracles.common.team.ScoreboardTeamProvider;
 import earth.terrarium.heracles.common.team.TeamProvider;
 import net.minecraftforge.common.MinecraftForge;
@@ -19,8 +19,8 @@ public class HeraclesForge {
     private static final DeferredRegister<TeamProvider> TEAM_PROVIDER_REGISTRAR = DeferredRegister.create(Heracles.TEAM_PROVIDER_REGISTRY_KEY, Heracles.MOD_ID);
 
     public static final Supplier<IForgeRegistry<TeamProvider>> TEAM_PROVIDER_REGISTRY = TEAM_PROVIDER_REGISTRAR.makeRegistry(() ->
-            new RegistryBuilder<TeamProvider>()
-                    .setName(Heracles.TEAM_PROVIDER_REGISTRY_KEY.location())
+        new RegistryBuilder<TeamProvider>()
+            .setName(Heracles.TEAM_PROVIDER_REGISTRY_KEY.location())
     );
 
     public HeraclesForge() {

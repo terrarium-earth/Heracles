@@ -7,7 +7,7 @@ import earth.terrarium.heracles.api.tasks.client.defaults.ItemTaskWidget;
 import earth.terrarium.heracles.api.tasks.client.defaults.KillEntityTaskWidget;
 import earth.terrarium.heracles.api.tasks.defaults.ItemQuestTask;
 import earth.terrarium.heracles.api.tasks.defaults.KillEntityQuestTask;
-import earth.terrarium.heracles.common.handlers.TaskProgress;
+import earth.terrarium.heracles.common.handlers.progress.TaskProgress;
 import net.minecraft.Optionull;
 import org.jetbrains.annotations.Nullable;
 

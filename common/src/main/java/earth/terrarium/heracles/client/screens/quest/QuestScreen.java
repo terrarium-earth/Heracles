@@ -5,7 +5,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.teamresourceful.resourcefullib.client.screens.AbstractContainerCursorScreen;
 import com.teamresourceful.resourcefullib.client.utils.RenderUtils;
 import earth.terrarium.heracles.Heracles;
-import earth.terrarium.heracles.api.Quest;
+import earth.terrarium.heracles.api.quests.Quest;
 import earth.terrarium.heracles.client.screens.quest.rewards.RewardListWidget;
 import earth.terrarium.heracles.client.screens.quest.tasks.TaskListWidget;
 import earth.terrarium.heracles.client.widgets.SelectableButton;
@@ -78,7 +78,7 @@ public class QuestScreen extends AbstractContainerCursorScreen<QuestMenu> {
         this.taskList.update(this.menu.quest().tasks());
 
         this.rewardList = new RewardListWidget(contentX, contentY, contentWidth, contentHeight);
-        this.rewardList.update(this.menu.quest().rewards());
+        this.rewardList.update(this.menu.id(), this.menu.quest());
     }
 
     private void clearSelected() {

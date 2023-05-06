@@ -1,6 +1,6 @@
 package earth.terrarium.heracles.mixins.fabric;
 
-import earth.terrarium.heracles.common.handlers.QuestHandler;
+import earth.terrarium.heracles.common.handlers.quests.QuestHandler;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.commands.Commands;
 import net.minecraft.core.RegistryAccess;

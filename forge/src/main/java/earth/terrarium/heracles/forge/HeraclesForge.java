@@ -1,12 +1,13 @@
 package earth.terrarium.heracles.forge;
 
 import earth.terrarium.heracles.Heracles;
-import earth.terrarium.heracles.common.resource.QuestManager;
+import earth.terrarium.heracles.common.handlers.QuestHandler;
 import earth.terrarium.heracles.common.team.ScoreboardTeamProvider;
 import earth.terrarium.heracles.common.team.TeamProvider;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.AddReloadListenerEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.loading.FMLPaths;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.IForgeRegistry;
 import net.minecraftforge.registries.RegistryBuilder;
@@ -26,11 +27,10 @@ public class HeraclesForge {
         Heracles.init();
 
         TEAM_PROVIDER_REGISTRAR.register(ScoreboardTeamProvider.KEY, ScoreboardTeamProvider::new);
-
-        MinecraftForge.EVENT_BUS.addListener(HeraclesForge::addResourceReloaders);
+        MinecraftForge.EVENT_BUS.addListener(HeraclesForge::onResourcesLoad);
     }
 
-    private static void addResourceReloaders(AddReloadListenerEvent event) {
-        event.addListener(QuestManager.INSTANCE);
+    private static void onResourcesLoad(AddReloadListenerEvent event) {
+        QuestHandler.load(FMLPaths.CONFIGDIR.get());
     }
 }

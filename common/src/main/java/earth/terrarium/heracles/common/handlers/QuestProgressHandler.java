@@ -2,7 +2,6 @@ package earth.terrarium.heracles.common.handlers;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.level.saveddata.SavedData;
 import org.jetbrains.annotations.NotNull;
@@ -37,7 +36,7 @@ public class QuestProgressHandler extends SavedData {
         for (var entry : progress.entrySet()) {
             CompoundTag progress = new CompoundTag();
             for (var progressEntry : entry.getValue().progress().entrySet()) {
-                progress.put(progressEntry.getKey().toString(), QuestProgress.CODEC.encodeStart(NbtOps.INSTANCE, progressEntry.getValue())
+                progress.put(progressEntry.getKey(), QuestProgress.CODEC.encodeStart(NbtOps.INSTANCE, progressEntry.getValue())
                     .getOrThrow(false, System.err::println));
             }
             tag.put(entry.getKey().toString(), progress);
@@ -49,9 +48,9 @@ public class QuestProgressHandler extends SavedData {
     public void load(CompoundTag tag) {
         for (var player : tag.getAllKeys()) {
             CompoundTag progress = tag.getCompound(player);
-            Map<ResourceLocation, QuestProgress> questProgress = new HashMap<>();
+            Map<String, QuestProgress> questProgress = new HashMap<>();
             for (var quest : progress.getAllKeys()) {
-                questProgress.put(new ResourceLocation(quest), QuestProgress.CODEC.parse(NbtOps.INSTANCE, progress.getCompound(quest))
+                questProgress.put(quest, QuestProgress.CODEC.parse(NbtOps.INSTANCE, progress.getCompound(quest))
                     .getOrThrow(false, System.err::println));
             }
             this.progress.put(UUID.fromString(player), new QuestsProgress(questProgress));

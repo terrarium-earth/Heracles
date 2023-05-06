@@ -21,8 +21,12 @@
     ]
   },
 
+  "mixins": [
+    "heracles.mixins.json"
+  ],
+
   "depends": {
-    "fabricloader": ">=0.14.19",
+    "fabric": ">=0.14.19",
     "fabric-api": "*",
     "cardinal-components-entity": ">=5.0.0",
     "minecraft": "~1.19.4",

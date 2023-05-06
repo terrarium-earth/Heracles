@@ -13,7 +13,7 @@ import net.minecraft.resources.ResourceLocation;
 
 import java.util.Map;
 
-public record SyncQuestsPacket(Map<ResourceLocation, Quest> quests) implements Packet<SyncQuestsPacket> {
+public record SyncQuestsPacket(Map<String, Quest> quests) implements Packet<SyncQuestsPacket> {
     public static final ResourceLocation ID = new ResourceLocation(Heracles.MOD_ID, "sync_quests");
     public static final PacketHandler<SyncQuestsPacket> HANDLER = new Handler();
 
@@ -28,7 +28,7 @@ public record SyncQuestsPacket(Map<ResourceLocation, Quest> quests) implements P
     }
 
     public static class Handler implements PacketHandler<SyncQuestsPacket> {
-        private static final Codec<Map<ResourceLocation, Quest>> QUEST_MAP_CODEC = Codec.unboundedMap(ResourceLocation.CODEC, Quest.CODEC);
+        private static final Codec<Map<String, Quest>> QUEST_MAP_CODEC = Codec.unboundedMap(Codec.STRING, Quest.CODEC);
 
         @Override
         public void encode(SyncQuestsPacket message, FriendlyByteBuf buffer) {

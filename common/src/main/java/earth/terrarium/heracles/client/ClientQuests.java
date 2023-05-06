@@ -2,41 +2,36 @@ package earth.terrarium.heracles.client;
 
 import earth.terrarium.heracles.api.Quest;
 import net.minecraft.Optionull;
-import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector2d;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 public class ClientQuests {
     private static final List<QuestEntry> ROOTS = new ArrayList<>();
-    private static final Map<ResourceLocation, QuestEntry> ENTRIES = new HashMap<>();
+    private static final Map<String, QuestEntry> ENTRIES = new HashMap<>();
 
     public static List<QuestEntry> getRoots() {
         return ROOTS;
     }
 
-    public static Optional<QuestEntry> get(ResourceLocation key) {
+    public static Optional<QuestEntry> get(String key) {
         return Optional.ofNullable(ENTRIES.get(key));
     }
 
-    public static void sync(Map<ResourceLocation, Quest> quests) {
+    public static void sync(Map<String, Quest> quests) {
         ROOTS.clear();
         ENTRIES.clear();
 
-        for (Map.Entry<ResourceLocation, Quest> entry : quests.entrySet()) {
+        for (Map.Entry<String, Quest> entry : quests.entrySet()) {
             addEntry(entry.getKey(), entry.getValue(), quests);
         }
     }
 
     private static QuestEntry addEntry(
-        ResourceLocation key,
+        String key,
         Quest quest,
-        Map<ResourceLocation, Quest> quests
+        Map<String, Quest> quests
     ) {
         Quest parent = Optionull.map(quest.parent(), quests::get);
 
@@ -52,7 +47,7 @@ public class ClientQuests {
         return ENTRIES.computeIfAbsent(key, k -> entry);
     }
 
-    public record QuestEntry(@Nullable QuestEntry parent, ResourceLocation key, Quest value, Vector2d position,
+    public record QuestEntry(@Nullable QuestEntry parent, String key, Quest value, Vector2d position,
                              List<QuestEntry> children) {
     }
 }

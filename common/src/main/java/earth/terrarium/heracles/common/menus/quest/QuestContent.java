@@ -6,11 +6,9 @@ import com.teamresourceful.resourcefullib.common.networking.PacketHelper;
 import earth.terrarium.heracles.api.Quest;
 import earth.terrarium.heracles.common.handlers.QuestProgress;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
 
-public record QuestContent(ResourceLocation id, Quest quest,
-                           QuestProgress progress) implements MenuContent<QuestContent> {
+public record QuestContent(String id, Quest quest, QuestProgress progress) implements MenuContent<QuestContent> {
 
     public static final MenuContentSerializer<QuestContent> SERIALIZER = new Serializer();
 
@@ -24,7 +22,7 @@ public record QuestContent(ResourceLocation id, Quest quest,
         @Override
         public @Nullable QuestContent from(FriendlyByteBuf buffer) {
             return new QuestContent(
-                buffer.readResourceLocation(),
+                buffer.readUtf(),
                 PacketHelper.readWithYabn(buffer, Quest.CODEC, true).getOrThrow(false, System.err::println),
                 PacketHelper.readWithYabn(buffer, QuestProgress.CODEC, true).getOrThrow(false, System.err::println)
             );
@@ -32,7 +30,7 @@ public record QuestContent(ResourceLocation id, Quest quest,
 
         @Override
         public void to(FriendlyByteBuf buffer, QuestContent content) {
-            buffer.writeResourceLocation(content.id());
+            buffer.writeUtf(content.id());
             PacketHelper.writeWithYabn(buffer, Quest.CODEC, content.quest(), true);
             PacketHelper.writeWithYabn(buffer, QuestProgress.CODEC, content.progress(), true);
         }

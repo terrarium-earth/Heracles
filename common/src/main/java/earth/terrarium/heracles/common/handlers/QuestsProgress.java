@@ -11,16 +11,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public record QuestsProgress(Map<String, QuestProgress> progress) {
+public record QuestsProgress(Map<String, QuestProgress> progress, CompletableQuests completableQuests) {
 
-    public List<String> getUncompletedQuests(ServerPlayer player) {
-        return List.of(); //TODO implement
+    public QuestsProgress(Map<String, QuestProgress> progress) {
+        this(progress, new CompletableQuests());
     }
 
     public <T> void testAndProgressTaskType(ServerPlayer player, T input, Class<? extends QuestTask<T, ?>> taskType) {
         List<String> editedQuests = new ArrayList<>();
-        List<String> uncompletedQuests = getUncompletedQuests(player);
-        for (String id : uncompletedQuests) {
+        for (String id : this.completableQuests.getQuests(this)) {
             QuestProgress questProgress = progress.get(id);
             Quest quest = QuestHandler.get(id);
             for (QuestTask<?, ?> task : quest.tasks()) {
@@ -33,6 +32,8 @@ public record QuestsProgress(Map<String, QuestProgress> progress) {
             }
             questProgress.update(quest);
         }
+        if (editedQuests.isEmpty()) return;
+        this.completableQuests.updateCompleteQuests(this);
 
         TeamProvider.getAllTeams(player)
             .flatMap(List::stream)
@@ -45,6 +46,7 @@ public record QuestsProgress(Map<String, QuestProgress> progress) {
                     var newTasks = copyTasks(questProgress.tasks());
                     memberProgress.progress.put(quest, new QuestProgress(questProgress.isComplete(), currentProgress != null && currentProgress.isClaimed(), newTasks));
                 }
+                memberProgress.completableQuests.updateCompleteQuests(memberProgress);
             });
     }
 

@@ -9,5 +9,5 @@ public interface QuestReward<T extends QuestReward<T>> {
 
     Stream<ItemStack> reward(ServerPlayer player);
 
-    QuestRewardSerializer<T> serializer();
+    QuestRewardType<T> type();
 }

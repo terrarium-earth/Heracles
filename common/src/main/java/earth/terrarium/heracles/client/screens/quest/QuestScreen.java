@@ -89,6 +89,7 @@ public class QuestScreen extends AbstractContainerCursorScreen<QuestMenu> {
         Gui.blitRepeating(stack, 0, 0, this.width, 15, 0, 0, 128, 15);
         int sidebarWidth = (int) (this.width * 0.25f) - 2;
         Gui.blitRepeating(stack, sidebarWidth, 15, 2, this.height - 15, 128, 0, 2, 256);
+        Gui.fill(stack, sidebarWidth, 0, sidebarWidth + 2, 13, 0x80808080);
 
         RenderSystem.disableDepthTest();
         if (this.tasks != null && this.tasks.isSelected()) {

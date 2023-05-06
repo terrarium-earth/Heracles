@@ -10,18 +10,18 @@ import java.util.Optional;
 
 public class QuestRewards {
 
-    private static final Map<ResourceLocation, QuestRewardSerializer<?>> SERIALIZERS = new HashMap<>();
+    private static final Map<ResourceLocation, QuestRewardType<?>> SERIALIZERS = new HashMap<>();
 
-    public static final Codec<QuestRewardSerializer<?>> TYPE_CODEC = ResourceLocation.CODEC.comapFlatMap(QuestRewards::decode, QuestRewardSerializer::id);
-    public static final Codec<QuestReward<?>> CODEC = TYPE_CODEC.dispatch(QuestReward::serializer, QuestRewardSerializer::codec);
+    public static final Codec<QuestRewardType<?>> TYPE_CODEC = ResourceLocation.CODEC.comapFlatMap(QuestRewards::decode, QuestRewardType::id);
+    public static final Codec<QuestReward<?>> CODEC = TYPE_CODEC.dispatch(QuestReward::type, QuestRewardType::codec);
 
-    private static DataResult<? extends QuestRewardSerializer<?>> decode(ResourceLocation id) {
+    private static DataResult<? extends QuestRewardType<?>> decode(ResourceLocation id) {
         return Optional.ofNullable(SERIALIZERS.get(id))
             .map(DataResult::success)
             .orElse(DataResult.error(() -> "No quest reward type found with id " + id));
     }
 
-    public static <R extends QuestReward<R>, T extends QuestRewardSerializer<R>> void register(T serializer) {
+    public static <R extends QuestReward<R>, T extends QuestRewardType<R>> void register(T serializer) {
         if (SERIALIZERS.containsKey(serializer.id()))
             throw new RuntimeException("Multiple quest reward serializers registered with same id '" + serializer.id() + "'");
         SERIALIZERS.put(serializer.id(), serializer);

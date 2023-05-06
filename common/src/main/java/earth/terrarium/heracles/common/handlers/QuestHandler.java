@@ -13,6 +13,7 @@ import org.slf4j.Logger;
 
 import java.io.Reader;
 import java.nio.file.Path;
+import java.util.Map;
 
 public class QuestHandler {
 
@@ -44,5 +45,9 @@ public class QuestHandler {
 
     public static String getKey(Quest quest) {
         return QUESTS.inverse().get(quest);
+    }
+
+    public static Map<String, Quest> quests() {
+        return QUESTS;
     }
 }

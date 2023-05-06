@@ -6,6 +6,7 @@ import com.teamresourceful.resourcefullib.client.screens.AbstractContainerCursor
 import com.teamresourceful.resourcefullib.client.utils.RenderUtils;
 import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.api.Quest;
+import earth.terrarium.heracles.client.screens.quest.rewards.RewardListWidget;
 import earth.terrarium.heracles.client.screens.quest.tasks.TaskListWidget;
 import earth.terrarium.heracles.client.widgets.SelectableButton;
 import earth.terrarium.heracles.common.menus.quest.QuestMenu;
@@ -30,6 +31,7 @@ public class QuestScreen extends AbstractContainerCursorScreen<QuestMenu> {
     private SelectableButton rewards;
 
     private TaskListWidget taskList;
+    private RewardListWidget rewardList;
 
     public QuestScreen(QuestMenu menu, Inventory inventory, Component component) {
         super(menu, inventory, Optionull.mapOrDefault(menu.quest(), Quest::title, component));
@@ -74,6 +76,9 @@ public class QuestScreen extends AbstractContainerCursorScreen<QuestMenu> {
 
         this.taskList = new TaskListWidget(contentX, contentY, contentWidth, contentHeight, this.menu.quest(), this.menu.progress());
         this.taskList.update(this.menu.quest().tasks());
+
+        this.rewardList = new RewardListWidget(contentX, contentY, contentWidth, contentHeight);
+        this.rewardList.update(this.menu.quest().rewards());
     }
 
     private void clearSelected() {
@@ -95,6 +100,9 @@ public class QuestScreen extends AbstractContainerCursorScreen<QuestMenu> {
         if (this.tasks != null && this.tasks.isSelected()) {
             this.taskList.render(stack, mouseX, mouseY, partialTick);
         }
+        if (this.rewards != null && this.rewards.isSelected()) {
+            this.rewardList.render(stack, mouseX, mouseY, partialTick);
+        }
     }
 
     @Override
@@ -108,6 +116,9 @@ public class QuestScreen extends AbstractContainerCursorScreen<QuestMenu> {
         if (this.tasks != null && this.tasks.isSelected() && this.taskList.mouseClicked(mouseX, mouseY, button)) {
             return true;
         }
+        if (this.rewards != null && this.rewards.isSelected() && this.rewardList.mouseClicked(mouseX, mouseY, button)) {
+            return true;
+        }
         return super.mouseClicked(mouseX, mouseY, button);
     }
 
@@ -116,6 +127,9 @@ public class QuestScreen extends AbstractContainerCursorScreen<QuestMenu> {
         List<GuiEventListener> children = new ArrayList<>();
         if (this.tasks != null && this.tasks.isSelected()) {
             children.add(this.taskList);
+        }
+        if (this.rewards != null && this.rewards.isSelected()) {
+            children.add(this.rewardList);
         }
         children.addAll(super.children());
         return children;

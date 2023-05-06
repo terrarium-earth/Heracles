@@ -1,13 +1,13 @@
-package earth.terrarium.heracles.client.screens.quest.tasks;
+package earth.terrarium.heracles.client.screens.quest;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.teamresourceful.resourcefullib.client.scissor.ScissorBoxStack;
-import earth.terrarium.heracles.api.tasks.client.QuestTaskWidget;
+import earth.terrarium.heracles.api.client.DisplayWidget;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.network.chat.Component;
 
-public record TaskHeadingWidget(Component title, int color) implements QuestTaskWidget {
+public record HeadingWidget(Component title, int color) implements DisplayWidget {
 
     @Override
     public void render(PoseStack pose, ScissorBoxStack scissor, int x, int y, int width, int mouseX, int mouseY, boolean hovered, float partialTicks) {

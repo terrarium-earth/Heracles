@@ -12,21 +12,21 @@ import java.util.Optional;
 
 public final class QuestTasks {
 
-    private static final Map<ResourceLocation, QuestTaskType<?>> SERIALIZERS = new HashMap<>();
+    private static final Map<ResourceLocation, QuestTaskType<?>> TYPES = new HashMap<>();
 
     public static final Codec<QuestTaskType<?>> TYPE_CODEC = ResourceLocation.CODEC.comapFlatMap(QuestTasks::decode, QuestTaskType::id);
     public static final Codec<QuestTask<?, ?>> CODEC = TYPE_CODEC.dispatch(QuestTask::type, QuestTaskType::codec);
 
     private static DataResult<? extends QuestTaskType<?>> decode(ResourceLocation id) {
-        return Optional.ofNullable(SERIALIZERS.get(id))
+        return Optional.ofNullable(TYPES.get(id))
             .map(DataResult::success)
             .orElse(DataResult.error(() -> "No quest task type found with id " + id));
     }
 
-    public static <C extends QuestTask<?, C>, T extends QuestTaskType<C>> void register(T serializer) {
-        if (SERIALIZERS.containsKey(serializer.id()))
-            throw new RuntimeException("Multiple quest task serializers registered with same id '" + serializer.id() + "'");
-        SERIALIZERS.put(serializer.id(), serializer);
+    public static <C extends QuestTask<?, C>, T extends QuestTaskType<C>> void register(T type) {
+        if (TYPES.containsKey(type.id()))
+            throw new RuntimeException("Multiple quest task types registered with same id '" + type.id() + "'");
+        TYPES.put(type.id(), type);
     }
 
     static {

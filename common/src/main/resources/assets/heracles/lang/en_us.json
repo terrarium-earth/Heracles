@@ -6,12 +6,13 @@
     "quest.heracles.in_progress": "In progress",
     "quest.heracles.completed": "Completed",
 
-    "task.terrarium_heracles.kill_entity.title.singular": "Kill a %s",
-    "task.terrarium_heracles.kill_entity.title.plural": "Kill %ss",
-    "task.terrarium_heracles.kill_entity.desc.singular": "Kill %s %s",
-    "task.terrarium_heracles.kill_entity.desc.plural": "Kill %s %ss",
-    "task.terrarium_heracles.item.title.singular": "Gather a %s",
-    "task.terrarium_heracles.item.title.plural": "Gather %ss",
-    "task.terrarium_heracles.item.desc.singular": "Gather %s %s",
-    "task.terrarium_heracles.item.desc.plural": "Gather %s %ss"
+    "task.heracles.kill_entity.title.singular": "Kill a %s",
+    "task.heracles.kill_entity.title.plural": "Kill %ss",
+    "task.heracles.kill_entity.desc.singular": "Kill %s %s",
+    "task.heracles.kill_entity.desc.plural": "Kill %s %ss",
+
+    "task.heracles.item.title.singular": "Gather a %s",
+    "task.heracles.item.title.plural": "Gather %ss",
+    "task.heracles.item.desc.singular": "Gather %s %s",
+    "task.heracles.item.desc.plural": "Gather %s %ss"
 }

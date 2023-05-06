@@ -2,8 +2,9 @@ package earth.terrarium.heracles.api.tasks.client.defaults;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.teamresourceful.resourcefullib.client.scissor.ScissorBoxStack;
+import earth.terrarium.heracles.api.client.DisplayWidget;
+import earth.terrarium.heracles.api.client.WidgetUtils;
 import earth.terrarium.heracles.api.tasks.QuestTaskNumberFormatter;
-import earth.terrarium.heracles.api.tasks.client.QuestTaskWidget;
 import earth.terrarium.heracles.api.tasks.defaults.ItemQuestTask;
 import earth.terrarium.heracles.common.handlers.TaskProgress;
 import net.minecraft.client.Minecraft;
@@ -15,12 +16,12 @@ import net.minecraft.world.item.ItemStack;
 import java.util.List;
 
 public record ItemTaskWidget(ItemQuestTask task, TaskProgress progress,
-                             List<ItemStack> stacks) implements QuestTaskWidget {
+                             List<ItemStack> stacks) implements DisplayWidget {
 
-    private static final String TITLE_SINGULAR = "task.terrarium_heracles.item.title.singular";
-    private static final String TITLE_PLURAL = "task.terrarium_heracles.item.title.plural";
-    private static final String DESC_SINGULAR = "task.terrarium_heracles.item.desc.singular";
-    private static final String DESC_PLURAL = "task.terrarium_heracles.item.desc.plural";
+    private static final String TITLE_SINGULAR = "task.heracles.item.title.singular";
+    private static final String TITLE_PLURAL = "task.heracles.item.title.plural";
+    private static final String DESC_SINGULAR = "task.heracles.item.desc.singular";
+    private static final String DESC_PLURAL = "task.heracles.item.desc.plural";
 
     public ItemTaskWidget(ItemQuestTask task, TaskProgress progress) {
         this(task, progress, task.item().stream().map(ItemStack::new).toList());
@@ -29,7 +30,7 @@ public record ItemTaskWidget(ItemQuestTask task, TaskProgress progress,
     @Override
     public void render(PoseStack pose, ScissorBoxStack scissor, int x, int y, int width, int mouseX, int mouseY, boolean hovered, float partialTicks) {
         Font font = Minecraft.getInstance().font;
-        TaskWidgetUtils.drawBackground(pose, x, y, width);
+        WidgetUtils.drawBackground(pose, x, y, width);
         int iconSize = (int) (width * 0.1f);
         ItemStack item = this.getCurrentItem();
         Minecraft.getInstance().getItemRenderer().renderGuiItem(
@@ -44,7 +45,7 @@ public record ItemTaskWidget(ItemQuestTask task, TaskProgress progress,
         font.draw(pose, progress, x + width - 5 - font.width(progress), y + 5, 0xFFFFFFFF);
 
         int progressY = y + 5 + (font.lineHeight + 2) * 2;
-        TaskWidgetUtils.drawProgressBar(pose, x + iconSize + 10, progressY + 2, x + width - 5, progressY + font.lineHeight - 2, this.progress, this.task.target());
+        WidgetUtils.drawProgressBar(pose, x + iconSize + 10, progressY + 2, x + width - 5, progressY + font.lineHeight - 2, this.progress, this.task.target());
     }
 
     private ItemStack getCurrentItem() {

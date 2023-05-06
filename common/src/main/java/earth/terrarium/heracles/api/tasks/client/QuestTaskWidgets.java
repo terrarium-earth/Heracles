@@ -1,5 +1,6 @@
 package earth.terrarium.heracles.api.tasks.client;
 
+import earth.terrarium.heracles.api.client.DisplayWidget;
 import earth.terrarium.heracles.api.tasks.QuestTask;
 import earth.terrarium.heracles.api.tasks.QuestTaskType;
 import earth.terrarium.heracles.api.tasks.client.defaults.ItemTaskWidget;
@@ -30,7 +31,7 @@ public final class QuestTaskWidgets {
     }
 
     @Nullable
-    public static QuestTaskWidget create(QuestTask<?, ?> task, TaskProgress progress) {
+    public static DisplayWidget create(QuestTask<?, ?> task, TaskProgress progress) {
         return Optionull.map(getFactory(task.type()), factory -> factory.createAndCast(task, progress));
     }
 

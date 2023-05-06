@@ -4,8 +4,9 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.teamresourceful.resourcefullib.client.scissor.ScissorBoxStack;
 import com.teamresourceful.resourcefullib.client.utils.RenderUtils;
 import com.teamresourceful.resourcefullib.common.caches.CacheableFunction;
+import earth.terrarium.heracles.api.client.DisplayWidget;
+import earth.terrarium.heracles.api.client.WidgetUtils;
 import earth.terrarium.heracles.api.tasks.QuestTaskNumberFormatter;
-import earth.terrarium.heracles.api.tasks.client.QuestTaskWidget;
 import earth.terrarium.heracles.api.tasks.defaults.KillEntityQuestTask;
 import earth.terrarium.heracles.common.handlers.TaskProgress;
 import net.minecraft.client.Minecraft;
@@ -17,12 +18,12 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 
 public record KillEntityTaskWidget(KillEntityQuestTask task, TaskProgress progress,
-                                   CacheableFunction<EntityType<?>, Entity> factory) implements QuestTaskWidget {
+                                   CacheableFunction<EntityType<?>, Entity> factory) implements DisplayWidget {
 
-    private static final String TITLE_SINGULAR = "task.terrarium_heracles.kill_entity.title.singular";
-    private static final String TITLE_PLURAL = "task.terrarium_heracles.kill_entity.title.plural";
-    private static final String DESC_SINGULAR = "task.terrarium_heracles.kill_entity.desc.singular";
-    private static final String DESC_PLURAL = "task.terrarium_heracles.kill_entity.desc.plural";
+    private static final String TITLE_SINGULAR = "task.heracles.kill_entity.title.singular";
+    private static final String TITLE_PLURAL = "task.heracles.kill_entity.title.plural";
+    private static final String DESC_SINGULAR = "task.heracles.kill_entity.desc.singular";
+    private static final String DESC_PLURAL = "task.heracles.kill_entity.desc.plural";
 
     public KillEntityTaskWidget(KillEntityQuestTask task, TaskProgress progress) {
         this(task, progress, new CacheableFunction<>(type -> {
@@ -37,7 +38,7 @@ public record KillEntityTaskWidget(KillEntityQuestTask task, TaskProgress progre
     @Override
     public void render(PoseStack pose, ScissorBoxStack scissor, int x, int y, int width, int mouseX, int mouseY, boolean hovered, float partialTicks) {
         Font font = Minecraft.getInstance().font;
-        TaskWidgetUtils.drawBackground(pose, x, y, width);
+        WidgetUtils.drawBackground(pose, x, y, width);
         int iconSize = (int) (width * 0.1f);
         Entity entity = factory.apply(this.task.entity().entityType());
         if (entity instanceof LivingEntity living) {
@@ -54,7 +55,7 @@ public record KillEntityTaskWidget(KillEntityQuestTask task, TaskProgress progre
         font.draw(pose, progress, x + width - 5 - font.width(progress), y + 5, 0xFFFFFFFF);
 
         int progressY = y + 5 + (font.lineHeight + 2) * 2;
-        TaskWidgetUtils.drawProgressBar(pose, x + iconSize + 10, progressY + 2, x + width - 5, progressY + font.lineHeight - 2, this.progress, this.task.target());
+        WidgetUtils.drawProgressBar(pose, x + iconSize + 10, progressY + 2, x + width - 5, progressY + font.lineHeight - 2, this.progress, this.task.target());
     }
 
     @Override

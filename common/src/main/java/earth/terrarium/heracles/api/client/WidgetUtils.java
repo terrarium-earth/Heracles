@@ -1,10 +1,10 @@
-package earth.terrarium.heracles.api.tasks.client.defaults;
+package earth.terrarium.heracles.api.client;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import earth.terrarium.heracles.common.handlers.TaskProgress;
 import net.minecraft.client.gui.Gui;
 
-public final class TaskWidgetUtils {
+public final class WidgetUtils {
 
     public static void drawBackground(PoseStack pose, int x, int y, int width) {
         Gui.fill(pose, x, y, x + width, y + (int) (width * 0.1f) + 10, 0x80808080);

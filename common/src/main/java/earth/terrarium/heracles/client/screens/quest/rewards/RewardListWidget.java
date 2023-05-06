@@ -1,15 +1,12 @@
-package earth.terrarium.heracles.client.screens.quest.tasks;
+package earth.terrarium.heracles.client.screens.quest.rewards;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.teamresourceful.resourcefullib.client.scissor.ScissorBoxStack;
 import com.teamresourceful.resourcefullib.client.utils.RenderUtils;
-import earth.terrarium.heracles.api.Quest;
 import earth.terrarium.heracles.api.client.DisplayWidget;
-import earth.terrarium.heracles.api.tasks.QuestTask;
-import earth.terrarium.heracles.api.tasks.client.QuestTaskWidgets;
+import earth.terrarium.heracles.api.rewards.QuestReward;
+import earth.terrarium.heracles.api.rewards.client.QuestRewardWidgets;
 import earth.terrarium.heracles.client.screens.quest.HeadingWidget;
-import earth.terrarium.heracles.common.handlers.QuestProgress;
-import earth.terrarium.heracles.common.handlers.TaskProgress;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.gui.components.events.AbstractContainerEventHandler;
@@ -21,15 +18,9 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TaskListWidget extends AbstractContainerEventHandler implements Renderable {
-
-    private static final Component IN_PROGRESS = Component.translatable("quest.heracles.in_progress");
-    private static final Component COMPLETED = Component.translatable("quest.heracles.completed");
+public class RewardListWidget extends AbstractContainerEventHandler implements Renderable {
 
     private final List<DisplayWidget> widgets = new ArrayList<>();
-
-    private final QuestProgress progress;
-    private final float completion;
 
     private final int x;
     private final int y;
@@ -41,9 +32,7 @@ public class TaskListWidget extends AbstractContainerEventHandler implements Ren
 
     private MouseClick mouse = null;
 
-    public TaskListWidget(int x, int y, int width, int height, Quest quest, QuestProgress progress) {
-        this.progress = progress;
-        this.completion = progress.isComplete() ? 1 : calculationCompletion(quest, progress);
+    public RewardListWidget(int x, int y, int width, int height) {
         this.x = x;
         this.y = y;
         this.width = width;
@@ -51,38 +40,14 @@ public class TaskListWidget extends AbstractContainerEventHandler implements Ren
         this.lastFullHeight = this.height;
     }
 
-    public void update(List<QuestTask<?, ?>> tasks) {
-        List<DisplayWidget> inProgress = new ArrayList<>();
-        List<DisplayWidget> completed = new ArrayList<>();
-        for (var task : tasks) {
-            TaskProgress taskProgress = this.progress.getTask(task.id());
-            DisplayWidget widget = QuestTaskWidgets.create(task, taskProgress);
-            if (widget != null) {
-                if (taskProgress.isComplete()) {
-                    completed.add(widget);
-                } else {
-                    inProgress.add(widget);
-                }
-            }
-        }
+    public void update(List<QuestReward<?>> rewards) {
         this.widgets.clear();
-        this.widgets.add(new TaskListHeadingWidget(this.completion));
-        if (!inProgress.isEmpty()) {
-            this.widgets.add(new HeadingWidget(IN_PROGRESS, 0xFF5691FF));
-            this.widgets.addAll(inProgress);
+        this.widgets.add(new HeadingWidget(Component.nullToEmpty("Rewards"), 0xFF00DD00));
+        for (QuestReward<?> reward : rewards) {
+            DisplayWidget widget = QuestRewardWidgets.create(reward);
+            if (widget == null) continue;
+            this.widgets.add(QuestRewardWidgets.create(reward));
         }
-        if (!completed.isEmpty()) {
-            this.widgets.add(new HeadingWidget(COMPLETED, 0xFF04CB40));
-            this.widgets.addAll(completed);
-        }
-    }
-
-    private static float calculationCompletion(Quest quest, QuestProgress progress) {
-        float completion = 0;
-        for (var task : quest.tasks()) {
-            completion += progress.getTask(task.id()).isComplete() ? 1 : 0;
-        }
-        return completion / quest.tasks().size();
     }
 
     @Override

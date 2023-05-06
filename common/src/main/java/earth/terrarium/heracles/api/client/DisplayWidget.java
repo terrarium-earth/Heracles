@@ -1,9 +1,9 @@
-package earth.terrarium.heracles.api.tasks.client;
+package earth.terrarium.heracles.api.client;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.teamresourceful.resourcefullib.client.scissor.ScissorBoxStack;
 
-public interface QuestTaskWidget {
+public interface DisplayWidget {
 
     void render(PoseStack pose, ScissorBoxStack scissor, int x, int y, int width, int mouseX, int mouseY, boolean hovered, float partialTicks);
 

@@ -20,17 +20,21 @@ public record QuestsProgress(Map<String, QuestProgress> progress, CompletableQue
     public <T> void testAndProgressTaskType(ServerPlayer player, T input, Class<? extends QuestTask<T, ?>> taskType) {
         List<String> editedQuests = new ArrayList<>();
         for (String id : this.completableQuests.getQuests(this)) {
-            QuestProgress questProgress = progress.get(id);
+            QuestProgress questProgress = getProgress(id);
             Quest quest = QuestHandler.get(id);
             for (QuestTask<?, ?> task : quest.tasks()) {
-                if (task.getClass().equals(taskType)) {
+                if (taskType.isInstance(task.getClass())) {
                     TaskProgress progress = questProgress.getTask(task.id());
                     if (progress.isComplete()) continue;
                     progress.addProgress(taskType.cast(task), input);
+                    if (progress.isComplete()) {
+                        //SEND NOTIFICATION
+                    }
                     editedQuests.add(id);
                 }
             }
             questProgress.update(quest);
+            this.progress.put(id, questProgress);
         }
         if (editedQuests.isEmpty()) return;
         this.completableQuests.updateCompleteQuests(this);

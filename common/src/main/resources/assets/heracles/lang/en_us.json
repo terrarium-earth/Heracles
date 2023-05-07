@@ -1,10 +1,12 @@
 {
-    "rewards.heracles.toast": "Quest Complete!",
+    "rewards.heracles.toast": "Rewards Claimed",
     "gui.heracles.tasks.title": "Quest Tasks",
     "gui.heracles.tasks.description": "Complete all tasks",
 
     "quest.heracles.in_progress": "In progress",
     "quest.heracles.completed": "Completed",
+
+    "quest.heracles.toast": "Quest Complete!",
 
     "task.heracles.kill_entity.title.singular": "Kill a %s",
     "task.heracles.kill_entity.title.plural": "Kill %ss",

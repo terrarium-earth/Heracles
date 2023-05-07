@@ -13,9 +13,9 @@ import net.minecraft.world.item.Item;
 
 import java.util.List;
 
-public record QuestCompletePacket(Quest quest, List<Item> items) implements Packet<QuestCompletePacket> {
-    public static final ResourceLocation ID = new ResourceLocation(Heracles.MOD_ID, "quest_complete");
-    public static final PacketHandler<QuestCompletePacket> HANDLER = new Handler();
+public record QuestRewardClaimedPacket(Quest quest, List<Item> items) implements Packet<QuestRewardClaimedPacket> {
+    public static final ResourceLocation ID = new ResourceLocation(Heracles.MOD_ID, "quest_reward_claimed");
+    public static final PacketHandler<QuestRewardClaimedPacket> HANDLER = new Handler();
 
     @Override
     public ResourceLocation getID() {
@@ -23,27 +23,27 @@ public record QuestCompletePacket(Quest quest, List<Item> items) implements Pack
     }
 
     @Override
-    public PacketHandler<QuestCompletePacket> getHandler() {
+    public PacketHandler<QuestRewardClaimedPacket> getHandler() {
         return HANDLER;
     }
 
-    public static class Handler implements PacketHandler<QuestCompletePacket> {
+    public static class Handler implements PacketHandler<QuestRewardClaimedPacket> {
         @Override
-        public void encode(QuestCompletePacket message, FriendlyByteBuf buffer) {
+        public void encode(QuestRewardClaimedPacket message, FriendlyByteBuf buffer) {
             buffer.writeUtf(QuestHandler.getKey(message.quest()));
             buffer.writeCollection(message.items(), (buf, item) -> buf.writeVarInt(Item.getId(item)));
         }
 
         @Override
-        public QuestCompletePacket decode(FriendlyByteBuf buffer) {
-            return new QuestCompletePacket(
+        public QuestRewardClaimedPacket decode(FriendlyByteBuf buffer) {
+            return new QuestRewardClaimedPacket(
                 QuestHandler.get(buffer.readUtf()),
                 buffer.readList(buf -> Item.byId(buf.readVarInt()))
             );
         }
 
         @Override
-        public PacketContext handle(QuestCompletePacket message) {
+        public PacketContext handle(QuestRewardClaimedPacket message) {
             return (player, level) -> HeraclesClient.displayItemsRewardedToast(message.quest(), message.items());
         }
     }

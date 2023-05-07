@@ -12,7 +12,7 @@ import earth.terrarium.heracles.common.handlers.progress.QuestProgressHandler;
 import earth.terrarium.heracles.common.handlers.progress.QuestsProgress;
 import earth.terrarium.heracles.common.handlers.quests.QuestHandler;
 import earth.terrarium.heracles.common.network.NetworkHandler;
-import earth.terrarium.heracles.common.network.packets.QuestCompletePacket;
+import earth.terrarium.heracles.common.network.packets.QuestRewardClaimedPacket;
 import earth.terrarium.heracles.common.utils.ModUtils;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
@@ -60,7 +60,7 @@ public record Quest(
         if (progress.isClaimed(id)) return;
 
         NetworkHandler.CHANNEL.sendToPlayer(
-            new QuestCompletePacket(
+            new QuestRewardClaimedPacket(
                 this,
                 rewards().stream()
                     .flatMap(reward -> reward.reward(player))

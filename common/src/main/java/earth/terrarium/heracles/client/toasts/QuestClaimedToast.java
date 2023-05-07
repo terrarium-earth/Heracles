@@ -1,4 +1,4 @@
-package earth.terrarium.heracles.client;
+package earth.terrarium.heracles.client.toasts;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.datafixers.util.Pair;
@@ -15,14 +15,14 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
-public class QuestCompletedToast implements Toast {
+public class QuestClaimedToast implements Toast {
     private static final long DISPLAY_TIME = 5000L;
     private static final Component TITLE_TEXT = Component.translatable("rewards." + Heracles.MOD_ID + ".toast");
     private final Map<Quest, Set<Item>> questItems = new LinkedHashMap<>();
     private List<Pair<Quest, ItemStack>> renderItems;
     private long lastChanged;
 
-    public QuestCompletedToast(Quest quest, List<Item> items) {
+    public QuestClaimedToast(Quest quest, List<Item> items) {
         questItems.put(quest, new LinkedHashSet<>(items));
     }
 
@@ -62,7 +62,7 @@ public class QuestCompletedToast implements Toast {
 
             RenderUtils.bindTexture(TEXTURE);
 
-            GuiComponent.blit(poseStack, 0, 0, 0, 32, width(), height());
+            GuiComponent.blit(poseStack, 0, 0, 0, 0, width(), height());
             toastComponent.getMinecraft().font.draw(poseStack, TITLE_TEXT, 30.0F, 7.0F, 0xFF500050);
             toastComponent.getMinecraft().font.draw(poseStack, entry.getFirst().rewardText(), 30.0F, 18.0F, 0xFF000000);
 
@@ -73,18 +73,18 @@ public class QuestCompletedToast implements Toast {
     }
 
     public static void addOrUpdate(ToastComponent toastComponent, Quest quest, List<Item> items) {
-        QuestCompletedToast questCompletedToast = toastComponent.getToast(QuestCompletedToast.class, NO_TOKEN);
-        if (questCompletedToast == null) {
-            toastComponent.addToast(new QuestCompletedToast(quest, items));
+        QuestClaimedToast questClaimedToast = toastComponent.getToast(QuestClaimedToast.class, NO_TOKEN);
+        if (questClaimedToast == null) {
+            toastComponent.addToast(new QuestClaimedToast(quest, items));
         } else {
-            Set<Item> itemSet = questCompletedToast.questItems.get(quest);
+            Set<Item> itemSet = questClaimedToast.questItems.get(quest);
             if (itemSet == null) {
-                questCompletedToast.questItems.put(quest, new LinkedHashSet<>(items));
+                questClaimedToast.questItems.put(quest, new LinkedHashSet<>(items));
             } else {
                 itemSet.addAll(items);
             }
 
-            questCompletedToast.renderItems = null;
+            questClaimedToast.renderItems = null;
         }
     }
 }

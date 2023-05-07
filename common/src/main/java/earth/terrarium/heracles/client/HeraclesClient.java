@@ -3,6 +3,8 @@ package earth.terrarium.heracles.client;
 import earth.terrarium.heracles.api.quests.Quest;
 import earth.terrarium.heracles.client.screens.quest.QuestScreen;
 import earth.terrarium.heracles.client.screens.quests.QuestsScreen;
+import earth.terrarium.heracles.client.toasts.QuestClaimedToast;
+import earth.terrarium.heracles.client.toasts.QuestCompletedToast;
 import earth.terrarium.heracles.common.regisitries.ModMenus;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
@@ -25,7 +27,11 @@ public class HeraclesClient {
     }
 
     public static void displayItemsRewardedToast(Quest quest, List<Item> items) {
-        QuestCompletedToast.addOrUpdate(Minecraft.getInstance().getToasts(), quest, items);
+        QuestClaimedToast.addOrUpdate(Minecraft.getInstance().getToasts(), quest, items);
+    }
+
+    public static void displayQuestCompleteToast(Quest quest) {
+        QuestCompletedToast.add(Minecraft.getInstance().getToasts(), quest);
     }
 
     @ImplementedByExtension

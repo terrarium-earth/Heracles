@@ -13,12 +13,14 @@ import earth.terrarium.heracles.common.handlers.progress.QuestsProgress;
 import earth.terrarium.heracles.common.handlers.quests.QuestHandler;
 import earth.terrarium.heracles.common.network.NetworkHandler;
 import earth.terrarium.heracles.common.network.packets.QuestCompletePacket;
+import earth.terrarium.heracles.common.utils.ModUtils;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import org.joml.Vector2i;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -29,6 +31,8 @@ public record Quest(
     QuestIcon<?> icon,
     Component title,
     String description,
+    Vector2i position,
+    String group,
 
     Set<String> dependencies,
 
@@ -41,6 +45,8 @@ public record Quest(
         QuestIcons.CODEC.fieldOf("icon").orElse(new ItemQuestIcon(Items.MAP)).forGetter(Quest::icon),
         ExtraCodecs.COMPONENT.fieldOf("title").orElse(Component.literal("New Quest")).forGetter(Quest::title),
         Codec.STRING.fieldOf("description").orElse("").forGetter(Quest::description),
+        ModUtils.VECTOR2I.fieldOf("position").orElse(new Vector2i()).forGetter(Quest::position),
+        Codec.STRING.fieldOf("group").orElse("Main").forGetter(Quest::group),
         CodecExtras.set(Codec.STRING).fieldOf("dependencies").orElse(new HashSet<>()).forGetter(Quest::dependencies),
         QuestTasks.CODEC.listOf().fieldOf("tasks").orElse(new ArrayList<>()).forGetter(Quest::tasks),
         ExtraCodecs.COMPONENT.fieldOf("reward_text").orElse(CommonComponents.EMPTY).forGetter(Quest::rewardText),

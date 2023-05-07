@@ -11,9 +11,10 @@ import earth.terrarium.heracles.client.ClientQuests;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 
+import java.util.List;
 import java.util.Map;
 
-public record SyncQuestsPacket(Map<String, Quest> quests) implements Packet<SyncQuestsPacket> {
+public record SyncQuestsPacket(Map<String, Quest> quests, List<String> groups) implements Packet<SyncQuestsPacket> {
     public static final ResourceLocation ID = new ResourceLocation(Heracles.MOD_ID, "sync_quests");
     public static final PacketHandler<SyncQuestsPacket> HANDLER = new Handler();
 
@@ -33,16 +34,20 @@ public record SyncQuestsPacket(Map<String, Quest> quests) implements Packet<Sync
         @Override
         public void encode(SyncQuestsPacket message, FriendlyByteBuf buffer) {
             PacketHelper.writeWithYabn(buffer, QUEST_MAP_CODEC, message.quests(), true);
+            buffer.writeCollection(message.groups(), FriendlyByteBuf::writeUtf);
         }
 
         @Override
         public SyncQuestsPacket decode(FriendlyByteBuf buffer) {
-            return new SyncQuestsPacket(PacketHelper.readWithYabn(buffer, QUEST_MAP_CODEC, true).get().orThrow());
+            return new SyncQuestsPacket(
+                PacketHelper.readWithYabn(buffer, QUEST_MAP_CODEC, true).get().orThrow(),
+                buffer.readList(FriendlyByteBuf::readUtf)
+            );
         }
 
         @Override
         public PacketContext handle(SyncQuestsPacket message) {
-            return (player, level) -> ClientQuests.sync(message.quests());
+            return (player, level) -> ClientQuests.sync(message.quests(), message.groups());
         }
     }
 }

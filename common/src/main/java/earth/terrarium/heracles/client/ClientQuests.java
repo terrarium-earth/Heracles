@@ -1,28 +1,35 @@
 package earth.terrarium.heracles.client;
 
 import earth.terrarium.heracles.api.quests.Quest;
-import org.joml.Vector2d;
 
 import java.util.*;
 
 public class ClientQuests {
-    private static final List<QuestEntry> ROOTS = new ArrayList<>();
     private static final Map<String, QuestEntry> ENTRIES = new HashMap<>();
-
-    public static List<QuestEntry> getRoots() {
-        return ROOTS;
-    }
+    private static final List<String> GROUPS = new ArrayList<>();
 
     public static Optional<QuestEntry> get(String key) {
         return Optional.ofNullable(ENTRIES.get(key));
     }
 
-    public static void sync(Map<String, Quest> quests) {
-        ROOTS.clear();
+    public static List<String> groups() {
+        return GROUPS;
+    }
+
+    public static void sync(Map<String, Quest> quests, List<String> groups) {
         ENTRIES.clear();
+        GROUPS.clear();
 
         for (Map.Entry<String, Quest> entry : quests.entrySet()) {
             addEntry(entry.getKey(), entry.getValue(), quests);
+        }
+
+        GROUPS.addAll(groups);
+        for (Quest value : quests.values()) {
+            if (Objects.equals(value.group(), "")) {
+                GROUPS.add("");
+                break;
+            }
         }
     }
 
@@ -42,11 +49,9 @@ public class ClientQuests {
             }
         }
 
-        QuestEntry entry = new QuestEntry(dependencies, key, quest, new Vector2d(), new ArrayList<>());
+        QuestEntry entry = new QuestEntry(dependencies, key, quest, new ArrayList<>());
 
-        if (dependencies.isEmpty()) {
-            ROOTS.add(entry);
-        } else {
+        if (!dependencies.isEmpty()) {
             for (QuestEntry dependency : dependencies) {
                 dependency.children().add(entry);
             }
@@ -55,7 +60,5 @@ public class ClientQuests {
         return ENTRIES.computeIfAbsent(key, k -> entry);
     }
 
-    public record QuestEntry(List<QuestEntry> dependencies, String key, Quest value, Vector2d position,
-                             List<QuestEntry> children) {
-    }
+    public record QuestEntry(List<QuestEntry> dependencies, String key, Quest value, List<QuestEntry> children) {}
 }

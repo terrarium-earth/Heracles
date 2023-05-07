@@ -26,7 +26,7 @@ public final class QuestSyncer {
         for (var entry : quests.entrySet()) {
             compressedQuests.put(entry.getKey(), compress(entry.getValue()));
         }
-        return new SyncQuestsPacket(compressedQuests);
+        return new SyncQuestsPacket(compressedQuests, QuestHandler.groups());
     }
 
     private static Quest compress(Quest quest) {
@@ -34,6 +34,8 @@ public final class QuestSyncer {
             quest.icon(),
             quest.title(),
             "",
+            quest.position(),
+            quest.group(),
             quest.dependencies(),
             quest.tasks(),
             quest.rewardText(),

@@ -1,11 +1,12 @@
 package earth.terrarium.heracles.client.screens.quests;
 
-import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
 import com.mojang.datafixers.util.Pair;
+import com.mojang.math.Axis;
 import com.teamresourceful.resourcefullib.client.scissor.ScissorBoxStack;
 import com.teamresourceful.resourcefullib.client.utils.RenderUtils;
+import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.client.ClientQuests;
 import earth.terrarium.heracles.common.utils.ModUtils;
 import net.minecraft.client.Minecraft;
@@ -14,7 +15,7 @@ import net.minecraft.client.gui.components.events.AbstractContainerEventHandler;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarratableEntry;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
-import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import org.jetbrains.annotations.NotNull;
 
@@ -22,6 +23,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class QuestsWidget extends AbstractContainerEventHandler implements Renderable, NarratableEntry {
+
+    private static final ResourceLocation ARROW = new ResourceLocation(Heracles.MOD_ID, "textures/gui/arrow.png");
 
     private final List<QuestWidget> widgets = new ArrayList<>();
     private final List<ClientQuests.QuestEntry> entries = new ArrayList<>();
@@ -55,37 +58,47 @@ public class QuestsWidget extends AbstractContainerEventHandler implements Rende
         int y = this.y;
 
         try (var scissor = RenderUtils.createScissorBoxStack(new ScissorBoxStack(), Minecraft.getInstance(), pose, x, y, width, height)) {
-
-            float lineWidth = RenderSystem.getShaderLineWidth();
-            Tesselator tesselator = Tesselator.getInstance();
-            BufferBuilder bufferBuilder = tesselator.getBuilder();
+            RenderUtils.bindTexture(ARROW);
             RenderSystem.enableBlend();
-            GlStateManager._depthMask(false);
-            GlStateManager._disableCull();
-            RenderSystem.setShader(GameRenderer::getRendertypeLinesShader);
-            RenderSystem.lineWidth(10f);
-            bufferBuilder.begin(VertexFormat.Mode.LINES, DefaultVertexFormat.POSITION_COLOR_NORMAL);
+
+            Tesselator tesselator = Tesselator.getInstance();
+            BufferBuilder buffer = tesselator.getBuilder();
+
             for (ClientQuests.QuestEntry entry : this.entries) {
                 var position = entry.value().display().position();
+
+                int px = x - (int) this.scrollAmount + position.x() + 16;
+                int py = y + position.y() + 16;
+
+                boolean isHovered = isMouseOver(mouseX, mouseY) && mouseX >= px - 16 && mouseX <= px - 16 + 24 && mouseY >= py - 16 && mouseY <= py - 16 + 24;
+
+                RenderSystem.setShaderColor(0.9F, 0.9F, 0.9F, isHovered ? 0.45f : 0.25F);
 
                 for (ClientQuests.QuestEntry child : entry.children()) {
                     var childPosition = child.value().display().position();
 
-                    bufferBuilder.vertex(pose.last().pose(), (float)x + position.x() + 12, (float)y + position.y() + 12, 0f)
-                        .color(255, 255, 255, 255)
-                        .normal(1f, 0f, 0f)
-                        .endVertex();
-                    bufferBuilder.vertex(pose.last().pose(), (float)x + childPosition.x() + 12, (float)y + childPosition.y() + 12, 0f)
-                        .color(255, 255, 255, 255)
-                        .normal(1f, 0f, 0f)
-                        .endVertex();
+                    int cx = x - (int) this.scrollAmount + childPosition.x() + 16;
+                    int cy = y + childPosition.y() + 16;
+
+                    float length = Mth.sqrt(Mth.square(cx - px) + Mth.square(cy - py));
+
+                    pose.pushPose();
+                    pose.translate(px, py, 0);
+                    pose.mulPose(Axis.ZP.rotation((float) Mth.atan2(cy - py, cx - px)));
+
+                    buffer.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
+                    buffer.vertex(pose.last().pose(), 0, 0, 0).uv(0, 0).endVertex();
+                    buffer.vertex(pose.last().pose(), 0, 5, 0).uv(0, 1).endVertex();
+                    buffer.vertex(pose.last().pose(), length, 5, 0).uv(length / 3f, 1).endVertex();
+                    buffer.vertex(pose.last().pose(), length, 0, 0).uv(length / 3f, 0).endVertex();
+                    tesselator.end();
+
+                    pose.popPose();
                 }
             }
-            BufferUploader.drawWithShader(bufferBuilder.end());
+
+            RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
             RenderSystem.disableBlend();
-            GlStateManager._enableCull();
-            GlStateManager._depthMask(true);
-            RenderSystem.lineWidth(lineWidth);
 
             for (QuestWidget widget : this.widgets) {
                 widget.render(pose, scissor.stack(), x - (int) this.scrollAmount, y, mouseX, mouseY, isMouseOver(mouseX, mouseY), partialTick);

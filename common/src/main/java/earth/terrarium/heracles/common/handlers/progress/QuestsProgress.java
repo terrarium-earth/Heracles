@@ -1,6 +1,7 @@
 package earth.terrarium.heracles.common.handlers.progress;
 
 import com.google.common.collect.Maps;
+import com.mojang.datafixers.util.Pair;
 import earth.terrarium.heracles.api.quests.Quest;
 import earth.terrarium.heracles.api.tasks.QuestTask;
 import earth.terrarium.heracles.common.handlers.quests.CompletableQuests;
@@ -24,7 +25,7 @@ public record QuestsProgress(Map<String, QuestProgress> progress, CompletableQue
     }
 
     public <T> void testAndProgressTaskType(ServerPlayer player, T input, Class<? extends QuestTask<T, ?>> taskType) {
-        List<String> editedQuests = new ArrayList<>();
+        List<Pair<String, Quest>> editedQuests = new ArrayList<>();
         for (String id : this.completableQuests.getQuests(this)) {
             QuestProgress questProgress = getProgress(id);
             Quest quest = QuestHandler.get(id);
@@ -33,7 +34,7 @@ public record QuestsProgress(Map<String, QuestProgress> progress, CompletableQue
                     TaskProgress progress = questProgress.getTask(task.id());
                     if (progress.isComplete()) continue;
                     progress.addProgress(taskType.cast(task), input);
-                    editedQuests.add(id);
+                    editedQuests.add(Pair.of(id, quest));
                 }
             }
             questProgress.update(quest);
@@ -50,14 +51,15 @@ public record QuestsProgress(Map<String, QuestProgress> progress, CompletableQue
             .distinct()
             .forEach(member -> {
                 QuestsProgress memberProgress = QuestProgressHandler.getProgress(player.server, member);
-                for (String quest : editedQuests) {
-                    var currentProgress = memberProgress.progress().get(quest);
-                    var questProgress = progress.get(quest);
+                for (var quest : editedQuests) {
+                    if (quest.getSecond().settings().individualProgress()) continue;
+                    var currentProgress = memberProgress.progress().get(quest.getFirst());
+                    var questProgress = progress.get(quest.getFirst());
                     var newTasks = copyTasks(questProgress.tasks());
-                    memberProgress.progress.put(quest, new QuestProgress(questProgress.isComplete(), currentProgress != null && currentProgress.isClaimed(), newTasks));
+                    memberProgress.progress.put(quest.getFirst(), new QuestProgress(questProgress.isComplete(), currentProgress != null && currentProgress.isClaimed(), newTasks));
                     ServerPlayer serverPlayer = player.server.getPlayerList().getPlayer(member);
                     if (serverPlayer != null && questProgress.isComplete()) {
-                        Quest questObj = QuestHandler.get(quest);
+                        Quest questObj = QuestHandler.get(quest.getFirst());
                         sendOutQuestComplete(serverPlayer, questObj);
                     }
                 }

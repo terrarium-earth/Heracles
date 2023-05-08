@@ -2,6 +2,7 @@ package earth.terrarium.heracles.common.handlers.syncing;
 
 import com.google.common.collect.Maps;
 import earth.terrarium.heracles.api.quests.Quest;
+import earth.terrarium.heracles.api.quests.QuestDisplay;
 import earth.terrarium.heracles.common.handlers.quests.QuestHandler;
 import earth.terrarium.heracles.common.network.NetworkHandler;
 import earth.terrarium.heracles.common.network.packets.SyncQuestsPacket;
@@ -30,12 +31,19 @@ public final class QuestSyncer {
     }
 
     private static Quest compress(Quest quest) {
-        return new Quest(
-            quest.icon(),
-            quest.title(),
+        QuestDisplay display = new QuestDisplay(
+            quest.display().icon(),
+            quest.display().iconBackground(),
+            quest.display().title(),
+            quest.display().subtitle(),
             "",
-            quest.position(),
-            quest.group(),
+            quest.display().position(),
+            quest.display().group()
+        );
+
+        return new Quest(
+            display,
+            quest.settings(),
             quest.dependencies(),
             quest.tasks(),
             quest.rewardText(),

@@ -2,15 +2,16 @@ package earth.terrarium.heracles.common.menus.quests;
 
 import com.teamresourceful.resourcefullib.common.menu.MenuContent;
 import com.teamresourceful.resourcefullib.common.menu.MenuContentSerializer;
-import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
-import it.unimi.dsi.fastutil.objects.Object2BooleanMaps;
-import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
+import earth.terrarium.heracles.common.utils.ModUtils;
 import net.minecraft.network.FriendlyByteBuf;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public record QuestsContent(
     String group,
-    Object2BooleanMap<String> quests,
+    Map<String, ModUtils.QuestStatus> quests,
     boolean canEdit
 ) implements MenuContent<QuestsContent> {
 
@@ -26,10 +27,10 @@ public record QuestsContent(
         @Override
         public @Nullable QuestsContent from(FriendlyByteBuf buffer) {
             String group = buffer.readUtf();
-            Object2BooleanMap<String> quests = new Object2BooleanOpenHashMap<>();
+            Map<String, ModUtils.QuestStatus> quests = new HashMap<>();
             int size = buffer.readVarInt();
             for (int i = 0; i < size; i++) {
-                quests.put(buffer.readUtf(), buffer.readBoolean());
+                quests.put(buffer.readUtf(), buffer.readEnum(ModUtils.QuestStatus.class));
             }
             return new QuestsContent(group, quests, buffer.readBoolean());
         }
@@ -38,9 +39,9 @@ public record QuestsContent(
         public void to(FriendlyByteBuf buffer, QuestsContent content) {
             buffer.writeUtf(content.group);
             buffer.writeVarInt(content.quests.size());
-            for (Object2BooleanMap.Entry<String> entry : Object2BooleanMaps.fastIterable(content.quests)) {
+            for (var entry : content.quests.entrySet()) {
                 buffer.writeUtf(entry.getKey());
-                buffer.writeBoolean(entry.getBooleanValue());
+                buffer.writeEnum(entry.getValue());
             }
             buffer.writeBoolean(content.canEdit());
         }

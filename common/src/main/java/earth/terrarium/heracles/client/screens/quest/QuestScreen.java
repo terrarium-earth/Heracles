@@ -2,7 +2,6 @@ package earth.terrarium.heracles.client.screens.quest;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
-import earth.terrarium.heracles.api.quests.Quest;
 import earth.terrarium.heracles.client.screens.AbstractQuestScreen;
 import earth.terrarium.heracles.client.screens.quest.rewards.RewardListWidget;
 import earth.terrarium.heracles.client.screens.quest.tasks.TaskListWidget;
@@ -10,7 +9,6 @@ import earth.terrarium.heracles.client.widgets.SelectableButton;
 import earth.terrarium.heracles.common.menus.quest.QuestMenu;
 import earth.terrarium.heracles.common.network.NetworkHandler;
 import earth.terrarium.heracles.common.network.packets.OpenGroupPacket;
-import earth.terrarium.hermes.api.DefaultTagProvider;
 import earth.terrarium.hermes.api.TagProvider;
 import earth.terrarium.hermes.api.themes.DefaultTheme;
 import earth.terrarium.hermes.client.DocumentWidget;
@@ -37,7 +35,7 @@ public class QuestScreen extends AbstractQuestScreen<QuestMenu> {
     private String descriptionError;
 
     public QuestScreen(QuestMenu menu, Inventory inventory, Component component) {
-        super(menu, inventory, Optionull.mapOrDefault(menu.quest(), Quest::title, component));
+        super(menu, inventory, Optionull.mapOrDefault(menu.quest(), quest -> quest.display().title(), component));
     }
 
     @Override
@@ -75,8 +73,8 @@ public class QuestScreen extends AbstractQuestScreen<QuestMenu> {
 
         try {
             this.descriptionError = null;
-            TagProvider provider = new DefaultTagProvider();
-            this.description = new DocumentWidget(contentX, contentY, contentWidth, contentHeight, new DefaultTheme(), provider.parse(this.menu.quest().description()));
+            TagProvider provider = new QuestTagProvider();
+            this.description = new DocumentWidget(contentX, contentY, contentWidth, contentHeight, new DefaultTheme(), provider.parse(this.menu.quest().display().description()));
         } catch (Exception e) {
             this.descriptionError = e.getMessage();
         }
@@ -84,7 +82,7 @@ public class QuestScreen extends AbstractQuestScreen<QuestMenu> {
 
     @Override
     protected void goBack() {
-        NetworkHandler.CHANNEL.sendToServer(new OpenGroupPacket(this.menu.quest().group()));
+        NetworkHandler.CHANNEL.sendToServer(new OpenGroupPacket(this.menu.quest().display().group()));
     }
 
     private void clearSelected() {

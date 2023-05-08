@@ -19,8 +19,8 @@ public record QuestDependentWidget(Quest quest) implements DisplayWidget {
         Font font = Minecraft.getInstance().font;
         WidgetUtils.drawBackground(pose, x, y, width);
         int iconSize = (int) (width * 0.1f);
-        quest.icon().render(pose, scissor, x + 5, y + 5, iconSize, iconSize);
-        font.draw(pose, Component.translatable(TITLE, this.quest.title()), x + iconSize + 10, y + 5, 0xFFFFFFFF);
+        quest.display().icon().render(pose, scissor, x + 5, y + 5, iconSize, iconSize);
+        font.draw(pose, Component.translatable(TITLE, this.quest.display().title()), x + iconSize + 10, y + 5, 0xFFFFFFFF);
         font.draw(pose, DESCRIPTION, x + iconSize + 10, y + 7 + font.lineHeight, 0xFF808080);
     }
 

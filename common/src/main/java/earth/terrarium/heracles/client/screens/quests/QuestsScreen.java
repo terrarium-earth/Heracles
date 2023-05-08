@@ -1,11 +1,13 @@
 package earth.terrarium.heracles.client.screens.quests;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.datafixers.util.Pair;
 import earth.terrarium.heracles.client.ClientQuests;
 import earth.terrarium.heracles.client.screens.AbstractQuestScreen;
 import earth.terrarium.heracles.common.menus.quests.QuestsMenu;
 import earth.terrarium.heracles.common.network.NetworkHandler;
 import earth.terrarium.heracles.common.network.packets.OpenGroupPacket;
+import earth.terrarium.heracles.common.utils.ModUtils;
 import net.minecraft.client.gui.components.ImageButton;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.network.chat.Component;
@@ -31,10 +33,9 @@ public class QuestsScreen extends AbstractQuestScreen<QuestsMenu> {
         addRenderableWidget(new ImageButton(this.width - 24, 1, 11, 11, 33, 15, 11, HEADING, 256, 256, (button) -> {
             //TODO EDIT
         })).setTooltip(Tooltip.create(Component.literal("Enable Edit Mode")));
-        List<ClientQuests.QuestEntry> quests = new ArrayList<>();
-        menu.quests().forEach((id, enabled) ->
-            ClientQuests.get(id)
-                .ifPresent(quests::add)
+        List<Pair<ClientQuests.QuestEntry, ModUtils.QuestStatus>> quests = new ArrayList<>();
+        menu.quests().forEach((id, status) ->
+            ClientQuests.get(id).ifPresent(quest -> quests.add(Pair.of(quest, status)))
         );
         addRenderableWidget(new QuestsWidget(
             (int) (this.width * 0.25f),

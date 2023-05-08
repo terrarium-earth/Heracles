@@ -26,7 +26,7 @@ public class ClientQuests {
 
         GROUPS.addAll(groups);
         for (Quest value : quests.values()) {
-            if (Objects.equals(value.group(), "")) {
+            if (Objects.equals(value.display().group(), "")) {
                 GROUPS.add("");
                 break;
             }

@@ -51,18 +51,17 @@ public class QuestHandler {
     }
 
     private static void loadGroups(File file) {
-        if (!file.exists()) {
-            return;
-        }
         GROUPS.clear();
-        try {
-            GROUPS.addAll(org.apache.commons.io.FileUtils.readLines(file, StandardCharsets.UTF_8));
-        } catch (Exception e) {
-            LOGGER.error("Failed to load quest groups", e);
+        if (!file.exists()) {
+            try {
+                GROUPS.addAll(org.apache.commons.io.FileUtils.readLines(file, StandardCharsets.UTF_8));
+            } catch (Exception e) {
+                LOGGER.error("Failed to load quest groups", e);
+            }
         }
         for (Quest value : QUESTS.values()) {
-            if (!GROUPS.contains(value.group())) {
-                GROUPS.add(value.group());
+            if (!GROUPS.contains(value.display().group())) {
+                GROUPS.add(value.display().group());
             }
         }
     }

@@ -1,16 +1,18 @@
 package earth.terrarium.heracles.common.menus.quests;
 
 import earth.terrarium.heracles.api.quests.Quest;
+import earth.terrarium.heracles.api.quests.QuestDisplay;
 import earth.terrarium.heracles.client.ClientQuests;
 import earth.terrarium.heracles.common.regisitries.ModMenus;
-import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
-import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
+import earth.terrarium.heracles.common.utils.ModUtils;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 public class QuestsMenu extends AbstractContainerMenu {
@@ -31,14 +33,15 @@ public class QuestsMenu extends AbstractContainerMenu {
         return this.content != null && this.content.canEdit();
     }
 
-    public Object2BooleanMap<String> quests() {
-        Object2BooleanMap<String> quests = new Object2BooleanOpenHashMap<>();
+    public Map<String, ModUtils.QuestStatus> quests() {
+        Map<String, ModUtils.QuestStatus> quests = new HashMap<>();
         if (this.content != null) {
-            for (Object2BooleanMap.Entry<String> entry : this.content.quests().object2BooleanEntrySet()) {
+            for (var entry : this.content.quests().entrySet()) {
                 ClientQuests.get(entry.getKey())
                     .map(ClientQuests.QuestEntry::value)
-                    .map(Quest::group).filter(group -> group.equals(this.content.group()))
-                    .ifPresent(group -> quests.put(entry.getKey(), entry.getBooleanValue()));
+                    .map(Quest::display)
+                    .map(QuestDisplay::group).filter(group -> group.equals(this.content.group()))
+                    .ifPresent(group -> quests.put(entry.getKey(), entry.getValue()));
             }
         }
         return quests;

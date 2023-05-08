@@ -10,15 +10,15 @@ import earth.terrarium.heracles.common.menus.quest.QuestContent;
 import earth.terrarium.heracles.common.menus.quest.QuestMenu;
 import earth.terrarium.heracles.common.menus.quests.QuestsContent;
 import earth.terrarium.heracles.common.menus.quests.QuestsMenu;
-import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
-import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
 import net.minecraft.Util;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import org.joml.Vector2i;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ModUtils {
 
@@ -49,14 +49,14 @@ public class ModUtils {
             player.closeContainer();
             return;
         }
-        Object2BooleanMap<String> quests = new Object2BooleanOpenHashMap<>();
+        Map<String, QuestStatus> quests = new HashMap<>();
         QuestsProgress progress = QuestProgressHandler.getProgress(player.server, player.getUUID());
         for (String quest : progress.completableQuests().getQuests(progress)) {
-            quests.put(quest, false);
+            quests.put(quest, QuestStatus.IN_PROGRESS);
         }
         for (String quest : QuestHandler.quests().keySet()) {
             if (!quests.containsKey(quest)) {
-                quests.put(quest, progress.isComplete(quest));
+                quests.put(quest, progress.isComplete(quest) ? QuestStatus.COMPLETED : QuestStatus.LOCKED);
             }
         }
         BasicContentMenuProvider.open(
@@ -65,5 +65,11 @@ public class ModUtils {
             QuestsMenu::new,
             player
         );
+    }
+
+    public enum QuestStatus {
+        COMPLETED,
+        IN_PROGRESS,
+        LOCKED
     }
 }

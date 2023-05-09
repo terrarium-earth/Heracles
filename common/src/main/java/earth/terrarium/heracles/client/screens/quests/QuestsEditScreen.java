@@ -1,5 +1,6 @@
 package earth.terrarium.heracles.client.screens.quests;
 
+import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.vertex.PoseStack;
 import earth.terrarium.heracles.client.screens.MouseMode;
 import earth.terrarium.heracles.client.widgets.SelectableImageButton;
@@ -30,17 +31,17 @@ public class QuestsEditScreen extends QuestsScreen {
         this.moveTool = addRenderableWidget(new SelectableImageButton(sidebarWidth + 3, 1, 11, 11, 0, 37, 11, HEADING, 256, 256, (button) ->
             updateButtons()
         ));
-        this.moveTool.setTooltip(Tooltip.create(Component.literal("Move/Select")));
+        this.moveTool.setTooltip(Tooltip.create(Component.literal("Move/Select [V]")));
 
         this.dragTool = addRenderableWidget(new SelectableImageButton(sidebarWidth + 15, 1, 11, 11, 11, 37, 11, HEADING, 256, 256, (button) ->
             updateButtons()
         ));
-        this.dragTool.setTooltip(Tooltip.create(Component.literal("Hand/Drag Tool")));
+        this.dragTool.setTooltip(Tooltip.create(Component.literal("Hand/Drag Tool [H]")));
 
         this.addTool = addRenderableWidget(new SelectableImageButton(sidebarWidth + 27, 1, 11, 11, 22, 37, 11, HEADING, 256, 256, (button) ->
             updateButtons()
         ));
-        this.addTool.setTooltip(Tooltip.create(Component.literal("Add Quest Tool")));
+        this.addTool.setTooltip(Tooltip.create(Component.literal("Add Quest Tool [U]")));
 
         this.dragTool.setSelected(true);
     }
@@ -50,6 +51,9 @@ public class QuestsEditScreen extends QuestsScreen {
         super.renderBg(stack, partialTick, mouseX, mouseY);
         if (dragTool.isSelected()) {
             setCursor(Cursor.RESIZE_ALL);
+        }
+        if (addTool.isSelected()) {
+            setCursor(Cursor.CROSSHAIR);
         }
     }
 
@@ -61,6 +65,28 @@ public class QuestsEditScreen extends QuestsScreen {
             return MouseMode.ADD;
         }
         return MouseMode.SELECT_MOVE;
+    }
+
+    @Override
+    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+        return switch (keyCode) {
+            case InputConstants.KEY_V -> {
+                updateButtons();
+                moveTool.setSelected(true);
+                yield true;
+            }
+            case InputConstants.KEY_H -> {
+                updateButtons();
+                dragTool.setSelected(true);
+                yield true;
+            }
+            case InputConstants.KEY_U -> {
+                updateButtons();
+                addTool.setSelected(true);
+                yield true;
+            }
+            default -> super.keyPressed(keyCode, scanCode, modifiers);
+        };
     }
 
     private void updateButtons() {

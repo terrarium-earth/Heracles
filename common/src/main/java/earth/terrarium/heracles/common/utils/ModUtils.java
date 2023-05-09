@@ -62,10 +62,35 @@ public class ModUtils {
         BasicContentMenuProvider.open(
             new QuestsContent(group, quests, true),
             CommonComponents.GUI_TO_TITLE,
-            QuestsMenu::new,
+            QuestsMenu::of,
             player
         );
     }
+
+    public static void editGroup(ServerPlayer player, String group) {
+        if (!QuestHandler.groups().contains(group)) {
+            player.sendSystemMessage(Component.literal("Not a group " + group));
+            player.closeContainer();
+            return;
+        }
+        Map<String, QuestStatus> quests = new HashMap<>();
+        QuestsProgress progress = QuestProgressHandler.getProgress(player.server, player.getUUID());
+        for (String quest : progress.completableQuests().getQuests(progress)) {
+            quests.put(quest, QuestStatus.IN_PROGRESS);
+        }
+        for (String quest : QuestHandler.quests().keySet()) {
+            if (!quests.containsKey(quest)) {
+                quests.put(quest, progress.isComplete(quest) ? QuestStatus.COMPLETED : QuestStatus.LOCKED);
+            }
+        }
+        BasicContentMenuProvider.open(
+            new QuestsContent(group, quests, true),
+            CommonComponents.GUI_TO_TITLE,
+            QuestsMenu::ofEditing,
+            player
+        );
+    }
+
 
     public enum QuestStatus {
         COMPLETED,

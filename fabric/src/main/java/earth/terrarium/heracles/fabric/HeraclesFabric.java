@@ -31,6 +31,10 @@ public class HeraclesFabric {
                     ModUtils.openGroup(context1.getSource().getPlayerOrException(), StringArgumentType.getString(context1, "group"));
                     return 1;
                 })))
+                .then(Commands.literal("edit").then(Commands.argument("group", StringArgumentType.string()).executes(context1 -> {
+                    ModUtils.editGroup(context1.getSource().getPlayerOrException(), StringArgumentType.getString(context1, "group"));
+                    return 1;
+                })))
             );
         });
 

@@ -16,6 +16,7 @@ public class ModMenus {
 
     public static final ResourcefulRegistry<MenuType<?>> MENUS = ResourcefulRegistries.create(BuiltInRegistries.MENU, Heracles.MOD_ID);
 
-    public static final RegistryEntry<MenuType<QuestsMenu>> QUESTS = MENUS.register("quests", () -> MenuContentHelper.create(QuestsMenu::new, QuestsContent.SERIALIZER));
+    public static final RegistryEntry<MenuType<QuestsMenu>> QUESTS = MENUS.register("quests", () -> MenuContentHelper.create(QuestsMenu::ofOptional, QuestsContent.SERIALIZER));
+    public static final RegistryEntry<MenuType<QuestsMenu>> EDIT_QUESTS = MENUS.register("edit_quests", () -> MenuContentHelper.create(QuestsMenu::ofEditingOptional, QuestsContent.SERIALIZER));
     public static final RegistryEntry<MenuType<QuestMenu>> QUEST = MENUS.register("quest", () -> MenuContentHelper.create(QuestMenu::new, QuestContent.SERIALIZER));
 }

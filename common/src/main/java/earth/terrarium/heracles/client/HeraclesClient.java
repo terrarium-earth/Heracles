@@ -2,6 +2,7 @@ package earth.terrarium.heracles.client;
 
 import earth.terrarium.heracles.api.quests.Quest;
 import earth.terrarium.heracles.client.screens.quest.QuestScreen;
+import earth.terrarium.heracles.client.screens.quests.QuestsEditScreen;
 import earth.terrarium.heracles.client.screens.quests.QuestsScreen;
 import earth.terrarium.heracles.client.toasts.QuestClaimedToast;
 import earth.terrarium.heracles.client.toasts.QuestCompletedToast;
@@ -24,6 +25,7 @@ public class HeraclesClient {
     public static void init() {
         registerScreen(ModMenus.QUEST.get(), QuestScreen::new);
         registerScreen(ModMenus.QUESTS.get(), QuestsScreen::new);
+        registerScreen(ModMenus.EDIT_QUESTS.get(), QuestsEditScreen::new);
     }
 
     public static void displayItemsRewardedToast(Quest quest, List<Item> items) {

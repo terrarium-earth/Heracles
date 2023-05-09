@@ -5,7 +5,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import earth.terrarium.heracles.client.screens.AbstractQuestScreen;
 import earth.terrarium.heracles.client.screens.quest.rewards.RewardListWidget;
 import earth.terrarium.heracles.client.screens.quest.tasks.TaskListWidget;
-import earth.terrarium.heracles.client.widgets.SelectableButton;
+import earth.terrarium.heracles.client.widgets.SelectableTabButton;
 import earth.terrarium.heracles.common.menus.quest.QuestMenu;
 import earth.terrarium.heracles.common.network.NetworkHandler;
 import earth.terrarium.heracles.common.network.packets.OpenGroupPacket;
@@ -25,9 +25,9 @@ import java.util.List;
 
 public class QuestScreen extends AbstractQuestScreen<QuestMenu> {
 
-    private SelectableButton overview;
-    private SelectableButton tasks;
-    private SelectableButton rewards;
+    private SelectableTabButton overview;
+    private SelectableTabButton tasks;
+    private SelectableTabButton rewards;
 
     private TaskListWidget taskList;
     private RewardListWidget rewardList;
@@ -44,16 +44,16 @@ public class QuestScreen extends AbstractQuestScreen<QuestMenu> {
         int sidebarWidth = (int) (this.width * 0.25f) - 2;
         int buttonWidth = sidebarWidth - 10;
 
-        this.overview = addRenderableWidget(new SelectableButton(5, 20, buttonWidth, 20, Component.literal("Overview"), () -> {
+        this.overview = addRenderableWidget(new SelectableTabButton(5, 20, buttonWidth, 20, Component.literal("Overview"), () -> {
             clearSelected();
             this.overview.setSelected(true);
         }));
-        this.tasks = addRenderableWidget(new SelectableButton(5, 45, buttonWidth, 20, Component.literal("Tasks"), () -> {
+        this.tasks = addRenderableWidget(new SelectableTabButton(5, 45, buttonWidth, 20, Component.literal("Tasks"), () -> {
             clearSelected();
             this.tasks.setSelected(true);
         }));
 
-        this.rewards = addRenderableWidget(new SelectableButton(5, 70, buttonWidth, 20, Component.literal("Rewards"), () -> {
+        this.rewards = addRenderableWidget(new SelectableTabButton(5, 70, buttonWidth, 20, Component.literal("Rewards"), () -> {
             clearSelected();
             this.rewards.setSelected(true);
         }));
@@ -82,7 +82,7 @@ public class QuestScreen extends AbstractQuestScreen<QuestMenu> {
 
     @Override
     protected void goBack() {
-        NetworkHandler.CHANNEL.sendToServer(new OpenGroupPacket(this.menu.quest().display().group()));
+        NetworkHandler.CHANNEL.sendToServer(new OpenGroupPacket(this.menu.quest().display().group(), false));
     }
 
     private void clearSelected() {

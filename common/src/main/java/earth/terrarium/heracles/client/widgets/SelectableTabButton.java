@@ -10,14 +10,14 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 
-public class SelectableButton extends AbstractButton {
+public class SelectableTabButton extends AbstractButton {
 
     private static final ResourceLocation TEXTURE = new ResourceLocation(Heracles.MOD_ID, "textures/gui/list_buttons.png");
 
     private final Runnable onSelect;
     private boolean selected;
 
-    public SelectableButton(int x, int y, int width, int height, Component component, Runnable onSelect) {
+    public SelectableTabButton(int x, int y, int width, int height, Component component, Runnable onSelect) {
         super(x, y, width, height, component);
         this.onSelect = onSelect;
     }

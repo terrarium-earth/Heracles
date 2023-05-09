@@ -8,6 +8,7 @@ import earth.terrarium.heracles.common.utils.ModUtils;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
@@ -15,18 +16,30 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
+@SuppressWarnings("OptionalUsedAsFieldOrParameterType")
 public class QuestsMenu extends AbstractContainerMenu {
 
     private final QuestsContent content;
 
-    @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
-    public QuestsMenu(int id, Inventory ignored, Optional<QuestsContent> content) {
-        this(id, content.orElse(null));
+    public QuestsMenu(MenuType<?> type, int id, QuestsContent content) {
+        super(type, id);
+        this.content = content;
     }
 
-    public QuestsMenu(int id, QuestsContent content) {
-        super(ModMenus.QUESTS.get(), id);
-        this.content = content;
+    public static QuestsMenu ofOptional(int id, Inventory ignored, Optional<QuestsContent> content) {
+        return new QuestsMenu(ModMenus.QUESTS.get(), id, content.orElse(null));
+    }
+
+    public static QuestsMenu of(int id, QuestsContent content) {
+        return new QuestsMenu(ModMenus.QUESTS.get(), id, content);
+    }
+
+    public static QuestsMenu ofEditingOptional(int id, Inventory ignored, Optional<QuestsContent> content) {
+        return new QuestsMenu(ModMenus.EDIT_QUESTS.get(), id, content.orElse(null));
+    }
+
+    public static QuestsMenu ofEditing(int id, QuestsContent content) {
+        return new QuestsMenu(ModMenus.EDIT_QUESTS.get(), id, content);
     }
 
     public boolean canEdit() {

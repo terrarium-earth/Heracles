@@ -55,7 +55,7 @@ public class QuestHandler {
 
     private static void loadGroups(File file) {
         GROUPS.clear();
-        if (!file.exists()) {
+        if (file.exists()) {
             try {
                 GROUPS.addAll(org.apache.commons.io.FileUtils.readLines(file, StandardCharsets.UTF_8));
             } catch (Exception e) {
@@ -85,6 +85,12 @@ public class QuestHandler {
             }
         } catch (Exception e) {
             LOGGER.error("Failed to save quests", e);
+        }
+    }
+
+    public static void saveGroups() {
+        if (lastPath == null) {
+            return;
         }
         try {
             File file = new File(lastPath.toFile(), "groups.txt");

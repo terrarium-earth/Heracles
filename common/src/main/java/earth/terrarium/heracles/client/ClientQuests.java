@@ -25,12 +25,6 @@ public class ClientQuests {
         }
 
         GROUPS.addAll(groups);
-        for (Quest value : quests.values()) {
-            if (Objects.equals(value.display().group(), "")) {
-                GROUPS.add("");
-                break;
-            }
-        }
     }
 
     private static QuestEntry addEntry(

@@ -4,6 +4,7 @@ import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.vertex.PoseStack;
 import earth.terrarium.heracles.client.screens.MouseMode;
 import earth.terrarium.heracles.client.widgets.SelectableImageButton;
+import earth.terrarium.heracles.client.widgets.upload.UploadModal;
 import earth.terrarium.heracles.common.menus.quests.QuestsMenu;
 import net.minecraft.client.gui.components.ImageButton;
 import net.minecraft.client.gui.components.Tooltip;
@@ -15,6 +16,8 @@ public class QuestsEditScreen extends QuestsScreen {
     private SelectableImageButton moveTool;
     private SelectableImageButton dragTool;
     private SelectableImageButton addTool;
+
+    private UploadModal uploadModal;
 
     public QuestsEditScreen(QuestsMenu menu, Inventory inventory, Component component) {
         super(menu, inventory, component);
@@ -43,7 +46,15 @@ public class QuestsEditScreen extends QuestsScreen {
         ));
         this.addTool.setTooltip(Tooltip.create(Component.literal("Add Quest Tool [U]")));
 
+        addRenderableWidget(new ImageButton(this.width - 36, 1, 11, 11, 33, 37, 11, HEADING, 256, 256, (button) -> {
+            if (uploadModal != null) {
+                uploadModal.setVisible(true);
+            }
+        })).setTooltip(Tooltip.create(Component.literal("Import Quests")));
+
         this.dragTool.setSelected(true);
+
+        this.uploadModal = addTemporary(new UploadModal(this.width, this.height));
     }
 
     @Override
@@ -87,6 +98,12 @@ public class QuestsEditScreen extends QuestsScreen {
             }
             default -> super.keyPressed(keyCode, scanCode, modifiers);
         };
+    }
+
+    @Override
+    public void removed() {
+        super.removed();
+        uploadModal.setVisible(false);
     }
 
     private void updateButtons() {

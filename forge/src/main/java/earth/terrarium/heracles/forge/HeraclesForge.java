@@ -6,6 +6,7 @@ import earth.terrarium.heracles.common.team.ScoreboardTeamProvider;
 import earth.terrarium.heracles.common.team.TeamProvider;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.AddReloadListenerEvent;
+import net.minecraftforge.event.server.ServerAboutToStartEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.loading.FMLPaths;
 import net.minecraftforge.registries.DeferredRegister;
@@ -28,9 +29,16 @@ public class HeraclesForge {
 
         TEAM_PROVIDER_REGISTRAR.register(ScoreboardTeamProvider.KEY, ScoreboardTeamProvider::new);
         MinecraftForge.EVENT_BUS.addListener(HeraclesForge::onResourcesLoad);
+        MinecraftForge.EVENT_BUS.addListener(HeraclesForge::onServerStarting);
     }
 
     private static void onResourcesLoad(AddReloadListenerEvent event) {
-        QuestHandler.load(FMLPaths.CONFIGDIR.get());
+        if (event.getServerResources() instanceof RegistryAccessHolder holder) {
+            QuestHandler.load(holder.heracles$getRegistryAccess(), FMLPaths.CONFIGDIR.get());
+        }
+    }
+
+    private static void onServerStarting(ServerAboutToStartEvent event) {
+        Heracles.setRegistryAccess(event.getServer()::registryAccess);
     }
 }

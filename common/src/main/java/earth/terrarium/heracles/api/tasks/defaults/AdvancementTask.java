@@ -11,7 +11,8 @@ import net.minecraft.resources.ResourceLocation;
 
 import java.util.Set;
 
-public record AdvancementTask(String id, Set<ResourceLocation> advancements) implements QuestTask<Advancement, AdvancementTask> {
+public record AdvancementTask(String id,
+                              Set<ResourceLocation> advancements) implements QuestTask<Advancement, AdvancementTask> {
 
     public static final QuestTaskType<AdvancementTask> TYPE = new Type();
 
@@ -40,8 +41,8 @@ public record AdvancementTask(String id, Set<ResourceLocation> advancements) imp
         @Override
         public Codec<AdvancementTask> codec() {
             return RecordCodecBuilder.create(instance -> instance.group(
-                    Codec.STRING.fieldOf("id").forGetter(AdvancementTask::id),
-                    CodecExtras.set(ResourceLocation.CODEC).fieldOf("advancements").forGetter(AdvancementTask::advancements)
+                Codec.STRING.fieldOf("id").forGetter(AdvancementTask::id),
+                CodecExtras.set(ResourceLocation.CODEC).fieldOf("advancements").forGetter(AdvancementTask::advancements)
             ).apply(instance, AdvancementTask::new));
         }
     }

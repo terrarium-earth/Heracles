@@ -9,24 +9,21 @@ import com.teamresourceful.resourcefullib.client.utils.RenderUtils;
 import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.client.ClientQuests;
 import earth.terrarium.heracles.client.screens.MouseMode;
+import earth.terrarium.heracles.client.widgets.base.BaseWidget;
 import earth.terrarium.heracles.common.utils.ModUtils;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.components.Renderable;
-import net.minecraft.client.gui.components.events.AbstractContainerEventHandler;
-import net.minecraft.client.gui.components.events.GuiEventListener;
-import net.minecraft.client.gui.narration.NarratableEntry;
-import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
-import org.jetbrains.annotations.NotNull;
 import org.joml.Vector2i;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
 
-public class QuestsWidget extends AbstractContainerEventHandler implements Renderable, NarratableEntry {
+public class QuestsWidget extends BaseWidget {
+
+    private static final Vector2i offset = new Vector2i();
 
     private static final Vector2i MAX = new Vector2i(500, 500);
     private static final Vector2i MIN = new Vector2i(-500, -500);
@@ -43,8 +40,6 @@ public class QuestsWidget extends AbstractContainerEventHandler implements Rende
 
     private final Vector2i start = new Vector2i();
     private final Vector2i startOffset = new Vector2i();
-
-    private final Vector2i offset = new Vector2i();
 
     private final Supplier<MouseMode> mouseMode;
 
@@ -163,20 +158,5 @@ public class QuestsWidget extends AbstractContainerEventHandler implements Rende
     @Override
     public boolean isMouseOver(double mouseX, double mouseY) {
         return mouseX >= this.x && mouseX <= this.x + this.width && mouseY >= this.y && mouseY <= this.y + this.height;
-    }
-
-    @Override
-    public @NotNull List<? extends GuiEventListener> children() {
-        return List.of();
-    }
-
-    @Override
-    public @NotNull NarrationPriority narrationPriority() {
-        return NarrationPriority.NONE;
-    }
-
-    @Override
-    public void updateNarration(NarrationElementOutput narrationElementOutput) {
-
     }
 }

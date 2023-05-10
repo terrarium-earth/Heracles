@@ -8,6 +8,7 @@ import earth.terrarium.heracles.common.team.TeamProvider;
 import earth.terrarium.heracles.common.utils.ModUtils;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.entity.event.v1.ServerEntityCombatEvents;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder;
 import net.minecraft.commands.Commands;
 import net.minecraft.core.Registry;
@@ -44,5 +45,6 @@ public class HeraclesFabric {
                     .testAndProgressTaskType(player, entity, KillEntityQuestTask.class);
             }
         });
+        ServerLifecycleEvents.SERVER_STARTED.register(server -> Heracles.setRegistryAccess(server::registryAccess));
     }
 }

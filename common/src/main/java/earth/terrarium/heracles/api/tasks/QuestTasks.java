@@ -2,13 +2,7 @@ package earth.terrarium.heracles.api.tasks;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
-import earth.terrarium.heracles.api.tasks.defaults.AdvancementTask;
-import earth.terrarium.heracles.api.tasks.defaults.EnterDimensionTask;
-import earth.terrarium.heracles.api.tasks.defaults.FindBiomeTask;
-import earth.terrarium.heracles.api.tasks.defaults.FindStructureTask;
-import earth.terrarium.heracles.api.tasks.defaults.ItemQuestTask;
-import earth.terrarium.heracles.api.tasks.defaults.KillEntityQuestTask;
-import earth.terrarium.heracles.api.tasks.defaults.RecipeTask;
+import earth.terrarium.heracles.api.tasks.defaults.*;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.HashMap;

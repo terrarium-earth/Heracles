@@ -5,6 +5,7 @@ import com.mojang.datafixers.util.Pair;
 import earth.terrarium.heracles.client.ClientQuests;
 import earth.terrarium.heracles.client.screens.AbstractQuestScreen;
 import earth.terrarium.heracles.client.screens.MouseMode;
+import earth.terrarium.heracles.client.widgets.upload.UploadModal;
 import earth.terrarium.heracles.common.menus.quests.QuestsMenu;
 import earth.terrarium.heracles.common.network.NetworkHandler;
 import earth.terrarium.heracles.common.network.packets.OpenGroupPacket;
@@ -20,6 +21,7 @@ import java.util.List;
 public class QuestsScreen extends AbstractQuestScreen<QuestsMenu> {
 
     private QuestsWidget questsWidget;
+    private UploadModal uploadModal;
 
     public QuestsScreen(QuestsMenu menu, Inventory inventory, Component component) {
         super(menu, inventory, component);
@@ -64,7 +66,7 @@ public class QuestsScreen extends AbstractQuestScreen<QuestsMenu> {
 
     @Override
     public boolean mouseDragged(double mouseX, double mouseY, int button, double dragX, double dragY) {
-        if (questsWidget != null && questsWidget.isMouseOver(mouseX, mouseY)) {
+        if (!isTemporaryWidgetVisible() && questsWidget != null && questsWidget.isMouseOver(mouseX, mouseY)) {
             questsWidget.mouseDragged(mouseX, mouseY, button, dragX, dragY);
             return true;
         }

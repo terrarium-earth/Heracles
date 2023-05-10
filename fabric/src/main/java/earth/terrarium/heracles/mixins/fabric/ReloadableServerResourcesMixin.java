@@ -27,6 +27,6 @@ public class ReloadableServerResourcesMixin {
         )
     )
     private static void heracles$loadResources(ResourceManager resourceManager, RegistryAccess.Frozen frozen, FeatureFlagSet featureFlagSet, Commands.CommandSelection commandSelection, int i, Executor executor, Executor executor2, CallbackInfoReturnable<CompletableFuture<ReloadableServerResources>> cir) {
-        QuestHandler.load(FabricLoader.getInstance().getConfigDir());
+        QuestHandler.load(frozen, FabricLoader.getInstance().getConfigDir());
     }
 }

@@ -12,7 +12,8 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.levelgen.structure.Structure;
 
-public record FindStructureTask(String id, HolderSet<Structure> structures) implements QuestTask<Holder<Structure>, FindStructureTask> {
+public record FindStructureTask(String id,
+                                HolderSet<Structure> structures) implements QuestTask<Holder<Structure>, FindStructureTask> {
 
     public static final QuestTaskType<FindStructureTask> TYPE = new Type();
     public static final Codec<HolderSet<Structure>> STRUCTURE_LIST_CODEC = RegistryCodecs.homogeneousList(Registries.STRUCTURE, Structure.DIRECT_CODEC, true);
@@ -42,8 +43,8 @@ public record FindStructureTask(String id, HolderSet<Structure> structures) impl
         @Override
         public Codec<FindStructureTask> codec() {
             return RecordCodecBuilder.create(instance -> instance.group(
-                    Codec.STRING.fieldOf("id").forGetter(FindStructureTask::id),
-                    STRUCTURE_LIST_CODEC.fieldOf("structures").forGetter(FindStructureTask::structures)
+                Codec.STRING.fieldOf("id").forGetter(FindStructureTask::id),
+                STRUCTURE_LIST_CODEC.fieldOf("structures").forGetter(FindStructureTask::structures)
             ).apply(instance, FindStructureTask::new));
         }
     }

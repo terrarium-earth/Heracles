@@ -48,6 +48,7 @@ subprojects {
             parchment(create(group = "org.parchmentmc.data", name = "parchment-1.19.3", version = parchmentVersion))
         })
 
+        compileOnly(group = "com.teamresourceful", name = "yabn", version = "1.0.3")
         "modApi"(group = "com.teamresourceful.resourcefullib", name = "resourcefullib-$name-$minecraftVersion", version = resourcefulLibVersion)
         "include"("modImplementation"(
             group = "earth.terrarium.hermes",

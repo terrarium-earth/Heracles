@@ -13,6 +13,8 @@ public class NetworkHandler {
         CHANNEL.registerPacket(NetworkDirection.SERVER_TO_CLIENT, QuestRewardClaimedPacket.ID, QuestRewardClaimedPacket.HANDLER, QuestRewardClaimedPacket.class);
         CHANNEL.registerPacket(NetworkDirection.SERVER_TO_CLIENT, SyncQuestsPacket.ID, SyncQuestsPacket.HANDLER, SyncQuestsPacket.class);
         CHANNEL.registerPacket(NetworkDirection.SERVER_TO_CLIENT, QuestCompletedPacket.ID, QuestCompletedPacket.HANDLER, QuestCompletedPacket.class);
+        CHANNEL.registerPacket(NetworkDirection.CLIENT_TO_SERVER, QuestActionPacket.ID, QuestActionPacket.HANDLER, QuestActionPacket.class);
+        CHANNEL.registerPacket(NetworkDirection.CLIENT_TO_SERVER, UploadQuestPacket.ID, UploadQuestPacket.HANDLER, UploadQuestPacket.class);
         CHANNEL.registerPacket(NetworkDirection.CLIENT_TO_SERVER, OpenGroupPacket.ID, OpenGroupPacket.HANDLER, OpenGroupPacket.class);
         CHANNEL.registerPacket(NetworkDirection.CLIENT_TO_SERVER, OpenQuestPacket.ID, OpenQuestPacket.HANDLER, OpenQuestPacket.class);
     }

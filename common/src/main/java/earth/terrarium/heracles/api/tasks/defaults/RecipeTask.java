@@ -6,7 +6,6 @@ import com.teamresourceful.resourcefullib.common.codecs.CodecExtras;
 import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.api.tasks.QuestTask;
 import earth.terrarium.heracles.api.tasks.QuestTaskType;
-import net.minecraft.advancements.Advancement;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.Recipe;
 
@@ -35,14 +34,14 @@ public record RecipeTask(String id, Set<ResourceLocation> recipes) implements Qu
 
         @Override
         public ResourceLocation id() {
-            return new ResourceLocation(Heracles.MOD_ID, "advancement");
+            return new ResourceLocation(Heracles.MOD_ID, "recipe");
         }
 
         @Override
         public Codec<RecipeTask> codec() {
             return RecordCodecBuilder.create(instance -> instance.group(
-                    Codec.STRING.fieldOf("id").forGetter(RecipeTask::id),
-                    CodecExtras.set(ResourceLocation.CODEC).fieldOf("recipes").forGetter(RecipeTask::recipes)
+                Codec.STRING.fieldOf("id").forGetter(RecipeTask::id),
+                CodecExtras.set(ResourceLocation.CODEC).fieldOf("recipes").forGetter(RecipeTask::recipes)
             ).apply(instance, RecipeTask::new));
         }
     }

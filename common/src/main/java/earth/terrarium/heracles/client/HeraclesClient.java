@@ -1,5 +1,6 @@
 package earth.terrarium.heracles.client;
 
+import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.api.quests.Quest;
 import earth.terrarium.heracles.client.screens.quest.QuestScreen;
 import earth.terrarium.heracles.client.screens.quests.QuestsEditScreen;
@@ -26,6 +27,8 @@ public class HeraclesClient {
         registerScreen(ModMenus.QUEST.get(), QuestScreen::new);
         registerScreen(ModMenus.QUESTS.get(), QuestsScreen::new);
         registerScreen(ModMenus.EDIT_QUESTS.get(), QuestsEditScreen::new);
+
+        Heracles.setRegistryAccess(() -> Minecraft.getInstance().getConnection().registryAccess());
     }
 
     public static void displayItemsRewardedToast(Quest quest, List<Item> items) {

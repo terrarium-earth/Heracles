@@ -1,5 +1,6 @@
 package earth.terrarium.heracles.common.handlers.progress;
 
+import earth.terrarium.heracles.common.handlers.quests.QuestHandler;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.server.MinecraftServer;
@@ -33,6 +34,8 @@ public class QuestProgressHandler extends SavedData {
 
     @Override
     public @NotNull CompoundTag save(CompoundTag tag) {
+        // This is called whenever the world is saved.
+        QuestHandler.save();
         for (var entry : progress.entrySet()) {
             CompoundTag progress = new CompoundTag();
             for (var progressEntry : entry.getValue().progress().entrySet()) {

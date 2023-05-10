@@ -39,8 +39,8 @@ public record FindBiomeTask(String id, HolderSet<Biome> biomes) implements Quest
         @Override
         public Codec<FindBiomeTask> codec() {
             return RecordCodecBuilder.create(instance -> instance.group(
-                    Codec.STRING.fieldOf("id").forGetter(FindBiomeTask::id),
-                    Biome.LIST_CODEC.fieldOf("dimensions").forGetter(FindBiomeTask::biomes)
+                Codec.STRING.fieldOf("id").forGetter(FindBiomeTask::id),
+                Biome.LIST_CODEC.fieldOf("dimensions").forGetter(FindBiomeTask::biomes)
             ).apply(instance, FindBiomeTask::new));
         }
     }

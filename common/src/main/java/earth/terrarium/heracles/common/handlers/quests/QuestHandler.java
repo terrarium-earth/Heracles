@@ -9,6 +9,8 @@ import com.teamresourceful.resourcefullib.common.lib.Constants;
 import com.teamresourceful.resourcefullib.common.utils.FileUtils;
 import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.api.quests.Quest;
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.resources.RegistryOps;
 import org.slf4j.Logger;
 
 import java.io.File;
@@ -26,24 +28,25 @@ public class QuestHandler {
     private static final List<String> GROUPS = new ArrayList<>();
     private static final Logger LOGGER = LogUtils.getLogger();
     private static Path lastPath;
+    private static boolean dirty;
 
-    public static void load(Path path) {
+    public static void load(RegistryAccess access, Path path) {
         Path heraclesPath = path.resolve(Heracles.MOD_ID);
         QuestHandler.lastPath = heraclesPath;
         Path questsPath = heraclesPath.resolve("quests");
         try {
             Files.createDirectories(questsPath);
-            FileUtils.streamFilesAndParse(questsPath, QuestHandler::load, FileUtils::isJson);
+            FileUtils.streamFilesAndParse(questsPath, (reader, id) -> load(access, reader, id), FileUtils::isJson);
         } catch (Exception e) {
             LOGGER.error("Failed to load quests", e);
         }
         loadGroups(heraclesPath.resolve("groups.txt").toFile());
     }
 
-    private static void load(Reader reader, String id) {
+    private static void load(RegistryAccess access, Reader reader, String id) {
         try {
             JsonObject element = Constants.GSON.fromJson(reader, JsonObject.class);
-            Quest quest = Quest.CODEC.parse(JsonOps.INSTANCE, element).getOrThrow(false, LOGGER::error);
+            Quest quest = Quest.CODEC.parse(RegistryOps.create(JsonOps.INSTANCE, access), element).getOrThrow(false, LOGGER::error);
             QUESTS.put(id, quest);
         } catch (Exception e) {
             LOGGER.error("Failed to load quest " + id, e);
@@ -66,10 +69,11 @@ public class QuestHandler {
         }
     }
 
-    private static void save() {
-        if (lastPath == null) {
+    public static void save() {
+        if (lastPath == null || !dirty) {
             return;
         }
+        dirty = false;
         Path questsPath = lastPath.resolve("quests");
         try {
             org.apache.commons.io.FileUtils.deleteDirectory(questsPath.toFile());
@@ -92,6 +96,15 @@ public class QuestHandler {
 
     public static Quest get(String id) {
         return QUESTS.get(id);
+    }
+
+    public static boolean upload(String id, Quest quest) {
+        if (QUESTS.containsKey(id)) {
+            return false;
+        }
+        QUESTS.put(id, quest);
+        dirty = true;
+        return true;
     }
 
     public static String getKey(Quest quest) {

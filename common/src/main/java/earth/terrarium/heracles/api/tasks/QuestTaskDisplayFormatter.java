@@ -8,7 +8,7 @@ import net.minecraft.Optionull;
 import java.util.IdentityHashMap;
 import java.util.Map;
 
-public final class QuestTaskNumberFormatter {
+public final class QuestTaskDisplayFormatter {
 
     private static final Map<QuestTaskType<?>, Formatter<?, ?>> FORMATTERS = new IdentityHashMap<>();
 
@@ -29,8 +29,8 @@ public final class QuestTaskNumberFormatter {
     }
 
     static {
-        register(KillEntityQuestTask.TYPE, (progress, task) -> String.format("%d/%d", progress.progress(), task.target()));
-        register(ItemQuestTask.TYPE, (progress, task) -> String.format("%d/%d", progress.progress(), task.target()));
+        register(KillEntityQuestTask.TYPE, (progress, task) -> String.format("%d/%d", task.storage().read(progress.progress()), task.target()));
+        register(ItemQuestTask.TYPE, (progress, task) -> String.format("%d/%d", task.storage().read(progress.progress()), task.target()));
     }
 
     @FunctionalInterface

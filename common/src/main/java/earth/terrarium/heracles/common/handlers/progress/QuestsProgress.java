@@ -31,7 +31,7 @@ public record QuestsProgress(Map<String, QuestProgress> progress, CompletableQue
             Quest quest = QuestHandler.get(id);
             for (QuestTask<?, ?> task : quest.tasks()) {
                 if (task.getClass().isAssignableFrom(taskType)) {
-                    TaskProgress progress = questProgress.getTask(task.id());
+                    TaskProgress progress = questProgress.getTask(task);
                     if (progress.isComplete()) continue;
                     progress.addProgress(taskType.cast(task), input);
                     editedQuests.add(Pair.of(id, quest));

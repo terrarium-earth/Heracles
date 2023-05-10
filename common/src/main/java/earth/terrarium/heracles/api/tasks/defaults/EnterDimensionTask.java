@@ -5,9 +5,11 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.api.tasks.QuestTask;
 import earth.terrarium.heracles.api.tasks.QuestTaskType;
+import earth.terrarium.heracles.api.tasks.storage.defaults.BooleanTaskStorage;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.RegistryCodecs;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.dimension.LevelStem;
@@ -19,17 +21,22 @@ public record EnterDimensionTask(String id,
     private static final Codec<HolderSet<LevelStem>> DIMENSION_LIST_CODEC = RegistryCodecs.homogeneousList(Registries.LEVEL_STEM, LevelStem.CODEC, true);
 
     @Override
-    public int target() {
-        return 1;
-    }
-
-    @Override
-    public int test(Level input) {
-        return dimensions.contains(input
+    public Tag test(Tag progress, Level input) {
+        return storage().of(progress, dimensions.contains(input
             .registryAccess()
             .registryOrThrow(Registries.LEVEL_STEM)
             .getHolderOrThrow(Registries.levelToLevelStem(input.dimension()))
-        ) ? 1 : 0;
+        ));
+    }
+
+    @Override
+    public float getProgress(Tag progress) {
+        return storage().readBoolean(progress) ? 1.0F : 0.0F;
+    }
+
+    @Override
+    public BooleanTaskStorage storage() {
+        return BooleanTaskStorage.INSTANCE;
     }
 
     @Override

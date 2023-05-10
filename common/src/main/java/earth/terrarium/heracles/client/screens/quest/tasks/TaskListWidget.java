@@ -55,7 +55,7 @@ public class TaskListWidget extends AbstractContainerEventHandler implements Ren
         List<DisplayWidget> inProgress = new ArrayList<>();
         List<DisplayWidget> completed = new ArrayList<>();
         for (var task : tasks) {
-            TaskProgress taskProgress = this.progress.getTask(task.id());
+            TaskProgress taskProgress = this.progress.getTask(task);
             DisplayWidget widget = QuestTaskWidgets.create(task, taskProgress);
             if (widget != null) {
                 if (taskProgress.isComplete()) {
@@ -80,7 +80,7 @@ public class TaskListWidget extends AbstractContainerEventHandler implements Ren
     private static float calculationCompletion(Quest quest, QuestProgress progress) {
         float completion = 0;
         for (var task : quest.tasks()) {
-            completion += progress.getTask(task.id()).isComplete() ? 1 : 0;
+            completion += progress.getTask(task).isComplete() ? 1 : 0;
         }
         return completion / quest.tasks().size();
     }

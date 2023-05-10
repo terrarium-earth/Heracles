@@ -4,7 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.teamresourceful.resourcefullib.client.scissor.ScissorBoxStack;
 import earth.terrarium.heracles.api.client.DisplayWidget;
 import earth.terrarium.heracles.api.client.WidgetUtils;
-import earth.terrarium.heracles.api.tasks.QuestTaskNumberFormatter;
+import earth.terrarium.heracles.api.tasks.QuestTaskDisplayFormatter;
 import earth.terrarium.heracles.api.tasks.defaults.ItemQuestTask;
 import earth.terrarium.heracles.common.handlers.progress.TaskProgress;
 import net.minecraft.client.Minecraft;
@@ -41,11 +41,11 @@ public record ItemTaskWidget(ItemQuestTask task, TaskProgress progress,
         Component name = getItemName();
         font.draw(pose, Component.translatable(title, name), x + iconSize + 10, y + 5, 0xFFFFFFFF);
         font.draw(pose, Component.translatable(desc, this.task.target(), name), x + iconSize + 10, y + 7 + font.lineHeight, 0xFF808080);
-        String progress = QuestTaskNumberFormatter.create(this.task, this.progress);
+        String progress = QuestTaskDisplayFormatter.create(this.task, this.progress);
         font.draw(pose, progress, x + width - 5 - font.width(progress), y + 5, 0xFFFFFFFF);
 
         int progressY = y + 5 + (font.lineHeight + 2) * 2;
-        WidgetUtils.drawProgressBar(pose, x + iconSize + 10, progressY + 2, x + width - 5, progressY + font.lineHeight - 2, this.progress, this.task.target());
+        WidgetUtils.drawProgressBar(pose, x + iconSize + 10, progressY + 2, x + width - 5, progressY + font.lineHeight - 2, this.task, this.progress);
     }
 
     private ItemStack getCurrentItem() {

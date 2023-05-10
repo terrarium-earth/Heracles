@@ -22,18 +22,19 @@ public record QuestContent(String id, Quest quest, QuestProgress progress) imple
 
         @Override
         public @Nullable QuestContent from(FriendlyByteBuf buffer) {
-            return new QuestContent(
-                buffer.readUtf(),
-                PacketHelper.readWithYabn(Heracles.getRegistryAccess(), buffer, Quest.CODEC, true).getOrThrow(false, System.err::println),
-                PacketHelper.readWithYabn(Heracles.getRegistryAccess(), buffer, QuestProgress.CODEC, true).getOrThrow(false, System.err::println)
-            );
+            String id = buffer.readUtf();
+            Quest quest = PacketHelper.readWithYabn(Heracles.getRegistryAccess(), buffer, Quest.CODEC, true)
+                .getOrThrow(false, System.err::println);
+            QuestProgress progress = PacketHelper.readWithYabn(Heracles.getRegistryAccess(), buffer, QuestProgress.codec(quest), true)
+                .getOrThrow(false, System.err::println);
+            return new QuestContent(id, quest, progress);
         }
 
         @Override
         public void to(FriendlyByteBuf buffer, QuestContent content) {
             buffer.writeUtf(content.id());
             PacketHelper.writeWithYabn(Heracles.getRegistryAccess(), buffer, Quest.CODEC, content.quest(), true);
-            PacketHelper.writeWithYabn(Heracles.getRegistryAccess(), buffer, QuestProgress.CODEC, content.progress(), true);
+            PacketHelper.writeWithYabn(Heracles.getRegistryAccess(), buffer, QuestProgress.codec(content.quest()), content.progress(), true);
         }
     }
 }

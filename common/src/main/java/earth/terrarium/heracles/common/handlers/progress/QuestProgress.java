@@ -2,6 +2,7 @@ package earth.terrarium.heracles.common.handlers.progress;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import com.teamresourceful.resourcefullib.common.codecs.maps.DispatchMapCodec;
 import earth.terrarium.heracles.api.quests.Quest;
 import earth.terrarium.heracles.api.tasks.QuestTask;
 
@@ -10,11 +11,14 @@ import java.util.Map;
 
 public class QuestProgress {
 
-    public static final Codec<QuestProgress> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-        Codec.BOOL.fieldOf("complete").orElse(false).forGetter(QuestProgress::isComplete),
-        Codec.BOOL.fieldOf("claimed").orElse(false).forGetter(QuestProgress::isClaimed),
-        Codec.unboundedMap(Codec.STRING, TaskProgress.CODEC).orElse(new HashMap<>()).fieldOf("tasks").forGetter(QuestProgress::tasks)
-    ).apply(instance, QuestProgress::new));
+    public static Codec<QuestProgress> codec(Quest quest) {
+        return RecordCodecBuilder.create(instance -> instance.group(
+            Codec.BOOL.fieldOf("complete").orElse(false).forGetter(QuestProgress::isComplete),
+            Codec.BOOL.fieldOf("claimed").orElse(false).forGetter(QuestProgress::isClaimed),
+            DispatchMapCodec.of(Codec.STRING, id -> TaskProgress.codec(quest.getTask(id)))
+                .orElse(new HashMap<>()).fieldOf("tasks").forGetter(QuestProgress::tasks)
+        ).apply(instance, QuestProgress::new));
+    }
 
     private final Map<String, TaskProgress> tasks = new HashMap<>();
     private boolean complete;
@@ -35,7 +39,7 @@ public class QuestProgress {
         if (complete) return;
         for (QuestTask<?, ?> task : quest.tasks()) {
             if (!tasks.containsKey(task.id())) {
-                tasks.put(task.id(), new TaskProgress());
+                tasks.put(task.id(), new TaskProgress(task));
             }
         }
         for (TaskProgress task : tasks.values()) {
@@ -59,8 +63,8 @@ public class QuestProgress {
         this.claimed = true;
     }
 
-    public TaskProgress getTask(String id) {
-        return this.tasks.computeIfAbsent(id, s -> new TaskProgress());
+    public TaskProgress getTask(QuestTask<?, ?> task) {
+        return this.tasks.computeIfAbsent(task.id(), s -> new TaskProgress(task));
     }
 
     public Map<String, TaskProgress> tasks() {

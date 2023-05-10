@@ -6,9 +6,11 @@ import com.teamresourceful.resourcefullib.common.codecs.predicates.NbtPredicate;
 import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.api.tasks.QuestTask;
 import earth.terrarium.heracles.api.tasks.QuestTaskType;
+import earth.terrarium.heracles.api.tasks.storage.defaults.IntegerTaskStorage;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.RegistryCodecs;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -20,12 +22,22 @@ public record ItemQuestTask(
     public static final QuestTaskType<ItemQuestTask> TYPE = new Type();
 
     @Override
-    public int test(ItemStack input) {
+    public Tag test(Tag progress, ItemStack input) {
         if (input.is(item::contains) && nbt.matches(input) && input.getCount() >= target()) {
             input.shrink(target());
-            return target();
+            return storage().of(progress, target());
         }
-        return 0;
+        return progress;
+    }
+
+    @Override
+    public float getProgress(Tag progress) {
+        return storage().readInt(progress) / (float) target();
+    }
+
+    @Override
+    public IntegerTaskStorage storage() {
+        return IntegerTaskStorage.INSTANCE;
     }
 
     @Override

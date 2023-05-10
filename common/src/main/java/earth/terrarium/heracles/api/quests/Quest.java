@@ -43,7 +43,15 @@ public record Quest(
         QuestTasks.CODEC.listOf().fieldOf("tasks").orElse(new ArrayList<>()).forGetter(Quest::tasks),
         ExtraCodecs.COMPONENT.fieldOf("reward_text").orElse(CommonComponents.EMPTY).forGetter(Quest::rewardText),
         QuestRewards.CODEC.listOf().fieldOf("rewards").orElse(new ArrayList<>()).forGetter(Quest::rewards)
-    ).apply(instance, Quest::new));
+    ).apply(instance, Quest::fromCodec));
+
+    /**
+     * This method is used by the codec to create a new quest instance.
+     * This is needed as codecs make immutable objects and we need to be able to add tasks and rewards to the quest.
+     */
+    private static Quest fromCodec(QuestDisplay display, QuestSettings settings, Set<String> dependencies, List<QuestTask<?, ?>> tasks, Component rewardText, List<QuestReward<?>> rewards) {
+        return new Quest(display, settings, dependencies, new ArrayList<>(tasks), rewardText, new ArrayList<>(rewards));
+    }
 
     public QuestTask<?, ?> getTask(String id) {
         return tasks.stream()

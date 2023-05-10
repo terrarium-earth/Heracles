@@ -21,7 +21,7 @@ import java.util.List;
 public class QuestsScreen extends AbstractQuestScreen<QuestsMenu> {
 
     private QuestsWidget questsWidget;
-    private UploadModal uploadModal;
+    private GroupsList groupsList;
 
     public QuestsScreen(QuestsMenu menu, Inventory inventory, Component component) {
         super(menu, inventory, component);
@@ -48,7 +48,7 @@ public class QuestsScreen extends AbstractQuestScreen<QuestsMenu> {
         ));
         questsWidget.update(quests);
 
-        addRenderableWidget(new GroupsList(
+        this.groupsList =  addRenderableWidget(new GroupsList(
             0,
             15,
             sidebarWidth,
@@ -57,7 +57,8 @@ public class QuestsScreen extends AbstractQuestScreen<QuestsMenu> {
                 if (entry == null || this.menu.group().equals(entry.name())) return;
                 NetworkHandler.CHANNEL.sendToServer(new OpenGroupPacket(entry.name(), this.getClass() != QuestsScreen.class));
             }
-        )).update(ClientQuests.groups(), this.menu.group());
+        ));
+        this.groupsList.update(ClientQuests.groups(), this.menu.group());
     }
 
     protected MouseMode getMouseMode() {
@@ -79,5 +80,9 @@ public class QuestsScreen extends AbstractQuestScreen<QuestsMenu> {
         int center = ((int) (this.width * 0.25f) - 2) / 2;
         int textX = center - font.width("Groups") / 2;
         font.draw(poseStack, "Groups", textX, 3, 0x404040);
+    }
+
+    public GroupsList getGroupsList() {
+        return groupsList;
     }
 }

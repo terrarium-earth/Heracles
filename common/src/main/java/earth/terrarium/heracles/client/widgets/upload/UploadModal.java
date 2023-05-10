@@ -2,16 +2,11 @@ package earth.terrarium.heracles.client.widgets.upload;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.teamresourceful.resourcefullib.client.scissor.ScissorBoxStack;
-import com.teamresourceful.resourcefullib.client.screens.CursorScreen;
-import com.teamresourceful.resourcefullib.client.utils.CursorUtils;
 import com.teamresourceful.resourcefullib.client.utils.RenderUtils;
 import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.api.quests.Quest;
-import earth.terrarium.heracles.client.ClientUtils;
-import earth.terrarium.heracles.client.screens.AbstractQuestScreen;
-import earth.terrarium.heracles.client.widgets.base.BaseWidget;
+import earth.terrarium.heracles.client.widgets.base.BaseModal;
 import earth.terrarium.heracles.client.widgets.base.FileWidget;
-import earth.terrarium.heracles.client.widgets.base.TemporyWidget;
 import earth.terrarium.heracles.common.network.NetworkHandler;
 import earth.terrarium.heracles.common.network.packets.QuestActionPacket;
 import earth.terrarium.heracles.common.network.packets.UploadQuestPacket;
@@ -28,26 +23,19 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class UploadModal extends BaseWidget implements FileWidget, TemporyWidget {
+public class UploadModal extends BaseModal implements FileWidget {
 
     public static final ResourceLocation TEXTURE = new ResourceLocation(Heracles.MOD_ID, "textures/gui/uploading.png");
     private static final int WIDTH = 168;
     private static final int HEIGHT = 173;
-
-    private final int screenWidth;
-    private final int screenHeight;
-    private boolean visible = false;
 
     private double scrollAmount = 0;
 
     private final List<UploadModalItem> items = new ArrayList<>();
 
     public UploadModal(int screenWidth, int screenHeight) {
-        this.screenWidth = screenWidth;
-        this.screenHeight = screenHeight;
-        int x = (screenWidth / 2) - (WIDTH / 2);
-        int y = (screenHeight / 2) - (HEIGHT / 2);
-        var submitButton = addChild(createButton(Component.nullToEmpty("Submit"), x + WIDTH - 7, y + HEIGHT - 20, b -> {
+        super(screenWidth, screenHeight, WIDTH, HEIGHT);
+        var submitButton = addChild(createButton(Component.nullToEmpty("Submit"), this.x + WIDTH - 7, this.y + HEIGHT - 20, b -> {
             var iterator = items.iterator();
             while (iterator.hasNext()) {
                 var item = iterator.next();
@@ -62,23 +50,14 @@ public class UploadModal extends BaseWidget implements FileWidget, TemporyWidget
                 setVisible(false);
             }
         }));
-        addChild(createButton(Component.nullToEmpty("Cancel"), submitButton.getX() - 2, y + HEIGHT - 20, b -> {
+        addChild(createButton(Component.nullToEmpty("Cancel"), submitButton.getX() - 2, this.y + HEIGHT - 20, b -> {
             items.clear();
             visible = false;
         }));
     }
 
     @Override
-    public void render(PoseStack pose, int mouseX, int mouseY, float partialTick) {
-        if (!visible) return;
-        if (mouseY > 15) {
-            ClientUtils.clearTooltip();
-        }
-        int x = (screenWidth / 2) - (WIDTH / 2);
-        int y = (screenHeight / 2) - (HEIGHT / 2);
-
-        Font font = Minecraft.getInstance().font;
-
+    protected void renderBackground(PoseStack pose, int mouseX, int mouseY, float partialTick) {
         RenderUtils.bindTexture(TEXTURE);
 
         pose.pushPose();
@@ -87,15 +66,15 @@ public class UploadModal extends BaseWidget implements FileWidget, TemporyWidget
         Gui.blit(pose, x, y, 0, 0, WIDTH, HEIGHT, 256, 256);
 
         renderChildren(pose, mouseX, mouseY, partialTick);
+    }
 
-        RenderUtils.bindTexture(AbstractQuestScreen.HEADING);
-        boolean hoveringClose = mouseX >= x + WIDTH - 18 && mouseX <= x + WIDTH - 7 && mouseY >= y + 5 && mouseY <= y + 16;
-        Gui.blit(pose, x + WIDTH - 18, y + 5, 11, hoveringClose ? 26 : 15, 11, 11);
-
+    @Override
+    protected void renderForeground(PoseStack pose, int mouseX, int mouseY, float partialTick) {
+        Font font = Minecraft.getInstance().font;
         font.draw(pose, "Import Quests", x + 8, y + 6, 0x404040);
 
-        y += 19;
-        x += 8;
+        int y = this.y + 19;
+        int x = this.x + 8;
         int tempY = y;
         tempY -= scrollAmount;
 
@@ -109,8 +88,6 @@ public class UploadModal extends BaseWidget implements FileWidget, TemporyWidget
         }
 
         pose.popPose();
-        CursorUtils.setCursor(true, hoveringClose ? CursorScreen.Cursor.POINTER : CursorScreen.Cursor.DEFAULT);
-        CursorUtils.setCursor(mouseY <= 15, CursorScreen.Cursor.DISABLED);
     }
 
     private Button createButton(Component component, int x, int y, Button.OnPress onPress) {
@@ -178,16 +155,11 @@ public class UploadModal extends BaseWidget implements FileWidget, TemporyWidget
         Collections.reverse(items);
     }
 
+    @Override
     public void setVisible(boolean visible) {
-        this.visible = visible;
-        if (visible) {
-            this.setFocused(null);
-        } else {
+        super.setVisible(visible);
+        if (!visible) {
             NetworkHandler.CHANNEL.sendToServer(new QuestActionPacket(QuestActionPacket.Action.SAVE));
         }
-    }
-
-    public boolean isVisible() {
-        return visible;
     }
 }

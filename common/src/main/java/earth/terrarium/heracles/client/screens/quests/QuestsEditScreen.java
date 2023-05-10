@@ -3,6 +3,7 @@ package earth.terrarium.heracles.client.screens.quests;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.vertex.PoseStack;
 import earth.terrarium.heracles.client.screens.MouseMode;
+import earth.terrarium.heracles.client.widgets.CreateGroupModal;
 import earth.terrarium.heracles.client.widgets.SelectableImageButton;
 import earth.terrarium.heracles.client.widgets.upload.UploadModal;
 import earth.terrarium.heracles.common.menus.quests.QuestsMenu;
@@ -18,6 +19,7 @@ public class QuestsEditScreen extends QuestsScreen {
     private SelectableImageButton addTool;
 
     private UploadModal uploadModal;
+    private CreateGroupModal groupModal;
 
     public QuestsEditScreen(QuestsMenu menu, Inventory inventory, Component component) {
         super(menu, inventory, component);
@@ -28,7 +30,9 @@ public class QuestsEditScreen extends QuestsScreen {
         super.init();
         int sidebarWidth = (int) (this.width * 0.25f) - 2;
         addRenderableWidget(new ImageButton(sidebarWidth - 12, 1, 11, 11, 22, 15, 11, HEADING, 256, 256, (button) -> {
-            //TODO ADD GROUP
+            if (this.groupModal != null) {
+                this.groupModal.setVisible(true);
+            }
         })).setTooltip(Tooltip.create(Component.literal("Add Group")));
 
         this.moveTool = addRenderableWidget(new SelectableImageButton(sidebarWidth + 3, 1, 11, 11, 0, 37, 11, HEADING, 256, 256, (button) ->
@@ -47,14 +51,15 @@ public class QuestsEditScreen extends QuestsScreen {
         this.addTool.setTooltip(Tooltip.create(Component.literal("Add Quest Tool [U]")));
 
         addRenderableWidget(new ImageButton(this.width - 36, 1, 11, 11, 33, 37, 11, HEADING, 256, 256, (button) -> {
-            if (uploadModal != null) {
-                uploadModal.setVisible(true);
+            if (this.uploadModal != null) {
+                this.uploadModal.setVisible(true);
             }
         })).setTooltip(Tooltip.create(Component.literal("Import Quests")));
 
         this.dragTool.setSelected(true);
 
         this.uploadModal = addTemporary(new UploadModal(this.width, this.height));
+        this.groupModal = addTemporary(new CreateGroupModal(this.width, this.height));
     }
 
     @Override

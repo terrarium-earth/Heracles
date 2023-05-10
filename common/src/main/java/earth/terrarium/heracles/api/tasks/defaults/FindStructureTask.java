@@ -5,10 +5,12 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.api.tasks.QuestTask;
 import earth.terrarium.heracles.api.tasks.QuestTaskType;
+import earth.terrarium.heracles.api.tasks.storage.defaults.BooleanTaskStorage;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.RegistryCodecs;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.levelgen.structure.Structure;
 
@@ -19,13 +21,18 @@ public record FindStructureTask(String id,
     public static final Codec<HolderSet<Structure>> STRUCTURE_LIST_CODEC = RegistryCodecs.homogeneousList(Registries.STRUCTURE, Structure.DIRECT_CODEC, true);
 
     @Override
-    public int target() {
-        return 1;
+    public Tag test(Tag progress, Holder<Structure> input) {
+        return storage().of(progress, structures.contains(input));
     }
 
     @Override
-    public int test(Holder<Structure> input) {
-        return structures.contains(input) ? 1 : 0;
+    public float getProgress(Tag progress) {
+        return storage().readBoolean(progress) ? 1.0F : 0.0F;
+    }
+
+    @Override
+    public BooleanTaskStorage storage() {
+        return BooleanTaskStorage.INSTANCE;
     }
 
     @Override

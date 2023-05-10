@@ -5,8 +5,10 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.api.tasks.QuestTask;
 import earth.terrarium.heracles.api.tasks.QuestTaskType;
+import earth.terrarium.heracles.api.tasks.storage.defaults.BooleanTaskStorage;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
+import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.biome.Biome;
 
@@ -15,13 +17,18 @@ public record FindBiomeTask(String id, HolderSet<Biome> biomes) implements Quest
     public static final QuestTaskType<FindBiomeTask> TYPE = new Type();
 
     @Override
-    public int target() {
-        return 1;
+    public Tag test(Tag progress, Holder<Biome> input) {
+        return storage().of(progress, biomes.contains(input));
     }
 
     @Override
-    public int test(Holder<Biome> input) {
-        return biomes.contains(input) ? 1 : 0;
+    public float getProgress(Tag progress) {
+        return storage().readBoolean(progress) ? 1.0F : 0.0F;
+    }
+
+    @Override
+    public BooleanTaskStorage storage() {
+        return BooleanTaskStorage.INSTANCE;
     }
 
     @Override

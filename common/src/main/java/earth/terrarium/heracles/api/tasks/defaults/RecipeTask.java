@@ -6,6 +6,8 @@ import com.teamresourceful.resourcefullib.common.codecs.CodecExtras;
 import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.api.tasks.QuestTask;
 import earth.terrarium.heracles.api.tasks.QuestTaskType;
+import earth.terrarium.heracles.api.tasks.storage.defaults.BooleanTaskStorage;
+import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.Recipe;
 
@@ -16,13 +18,18 @@ public record RecipeTask(String id, Set<ResourceLocation> recipes) implements Qu
     public static final QuestTaskType<RecipeTask> TYPE = new Type();
 
     @Override
-    public int target() {
-        return 1;
+    public Tag test(Tag progress, Recipe<?> input) {
+        return storage().of(progress, recipes.contains(input.getId()));
     }
 
     @Override
-    public int test(Recipe<?> input) {
-        return recipes.contains(input.getId()) ? 1 : 0;
+    public float getProgress(Tag progress) {
+        return storage().readBoolean(progress) ? 1.0F : 0.0F;
+    }
+
+    @Override
+    public BooleanTaskStorage storage() {
+        return BooleanTaskStorage.INSTANCE;
     }
 
     @Override

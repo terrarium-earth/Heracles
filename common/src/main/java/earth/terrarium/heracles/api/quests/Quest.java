@@ -45,6 +45,13 @@ public record Quest(
         QuestRewards.CODEC.listOf().fieldOf("rewards").orElse(new ArrayList<>()).forGetter(Quest::rewards)
     ).apply(instance, Quest::new));
 
+    public QuestTask<?, ?> getTask(String id) {
+        return tasks.stream()
+            .filter(task -> task.id().equals(id))
+            .findFirst()
+            .orElse(null);
+    }
+
     public void reward(ServerPlayer player) {
         QuestsProgress progress = QuestProgressHandler.getProgress(player.server, player.getUUID());
         String id = QuestHandler.getKey(this);

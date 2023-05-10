@@ -6,6 +6,9 @@ import com.teamresourceful.resourcefullib.common.codecs.predicates.RestrictedEnt
 import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.api.tasks.QuestTask;
 import earth.terrarium.heracles.api.tasks.QuestTaskType;
+import earth.terrarium.heracles.api.tasks.storage.defaults.IntegerTaskStorage;
+import net.minecraft.nbt.IntTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.LivingEntity;
@@ -17,11 +20,22 @@ public record KillEntityQuestTask(
     public static final QuestTaskType<KillEntityQuestTask> TYPE = new Type();
 
     @Override
-    public int test(LivingEntity input) {
-        if (input.level instanceof ServerLevel level) {
-            return entity.matches(level, input) ? 1 : 0;
+    public Tag test(Tag progress, LivingEntity input) {
+        int current = storage().readInt(progress);
+        if (input.level instanceof ServerLevel level && entity.matches(level, input)) {
+            return IntTag.valueOf(current + 1);
         }
-        return 0;
+        return IntTag.valueOf(current);
+    }
+
+    @Override
+    public float getProgress(Tag progress) {
+        return storage().readInt(progress) / (float) target;
+    }
+
+    @Override
+    public IntegerTaskStorage storage() {
+        return IntegerTaskStorage.INSTANCE;
     }
 
     @Override

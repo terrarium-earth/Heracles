@@ -6,7 +6,9 @@ import com.teamresourceful.resourcefullib.common.codecs.CodecExtras;
 import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.api.tasks.QuestTask;
 import earth.terrarium.heracles.api.tasks.QuestTaskType;
+import earth.terrarium.heracles.api.tasks.storage.defaults.BooleanTaskStorage;
 import net.minecraft.advancements.Advancement;
+import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.Set;
@@ -17,13 +19,18 @@ public record AdvancementTask(String id,
     public static final QuestTaskType<AdvancementTask> TYPE = new Type();
 
     @Override
-    public int target() {
-        return 1;
+    public Tag test(Tag progress, Advancement input) {
+        return storage().of(progress, advancements.contains(input.getId()));
     }
 
     @Override
-    public int test(Advancement input) {
-        return advancements.contains(input.getId()) ? 1 : 0;
+    public float getProgress(Tag progress) {
+        return storage().readBoolean(progress) ? 1.0F : 0.0F;
+    }
+
+    @Override
+    public BooleanTaskStorage storage() {
+        return BooleanTaskStorage.INSTANCE;
     }
 
     @Override

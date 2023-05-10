@@ -1,5 +1,6 @@
 package earth.terrarium.heracles.common.handlers.progress;
 
+import earth.terrarium.heracles.api.quests.Quest;
 import earth.terrarium.heracles.common.handlers.quests.QuestHandler;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
@@ -37,12 +38,14 @@ public class QuestProgressHandler extends SavedData {
         // This is called whenever the world is saved.
         QuestHandler.save();
         for (var entry : progress.entrySet()) {
-            CompoundTag progress = new CompoundTag();
-            for (var progressEntry : entry.getValue().progress().entrySet()) {
-                progress.put(progressEntry.getKey(), QuestProgress.CODEC.encodeStart(NbtOps.INSTANCE, progressEntry.getValue())
+            CompoundTag progressTag = new CompoundTag();
+            entry.getValue().progress().forEach((id, progress) -> {
+                Quest quest = QuestHandler.get(id);
+                if (quest == null) return;
+                progressTag.put(id, QuestProgress.codec(quest).encodeStart(NbtOps.INSTANCE, progress)
                     .getOrThrow(false, System.err::println));
-            }
-            tag.put(entry.getKey().toString(), progress);
+            });
+            tag.put(entry.getKey().toString(), progressTag);
         }
 
         return tag;
@@ -53,7 +56,12 @@ public class QuestProgressHandler extends SavedData {
             CompoundTag progress = tag.getCompound(player);
             Map<String, QuestProgress> questProgress = new HashMap<>();
             for (var quest : progress.getAllKeys()) {
-                questProgress.put(quest, QuestProgress.CODEC.parse(NbtOps.INSTANCE, progress.getCompound(quest))
+                Quest questObj = QuestHandler.get(quest);
+                if (questObj == null) {
+                    System.err.println("Quest " + quest + " does not exist!");
+                    continue;
+                }
+                questProgress.put(quest, QuestProgress.codec(questObj).parse(NbtOps.INSTANCE, progress.getCompound(quest))
                     .getOrThrow(false, System.err::println));
             }
             this.progress.put(UUID.fromString(player), new QuestsProgress(questProgress));

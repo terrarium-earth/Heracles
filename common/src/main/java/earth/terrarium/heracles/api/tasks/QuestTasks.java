@@ -29,7 +29,7 @@ public final class QuestTasks {
     }
 
     static {
-        register(OrTask.TYPE);
+        register(CompositeTask.TYPE);
         register(KillEntityQuestTask.TYPE);
         register(ItemQuestTask.TYPE);
         register(FindBiomeTask.TYPE);

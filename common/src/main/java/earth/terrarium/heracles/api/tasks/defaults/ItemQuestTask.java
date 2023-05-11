@@ -10,20 +10,19 @@ import earth.terrarium.heracles.api.tasks.storage.defaults.IntegerTaskStorage;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.RegistryCodecs;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.nbt.IntTag;
-import net.minecraft.nbt.Tag;
+import net.minecraft.nbt.NumericTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
 public record ItemQuestTask(
     String id, HolderSet<Item> item, NbtPredicate nbt, int target
-) implements QuestTask<ItemStack, IntTag, ItemQuestTask> {
+) implements QuestTask<ItemStack, NumericTag, ItemQuestTask> {
 
     public static final QuestTaskType<ItemQuestTask> TYPE = new Type();
 
     @Override
-    public IntTag test(IntTag progress, ItemStack input) {
+    public NumericTag test(NumericTag progress, ItemStack input) {
         if (input.is(item::contains) && nbt.matches(input) && input.getCount() >= target()) {
             input.shrink(target());
             return storage().of(progress, target());
@@ -32,7 +31,7 @@ public record ItemQuestTask(
     }
 
     @Override
-    public float getProgress(IntTag progress) {
+    public float getProgress(NumericTag progress) {
         return storage().readInt(progress) / (float) target();
     }
 

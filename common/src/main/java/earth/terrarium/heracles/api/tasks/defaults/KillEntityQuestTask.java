@@ -8,19 +8,19 @@ import earth.terrarium.heracles.api.tasks.QuestTask;
 import earth.terrarium.heracles.api.tasks.QuestTaskType;
 import earth.terrarium.heracles.api.tasks.storage.defaults.IntegerTaskStorage;
 import net.minecraft.nbt.IntTag;
-import net.minecraft.nbt.Tag;
+import net.minecraft.nbt.NumericTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.LivingEntity;
 
 public record KillEntityQuestTask(
     String id, RestrictedEntityPredicate entity, int target
-) implements QuestTask<LivingEntity, IntTag, KillEntityQuestTask> {
+) implements QuestTask<LivingEntity, NumericTag, KillEntityQuestTask> {
 
     public static final QuestTaskType<KillEntityQuestTask> TYPE = new Type();
 
     @Override
-    public IntTag test(IntTag progress, LivingEntity input) {
+    public NumericTag test(NumericTag progress, LivingEntity input) {
         int current = storage().readInt(progress);
         if (input.level instanceof ServerLevel level && entity.matches(level, input)) {
             return IntTag.valueOf(current + 1);
@@ -29,7 +29,7 @@ public record KillEntityQuestTask(
     }
 
     @Override
-    public float getProgress(IntTag progress) {
+    public float getProgress(NumericTag progress) {
         return storage().readInt(progress) / (float) target;
     }
 

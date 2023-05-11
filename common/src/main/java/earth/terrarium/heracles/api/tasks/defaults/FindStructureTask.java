@@ -8,6 +8,7 @@ import earth.terrarium.heracles.api.tasks.QuestTaskType;
 import earth.terrarium.heracles.api.tasks.storage.defaults.BooleanTaskStorage;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
+import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryCodecs;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.ByteTag;
@@ -15,15 +16,20 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.levelgen.structure.Structure;
 
+import java.util.Collection;
+
 public record FindStructureTask(String id,
-                                HolderSet<Structure> structures) implements QuestTask<Holder<Structure>, ByteTag, FindStructureTask> {
+                                HolderSet<Structure> structures) implements QuestTask<Collection<Structure>, ByteTag, FindStructureTask> {
 
     public static final QuestTaskType<FindStructureTask> TYPE = new Type();
     public static final Codec<HolderSet<Structure>> STRUCTURE_LIST_CODEC = RegistryCodecs.homogeneousList(Registries.STRUCTURE, Structure.DIRECT_CODEC, true);
 
     @Override
-    public ByteTag test(ByteTag progress, Holder<Structure> input) {
-        return storage().of(progress, structures.contains(input));
+    public ByteTag test(ByteTag progress, Collection<Structure> input) {
+        return storage().of(progress, input.stream().anyMatch(structure -> {
+            Registry<Structure> structuresRegistry = Heracles.getRegistryAccess().registryOrThrow(Registries.STRUCTURE);
+            return structures.contains(structuresRegistry.getResourceKey(structure).flatMap(structuresRegistry::getHolder).orElseThrow());
+        }));
     }
 
     @Override

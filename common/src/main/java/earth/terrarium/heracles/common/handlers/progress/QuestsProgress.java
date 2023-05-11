@@ -30,7 +30,7 @@ public record QuestsProgress(Map<String, QuestProgress> progress, CompletableQue
         return (T) object;
     }
 
-    public <T> void testAndProgressTaskType(ServerPlayer player, T input, QuestTaskType<?> taskType) {
+    public <I, T extends QuestTask<I, ?, T>> void testAndProgressTaskType(ServerPlayer player, I input, QuestTaskType<T> taskType) {
         List<Pair<String, Quest>> editedQuests = new ArrayList<>();
         for (String id : this.completableQuests.getQuests(this)) {
             QuestProgress questProgress = getProgress(id);

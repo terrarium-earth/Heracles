@@ -1,11 +1,25 @@
 package earth.terrarium.heracles.forge;
 
 import earth.terrarium.heracles.Heracles;
+import earth.terrarium.heracles.api.tasks.defaults.AdvancementTask;
+import earth.terrarium.heracles.api.tasks.defaults.EnterDimensionTask;
+import earth.terrarium.heracles.api.tasks.defaults.FindBiomeTask;
+import earth.terrarium.heracles.api.tasks.defaults.FindStructureTask;
+import earth.terrarium.heracles.common.handlers.progress.QuestProgress;
+import earth.terrarium.heracles.common.handlers.progress.QuestProgressHandler;
+import earth.terrarium.heracles.common.handlers.progress.QuestsProgress;
 import earth.terrarium.heracles.common.handlers.quests.QuestHandler;
 import earth.terrarium.heracles.common.team.ScoreboardTeamProvider;
 import earth.terrarium.heracles.common.team.TeamProvider;
+import it.unimi.dsi.fastutil.longs.LongSet;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.level.levelgen.structure.Structure;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.AddReloadListenerEvent;
+import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.event.entity.EntityTravelToDimensionEvent;
+import net.minecraftforge.event.entity.player.AdvancementEvent;
+import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.server.ServerAboutToStartEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.loading.FMLPaths;
@@ -13,6 +27,7 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.IForgeRegistry;
 import net.minecraftforge.registries.RegistryBuilder;
 
+import java.util.Map;
 import java.util.function.Supplier;
 
 @Mod(Heracles.MOD_ID)
@@ -30,6 +45,9 @@ public class HeraclesForge {
         TEAM_PROVIDER_REGISTRAR.register(ScoreboardTeamProvider.KEY, ScoreboardTeamProvider::new);
         MinecraftForge.EVENT_BUS.addListener(HeraclesForge::onResourcesLoad);
         MinecraftForge.EVENT_BUS.addListener(HeraclesForge::onServerStarting);
+        MinecraftForge.EVENT_BUS.addListener(HeraclesForge::onAdvancementEarn);
+        MinecraftForge.EVENT_BUS.addListener(HeraclesForge::onTravelToDimension);
+        MinecraftForge.EVENT_BUS.addListener(HeraclesForge::onTick);
     }
 
     private static void onResourcesLoad(AddReloadListenerEvent event) {
@@ -38,5 +56,32 @@ public class HeraclesForge {
 
     private static void onServerStarting(ServerAboutToStartEvent event) {
         Heracles.setRegistryAccess(event.getServer()::registryAccess);
+    }
+
+    private static void onAdvancementEarn(AdvancementEvent.AdvancementEarnEvent event) {
+        if (!(event.getEntity() instanceof ServerPlayer player)) return;
+
+        QuestProgressHandler.getProgress(player.server, player.getUUID())
+            .testAndProgressTaskType(player, event.getAdvancement(), AdvancementTask.TYPE);
+    }
+
+    private static void onTravelToDimension(EntityTravelToDimensionEvent event) {
+        if (!(event.getEntity() instanceof ServerPlayer player)) return;
+
+        QuestProgressHandler.getProgress(player.server, player.getUUID())
+            .testAndProgressTaskType(player, player.getLevel(), EnterDimensionTask.TYPE);
+    }
+
+    private static void onTick(TickEvent.PlayerTickEvent event) {
+        if (!(event.player instanceof ServerPlayer player)) return;
+
+        QuestsProgress progress = QuestProgressHandler.getProgress(player.server, player.getUUID());
+        Map<Structure, LongSet> structures = player.getLevel().structureManager().getAllStructuresAt(player.getOnPos());
+
+        progress.testAndProgressTaskType(player, player.level.getBiome(player.getOnPos()), FindBiomeTask.TYPE);
+
+        if (!structures.isEmpty()) {
+            progress.testAndProgressTaskType(player, structures.keySet(), FindStructureTask.TYPE);
+        }
     }
 }

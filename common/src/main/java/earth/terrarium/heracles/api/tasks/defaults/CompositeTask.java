@@ -16,17 +16,18 @@ import net.minecraft.util.Mth;
 
 import java.util.List;
 
-public final class CompositeTask implements QuestTask<Object, CompositeTask> {
+@SuppressWarnings("unchecked")
+public final class CompositeTask implements QuestTask<Object, ListTag, CompositeTask> {
 
     public static final QuestTaskType<CompositeTask> TYPE = new Type();
 
     private final String id;
     private final int amount;
-    private final List<QuestTask<?, ?>> tasks;
+    private final List<QuestTask<?, ?, ?>> tasks;
     private final CompositeTaskStorage storage;
 
 
-    public CompositeTask(String id, int amount, List<QuestTask<?, ?>> tasks) {
+    public CompositeTask(String id, int amount, List<QuestTask<?, ?, ?>> tasks) {
         this.id = id;
         this.amount = amount;
         this.tasks = tasks;
@@ -43,37 +44,32 @@ public final class CompositeTask implements QuestTask<Object, CompositeTask> {
         return amount;
     }
 
-    public List<QuestTask<?, ?>> tasks() {
+    public List<QuestTask<?, ?, ?>> tasks() {
         return tasks;
     }
 
-    @SuppressWarnings("unchecked")
     @Override
-    public Tag test(Tag progress, Object input) {
-        ListTag listTag = (ListTag) progress;
-
+    public ListTag test(ListTag progress, Object input) {
         for (int i = 0; i < tasks.size(); i++) {
-            listTag.set(i, ((QuestTask<Object, ?>) tasks.get(i)).test(listTag.get(i), input));
+            progress.set(i, ((QuestTask<Object, Tag, ?>) tasks.get(i)).test(progress.get(i), input));
         }
 
-        return listTag;
+        return progress;
     }
 
     @Override
-    public float getProgress(Tag progress) {
-        ListTag listTag = (ListTag) progress;
-
+    public float getProgress(ListTag progress) {
         float totalProgress = 0;
 
         for (int i = 0; i < tasks.size(); i++) {
-            totalProgress += tasks.get(i).getProgress(listTag.get(i));
+            totalProgress += ((QuestTask<?, Tag, ?>) tasks.get(i)).getProgress(progress.get(i));
         }
 
         return Mth.clamp(totalProgress / amount, 0, 1);
     }
 
     @Override
-    public TaskStorage<?> storage() {
+    public TaskStorage<?, ListTag> storage() {
         return storage;
     }
 

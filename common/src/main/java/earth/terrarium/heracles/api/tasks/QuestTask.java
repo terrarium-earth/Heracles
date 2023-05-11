@@ -3,7 +3,7 @@ package earth.terrarium.heracles.api.tasks;
 import earth.terrarium.heracles.api.tasks.storage.TaskStorage;
 import net.minecraft.nbt.Tag;
 
-public interface QuestTask<I, T extends QuestTask<I, T>> {
+public interface QuestTask<I, S extends Tag, T extends QuestTask<I, S, T>> {
 
     /**
      * The id of the task.
@@ -19,7 +19,7 @@ public interface QuestTask<I, T extends QuestTask<I, T>> {
      * @param input The input to test.
      * @return The added progress.
      */
-    Tag test(Tag progress, I input);
+    S test(S progress, I input);
 
 
     /**
@@ -28,14 +28,14 @@ public interface QuestTask<I, T extends QuestTask<I, T>> {
      * @param progress The current progress of the task.
      * @return The progress from 0 to 1.
      */
-    float getProgress(Tag progress);
+    float getProgress(S progress);
 
     /**
      * Gets the storage of the task.
      *
      * @return The storage.
      */
-    TaskStorage<?> storage();
+    TaskStorage<?, S> storage();
 
     /**
      * Gets the type of the task.

@@ -10,23 +10,24 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.RegistryCodecs;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.nbt.ByteTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.levelgen.structure.Structure;
 
 public record FindStructureTask(String id,
-                                HolderSet<Structure> structures) implements QuestTask<Holder<Structure>, FindStructureTask> {
+                                HolderSet<Structure> structures) implements QuestTask<Holder<Structure>, ByteTag, FindStructureTask> {
 
     public static final QuestTaskType<FindStructureTask> TYPE = new Type();
     public static final Codec<HolderSet<Structure>> STRUCTURE_LIST_CODEC = RegistryCodecs.homogeneousList(Registries.STRUCTURE, Structure.DIRECT_CODEC, true);
 
     @Override
-    public Tag test(Tag progress, Holder<Structure> input) {
+    public ByteTag test(ByteTag progress, Holder<Structure> input) {
         return storage().of(progress, structures.contains(input));
     }
 
     @Override
-    public float getProgress(Tag progress) {
+    public float getProgress(ByteTag progress) {
         return storage().readBoolean(progress) ? 1.0F : 0.0F;
     }
 

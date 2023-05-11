@@ -2,13 +2,12 @@ package earth.terrarium.heracles.api.tasks.storage.defaults;
 
 import earth.terrarium.heracles.api.tasks.storage.TaskStorage;
 import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.Tag;
 
 import java.util.List;
 
-public record CompositeTaskStorage(List<? extends TaskStorage<?>> taskStorages) implements TaskStorage<ListTag> {
+public record CompositeTaskStorage(List<? extends TaskStorage<?, ?>> taskStorages) implements TaskStorage<ListTag, ListTag> {
     @Override
-    public Tag createDefault() {
+    public ListTag createDefault() {
         ListTag tags = new ListTag();
 
         for (var storage : taskStorages()) {
@@ -19,7 +18,7 @@ public record CompositeTaskStorage(List<? extends TaskStorage<?>> taskStorages) 
     }
 
     @Override
-    public ListTag read(Tag tag) {
-        return (ListTag) tag;
+    public ListTag read(ListTag tag) {
+        return tag;
     }
 }

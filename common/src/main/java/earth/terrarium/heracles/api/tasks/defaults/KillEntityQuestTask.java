@@ -15,12 +15,12 @@ import net.minecraft.world.entity.LivingEntity;
 
 public record KillEntityQuestTask(
     String id, RestrictedEntityPredicate entity, int target
-) implements QuestTask<LivingEntity, KillEntityQuestTask> {
+) implements QuestTask<LivingEntity, IntTag, KillEntityQuestTask> {
 
     public static final QuestTaskType<KillEntityQuestTask> TYPE = new Type();
 
     @Override
-    public Tag test(Tag progress, LivingEntity input) {
+    public IntTag test(IntTag progress, LivingEntity input) {
         int current = storage().readInt(progress);
         if (input.level instanceof ServerLevel level && entity.matches(level, input)) {
             return IntTag.valueOf(current + 1);
@@ -29,7 +29,7 @@ public record KillEntityQuestTask(
     }
 
     @Override
-    public float getProgress(Tag progress) {
+    public float getProgress(IntTag progress) {
         return storage().readInt(progress) / (float) target;
     }
 

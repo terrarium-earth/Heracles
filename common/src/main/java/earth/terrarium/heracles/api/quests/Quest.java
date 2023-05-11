@@ -31,7 +31,7 @@ public record Quest(
 
     Set<String> dependencies,
 
-    List<QuestTask<?, ?>> tasks,
+    List<QuestTask<?, ?, ?>> tasks,
     Component rewardText,
     List<QuestReward<?>> rewards
 ) {
@@ -49,11 +49,11 @@ public record Quest(
      * This method is used by the codec to create a new quest instance.
      * This is needed as codecs make immutable objects and we need to be able to add tasks and rewards to the quest.
      */
-    private static Quest fromCodec(QuestDisplay display, QuestSettings settings, Set<String> dependencies, List<QuestTask<?, ?>> tasks, Component rewardText, List<QuestReward<?>> rewards) {
+    private static Quest fromCodec(QuestDisplay display, QuestSettings settings, Set<String> dependencies, List<QuestTask<?, ?, ?>> tasks, Component rewardText, List<QuestReward<?>> rewards) {
         return new Quest(display, settings, dependencies, new ArrayList<>(tasks), rewardText, new ArrayList<>(rewards));
     }
 
-    public QuestTask<?, ?> getTask(String id) {
+    public QuestTask<?, ?, ?> getTask(String id) {
         return tasks.stream()
             .filter(task -> task.id().equals(id))
             .findFirst()

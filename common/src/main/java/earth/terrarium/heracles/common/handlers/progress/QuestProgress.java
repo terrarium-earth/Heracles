@@ -5,6 +5,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.teamresourceful.resourcefullib.common.codecs.maps.DispatchMapCodec;
 import earth.terrarium.heracles.api.quests.Quest;
 import earth.terrarium.heracles.api.tasks.QuestTask;
+import net.minecraft.nbt.Tag;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -20,7 +21,7 @@ public class QuestProgress {
         ).apply(instance, QuestProgress::new));
     }
 
-    private final Map<String, TaskProgress> tasks = new HashMap<>();
+    private final Map<String, TaskProgress<?>> tasks = new HashMap<>();
     private boolean complete;
     private boolean claimed;
 
@@ -29,7 +30,7 @@ public class QuestProgress {
         this.claimed = false;
     }
 
-    public QuestProgress(boolean complete, boolean claimed, Map<String, TaskProgress> tasks) {
+    public QuestProgress(boolean complete, boolean claimed, Map<String, TaskProgress<?>> tasks) {
         this.complete = complete;
         this.claimed = claimed;
         this.tasks.putAll(tasks);
@@ -37,12 +38,12 @@ public class QuestProgress {
 
     public void update(Quest quest) {
         if (complete) return;
-        for (QuestTask<?, ?> task : quest.tasks()) {
+        for (QuestTask<?, ?, ?> task : quest.tasks()) {
             if (!tasks.containsKey(task.id())) {
-                tasks.put(task.id(), new TaskProgress(task));
+                tasks.put(task.id(), new TaskProgress<>(task));
             }
         }
-        for (TaskProgress task : tasks.values()) {
+        for (TaskProgress<?> task : tasks.values()) {
             if (!task.isComplete()) {
                 return;
             }
@@ -63,11 +64,12 @@ public class QuestProgress {
         this.claimed = true;
     }
 
-    public TaskProgress getTask(QuestTask<?, ?> task) {
-        return this.tasks.computeIfAbsent(task.id(), s -> new TaskProgress(task));
+    @SuppressWarnings("unchecked")
+    public <S extends Tag> TaskProgress<S> getTask(QuestTask<?, S, ?> task) {
+        return (TaskProgress<S>) this.tasks.computeIfAbsent(task.id(), s -> new TaskProgress<>(task));
     }
 
-    public Map<String, TaskProgress> tasks() {
+    public Map<String, TaskProgress<?>> tasks() {
         return this.tasks;
     }
 }

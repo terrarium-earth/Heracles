@@ -5,7 +5,7 @@ import net.minecraft.nbt.IntTag;
 import net.minecraft.nbt.NumericTag;
 import net.minecraft.nbt.Tag;
 
-public final class IntegerTaskStorage implements TaskStorage<Integer> {
+public final class IntegerTaskStorage implements TaskStorage<Integer, IntTag> {
 
     public static final IntegerTaskStorage INSTANCE = new IntegerTaskStorage();
 
@@ -13,20 +13,20 @@ public final class IntegerTaskStorage implements TaskStorage<Integer> {
     }
 
     @Override
-    public Tag createDefault() {
+    public IntTag createDefault() {
         return IntTag.valueOf(0);
     }
 
     @Override
-    public Integer read(Tag tag) {
+    public Integer read(IntTag tag) {
         return readInt(tag);
     }
 
-    public int readInt(Tag tag) {
-        return tag instanceof NumericTag numericTag ? numericTag.getAsInt() : 0;
+    public int readInt(IntTag tag) {
+        return tag.getAsInt();
     }
 
-    public Tag of(Tag progress, int amount) {
+    public IntTag of(IntTag progress, int amount) {
         return IntTag.valueOf(readInt(progress) + amount);
     }
 }

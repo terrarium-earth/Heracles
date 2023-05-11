@@ -33,9 +33,7 @@ public class HeraclesForge {
     }
 
     private static void onResourcesLoad(AddReloadListenerEvent event) {
-        if (event.getServerResources() instanceof RegistryAccessHolder holder) {
-            QuestHandler.load(holder.heracles$getRegistryAccess(), FMLPaths.CONFIGDIR.get());
-        }
+        QuestHandler.load(Heracles.getRegistryAccess(), FMLPaths.CONFIGDIR.get());
     }
 
     private static void onServerStarting(ServerAboutToStartEvent event) {

@@ -74,6 +74,11 @@ public final class CompositeTask implements QuestTask<Object, ListTag, Composite
     }
 
     @Override
+    public boolean isCompatibleWith(QuestTaskType<?> type) {
+        return tasks.stream().anyMatch(task -> task.isCompatibleWith(type));
+    }
+
+    @Override
     public QuestTaskType<CompositeTask> type() {
         return TYPE;
     }

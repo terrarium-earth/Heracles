@@ -4,6 +4,7 @@ import com.google.common.collect.Maps;
 import com.mojang.datafixers.util.Pair;
 import earth.terrarium.heracles.api.quests.Quest;
 import earth.terrarium.heracles.api.tasks.QuestTask;
+import earth.terrarium.heracles.api.tasks.QuestTaskType;
 import earth.terrarium.heracles.common.handlers.quests.CompletableQuests;
 import earth.terrarium.heracles.common.handlers.quests.QuestHandler;
 import earth.terrarium.heracles.common.network.NetworkHandler;
@@ -29,13 +30,13 @@ public record QuestsProgress(Map<String, QuestProgress> progress, CompletableQue
         return (T) object;
     }
 
-    public <T> void testAndProgressTaskType(ServerPlayer player, T input, Class<? extends QuestTask<T, ?, ?>> taskType) {
+    public <T> void testAndProgressTaskType(ServerPlayer player, T input, QuestTaskType<?> taskType) {
         List<Pair<String, Quest>> editedQuests = new ArrayList<>();
         for (String id : this.completableQuests.getQuests(this)) {
             QuestProgress questProgress = getProgress(id);
             Quest quest = QuestHandler.get(id);
             for (QuestTask<?, ?, ?> task : quest.tasks()) {
-                if (task.getClass().isAssignableFrom(taskType)) {
+                if (task.isCompatibleWith(taskType)) {
                     TaskProgress<?> progress = questProgress.getTask(task);
                     if (progress.isComplete()) continue;
                     progress.addProgress(cast(task), input);

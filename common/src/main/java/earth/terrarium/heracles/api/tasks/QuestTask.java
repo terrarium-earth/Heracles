@@ -37,6 +37,10 @@ public interface QuestTask<I, S extends Tag, T extends QuestTask<I, S, T>> {
      */
     TaskStorage<?, S> storage();
 
+    default boolean isCompatibleWith(QuestTaskType<?> type) {
+        return type() == type;
+    }
+
     /**
      * Gets the type of the task.
      *

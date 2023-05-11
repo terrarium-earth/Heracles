@@ -42,7 +42,7 @@ public class HeraclesFabric {
         ServerEntityCombatEvents.AFTER_KILLED_OTHER_ENTITY.register((level, killer, entity) -> {
             if (killer instanceof ServerPlayer player) {
                 QuestProgressHandler.getProgress(level.getServer(), killer.getUUID())
-                    .testAndProgressTaskType(player, entity, KillEntityQuestTask.class);
+                    .testAndProgressTaskType(player, entity, KillEntityQuestTask.TYPE);
             }
         });
         ServerLifecycleEvents.SERVER_STARTED.register(server -> Heracles.setRegistryAccess(server::registryAccess));

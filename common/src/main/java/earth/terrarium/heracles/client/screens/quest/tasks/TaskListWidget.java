@@ -51,12 +51,17 @@ public class TaskListWidget extends AbstractContainerEventHandler implements Ren
         this.lastFullHeight = this.height;
     }
 
-    public void update(List<QuestTask<?, ?>> tasks) {
+    @SuppressWarnings("unchecked")
+    private static <F, T> T cast(F object) {
+        return (T) object;
+    }
+
+    public void update(List<QuestTask<?, ?, ?>> tasks) {
         List<DisplayWidget> inProgress = new ArrayList<>();
         List<DisplayWidget> completed = new ArrayList<>();
         for (var task : tasks) {
-            TaskProgress taskProgress = this.progress.getTask(task);
-            DisplayWidget widget = QuestTaskWidgets.create(task, taskProgress);
+            TaskProgress<?> taskProgress = this.progress.getTask(task);
+            DisplayWidget widget = QuestTaskWidgets.create(cast(task), taskProgress);
             if (widget != null) {
                 if (taskProgress.isComplete()) {
                     completed.add(widget);

@@ -24,16 +24,21 @@ public record QuestsProgress(Map<String, QuestProgress> progress, CompletableQue
         this(progress, new CompletableQuests());
     }
 
-    public <T> void testAndProgressTaskType(ServerPlayer player, T input, Class<? extends QuestTask<T, ?>> taskType) {
+    @SuppressWarnings("unchecked")
+    private static <F, T> T cast(F object) {
+        return (T) object;
+    }
+
+    public <T> void testAndProgressTaskType(ServerPlayer player, T input, Class<? extends QuestTask<T, ?, ?>> taskType) {
         List<Pair<String, Quest>> editedQuests = new ArrayList<>();
         for (String id : this.completableQuests.getQuests(this)) {
             QuestProgress questProgress = getProgress(id);
             Quest quest = QuestHandler.get(id);
-            for (QuestTask<?, ?> task : quest.tasks()) {
+            for (QuestTask<?, ?, ?> task : quest.tasks()) {
                 if (task.getClass().isAssignableFrom(taskType)) {
-                    TaskProgress progress = questProgress.getTask(task);
+                    TaskProgress<?> progress = questProgress.getTask(task);
                     if (progress.isComplete()) continue;
-                    progress.addProgress(taskType.cast(task), input);
+                    progress.addProgress(cast(task), input);
                     editedQuests.add(Pair.of(id, quest));
                 }
             }
@@ -75,9 +80,9 @@ public record QuestsProgress(Map<String, QuestProgress> progress, CompletableQue
         NetworkHandler.CHANNEL.sendToPlayer(new QuestCompletedPacket(quest), player);
     }
 
-    private Map<String, TaskProgress> copyTasks(Map<String, TaskProgress> tasks) {
-        Map<String, TaskProgress> newTasks = Maps.newHashMapWithExpectedSize(tasks.size());
-        for (Map.Entry<String, TaskProgress> entry : tasks.entrySet()) {
+    private Map<String, TaskProgress<?>> copyTasks(Map<String, TaskProgress<?>> tasks) {
+        Map<String, TaskProgress<?>> newTasks = Maps.newHashMapWithExpectedSize(tasks.size());
+        for (Map.Entry<String, TaskProgress<?>> entry : tasks.entrySet()) {
             newTasks.put(entry.getKey(), entry.getValue().copy());
         }
         return newTasks;

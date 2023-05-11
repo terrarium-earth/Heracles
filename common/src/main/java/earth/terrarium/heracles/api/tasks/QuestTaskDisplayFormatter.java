@@ -4,27 +4,28 @@ import earth.terrarium.heracles.api.tasks.defaults.ItemQuestTask;
 import earth.terrarium.heracles.api.tasks.defaults.KillEntityQuestTask;
 import earth.terrarium.heracles.common.handlers.progress.TaskProgress;
 import net.minecraft.Optionull;
+import net.minecraft.nbt.Tag;
 
 import java.util.IdentityHashMap;
 import java.util.Map;
 
 public final class QuestTaskDisplayFormatter {
 
-    private static final Map<QuestTaskType<?>, Formatter<?, ?>> FORMATTERS = new IdentityHashMap<>();
+    private static final Map<QuestTaskType<?>, Formatter<?, ?, ?>> FORMATTERS = new IdentityHashMap<>();
 
-    public static <I, T extends QuestTask<I, T>> void register(QuestTaskType<T> type, Formatter<I, T> formatter) {
+    public static <I, S extends Tag, T extends QuestTask<I, S, T>> void register(QuestTaskType<T> type, Formatter<I, S, T> formatter) {
         FORMATTERS.put(type, formatter);
     }
 
     @SuppressWarnings("unchecked")
-    public static <I, T extends QuestTask<I, T>> Formatter<I, T> getFormatter(QuestTaskType<T> type) {
+    public static <I, S extends Tag, T extends QuestTask<I, S, T>> Formatter<I, S, T> getFormatter(QuestTaskType<T> type) {
         if (!FORMATTERS.containsKey(type)) {
             return null;
         }
-        return (Formatter<I, T>) FORMATTERS.get(type);
+        return (Formatter<I, S, T>) FORMATTERS.get(type);
     }
 
-    public static String create(QuestTask<?, ?> task, TaskProgress progress) {
+    public static <T extends Tag> String create(QuestTask<?, T, ?> task, TaskProgress<T> progress) {
         return Optionull.mapOrDefault(getFormatter(task.type()), formatter -> formatter.castAndFormat(progress, task), "");
     }
 
@@ -34,12 +35,12 @@ public final class QuestTaskDisplayFormatter {
     }
 
     @FunctionalInterface
-    public interface Formatter<I, T extends QuestTask<I, T>> {
+    public interface Formatter<I, S extends Tag, T extends QuestTask<I, S, T>> {
 
-        String format(TaskProgress progress, T task);
+        String format(TaskProgress<S> progress, T task);
 
         @SuppressWarnings("unchecked")
-        default String castAndFormat(TaskProgress progress, QuestTask<?, ?> task) {
+        default String castAndFormat(TaskProgress<S> progress, QuestTask<?, S, ?> task) {
             return format(progress, (T) task);
         }
     }

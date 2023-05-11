@@ -9,6 +9,7 @@ import earth.terrarium.heracles.api.tasks.defaults.ItemQuestTask;
 import earth.terrarium.heracles.api.tasks.defaults.KillEntityQuestTask;
 import earth.terrarium.heracles.common.handlers.progress.TaskProgress;
 import net.minecraft.Optionull;
+import net.minecraft.nbt.Tag;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.IdentityHashMap;
@@ -16,22 +17,22 @@ import java.util.Map;
 
 public final class QuestTaskWidgets {
 
-    private static final Map<QuestTaskType<?>, QuestTaskWidgetFactory<?, ?>> FACTORIES = new IdentityHashMap<>();
+    private static final Map<QuestTaskType<?>, QuestTaskWidgetFactory<?, ?, ?>> FACTORIES = new IdentityHashMap<>();
 
-    public static <I, T extends QuestTask<I, T>> void register(QuestTaskType<T> type, QuestTaskWidgetFactory<I, T> factory) {
+    public static <I, S extends Tag, T extends QuestTask<I, S, T>> void register(QuestTaskType<T> type, QuestTaskWidgetFactory<I, S, T> factory) {
         FACTORIES.put(type, factory);
     }
 
     @SuppressWarnings("unchecked")
-    public static <I, T extends QuestTask<I, T>> QuestTaskWidgetFactory<I, T> getFactory(QuestTaskType<T> type) {
+    public static <I, S extends Tag, T extends QuestTask<I, S, T>> QuestTaskWidgetFactory<I, S, T> getFactory(QuestTaskType<T> type) {
         if (!FACTORIES.containsKey(type)) {
             return null;
         }
-        return (QuestTaskWidgetFactory<I, T>) FACTORIES.get(type);
+        return (QuestTaskWidgetFactory<I, S, T>) FACTORIES.get(type);
     }
 
     @Nullable
-    public static DisplayWidget create(QuestTask<?, ?> task, TaskProgress progress) {
+    public static <T extends Tag> DisplayWidget create(QuestTask<?, T, ?> task, TaskProgress<T> progress) {
         return Optionull.map(getFactory(task.type()), factory -> factory.createAndCast(task, progress));
     }
 

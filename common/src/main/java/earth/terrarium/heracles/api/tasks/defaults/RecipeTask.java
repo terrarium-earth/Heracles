@@ -7,23 +7,24 @@ import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.api.tasks.QuestTask;
 import earth.terrarium.heracles.api.tasks.QuestTaskType;
 import earth.terrarium.heracles.api.tasks.storage.defaults.BooleanTaskStorage;
+import net.minecraft.nbt.ByteTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.Recipe;
 
 import java.util.Set;
 
-public record RecipeTask(String id, Set<ResourceLocation> recipes) implements QuestTask<Recipe<?>, RecipeTask> {
+public record RecipeTask(String id, Set<ResourceLocation> recipes) implements QuestTask<Recipe<?>, ByteTag, RecipeTask> {
 
     public static final QuestTaskType<RecipeTask> TYPE = new Type();
 
     @Override
-    public Tag test(Tag progress, Recipe<?> input) {
+    public ByteTag test(ByteTag progress, Recipe<?> input) {
         return storage().of(progress, recipes.contains(input.getId()));
     }
 
     @Override
-    public float getProgress(Tag progress) {
+    public float getProgress(ByteTag progress) {
         return storage().readBoolean(progress) ? 1.0F : 0.0F;
     }
 

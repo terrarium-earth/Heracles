@@ -8,33 +8,33 @@ import earth.terrarium.heracles.api.tasks.QuestTask;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.Tag;
 
-public class TaskProgress {
+public class TaskProgress<S extends Tag> {
 
     public static final Codec<Tag> TAG_CODEC = Codec.PASSTHROUGH.comapFlatMap(dynamic -> {
         return DataResult.success(dynamic.convert(NbtOps.INSTANCE).getValue());
     }, tag -> new Dynamic<>(NbtOps.INSTANCE, tag));
 
-    public static Codec<TaskProgress> codec(QuestTask<?, ?> task) {
+    public static Codec<TaskProgress<?>> codec(QuestTask<?, ?, ?> task) {
         return RecordCodecBuilder.create(instance -> instance.group(
             TAG_CODEC.fieldOf("progress").orElse(task.storage().createDefault()).forGetter(TaskProgress::progress),
             Codec.BOOL.fieldOf("complete").orElse(false).forGetter(TaskProgress::isComplete)
         ).apply(instance, TaskProgress::new));
     }
 
-    private Tag progress;
+    private S progress;
     private boolean complete;
 
-    public TaskProgress(QuestTask<?, ?> task) {
+    public TaskProgress(QuestTask<?, S, ?> task) {
         this.progress = task.storage().createDefault();
         this.complete = false;
     }
 
-    public TaskProgress(Tag progress, boolean complete) {
+    public TaskProgress(S progress, boolean complete) {
         this.progress = progress;
         this.complete = complete;
     }
 
-    public <T> void addProgress(QuestTask<T, ?> task, T input) {
+    public <T> void addProgress(QuestTask<T, S, ?> task, T input) {
         if (complete) return;
         progress = task.test(progress, input);
         if (task.getProgress(progress) >= 1f) {
@@ -46,11 +46,11 @@ public class TaskProgress {
         return complete;
     }
 
-    public Tag progress() {
+    public S progress() {
         return progress;
     }
 
-    public TaskProgress copy() {
-        return new TaskProgress(progress, complete);
+    public TaskProgress<S> copy() {
+        return new TaskProgress<>(progress, complete);
     }
 }

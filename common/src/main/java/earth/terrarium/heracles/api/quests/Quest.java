@@ -66,6 +66,10 @@ public record Quest(
         if (!progress.isComplete(id)) return;
         if (progress.isClaimed(id)) return;
 
+        progress.getProgress(id).claim();
+
+        if (!progress.isClaimed(id)) return;
+
         NetworkHandler.CHANNEL.sendToPlayer(
             new QuestRewardClaimedPacket(
                 this,
@@ -78,5 +82,7 @@ public record Quest(
             ),
             player
         );
+        player.containerMenu.broadcastChanges();
+        player.inventoryMenu.broadcastChanges();
     }
 }

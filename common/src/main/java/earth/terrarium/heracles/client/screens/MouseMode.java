@@ -3,13 +3,16 @@ package earth.terrarium.heracles.client.screens;
 public enum MouseMode {
     SELECT_MOVE,
     SELECT_LINK,
-    DRAG_SELECT_MOVE,
+    DRAG_MOVE_OPEN,
     DRAG_MOVE,
     ADD;
 
+    public boolean canOpen() {
+        return this == DRAG_MOVE_OPEN;
+    }
 
     public boolean canSelect() {
-        return this == SELECT_MOVE || this == DRAG_SELECT_MOVE || this == SELECT_LINK;
+        return this == SELECT_MOVE || this == SELECT_LINK;
     }
 
     public boolean canDragSelection() {
@@ -17,6 +20,6 @@ public enum MouseMode {
     }
 
     public boolean canDrag() {
-        return this == DRAG_SELECT_MOVE || this == DRAG_MOVE;
+        return this == DRAG_MOVE_OPEN || this == DRAG_MOVE;
     }
 }

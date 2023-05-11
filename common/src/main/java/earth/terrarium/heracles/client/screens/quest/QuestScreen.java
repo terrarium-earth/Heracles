@@ -8,12 +8,14 @@ import earth.terrarium.heracles.client.screens.quest.tasks.TaskListWidget;
 import earth.terrarium.heracles.client.widgets.SelectableTabButton;
 import earth.terrarium.heracles.common.menus.quest.QuestMenu;
 import earth.terrarium.heracles.common.network.NetworkHandler;
+import earth.terrarium.heracles.common.network.packets.ClaimRewardsPacket;
 import earth.terrarium.heracles.common.network.packets.OpenGroupPacket;
 import earth.terrarium.hermes.api.TagProvider;
 import earth.terrarium.hermes.api.themes.DefaultTheme;
 import earth.terrarium.hermes.client.DocumentWidget;
 import net.minecraft.Optionull;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.FormattedCharSequence;
@@ -28,6 +30,7 @@ public class QuestScreen extends AbstractQuestScreen<QuestMenu> {
     private SelectableTabButton overview;
     private SelectableTabButton tasks;
     private SelectableTabButton rewards;
+    private Button claimRewards;
 
     private TaskListWidget taskList;
     private RewardListWidget rewardList;
@@ -57,6 +60,12 @@ public class QuestScreen extends AbstractQuestScreen<QuestMenu> {
             clearSelected();
             this.rewards.setSelected(true);
         }));
+
+        this.claimRewards = addRenderableWidget(Button.builder(Component.literal("Claim Rewards"), button -> {
+            NetworkHandler.CHANNEL.sendToServer(new ClaimRewardsPacket(this.menu.id()));
+            this.claimRewards.active = false;
+        }).bounds(5, this.height - 25, buttonWidth, 20).build());
+        this.claimRewards.active = this.menu.progress().isComplete() && !this.menu.progress().isClaimed();
 
         this.overview.setSelected(true);
 

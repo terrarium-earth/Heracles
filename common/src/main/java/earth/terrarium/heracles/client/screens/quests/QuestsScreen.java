@@ -5,7 +5,6 @@ import com.mojang.datafixers.util.Pair;
 import earth.terrarium.heracles.client.ClientQuests;
 import earth.terrarium.heracles.client.screens.AbstractQuestScreen;
 import earth.terrarium.heracles.client.screens.MouseMode;
-import earth.terrarium.heracles.client.widgets.upload.UploadModal;
 import earth.terrarium.heracles.common.menus.quests.QuestsMenu;
 import earth.terrarium.heracles.common.network.NetworkHandler;
 import earth.terrarium.heracles.common.network.packets.OpenGroupPacket;
@@ -62,7 +61,7 @@ public class QuestsScreen extends AbstractQuestScreen<QuestsMenu> {
     }
 
     protected MouseMode getMouseMode() {
-        return MouseMode.DRAG_SELECT_MOVE;
+        return MouseMode.DRAG_MOVE_OPEN;
     }
 
     @Override

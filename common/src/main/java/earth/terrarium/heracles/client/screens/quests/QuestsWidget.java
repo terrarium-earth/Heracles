@@ -140,6 +140,8 @@ public class QuestsWidget extends BaseWidget {
                 if (widget.isMouseOver(mouseX - (this.x + (width / 2f) + offset.x()), mouseY - (this.y + (height / 2f) + offset.y()))) {
                     if (mode.canSelect()) {
                         this.selectHandler.clickQuest(mode, (int) mouseX, (int) mouseY, widget);
+                    } else if (mode.canOpen()) {
+                        widget.onClicked();
                     }
                     return true;
                 }

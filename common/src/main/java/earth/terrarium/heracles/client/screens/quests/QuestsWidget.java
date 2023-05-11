@@ -12,6 +12,7 @@ import earth.terrarium.heracles.client.screens.MouseMode;
 import earth.terrarium.heracles.client.widgets.base.BaseWidget;
 import earth.terrarium.heracles.common.utils.ModUtils;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
@@ -40,6 +41,8 @@ public class QuestsWidget extends BaseWidget {
 
     private final Vector2i start = new Vector2i();
     private final Vector2i startOffset = new Vector2i();
+
+    private final SelectQuestHandler selectHandler = new SelectQuestHandler();
 
     private final Supplier<MouseMode> mouseMode;
 
@@ -77,18 +80,18 @@ public class QuestsWidget extends BaseWidget {
             for (ClientQuests.QuestEntry entry : this.entries) {
                 var position = entry.value().display().position();
 
-                int px = x + offset.x() + position.x() + 16;
-                int py = y + offset.y() + position.y() + 16;
+                int px = x + offset.x() + position.x() + 10;
+                int py = y + offset.y() + position.y() + 10;
 
-                boolean isHovered = isMouseOver(mouseX, mouseY) && mouseX >= px - 16 && mouseX <= px - 16 + 24 && mouseY >= py - 16 && mouseY <= py - 16 + 24;
+                boolean isHovered = isMouseOver(mouseX, mouseY) && mouseX >= px - 10 && mouseX <= px - 10 + 24 && mouseY >= py - 10 && mouseY <= py - 10 + 24;
 
                 RenderSystem.setShaderColor(0.9F, 0.9F, 0.9F, isHovered ? 0.45f : 0.25F);
 
                 for (ClientQuests.QuestEntry child : entry.children()) {
                     var childPosition = child.value().display().position();
 
-                    int cx = x + offset.x() + childPosition.x() + 16;
-                    int cy = y + offset.y() + childPosition.y() + 16;
+                    int cx = x + offset.x() + childPosition.x() + 10;
+                    int cy = y + offset.y() + childPosition.y() + 10;
 
                     float length = Mth.sqrt(Mth.square(cx - px) + Mth.square(cy - py));
 
@@ -112,6 +115,9 @@ public class QuestsWidget extends BaseWidget {
 
             for (QuestWidget widget : this.widgets) {
                 widget.render(pose, scissor.stack(), x + offset.x(), y + offset.y(), mouseX, mouseY, isMouseOver(mouseX, mouseY), partialTick);
+                if (mouseMode.get().canSelect() && widget == this.selectHandler.selectedQuest()) {
+                    Gui.renderOutline(pose, x + offset.x() + widget.x() - 2, y + offset.y() + widget.y() - 2, 28, 28, 0xFFA8EFF0);
+                }
             }
         }
     }
@@ -128,16 +134,17 @@ public class QuestsWidget extends BaseWidget {
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        MouseMode mode = mouseMode.get();
+        MouseMode mode = this.mouseMode.get();
         if (isMouseOver(mouseX, mouseY)) {
             for (QuestWidget widget : this.widgets) {
                 if (widget.isMouseOver(mouseX - (this.x + (width / 2f) + offset.x()), mouseY - (this.y + (height / 2f) + offset.y()))) {
                     if (mode.canSelect()) {
-                        widget.onClicked();
+                        this.selectHandler.clickQuest(mode, (int) mouseX, (int) mouseY, widget);
                     }
                     return true;
                 }
             }
+            this.selectHandler.release();
             start.set((int) mouseX, (int) mouseY);
             startOffset.set(offset.x(), offset.y());
             return true;
@@ -146,11 +153,20 @@ public class QuestsWidget extends BaseWidget {
     }
 
     @Override
+    public boolean mouseReleased(double mouseX, double mouseY, int button) {
+        this.selectHandler.release();
+        return super.mouseReleased(mouseX, mouseY, button);
+    }
+
+    @Override
     public boolean mouseDragged(double mouseX, double mouseY, int button, double dragX, double dragY) {
-        if (mouseMode.get().canDrag()) {
+        MouseMode mode = this.mouseMode.get();
+        if (mode.canDrag()) {
             int newX = (int) (mouseX - start.x() + startOffset.x());
             int newY = (int) (mouseY - start.y() + startOffset.y());
             offset.set(Mth.clamp(newX, MIN.x(), MAX.x()), Mth.clamp(newY, MIN.y(), MAX.y()));
+        } else if (mode.canDragSelection()) {
+            this.selectHandler.onDrag((int) mouseX, (int) mouseY);
         }
         return true;
     }

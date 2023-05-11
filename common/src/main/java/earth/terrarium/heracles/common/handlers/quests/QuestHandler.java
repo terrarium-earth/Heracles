@@ -105,9 +105,6 @@ public class QuestHandler {
     }
 
     public static boolean upload(String id, Quest quest) {
-        if (QUESTS.containsKey(id)) {
-            return false;
-        }
         QUESTS.put(id, quest);
         dirty = true;
         return true;

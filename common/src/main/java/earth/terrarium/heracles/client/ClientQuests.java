@@ -1,11 +1,15 @@
 package earth.terrarium.heracles.client;
 
 import earth.terrarium.heracles.api.quests.Quest;
+import earth.terrarium.heracles.common.network.NetworkHandler;
+import earth.terrarium.heracles.common.network.packets.QuestActionPacket;
+import earth.terrarium.heracles.common.network.packets.UploadQuestPacket;
 
 import java.util.*;
 
 public class ClientQuests {
     private static final Map<String, QuestEntry> ENTRIES = new HashMap<>();
+    private static final Set<String> DIRTY = new HashSet<>();
     private static final List<String> GROUPS = new ArrayList<>();
 
     public static Optional<QuestEntry> get(String key) {
@@ -17,6 +21,7 @@ public class ClientQuests {
     }
 
     public static void sync(Map<String, Quest> quests, List<String> groups) {
+        DIRTY.clear();
         ENTRIES.clear();
         GROUPS.clear();
 
@@ -52,6 +57,19 @@ public class ClientQuests {
         }
 
         return ENTRIES.computeIfAbsent(key, k -> entry);
+    }
+
+    public static void setDirty(String id) {
+        DIRTY.add(id);
+    }
+
+    public static void sendDirty() {
+        for (String id : DIRTY) {
+            QuestEntry entry = ENTRIES.get(id);
+            NetworkHandler.CHANNEL.sendToServer(new UploadQuestPacket(id, entry.value));
+        }
+        NetworkHandler.CHANNEL.sendToServer(new QuestActionPacket(QuestActionPacket.Action.SAVE));
+        DIRTY.clear();
     }
 
     public record QuestEntry(List<QuestEntry> dependencies, String key, Quest value, List<QuestEntry> children) {}

@@ -11,14 +11,17 @@ import earth.terrarium.heracles.common.network.NetworkHandler;
 import earth.terrarium.heracles.common.network.packets.OpenQuestPacket;
 import earth.terrarium.heracles.common.utils.ModUtils;
 import net.minecraft.client.gui.Gui;
+import org.joml.Vector2i;
 
 public class QuestWidget {
 
+    private final ClientQuests.QuestEntry entry;
     private final Quest quest;
     private final ModUtils.QuestStatus status;
     private final String id;
 
     public QuestWidget(ClientQuests.QuestEntry entry, ModUtils.QuestStatus status) {
+        this.entry = entry;
         this.quest = entry.value();
         this.status = status;
         this.id = entry.key();
@@ -54,5 +57,21 @@ public class QuestWidget {
 
     public int y() {
         return this.quest.display().position().y;
+    }
+
+    public Vector2i position() {
+        return this.quest.display().position();
+    }
+
+    public Quest quest() {
+        return this.quest;
+    }
+
+    public ClientQuests.QuestEntry entry() {
+        return this.entry;
+    }
+
+    public String id() {
+        return this.id;
     }
 }

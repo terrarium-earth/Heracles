@@ -5,6 +5,7 @@ import com.teamresourceful.resourcefullib.common.networking.base.PacketContext;
 import com.teamresourceful.resourcefullib.common.networking.base.PacketHandler;
 import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.common.handlers.quests.QuestHandler;
+import earth.terrarium.heracles.common.handlers.syncing.QuestSyncer;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 
@@ -47,6 +48,9 @@ public record QuestActionPacket(Action action) implements Packet<QuestActionPack
                         case SAVE -> {
                             if (player.hasPermissions(2)) {
                                 QuestHandler.save();
+                                if (player.getServer() != null) {
+                                    QuestSyncer.syncToAll(player.getServer().getPlayerList().getPlayers());
+                                }
                             }
                         }
                     }

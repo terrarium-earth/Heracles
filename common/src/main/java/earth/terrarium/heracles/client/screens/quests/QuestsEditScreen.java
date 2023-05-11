@@ -2,6 +2,7 @@ package earth.terrarium.heracles.client.screens.quests;
 
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.vertex.PoseStack;
+import earth.terrarium.heracles.client.ClientQuests;
 import earth.terrarium.heracles.client.screens.MouseMode;
 import earth.terrarium.heracles.client.widgets.CreateGroupModal;
 import earth.terrarium.heracles.client.widgets.SelectableImageButton;
@@ -17,6 +18,7 @@ public class QuestsEditScreen extends QuestsScreen {
     private SelectableImageButton moveTool;
     private SelectableImageButton dragTool;
     private SelectableImageButton addTool;
+    private SelectableImageButton linkTool;
 
     private UploadModal uploadModal;
     private CreateGroupModal groupModal;
@@ -50,6 +52,11 @@ public class QuestsEditScreen extends QuestsScreen {
         ));
         this.addTool.setTooltip(Tooltip.create(Component.literal("Add Quest Tool [U]")));
 
+        this.linkTool = addRenderableWidget(new SelectableImageButton(sidebarWidth + 39, 1, 11, 11, 0, 59, 11, HEADING, 256, 256, (button) ->
+            updateButtons()
+        ));
+        this.linkTool.setTooltip(Tooltip.create(Component.literal("Link Tool [L]")));
+
         addRenderableWidget(new ImageButton(this.width - 36, 1, 11, 11, 33, 37, 11, HEADING, 256, 256, (button) -> {
             if (this.uploadModal != null) {
                 this.uploadModal.setVisible(true);
@@ -79,6 +86,8 @@ public class QuestsEditScreen extends QuestsScreen {
             return MouseMode.DRAG_MOVE;
         } else if (addTool.isSelected()) {
             return MouseMode.ADD;
+        } else if (linkTool.isSelected()) {
+            return MouseMode.SELECT_LINK;
         }
         return MouseMode.SELECT_MOVE;
     }
@@ -101,6 +110,11 @@ public class QuestsEditScreen extends QuestsScreen {
                 addTool.setSelected(true);
                 yield true;
             }
+            case InputConstants.KEY_L -> {
+                updateButtons();
+                linkTool.setSelected(true);
+                yield true;
+            }
             default -> super.keyPressed(keyCode, scanCode, modifiers);
         };
     }
@@ -109,11 +123,13 @@ public class QuestsEditScreen extends QuestsScreen {
     public void removed() {
         super.removed();
         uploadModal.setVisible(false);
+        ClientQuests.sendDirty();
     }
 
     private void updateButtons() {
         moveTool.setSelected(false);
         dragTool.setSelected(false);
         addTool.setSelected(false);
+        linkTool.setSelected(false);
     }
 }

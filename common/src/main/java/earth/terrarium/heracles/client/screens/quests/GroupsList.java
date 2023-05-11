@@ -47,9 +47,9 @@ public class GroupsList extends SelectionList<GroupsList.Entry> {
 
         @Override
         protected void render(@NotNull ScissorBoxStack scissorStack, @NotNull PoseStack stack, int id, int left, int top, int width, int height, int mouseX, int mouseY, boolean hovered, float partialTick, boolean selected) {
-            Gui.fill(stack, left, top, left + width, top + height, selected ? 0x11FFFFFF : 0x11808080);
+            Gui.fill(stack, left, top, left + width, top + height, selected ? 0x22FFFFFF : 0x22808080);
             if (hovered) {
-                Gui.renderOutline(stack, left, top, width, height, 0x33FFFFFF);
+                Gui.renderOutline(stack, left, top, width, height, 0x44FFFFFF);
             }
             Gui.drawCenteredString(stack, Minecraft.getInstance().font, name, left + width / 2, top + height / 2 - 4, 0xFFFFFF);
             CursorUtils.setCursor(hovered, CursorScreen.Cursor.POINTER);

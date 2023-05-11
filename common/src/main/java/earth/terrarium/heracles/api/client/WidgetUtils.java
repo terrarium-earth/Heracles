@@ -13,7 +13,7 @@ public final class WidgetUtils {
         Gui.renderOutline(pose, x, y, width, (int) (width * 0.1f) + 10, 0xFF909090);
     }
 
-    public static <S extends Tag> void drawProgressBar(PoseStack pose, int minX, int minY, int maxX, int maxY, QuestTask<?, S, ?> task, TaskProgress<S> progress) {
+    public static <T extends Tag> void drawProgressBar(PoseStack pose, int minX, int minY, int maxX, int maxY, QuestTask<?, T, ?> task, TaskProgress<T> progress) {
         Gui.fill(pose, minX, minY, maxX, maxY, 0xFF808080);
         Gui.fill(pose, minX + 1, minY + 1, maxX - 1, maxY - 1, 0xFF696969);
         float fill = task.getProgress(progress.progress());

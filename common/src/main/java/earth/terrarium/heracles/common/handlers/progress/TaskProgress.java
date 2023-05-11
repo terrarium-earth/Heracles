@@ -51,6 +51,6 @@ public class TaskProgress<S extends Tag> {
     }
 
     public TaskProgress<S> copy() {
-        return new TaskProgress(progress, complete);
+        return new TaskProgress<>(progress, complete);
     }
 }

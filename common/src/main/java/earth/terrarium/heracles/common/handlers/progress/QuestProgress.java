@@ -65,8 +65,8 @@ public class QuestProgress {
     }
 
     @SuppressWarnings("unchecked")
-    public <S extends Tag> TaskProgress<S> getTask(QuestTask<?, S, ?> task) {
-        return (TaskProgress<S>) this.tasks.computeIfAbsent(task.id(), s -> new TaskProgress<>(task));
+    public <T extends Tag> TaskProgress<T> getTask(QuestTask<?, T, ?> task) {
+        return (TaskProgress<T>) this.tasks.computeIfAbsent(task.id(), s -> new TaskProgress<>(task));
     }
 
     public Map<String, TaskProgress<?>> tasks() {

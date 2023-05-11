@@ -32,7 +32,7 @@ public final class QuestTaskWidgets {
     }
 
     @Nullable
-    public static <S extends Tag> DisplayWidget create(QuestTask<?, S, ?> task, TaskProgress<S> progress) {
+    public static <T extends Tag> DisplayWidget create(QuestTask<?, T, ?> task, TaskProgress<T> progress) {
         return Optionull.map(getFactory(task.type()), factory -> factory.createAndCast(task, progress));
     }
 

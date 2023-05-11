@@ -11,6 +11,7 @@ import earth.terrarium.heracles.api.tasks.storage.defaults.CompositeTaskStorage;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.ExtraCodecs;
 import net.minecraft.util.Mth;
 
 import java.util.List;
@@ -92,7 +93,7 @@ public final class CompositeTask implements QuestTask<Object, CompositeTask> {
         public Codec<CompositeTask> codec() {
             return RecordCodecBuilder.create(instance -> instance.group(
                     Codec.STRING.fieldOf("id").forGetter(CompositeTask::id),
-                    Codec.intRange(1, Integer.MAX_VALUE).fieldOf("amount").forGetter(CompositeTask::amount),
+                    ExtraCodecs.POSITIVE_INT.fieldOf("amount").forGetter(CompositeTask::amount),
                     QuestTasks.CODEC.listOf().fieldOf("tasks").forGetter(CompositeTask::tasks)
             ).apply(instance, CompositeTask::new));
         }

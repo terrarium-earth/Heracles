@@ -16,7 +16,7 @@ public interface QuestTask<I, S extends Tag, T extends QuestTask<I, S, T>> {
      * Checks if the task is progressing.
      *
      * @param progress The current progress of the task.
-     * @param input The input to test.
+     * @param input    The input to test.
      * @return The added progress.
      */
     S test(S progress, I input);

@@ -36,9 +36,9 @@ public record ItemReward(String id, ItemStack stack) implements QuestReward<Item
         }
 
         @Override
-        public Codec<ItemReward> codec() {
+        public Codec<ItemReward> codec(String id) {
             return RecordCodecBuilder.create(instance -> instance.group(
-                Codec.STRING.fieldOf("id").forGetter(ItemReward::id),
+                RecordCodecBuilder.point(id),
                 ItemStackCodec.CODEC.fieldOf("item").forGetter(ItemReward::stack)
             ).apply(instance, ItemReward::new));
         }

@@ -2,6 +2,7 @@ package earth.terrarium.heracles.api.rewards;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
+import com.teamresourceful.resourcefullib.common.codecs.maps.DispatchMapCodec;
 import earth.terrarium.heracles.api.rewards.defaults.ItemReward;
 import earth.terrarium.heracles.api.rewards.defaults.WeightedItemReward;
 import earth.terrarium.heracles.api.rewards.defaults.XpQuestReward;
@@ -16,7 +17,7 @@ public class QuestRewards {
     private static final Map<ResourceLocation, QuestRewardType<?>> TYPES = new HashMap<>();
 
     public static final Codec<QuestRewardType<?>> TYPE_CODEC = ResourceLocation.CODEC.comapFlatMap(QuestRewards::decode, QuestRewardType::id);
-    public static final Codec<QuestReward<?>> CODEC = TYPE_CODEC.dispatch(QuestReward::type, QuestRewardType::codec);
+    public static final Codec<Map<String, QuestReward<?>>> CODEC = DispatchMapCodec.of(Codec.STRING, id -> TYPE_CODEC.dispatch(QuestReward::type, type -> type.codec(id)));
 
     private static DataResult<? extends QuestRewardType<?>> decode(ResourceLocation id) {
         return Optional.ofNullable(TYPES.get(id))

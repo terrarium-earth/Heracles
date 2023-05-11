@@ -8,13 +8,13 @@ import earth.terrarium.heracles.api.tasks.QuestTask;
 import earth.terrarium.heracles.api.tasks.QuestTaskType;
 import earth.terrarium.heracles.api.tasks.storage.defaults.BooleanTaskStorage;
 import net.minecraft.nbt.ByteTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.Recipe;
 
 import java.util.Set;
 
-public record RecipeTask(String id, Set<ResourceLocation> recipes) implements QuestTask<Recipe<?>, ByteTag, RecipeTask> {
+public record RecipeTask(String id,
+                         Set<ResourceLocation> recipes) implements QuestTask<Recipe<?>, ByteTag, RecipeTask> {
 
     public static final QuestTaskType<RecipeTask> TYPE = new Type();
 
@@ -46,9 +46,9 @@ public record RecipeTask(String id, Set<ResourceLocation> recipes) implements Qu
         }
 
         @Override
-        public Codec<RecipeTask> codec() {
+        public Codec<RecipeTask> codec(String id) {
             return RecordCodecBuilder.create(instance -> instance.group(
-                Codec.STRING.fieldOf("id").forGetter(RecipeTask::id),
+                RecordCodecBuilder.point(id),
                 CodecExtras.set(ResourceLocation.CODEC).fieldOf("recipes").forGetter(RecipeTask::recipes)
             ).apply(instance, RecipeTask::new));
         }

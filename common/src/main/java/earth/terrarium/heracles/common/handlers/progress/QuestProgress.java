@@ -16,7 +16,7 @@ public class QuestProgress {
         return RecordCodecBuilder.create(instance -> instance.group(
             Codec.BOOL.fieldOf("complete").orElse(false).forGetter(QuestProgress::isComplete),
             Codec.BOOL.fieldOf("claimed").orElse(false).forGetter(QuestProgress::isClaimed),
-            DispatchMapCodec.of(Codec.STRING, id -> TaskProgress.codec(quest.getTask(id)))
+            DispatchMapCodec.of(Codec.STRING, id -> TaskProgress.codec(quest.tasks().get(id)))
                 .orElse(new HashMap<>()).fieldOf("tasks").forGetter(QuestProgress::tasks)
         ).apply(instance, QuestProgress::new));
     }
@@ -38,7 +38,7 @@ public class QuestProgress {
 
     public void update(Quest quest) {
         if (complete) return;
-        for (QuestTask<?, ?, ?> task : quest.tasks()) {
+        for (QuestTask<?, ?, ?> task : quest.tasks().values()) {
             if (!tasks.containsKey(task.id())) {
                 tasks.put(task.id(), new TaskProgress<>(task));
             }

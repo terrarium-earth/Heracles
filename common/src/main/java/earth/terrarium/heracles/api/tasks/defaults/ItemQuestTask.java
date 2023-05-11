@@ -53,9 +53,9 @@ public record ItemQuestTask(
         }
 
         @Override
-        public Codec<ItemQuestTask> codec() {
+        public Codec<ItemQuestTask> codec(String id) {
             return RecordCodecBuilder.create(instance -> instance.group(
-                Codec.STRING.fieldOf("id").forGetter(ItemQuestTask::id),
+                RecordCodecBuilder.point(id),
                 RegistryCodecs.homogeneousList(Registries.ITEM).fieldOf("item").forGetter(ItemQuestTask::item),
                 NbtPredicate.CODEC.fieldOf("nbt").orElse(NbtPredicate.ANY).forGetter(ItemQuestTask::nbt),
                 Codec.INT.fieldOf("amount").orElse(1).forGetter(ItemQuestTask::target)

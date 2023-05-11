@@ -2,6 +2,7 @@ package earth.terrarium.heracles.api.tasks;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
+import com.teamresourceful.resourcefullib.common.codecs.maps.DispatchMapCodec;
 import earth.terrarium.heracles.api.tasks.defaults.*;
 import net.minecraft.resources.ResourceLocation;
 
@@ -14,7 +15,7 @@ public final class QuestTasks {
     private static final Map<ResourceLocation, QuestTaskType<?>> TYPES = new HashMap<>();
 
     public static final Codec<QuestTaskType<?>> TYPE_CODEC = ResourceLocation.CODEC.comapFlatMap(QuestTasks::decode, QuestTaskType::id);
-    public static final Codec<QuestTask<?, ?, ?>> CODEC = TYPE_CODEC.dispatch(QuestTask::type, QuestTaskType::codec);
+    public static final Codec<Map<String, QuestTask<?, ?, ?>>> CODEC = DispatchMapCodec.of(Codec.STRING, id -> TYPE_CODEC.dispatch(QuestTask::type, type -> type.codec(id)));
 
     private static DataResult<? extends QuestTaskType<?>> decode(ResourceLocation id) {
         return Optional.ofNullable(TYPES.get(id))

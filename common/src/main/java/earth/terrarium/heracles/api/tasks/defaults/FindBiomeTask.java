@@ -9,11 +9,11 @@ import earth.terrarium.heracles.api.tasks.storage.defaults.BooleanTaskStorage;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
 import net.minecraft.nbt.ByteTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.biome.Biome;
 
-public record FindBiomeTask(String id, HolderSet<Biome> biomes) implements QuestTask<Holder<Biome>, ByteTag, FindBiomeTask> {
+public record FindBiomeTask(String id,
+                            HolderSet<Biome> biomes) implements QuestTask<Holder<Biome>, ByteTag, FindBiomeTask> {
 
     public static final QuestTaskType<FindBiomeTask> TYPE = new Type();
 
@@ -45,9 +45,9 @@ public record FindBiomeTask(String id, HolderSet<Biome> biomes) implements Quest
         }
 
         @Override
-        public Codec<FindBiomeTask> codec() {
+        public Codec<FindBiomeTask> codec(String id) {
             return RecordCodecBuilder.create(instance -> instance.group(
-                Codec.STRING.fieldOf("id").forGetter(FindBiomeTask::id),
+                RecordCodecBuilder.point(id),
                 Biome.LIST_CODEC.fieldOf("dimensions").forGetter(FindBiomeTask::biomes)
             ).apply(instance, FindBiomeTask::new));
         }

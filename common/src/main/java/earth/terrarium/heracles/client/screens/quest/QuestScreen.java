@@ -75,7 +75,7 @@ public class QuestScreen extends AbstractQuestScreen<QuestMenu> {
         int contentHeight = this.height - 45;
 
         this.taskList = new TaskListWidget(contentX, contentY, contentWidth, contentHeight, this.menu.quest(), this.menu.progress());
-        this.taskList.update(this.menu.quest().tasks());
+        this.taskList.update(this.menu.quest().tasks().values());
 
         this.rewardList = new RewardListWidget(contentX, contentY, contentWidth, contentHeight);
         this.rewardList.update(this.menu.id(), this.menu.quest());

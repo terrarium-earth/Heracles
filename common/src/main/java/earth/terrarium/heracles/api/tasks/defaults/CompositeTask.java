@@ -14,7 +14,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.util.Mth;
 
-import java.util.List;
+import java.util.Map;
 
 @SuppressWarnings("unchecked")
 public final class CompositeTask implements QuestTask<Object, ListTag, CompositeTask> {
@@ -23,16 +23,16 @@ public final class CompositeTask implements QuestTask<Object, ListTag, Composite
 
     private final String id;
     private final int amount;
-    private final List<QuestTask<?, ?, ?>> tasks;
+    private final Map<String, QuestTask<?, ?, ?>> tasks;
     private final CompositeTaskStorage storage;
 
 
-    public CompositeTask(String id, int amount, List<QuestTask<?, ?, ?>> tasks) {
+    public CompositeTask(String id, int amount, Map<String, QuestTask<?, ?, ?>> tasks) {
         this.id = id;
         this.amount = amount;
         this.tasks = tasks;
 
-        storage = new CompositeTaskStorage(tasks.stream().map(QuestTask::storage).toList());
+        storage = new CompositeTaskStorage(tasks.values().stream().map(QuestTask::storage).toList());
     }
 
     @Override
@@ -44,14 +44,16 @@ public final class CompositeTask implements QuestTask<Object, ListTag, Composite
         return amount;
     }
 
-    public List<QuestTask<?, ?, ?>> tasks() {
+    public Map<String, QuestTask<?, ?, ?>> tasks() {
         return tasks;
     }
 
     @Override
     public ListTag test(ListTag progress, Object input) {
-        for (int i = 0; i < tasks.size(); i++) {
-            progress.set(i, ((QuestTask<Object, Tag, ?>) tasks.get(i)).test(progress.get(i), input));
+        int i = 0;
+        for (QuestTask<?, ?, ?> task : tasks.values()) {
+            progress.set(i, ((QuestTask<Object, Tag, ?>) task).test(progress.get(i), input));
+            i++;
         }
 
         return progress;
@@ -61,8 +63,10 @@ public final class CompositeTask implements QuestTask<Object, ListTag, Composite
     public float getProgress(ListTag progress) {
         float totalProgress = 0;
 
-        for (int i = 0; i < tasks.size(); i++) {
-            totalProgress += ((QuestTask<?, Tag, ?>) tasks.get(i)).getProgress(progress.get(i));
+        int i = 0;
+        for (QuestTask<?, ?, ?> task : tasks.values()) {
+            totalProgress += ((QuestTask<?, Tag, ?>) task).getProgress(progress.get(i));
+            i++;
         }
 
         return Mth.clamp(totalProgress / amount, 0, 1);
@@ -75,7 +79,7 @@ public final class CompositeTask implements QuestTask<Object, ListTag, Composite
 
     @Override
     public boolean isCompatibleWith(QuestTaskType<?> type) {
-        return tasks.stream().anyMatch(task -> task.isCompatibleWith(type));
+        return tasks.values().stream().anyMatch(task -> task.isCompatibleWith(type));
     }
 
     @Override
@@ -91,11 +95,11 @@ public final class CompositeTask implements QuestTask<Object, ListTag, Composite
         }
 
         @Override
-        public Codec<CompositeTask> codec() {
+        public Codec<CompositeTask> codec(String id) {
             return RecordCodecBuilder.create(instance -> instance.group(
-                    Codec.STRING.fieldOf("id").forGetter(CompositeTask::id),
-                    ExtraCodecs.POSITIVE_INT.fieldOf("amount").forGetter(CompositeTask::amount),
-                    QuestTasks.CODEC.listOf().fieldOf("tasks").forGetter(CompositeTask::tasks)
+                RecordCodecBuilder.point(id),
+                ExtraCodecs.POSITIVE_INT.fieldOf("amount").forGetter(CompositeTask::amount),
+                QuestTasks.CODEC.fieldOf("tasks").forGetter(CompositeTask::tasks)
             ).apply(instance, CompositeTask::new));
         }
     }

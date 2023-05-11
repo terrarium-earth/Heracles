@@ -16,7 +16,7 @@ public enum MouseMode {
     }
 
     public boolean canDragSelection() {
-        return this == SELECT_MOVE ;
+        return this == SELECT_MOVE;
     }
 
     public boolean canDrag() {

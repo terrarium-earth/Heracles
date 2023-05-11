@@ -19,9 +19,9 @@ import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 public record Quest(
@@ -31,33 +31,26 @@ public record Quest(
 
     Set<String> dependencies,
 
-    List<QuestTask<?, ?, ?>> tasks,
+    Map<String, QuestTask<?, ?, ?>> tasks,
     Component rewardText,
-    List<QuestReward<?>> rewards
+    Map<String, QuestReward<?>> rewards
 ) {
 
     public static Codec<Quest> CODEC = RecordCodecBuilder.create(instance -> instance.group(
         QuestDisplay.CODEC.fieldOf("display").forGetter(Quest::display),
         QuestSettings.CODEC.fieldOf("settings").orElse(QuestSettings.createDefault()).forGetter(Quest::settings),
         CodecExtras.set(Codec.STRING).fieldOf("dependencies").orElse(new HashSet<>()).forGetter(Quest::dependencies),
-        QuestTasks.CODEC.listOf().fieldOf("tasks").orElse(new ArrayList<>()).forGetter(Quest::tasks),
+        QuestTasks.CODEC.fieldOf("tasks").orElse(new HashMap<>()).forGetter(Quest::tasks),
         ExtraCodecs.COMPONENT.fieldOf("reward_text").orElse(CommonComponents.EMPTY).forGetter(Quest::rewardText),
-        QuestRewards.CODEC.listOf().fieldOf("rewards").orElse(new ArrayList<>()).forGetter(Quest::rewards)
+        QuestRewards.CODEC.fieldOf("rewards").orElse(new HashMap<>()).forGetter(Quest::rewards)
     ).apply(instance, Quest::fromCodec));
 
     /**
      * This method is used by the codec to create a new quest instance.
      * This is needed as codecs make immutable objects and we need to be able to add tasks and rewards to the quest.
      */
-    private static Quest fromCodec(QuestDisplay display, QuestSettings settings, Set<String> dependencies, List<QuestTask<?, ?, ?>> tasks, Component rewardText, List<QuestReward<?>> rewards) {
-        return new Quest(display, settings, dependencies, new ArrayList<>(tasks), rewardText, new ArrayList<>(rewards));
-    }
-
-    public QuestTask<?, ?, ?> getTask(String id) {
-        return tasks.stream()
-            .filter(task -> task.id().equals(id))
-            .findFirst()
-            .orElse(null);
+    private static Quest fromCodec(QuestDisplay display, QuestSettings settings, Set<String> dependencies, Map<String, QuestTask<?, ?, ?>> tasks, Component rewardText, Map<String, QuestReward<?>> rewards) {
+        return new Quest(display, settings, dependencies, new HashMap<>(tasks), rewardText, new HashMap<>(rewards));
     }
 
     public void reward(ServerPlayer player) {
@@ -73,7 +66,9 @@ public record Quest(
         NetworkHandler.CHANNEL.sendToPlayer(
             new QuestRewardClaimedPacket(
                 this,
-                rewards().stream()
+                rewards()
+                    .values()
+                    .stream()
                     .flatMap(reward -> reward.reward(player))
                     .filter(stack -> !stack.is(Items.AIR))
                     .map(ItemStack::getItem)

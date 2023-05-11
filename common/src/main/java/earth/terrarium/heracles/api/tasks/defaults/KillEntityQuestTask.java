@@ -51,9 +51,9 @@ public record KillEntityQuestTask(
         }
 
         @Override
-        public Codec<KillEntityQuestTask> codec() {
+        public Codec<KillEntityQuestTask> codec(String id) {
             return RecordCodecBuilder.create(instance -> instance.group(
-                Codec.STRING.fieldOf("id").forGetter(KillEntityQuestTask::id),
+                RecordCodecBuilder.point(id),
                 RestrictedEntityPredicate.CODEC.fieldOf("entity").forGetter(KillEntityQuestTask::entity),
                 Codec.INT.fieldOf("amount").orElse(1).forGetter(KillEntityQuestTask::target)
             ).apply(instance, KillEntityQuestTask::new));

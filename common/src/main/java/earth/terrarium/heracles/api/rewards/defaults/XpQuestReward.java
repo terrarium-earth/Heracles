@@ -44,9 +44,9 @@ public record XpQuestReward(String id, XpType xpType, int amount) implements Que
         }
 
         @Override
-        public Codec<XpQuestReward> codec() {
+        public Codec<XpQuestReward> codec(String id) {
             return RecordCodecBuilder.create(instance -> instance.group(
-                Codec.STRING.fieldOf("id").forGetter(XpQuestReward::id),
+                RecordCodecBuilder.point(id),
                 EnumCodec.of(XpType.class).fieldOf("xptype").orElse(XpType.LEVEL).forGetter(XpQuestReward::xpType),
                 Codec.INT.fieldOf("amount").orElse(1).forGetter(XpQuestReward::amount)
             ).apply(instance, XpQuestReward::new));

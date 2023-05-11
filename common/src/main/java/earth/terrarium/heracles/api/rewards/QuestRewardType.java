@@ -7,5 +7,5 @@ public interface QuestRewardType<T extends QuestReward<T>> {
 
     ResourceLocation id();
 
-    Codec<T> codec();
+    Codec<T> codec(String id);
 }

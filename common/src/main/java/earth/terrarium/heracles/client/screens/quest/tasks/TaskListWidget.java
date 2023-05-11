@@ -19,6 +19,7 @@ import net.minecraft.util.Mth;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 public class TaskListWidget extends AbstractContainerEventHandler implements Renderable {
@@ -56,7 +57,7 @@ public class TaskListWidget extends AbstractContainerEventHandler implements Ren
         return (T) object;
     }
 
-    public void update(List<QuestTask<?, ?, ?>> tasks) {
+    public void update(Collection<QuestTask<?, ?, ?>> tasks) {
         List<DisplayWidget> inProgress = new ArrayList<>();
         List<DisplayWidget> completed = new ArrayList<>();
         for (var task : tasks) {
@@ -84,7 +85,7 @@ public class TaskListWidget extends AbstractContainerEventHandler implements Ren
 
     private static float calculationCompletion(Quest quest, QuestProgress progress) {
         float completion = 0;
-        for (var task : quest.tasks()) {
+        for (var task : quest.tasks().values()) {
             completion += progress.getTask(task).isComplete() ? 1 : 0;
         }
         return completion / quest.tasks().size();

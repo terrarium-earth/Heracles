@@ -35,7 +35,7 @@ public record QuestsProgress(Map<String, QuestProgress> progress, CompletableQue
         for (String id : this.completableQuests.getQuests(this)) {
             QuestProgress questProgress = getProgress(id);
             Quest quest = QuestHandler.get(id);
-            for (QuestTask<?, ?, ?> task : quest.tasks()) {
+            for (QuestTask<?, ?, ?> task : quest.tasks().values()) {
                 if (task.isCompatibleWith(taskType)) {
                     TaskProgress<?> progress = questProgress.getTask(task);
                     if (progress.isComplete()) continue;

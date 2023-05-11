@@ -5,7 +5,8 @@ import net.minecraft.nbt.ListTag;
 
 import java.util.List;
 
-public record CompositeTaskStorage(List<? extends TaskStorage<?, ?>> taskStorages) implements TaskStorage<ListTag, ListTag> {
+public record CompositeTaskStorage(
+    List<? extends TaskStorage<?, ?>> taskStorages) implements TaskStorage<ListTag, ListTag> {
     @Override
     public ListTag createDefault() {
         ListTag tags = new ListTag();

@@ -46,9 +46,9 @@ public record WeightedItemReward(String id, WeightedCollection<WeightedStack> it
         }
 
         @Override
-        public Codec<WeightedItemReward> codec() {
+        public Codec<WeightedItemReward> codec(String id) {
             return RecordCodecBuilder.create(instance -> instance.group(
-                Codec.STRING.fieldOf("id").forGetter(WeightedItemReward::id),
+                RecordCodecBuilder.point(id),
                 CodecExtras.weightedCollection(WeightedStack.CODEC, WeightedStack::weight).fieldOf("items").forGetter(WeightedItemReward::items),
                 ExtraCodecs.POSITIVE_INT.fieldOf("rolls").orElse(1).forGetter(WeightedItemReward::rolls)
             ).apply(instance, WeightedItemReward::new));

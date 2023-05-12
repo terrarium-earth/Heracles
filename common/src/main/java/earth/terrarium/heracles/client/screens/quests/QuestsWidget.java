@@ -20,6 +20,7 @@ import org.joml.Vector2i;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 public class QuestsWidget extends BaseWidget {
@@ -36,22 +37,27 @@ public class QuestsWidget extends BaseWidget {
 
     private final int x;
     private final int y;
-    private final int width;
+    private final int fullWidth;
+    private final int selectedWidth;
+    private int width;
     private final int height;
 
     private final Vector2i start = new Vector2i();
     private final Vector2i startOffset = new Vector2i();
 
-    private final SelectQuestHandler selectHandler = new SelectQuestHandler();
+    private final SelectQuestHandler selectHandler;
 
     private final Supplier<MouseMode> mouseMode;
 
-    public QuestsWidget(int x, int y, int width, int height, Supplier<MouseMode> mouseMode) {
+    public QuestsWidget(int x, int y, int width, int selectedWidth, int height, Supplier<MouseMode> mouseMode, Consumer<ClientQuests.QuestEntry> onSelection) {
         this.x = x;
         this.y = y;
+        this.fullWidth = width;
+        this.selectedWidth = selectedWidth;
         this.width = width;
         this.height = height;
         this.mouseMode = mouseMode;
+        this.selectHandler = new SelectQuestHandler(onSelection);
     }
 
     public void update(List<Pair<ClientQuests.QuestEntry, ModUtils.QuestStatus>> quests) {
@@ -67,10 +73,11 @@ public class QuestsWidget extends BaseWidget {
     public void render(PoseStack pose, int mouseX, int mouseY, float partialTick) {
         int x = this.x;
         int y = this.y;
+        this.width = this.selectHandler.selectedQuest() != null ? this.selectedWidth : this.fullWidth;
 
         try (var scissor = RenderUtils.createScissorBoxStack(new ScissorBoxStack(), Minecraft.getInstance(), pose, x, y, width, height)) {
-            x += width / 2;
-            y += height / 2;
+            x += this.fullWidth / 2;
+            y += this.height / 2;
             RenderUtils.bindTexture(ARROW);
             RenderSystem.enableBlend();
 
@@ -137,7 +144,7 @@ public class QuestsWidget extends BaseWidget {
         MouseMode mode = this.mouseMode.get();
         if (isMouseOver(mouseX, mouseY)) {
             for (QuestWidget widget : this.widgets) {
-                if (widget.isMouseOver(mouseX - (this.x + (width / 2f) + offset.x()), mouseY - (this.y + (height / 2f) + offset.y()))) {
+                if (widget.isMouseOver(mouseX - (this.x + (this.fullWidth / 2f) + offset.x()), mouseY - (this.y + (this.height / 2f) + offset.y()))) {
                     if (mode.canSelect()) {
                         this.selectHandler.clickQuest(mode, (int) mouseX, (int) mouseY, widget);
                     } else if (mode.canOpen()) {
@@ -176,5 +183,9 @@ public class QuestsWidget extends BaseWidget {
     @Override
     public boolean isMouseOver(double mouseX, double mouseY) {
         return mouseX >= this.x && mouseX <= this.x + this.width && mouseY >= this.y && mouseY <= this.y + this.height;
+    }
+
+    public SelectQuestHandler selectHandler() {
+        return this.selectHandler;
     }
 }

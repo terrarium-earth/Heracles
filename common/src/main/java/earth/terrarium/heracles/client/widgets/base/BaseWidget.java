@@ -1,6 +1,9 @@
 package earth.terrarium.heracles.client.widgets.base;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.teamresourceful.resourcefullib.client.screens.CursorScreen;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.gui.components.events.AbstractContainerEventHandler;
 import net.minecraft.client.gui.components.events.GuiEventListener;
@@ -14,6 +17,7 @@ import java.util.List;
 public abstract class BaseWidget extends AbstractContainerEventHandler implements Renderable, NarratableEntry {
 
     private final List<GuiEventListener> children = new ArrayList<>();
+    protected final Font font = Minecraft.getInstance().font;
 
     public <T extends GuiEventListener> T addChild(T child) {
         this.children.add(child);
@@ -25,6 +29,9 @@ public abstract class BaseWidget extends AbstractContainerEventHandler implement
             if (child instanceof Renderable renderable) {
                 renderable.render(pose, mouseX, mouseY, partialTicks);
             }
+        }
+        if (Minecraft.getInstance().screen instanceof CursorScreen cursorScreen) {
+            cursorScreen.setCursor(children());
         }
     }
 

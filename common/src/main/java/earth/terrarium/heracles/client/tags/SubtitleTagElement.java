@@ -16,7 +16,7 @@ public class SubtitleTagElement extends ComponentTagElement {
         this.text = ClientQuests.get(id)
             .map(ClientQuests.QuestEntry::value)
             .map(Quest::display)
-            .flatMap(QuestDisplay::subtitle)
+            .map(QuestDisplay::subtitle)
             .orElse(CommonComponents.EMPTY);
     }
 }

@@ -19,8 +19,9 @@ import java.util.List;
 
 public class QuestsScreen extends AbstractQuestScreen<QuestsMenu> {
 
-    private QuestsWidget questsWidget;
-    private GroupsList groupsList;
+    protected SelectQuestWidget selectQuestWidget;
+    protected QuestsWidget questsWidget;
+    protected GroupsList groupsList;
 
     public QuestsScreen(QuestsMenu menu, Inventory inventory, Component component) {
         super(menu, inventory, component);
@@ -38,12 +39,24 @@ public class QuestsScreen extends AbstractQuestScreen<QuestsMenu> {
         menu.quests().forEach((id, status) ->
             ClientQuests.get(id).ifPresent(quest -> quests.add(Pair.of(quest, status)))
         );
+
         questsWidget = addRenderableWidget(new QuestsWidget(
             (int) (this.width * 0.25f),
             15,
             (int) (this.width * 0.75f),
+            (int) (this.width * 0.50f),
             this.height - 15,
-            this::getMouseMode
+            this::getMouseMode,
+            quest -> {
+                if (selectQuestWidget != null) {
+                    if (quest == null) {
+                        removeWidget(selectQuestWidget);
+                    } else if (!children().contains(selectQuestWidget)) {
+                        addRenderableWidget(selectQuestWidget);
+                    }
+                    selectQuestWidget.setEntry(quest);
+                }
+            }
         ));
         questsWidget.update(quests);
 

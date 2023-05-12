@@ -37,24 +37,40 @@ public class QuestsEditScreen extends QuestsScreen {
             }
         })).setTooltip(Tooltip.create(Component.literal("Add Group")));
 
-        this.moveTool = addRenderableWidget(new SelectableImageButton(sidebarWidth + 3, 1, 11, 11, 0, 37, 11, HEADING, 256, 256, (button) ->
-            updateButtons()
-        ));
+        selectQuestWidget = new SelectQuestWidget(
+            (int) (this.width * 0.75f) + 2,
+            15,
+            (int) (this.width * 0.25f) - 2,
+            this.height - 15
+        );
+
+        this.moveTool = addRenderableWidget(new SelectableImageButton(sidebarWidth + 3, 1, 11, 11, 0, 37, 11, HEADING, 256, 256, (button) -> {
+            updateButtons();
+            if (questsWidget.selectHandler().selectedQuest() != null) {
+                if (!children().contains(selectQuestWidget)) {
+                    addRenderableWidget(selectQuestWidget);
+                }
+                selectQuestWidget.setEntry(questsWidget.selectHandler().selectedQuest().entry());
+            }
+        }));
         this.moveTool.setTooltip(Tooltip.create(Component.literal("Move/Select [V]")));
 
-        this.dragTool = addRenderableWidget(new SelectableImageButton(sidebarWidth + 15, 1, 11, 11, 11, 37, 11, HEADING, 256, 256, (button) ->
-            updateButtons()
-        ));
+        this.dragTool = addRenderableWidget(new SelectableImageButton(sidebarWidth + 15, 1, 11, 11, 11, 37, 11, HEADING, 256, 256, (button) -> {
+            updateButtons();
+            clearWidget();
+        }));
         this.dragTool.setTooltip(Tooltip.create(Component.literal("Hand/Drag Tool [H]")));
 
-        this.addTool = addRenderableWidget(new SelectableImageButton(sidebarWidth + 27, 1, 11, 11, 22, 37, 11, HEADING, 256, 256, (button) ->
-            updateButtons()
-        ));
+        this.addTool = addRenderableWidget(new SelectableImageButton(sidebarWidth + 27, 1, 11, 11, 22, 37, 11, HEADING, 256, 256, (button) -> {
+            updateButtons();
+            clearWidget();
+        }));
         this.addTool.setTooltip(Tooltip.create(Component.literal("Add Quest Tool [U]")));
 
-        this.linkTool = addRenderableWidget(new SelectableImageButton(sidebarWidth + 39, 1, 11, 11, 0, 59, 11, HEADING, 256, 256, (button) ->
-            updateButtons()
-        ));
+        this.linkTool = addRenderableWidget(new SelectableImageButton(sidebarWidth + 39, 1, 11, 11, 0, 59, 11, HEADING, 256, 256, (button) -> {
+            updateButtons();
+            clearWidget();
+        }));
         this.linkTool.setTooltip(Tooltip.create(Component.literal("Link Tool [L]")));
 
         addRenderableWidget(new ImageButton(this.width - 36, 1, 11, 11, 33, 37, 11, HEADING, 256, 256, (button) -> {
@@ -94,6 +110,10 @@ public class QuestsEditScreen extends QuestsScreen {
 
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+        boolean result = super.keyPressed(keyCode, scanCode, modifiers);
+        if (result) {
+            return true;
+        }
         return switch (keyCode) {
             case InputConstants.KEY_V -> {
                 updateButtons();
@@ -115,7 +135,7 @@ public class QuestsEditScreen extends QuestsScreen {
                 linkTool.setSelected(true);
                 yield true;
             }
-            default -> super.keyPressed(keyCode, scanCode, modifiers);
+            default -> false;
         };
     }
 
@@ -124,6 +144,13 @@ public class QuestsEditScreen extends QuestsScreen {
         super.removed();
         uploadModal.setVisible(false);
         ClientQuests.sendDirty();
+    }
+
+    private void clearWidget() {
+        if (selectQuestWidget != null) {
+            selectQuestWidget.setEntry(null);
+            removeWidget(selectQuestWidget);
+        }
     }
 
     private void updateButtons() {

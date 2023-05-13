@@ -7,11 +7,10 @@ import net.minecraft.util.FormattedCharSequence;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.function.Predicate;
 
 public class ClientUtils {
 
-    public static Collection<ResourceLocation> getTextures(String path, Predicate<ResourceLocation> predicate) {
+    public static Collection<ResourceLocation> getTextures(String path) {
         var textures = Minecraft.getInstance().getResourceManager()
             .listResources("textures/" + path, location -> location.getPath().endsWith(".png"));
         return textures.keySet();

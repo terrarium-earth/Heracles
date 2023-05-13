@@ -20,6 +20,7 @@ import org.joml.Vector2i;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
@@ -48,14 +49,16 @@ public class QuestsWidget extends BaseWidget {
     private final SelectQuestHandler selectHandler;
 
     private final Supplier<MouseMode> mouseMode;
+    private final BooleanSupplier inspectorOpened;
 
-    public QuestsWidget(int x, int y, int width, int selectedWidth, int height, Supplier<MouseMode> mouseMode, Consumer<ClientQuests.QuestEntry> onSelection) {
+    public QuestsWidget(int x, int y, int width, int selectedWidth, int height, BooleanSupplier inspectorOpened, Supplier<MouseMode> mouseMode, Consumer<ClientQuests.QuestEntry> onSelection) {
         this.x = x;
         this.y = y;
         this.fullWidth = width;
         this.selectedWidth = selectedWidth;
         this.width = width;
         this.height = height;
+        this.inspectorOpened = inspectorOpened;
         this.mouseMode = mouseMode;
         this.selectHandler = new SelectQuestHandler(onSelection);
     }
@@ -73,7 +76,7 @@ public class QuestsWidget extends BaseWidget {
     public void render(PoseStack pose, int mouseX, int mouseY, float partialTick) {
         int x = this.x;
         int y = this.y;
-        this.width = this.selectHandler.selectedQuest() != null ? this.selectedWidth : this.fullWidth;
+        this.width = inspectorOpened.getAsBoolean() ? this.selectedWidth : this.fullWidth;
 
         try (var scissor = RenderUtils.createScissorBoxStack(new ScissorBoxStack(), Minecraft.getInstance(), pose, x, y, width, height)) {
             x += this.fullWidth / 2;

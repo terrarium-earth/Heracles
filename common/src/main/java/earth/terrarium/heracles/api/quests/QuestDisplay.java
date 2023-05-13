@@ -28,12 +28,12 @@ public final class QuestDisplay {
         Codec.STRING.fieldOf("group").orElse("Main").forGetter(QuestDisplay::group)
     ).apply(instance, QuestDisplay::new));
 
+    private final Vector2i position;
     private QuestIcon<?> icon;
     private ResourceLocation iconBackground;
     private Component title;
     private Component subtitle;
     private String description;
-    private Vector2i position;
     private String group;
 
     public QuestDisplay(
@@ -75,7 +75,7 @@ public final class QuestDisplay {
     }
 
     public void setTitle(Component title) {
-        this.title = title;
+        this.title = title == null ? CommonComponents.EMPTY : title;
     }
 
     public Component subtitle() {
@@ -96,10 +96,6 @@ public final class QuestDisplay {
 
     public Vector2i position() {
         return position;
-    }
-
-    public void setPosition(Vector2i position) {
-        this.position = position;
     }
 
     public String group() {

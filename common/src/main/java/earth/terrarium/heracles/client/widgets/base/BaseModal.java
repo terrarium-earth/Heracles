@@ -1,5 +1,6 @@
 package earth.terrarium.heracles.client.widgets.base;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.teamresourceful.resourcefullib.client.screens.CursorScreen;
 import com.teamresourceful.resourcefullib.client.utils.CursorUtils;
@@ -8,6 +9,7 @@ import earth.terrarium.heracles.client.ClientUtils;
 import earth.terrarium.heracles.client.screens.AbstractQuestScreen;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
+import net.minecraft.network.chat.Component;
 
 public abstract class BaseModal extends BaseWidget implements TemporyWidget {
 
@@ -50,15 +52,20 @@ public abstract class BaseModal extends BaseWidget implements TemporyWidget {
             ClientUtils.clearTooltip();
         }
 
+        RenderSystem.disableDepthTest();
         renderBackground(pose, mouseX, mouseY, partialTick);
 
         RenderUtils.bindTexture(AbstractQuestScreen.HEADING);
         boolean hoveringClose = mouseX >= x + width - 18 && mouseX <= x + width - 7 && mouseY >= y + 5 && mouseY <= y + 16;
         Gui.blit(pose, x + width - 18, y + 5, 11, hoveringClose ? 26 : 15, 11, 11);
 
+        if (hoveringClose) {
+            ClientUtils.setTooltip(Component.literal("Close"));
+        }
         CursorUtils.setCursor(true, hoveringClose ? CursorScreen.Cursor.POINTER : CursorScreen.Cursor.DEFAULT);
 
         renderForeground(pose, mouseX, mouseY, partialTick);
+        RenderSystem.enableDepthTest();
 
         if (Minecraft.getInstance().screen instanceof CursorScreen cursorScreen) {
             cursorScreen.setCursor(children());

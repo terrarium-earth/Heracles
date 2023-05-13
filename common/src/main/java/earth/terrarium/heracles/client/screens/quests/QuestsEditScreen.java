@@ -6,6 +6,8 @@ import earth.terrarium.heracles.client.ClientQuests;
 import earth.terrarium.heracles.client.screens.MouseMode;
 import earth.terrarium.heracles.client.widgets.CreateGroupModal;
 import earth.terrarium.heracles.client.widgets.SelectableImageButton;
+import earth.terrarium.heracles.client.widgets.icon.IconModal;
+import earth.terrarium.heracles.client.widgets.icon.background.IconBackgroundModal;
 import earth.terrarium.heracles.client.widgets.upload.UploadModal;
 import earth.terrarium.heracles.common.menus.quests.QuestsMenu;
 import net.minecraft.client.gui.components.ImageButton;
@@ -22,6 +24,8 @@ public class QuestsEditScreen extends QuestsScreen {
 
     private UploadModal uploadModal;
     private CreateGroupModal groupModal;
+    private IconBackgroundModal iconBackgroundModal;
+    private IconModal iconModal;
 
     public QuestsEditScreen(QuestsMenu menu, Inventory inventory, Component component) {
         super(menu, inventory, component);
@@ -47,7 +51,7 @@ public class QuestsEditScreen extends QuestsScreen {
         this.moveTool = addRenderableWidget(new SelectableImageButton(sidebarWidth + 3, 1, 11, 11, 0, 37, 11, HEADING, 256, 256, (button) -> {
             updateButtons();
             if (questsWidget.selectHandler().selectedQuest() != null) {
-                if (!children().contains(selectQuestWidget)) {
+                if (!actualChildren().contains(selectQuestWidget)) {
                     addRenderableWidget(selectQuestWidget);
                 }
                 selectQuestWidget.setEntry(questsWidget.selectHandler().selectedQuest().entry());
@@ -83,6 +87,8 @@ public class QuestsEditScreen extends QuestsScreen {
 
         this.uploadModal = addTemporary(new UploadModal(this.width, this.height));
         this.groupModal = addTemporary(new CreateGroupModal(this.width, this.height));
+        this.iconBackgroundModal = addTemporary(new IconBackgroundModal(this.width, this.height));
+        this.iconModal = addTemporary(new IconModal(this.width, this.height));
     }
 
     @Override
@@ -158,5 +164,13 @@ public class QuestsEditScreen extends QuestsScreen {
         dragTool.setSelected(false);
         addTool.setSelected(false);
         linkTool.setSelected(false);
+    }
+
+    public IconBackgroundModal iconBackgroundModal() {
+        return this.iconBackgroundModal;
+    }
+
+    public IconModal iconModal() {
+        return this.iconModal;
     }
 }

@@ -46,12 +46,13 @@ public class QuestsScreen extends AbstractQuestScreen<QuestsMenu> {
             (int) (this.width * 0.75f),
             (int) (this.width * 0.50f),
             this.height - 15,
+            () -> actualChildren().contains(selectQuestWidget),
             this::getMouseMode,
             quest -> {
                 if (selectQuestWidget != null) {
                     if (quest == null) {
                         removeWidget(selectQuestWidget);
-                    } else if (!children().contains(selectQuestWidget)) {
+                    } else if (!actualChildren().contains(selectQuestWidget)) {
                         addRenderableWidget(selectQuestWidget);
                     }
                     selectQuestWidget.setEntry(quest);

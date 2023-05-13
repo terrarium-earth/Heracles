@@ -120,6 +120,10 @@ public abstract class AbstractQuestScreen<T extends AbstractContainerMenu> exten
         return super.children();
     }
 
+    public List<? extends GuiEventListener> actualChildren() {
+        return super.children();
+    }
+
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
         if (Minecraft.getInstance().options.keyInventory.matches(keyCode, scanCode)) {

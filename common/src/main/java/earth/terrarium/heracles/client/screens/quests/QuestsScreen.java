@@ -2,7 +2,7 @@ package earth.terrarium.heracles.client.screens.quests;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.datafixers.util.Pair;
-import earth.terrarium.heracles.client.ClientQuests;
+import earth.terrarium.heracles.client.handlers.ClientQuests;
 import earth.terrarium.heracles.client.screens.AbstractQuestScreen;
 import earth.terrarium.heracles.client.screens.MouseMode;
 import earth.terrarium.heracles.common.menus.quests.QuestsMenu;

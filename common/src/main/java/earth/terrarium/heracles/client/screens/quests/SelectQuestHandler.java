@@ -1,6 +1,6 @@
 package earth.terrarium.heracles.client.screens.quests;
 
-import earth.terrarium.heracles.client.ClientQuests;
+import earth.terrarium.heracles.client.handlers.ClientQuests;
 import earth.terrarium.heracles.client.screens.MouseMode;
 import net.minecraft.client.gui.screens.Screen;
 import org.joml.Vector2i;

@@ -1,4 +1,4 @@
-package earth.terrarium.heracles.client;
+package earth.terrarium.heracles.client.handlers;
 
 import earth.terrarium.heracles.api.quests.Quest;
 import earth.terrarium.heracles.common.network.NetworkHandler;

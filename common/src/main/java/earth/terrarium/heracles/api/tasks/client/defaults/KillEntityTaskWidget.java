@@ -12,12 +12,13 @@ import earth.terrarium.heracles.common.handlers.progress.TaskProgress;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
+import net.minecraft.nbt.NumericTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 
-public record KillEntityTaskWidget(KillEntityQuestTask task, TaskProgress progress,
+public record KillEntityTaskWidget(KillEntityQuestTask task, TaskProgress<NumericTag> progress,
                                    CacheableFunction<EntityType<?>, Entity> factory) implements DisplayWidget {
 
     private static final String TITLE_SINGULAR = "task.heracles.kill_entity.title.singular";
@@ -25,7 +26,7 @@ public record KillEntityTaskWidget(KillEntityQuestTask task, TaskProgress progre
     private static final String DESC_SINGULAR = "task.heracles.kill_entity.desc.singular";
     private static final String DESC_PLURAL = "task.heracles.kill_entity.desc.plural";
 
-    public KillEntityTaskWidget(KillEntityQuestTask task, TaskProgress progress) {
+    public KillEntityTaskWidget(KillEntityQuestTask task, TaskProgress<NumericTag> progress) {
         this(task, progress, new CacheableFunction<>(type -> {
             Entity entity = type.create(Minecraft.getInstance().level);
             if (entity != null) {

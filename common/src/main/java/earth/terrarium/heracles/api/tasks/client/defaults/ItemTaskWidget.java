@@ -9,13 +9,14 @@ import earth.terrarium.heracles.api.tasks.defaults.ItemQuestTask;
 import earth.terrarium.heracles.common.handlers.progress.TaskProgress;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
+import net.minecraft.nbt.NumericTag;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 
 import java.util.List;
 
-public record ItemTaskWidget(ItemQuestTask task, TaskProgress progress,
+public record ItemTaskWidget(ItemQuestTask task, TaskProgress<NumericTag> progress,
                              List<ItemStack> stacks) implements DisplayWidget {
 
     private static final String TITLE_SINGULAR = "task.heracles.item.title.singular";
@@ -23,7 +24,7 @@ public record ItemTaskWidget(ItemQuestTask task, TaskProgress progress,
     private static final String DESC_SINGULAR = "task.heracles.item.desc.singular";
     private static final String DESC_PLURAL = "task.heracles.item.desc.plural";
 
-    public ItemTaskWidget(ItemQuestTask task, TaskProgress progress) {
+    public ItemTaskWidget(ItemQuestTask task, TaskProgress<NumericTag> progress) {
         this(task, progress, task.item().stream().map(ItemStack::new).toList());
     }
 

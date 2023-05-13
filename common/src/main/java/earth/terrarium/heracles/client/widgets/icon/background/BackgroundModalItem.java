@@ -6,7 +6,7 @@ import com.teamresourceful.resourcefullib.client.scissor.ScissorBoxStack;
 import com.teamresourceful.resourcefullib.client.screens.CursorScreen;
 import com.teamresourceful.resourcefullib.client.utils.CursorUtils;
 import com.teamresourceful.resourcefullib.client.utils.RenderUtils;
-import earth.terrarium.heracles.client.ClientUtils;
+import earth.terrarium.heracles.client.utils.ClientUtils;
 import earth.terrarium.heracles.client.widgets.upload.UploadModal;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.GameRenderer;

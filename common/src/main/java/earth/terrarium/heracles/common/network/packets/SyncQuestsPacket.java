@@ -6,7 +6,7 @@ import com.teamresourceful.resourcefullib.common.networking.base.PacketContext;
 import com.teamresourceful.resourcefullib.common.networking.base.PacketHandler;
 import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.api.quests.Quest;
-import earth.terrarium.heracles.client.ClientQuests;
+import earth.terrarium.heracles.client.handlers.ClientQuests;
 import earth.terrarium.heracles.common.utils.PacketHelper;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;

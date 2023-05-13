@@ -8,7 +8,7 @@ import com.teamresourceful.resourcefullib.client.scissor.ScissorBoxStack;
 import com.teamresourceful.resourcefullib.client.utils.RenderUtils;
 import com.teamresourceful.resourcefullib.common.lib.Constants;
 import earth.terrarium.heracles.api.quests.Quest;
-import earth.terrarium.heracles.client.ClientUtils;
+import earth.terrarium.heracles.client.utils.ClientUtils;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;

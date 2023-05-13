@@ -3,7 +3,7 @@ package earth.terrarium.heracles.client.widgets;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.teamresourceful.resourcefullib.client.utils.RenderUtils;
 import earth.terrarium.heracles.Heracles;
-import earth.terrarium.heracles.client.ClientQuests;
+import earth.terrarium.heracles.client.handlers.ClientQuests;
 import earth.terrarium.heracles.client.screens.quests.GroupsList;
 import earth.terrarium.heracles.client.screens.quests.QuestsScreen;
 import earth.terrarium.heracles.client.widgets.base.BaseModal;

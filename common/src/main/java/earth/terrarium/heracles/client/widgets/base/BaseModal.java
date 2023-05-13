@@ -5,7 +5,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.teamresourceful.resourcefullib.client.screens.CursorScreen;
 import com.teamresourceful.resourcefullib.client.utils.CursorUtils;
 import com.teamresourceful.resourcefullib.client.utils.RenderUtils;
-import earth.terrarium.heracles.client.ClientUtils;
+import earth.terrarium.heracles.client.utils.ClientUtils;
 import earth.terrarium.heracles.client.screens.AbstractQuestScreen;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;

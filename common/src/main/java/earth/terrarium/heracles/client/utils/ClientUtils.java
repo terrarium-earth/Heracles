@@ -1,4 +1,4 @@
-package earth.terrarium.heracles.client;
+package earth.terrarium.heracles.client.utils;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;

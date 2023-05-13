@@ -2,7 +2,7 @@ package earth.terrarium.heracles.common.menus.quests;
 
 import earth.terrarium.heracles.api.quests.Quest;
 import earth.terrarium.heracles.api.quests.QuestDisplay;
-import earth.terrarium.heracles.client.ClientQuests;
+import earth.terrarium.heracles.client.handlers.ClientQuests;
 import earth.terrarium.heracles.common.regisitries.ModMenus;
 import earth.terrarium.heracles.common.utils.ModUtils;
 import net.minecraft.world.entity.player.Inventory;

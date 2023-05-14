@@ -1,4 +1,4 @@
-package earth.terrarium.heracles.client.screens.quest.rewards;
+package earth.terrarium.heracles.client.screens.quest.tasks;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.teamresourceful.resourcefullib.client.scissor.ScissorBoxStack;
@@ -9,10 +9,10 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.network.chat.Component;
 
-public record QuestDependentWidget(Quest quest) implements DisplayWidget {
+public record DependencyDisplayWidget(Quest quest) implements DisplayWidget {
 
-    private static final String TITLE = "gui.heracles.rewards.unlocks_quest.title";
-    private static final Component DESCRIPTION = Component.translatable("gui.heracles.rewards.unlocks_quest.desc");
+    private static final String TITLE = "gui.heracles.task.require_quest.title";
+    private static final Component DESCRIPTION = Component.translatable("gui.heracles.task.require_quest.desc");
 
     @Override
     public void render(PoseStack pose, ScissorBoxStack scissor, int x, int y, int width, int mouseX, int mouseY, boolean hovered, float partialTicks) {

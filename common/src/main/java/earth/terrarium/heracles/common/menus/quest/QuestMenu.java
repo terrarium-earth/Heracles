@@ -3,12 +3,14 @@ package earth.terrarium.heracles.common.menus.quest;
 import earth.terrarium.heracles.api.quests.Quest;
 import earth.terrarium.heracles.common.handlers.progress.QuestProgress;
 import earth.terrarium.heracles.common.regisitries.ModMenus;
+import earth.terrarium.heracles.common.utils.ModUtils;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Map;
 import java.util.Optional;
 
 public class QuestMenu extends AbstractContainerMenu {
@@ -35,6 +37,10 @@ public class QuestMenu extends AbstractContainerMenu {
 
     public QuestProgress progress() {
         return this.content != null ? this.content.progress() : null;
+    }
+
+    public Map<String, ModUtils.QuestStatus> quests() {
+        return this.content != null ? this.content.quests() : null;
     }
 
     @Override

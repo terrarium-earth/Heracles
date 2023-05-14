@@ -7,9 +7,11 @@ import earth.terrarium.heracles.api.client.DisplayWidget;
 import earth.terrarium.heracles.api.quests.Quest;
 import earth.terrarium.heracles.api.tasks.QuestTask;
 import earth.terrarium.heracles.api.tasks.client.QuestTaskWidgets;
+import earth.terrarium.heracles.client.handlers.ClientQuests;
 import earth.terrarium.heracles.client.screens.quest.HeadingWidget;
 import earth.terrarium.heracles.common.handlers.progress.QuestProgress;
 import earth.terrarium.heracles.common.handlers.progress.TaskProgress;
+import earth.terrarium.heracles.common.utils.ModUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.gui.components.events.AbstractContainerEventHandler;
@@ -21,6 +23,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 public class TaskListWidget extends AbstractContainerEventHandler implements Renderable {
 
@@ -30,6 +33,8 @@ public class TaskListWidget extends AbstractContainerEventHandler implements Ren
     private final List<DisplayWidget> widgets = new ArrayList<>();
 
     private final QuestProgress progress;
+    private final Quest quest;
+    private final Map<String, ModUtils.QuestStatus> quests;
     private final float completion;
 
     private final int x;
@@ -42,9 +47,11 @@ public class TaskListWidget extends AbstractContainerEventHandler implements Ren
 
     private MouseClick mouse = null;
 
-    public TaskListWidget(int x, int y, int width, int height, Quest quest, QuestProgress progress) {
+    public TaskListWidget(int x, int y, int width, int height, Quest quest, QuestProgress progress, Map<String, ModUtils.QuestStatus> quests) {
         this.progress = progress;
         this.completion = progress.isComplete() ? 1 : calculationCompletion(quest, progress);
+        this.quests = quests;
+        this.quest = quest;
         this.x = x;
         this.y = y;
         this.width = width;
@@ -58,6 +65,7 @@ public class TaskListWidget extends AbstractContainerEventHandler implements Ren
     }
 
     public void update(Collection<QuestTask<?, ?, ?>> tasks) {
+        List<DisplayWidget> dependencies = new ArrayList<>();
         List<DisplayWidget> inProgress = new ArrayList<>();
         List<DisplayWidget> completed = new ArrayList<>();
         for (var task : tasks) {
@@ -71,8 +79,19 @@ public class TaskListWidget extends AbstractContainerEventHandler implements Ren
                 }
             }
         }
+        for (String dependency : quest.dependencies()) {
+            ModUtils.QuestStatus status = this.quests.get(dependency);
+            Quest questDependency = ClientQuests.get(dependency).map(ClientQuests.QuestEntry::value).orElse(null);
+            if (status != ModUtils.QuestStatus.COMPLETED && questDependency != null) {
+                dependencies.add(new DependencyDisplayWidget(questDependency));
+            }
+        }
         this.widgets.clear();
         this.widgets.add(new TaskListHeadingWidget(this.completion));
+        if (!dependencies.isEmpty()) {
+            this.widgets.add(new HeadingWidget(Component.literal("Dependencies"), 0xFF000080));
+            this.widgets.addAll(dependencies);
+        }
         if (!inProgress.isEmpty()) {
             this.widgets.add(new HeadingWidget(IN_PROGRESS, 0xFF5691FF));
             this.widgets.addAll(inProgress);

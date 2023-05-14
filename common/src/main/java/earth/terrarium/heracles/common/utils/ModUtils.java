@@ -35,7 +35,8 @@ public class ModUtils {
             new QuestContent(
                 id,
                 quest,
-                QuestProgressHandler.getProgress(player.server, player.getUUID()).getProgress(id)
+                QuestProgressHandler.getProgress(player.server, player.getUUID()).getProgress(id),
+                getQuests(player)
             ),
             CommonComponents.EMPTY,
             QuestMenu::new,
@@ -49,18 +50,8 @@ public class ModUtils {
             player.closeContainer();
             return;
         }
-        Map<String, QuestStatus> quests = new HashMap<>();
-        QuestsProgress progress = QuestProgressHandler.getProgress(player.server, player.getUUID());
-        for (String quest : progress.completableQuests().getQuests(progress)) {
-            quests.put(quest, QuestStatus.IN_PROGRESS);
-        }
-        for (String quest : QuestHandler.quests().keySet()) {
-            if (!quests.containsKey(quest)) {
-                quests.put(quest, progress.isComplete(quest) ? QuestStatus.COMPLETED : QuestStatus.LOCKED);
-            }
-        }
         BasicContentMenuProvider.open(
-            new QuestsContent(group, quests, true),
+            new QuestsContent(group, getQuests(player), true),
             CommonComponents.GUI_TO_TITLE,
             QuestsMenu::of,
             player
@@ -73,6 +64,15 @@ public class ModUtils {
             player.closeContainer();
             return;
         }
+        BasicContentMenuProvider.open(
+            new QuestsContent(group, getQuests(player), true),
+            CommonComponents.EMPTY,
+            QuestsMenu::ofEditing,
+            player
+        );
+    }
+
+    private static Map<String, QuestStatus> getQuests(ServerPlayer player) {
         Map<String, QuestStatus> quests = new HashMap<>();
         QuestsProgress progress = QuestProgressHandler.getProgress(player.server, player.getUUID());
         for (String quest : progress.completableQuests().getQuests(progress)) {
@@ -83,14 +83,8 @@ public class ModUtils {
                 quests.put(quest, progress.isComplete(quest) ? QuestStatus.COMPLETED : QuestStatus.LOCKED);
             }
         }
-        BasicContentMenuProvider.open(
-            new QuestsContent(group, quests, true),
-            CommonComponents.EMPTY,
-            QuestsMenu::ofEditing,
-            player
-        );
+        return quests;
     }
-
 
     public enum QuestStatus {
         COMPLETED,

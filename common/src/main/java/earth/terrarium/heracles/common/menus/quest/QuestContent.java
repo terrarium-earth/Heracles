@@ -5,11 +5,19 @@ import com.teamresourceful.resourcefullib.common.menu.MenuContentSerializer;
 import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.api.quests.Quest;
 import earth.terrarium.heracles.common.handlers.progress.QuestProgress;
+import earth.terrarium.heracles.common.utils.ModUtils;
 import earth.terrarium.heracles.common.utils.PacketHelper;
 import net.minecraft.network.FriendlyByteBuf;
 import org.jetbrains.annotations.Nullable;
 
-public record QuestContent(String id, Quest quest, QuestProgress progress) implements MenuContent<QuestContent> {
+import java.util.HashMap;
+import java.util.Map;
+
+public record QuestContent(String id,
+                           Quest quest,
+                           QuestProgress progress,
+                           Map<String, ModUtils.QuestStatus> quests
+) implements MenuContent<QuestContent> {
 
     public static final MenuContentSerializer<QuestContent> SERIALIZER = new Serializer();
 
@@ -27,7 +35,12 @@ public record QuestContent(String id, Quest quest, QuestProgress progress) imple
                 .getOrThrow(false, System.err::println);
             QuestProgress progress = PacketHelper.readWithYabn(Heracles.getRegistryAccess(), buffer, QuestProgress.codec(quest), true)
                 .getOrThrow(false, System.err::println);
-            return new QuestContent(id, quest, progress);
+            Map<String, ModUtils.QuestStatus> quests = new HashMap<>();
+            int size = buffer.readVarInt();
+            for (int i = 0; i < size; i++) {
+                quests.put(buffer.readUtf(), buffer.readEnum(ModUtils.QuestStatus.class));
+            }
+            return new QuestContent(id, quest, progress, quests);
         }
 
         @Override
@@ -35,6 +48,11 @@ public record QuestContent(String id, Quest quest, QuestProgress progress) imple
             buffer.writeUtf(content.id());
             PacketHelper.writeWithYabn(Heracles.getRegistryAccess(), buffer, Quest.CODEC, content.quest(), true);
             PacketHelper.writeWithYabn(Heracles.getRegistryAccess(), buffer, QuestProgress.codec(content.quest()), content.progress(), true);
+            buffer.writeVarInt(content.quests.size());
+            for (var entry : content.quests.entrySet()) {
+                buffer.writeUtf(entry.getKey());
+                buffer.writeEnum(entry.getValue());
+            }
         }
     }
 }

@@ -21,7 +21,7 @@ public record ItemInteractionTask(String id, HolderSet<Item> item, NbtPredicate 
 
     @Override
     public ByteTag test(QuestTaskType<?> type, ByteTag progress, ItemStack input) {
-        return storage().of(storage().readBoolean(progress) || item().contains(input.getItemHolder()) && nbt().matches(input));
+        return storage().of(progress, input.is(item()::contains) && nbt().matches(input));
     }
 
     @Override

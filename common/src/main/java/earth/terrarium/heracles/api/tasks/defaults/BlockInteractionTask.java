@@ -31,8 +31,7 @@ public record BlockInteractionTask(String id, HolderSet<Block> block, BlockState
     public ByteTag test(QuestTaskType<?> type, ByteTag progress, Pair<ServerLevel, BlockPos> input) {
         BlockState blockState = input.getFirst().getBlockState(input.getSecond());
         BlockEntity blockEntity = input.getFirst().getBlockEntity(input.getSecond());
-        return storage().of(
-            storage().readBoolean(progress) ||
+        return storage().of(progress,
                 block().contains(blockState.getBlockHolder()) &&
                     state().matches(blockState) &&
                     nbt().matches(blockEntity == null ? null : blockEntity.saveWithFullMetadata())

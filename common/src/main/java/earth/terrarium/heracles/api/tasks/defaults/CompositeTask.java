@@ -26,7 +26,6 @@ public final class CompositeTask implements QuestTask<Object, ListTag, Composite
     private final Map<String, QuestTask<?, ?, ?>> tasks;
     private final CompositeTaskStorage storage;
 
-
     public CompositeTask(String id, int amount, Map<String, QuestTask<?, ?, ?>> tasks) {
         this.id = id;
         this.amount = amount;
@@ -49,10 +48,12 @@ public final class CompositeTask implements QuestTask<Object, ListTag, Composite
     }
 
     @Override
-    public ListTag test(ListTag progress, Object input) {
+    public ListTag test(QuestTaskType<?> type, ListTag progress, Object input) {
         int i = 0;
         for (QuestTask<?, ?, ?> task : tasks.values()) {
-            progress.set(i, ((QuestTask<Object, Tag, ?>) task).test(progress.get(i), input));
+            if (!task.isCompatibleWith(type)) continue;
+
+            progress.set(i, ((QuestTask<Object, Tag, ?>) task).test(type, progress.get(i), input));
             i++;
         }
 

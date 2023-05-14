@@ -18,7 +18,7 @@ public record FindBiomeTask(String id,
     public static final QuestTaskType<FindBiomeTask> TYPE = new Type();
 
     @Override
-    public ByteTag test(ByteTag progress, Holder<Biome> input) {
+    public ByteTag test(QuestTaskType<?> type, ByteTag progress, Holder<Biome> input) {
         return storage().of(progress, biomes.contains(input));
     }
 

@@ -39,7 +39,7 @@ public record QuestsProgress(Map<String, QuestProgress> progress, CompletableQue
                 if (task.isCompatibleWith(taskType)) {
                     TaskProgress<?> progress = questProgress.getTask(task);
                     if (progress.isComplete()) continue;
-                    progress.addProgress(cast(task), input);
+                    progress.addProgress(taskType, cast(task), input);
                     editedQuests.add(Pair.of(id, quest));
                 }
             }

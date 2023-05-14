@@ -21,7 +21,7 @@ public record EnterDimensionTask(String id,
     private static final Codec<HolderSet<LevelStem>> DIMENSION_LIST_CODEC = RegistryCodecs.homogeneousList(Registries.LEVEL_STEM, LevelStem.CODEC, true);
 
     @Override
-    public ByteTag test(ByteTag progress, Level input) {
+    public ByteTag test(QuestTaskType<?> type, ByteTag progress, Level input) {
         return storage().of(progress, dimensions.contains(input
             .registryAccess()
             .registryOrThrow(Registries.LEVEL_STEM)

@@ -20,7 +20,7 @@ public record KillEntityQuestTask(
     public static final QuestTaskType<KillEntityQuestTask> TYPE = new Type();
 
     @Override
-    public NumericTag test(NumericTag progress, LivingEntity input) {
+    public NumericTag test(QuestTaskType<?> type, NumericTag progress, LivingEntity input) {
         int current = storage().readInt(progress);
         if (input.level instanceof ServerLevel level && entity.matches(level, input)) {
             return IntTag.valueOf(current + 1);

@@ -23,7 +23,7 @@ public record FindStructureTask(String id,
     public static final Codec<HolderSet<Structure>> STRUCTURE_LIST_CODEC = RegistryCodecs.homogeneousList(Registries.STRUCTURE, Structure.DIRECT_CODEC, true);
 
     @Override
-    public ByteTag test(ByteTag progress, Collection<Structure> input) {
+    public ByteTag test(QuestTaskType<?> type, ByteTag progress, Collection<Structure> input) {
         return storage().of(progress, input.stream().anyMatch(structure -> {
             Registry<Structure> structuresRegistry = Heracles.getRegistryAccess().registryOrThrow(Registries.STRUCTURE);
             return structures.contains(structuresRegistry.getResourceKey(structure).flatMap(structuresRegistry::getHolder).orElseThrow());

@@ -19,7 +19,7 @@ public record AdvancementTask(String id,
     public static final QuestTaskType<AdvancementTask> TYPE = new Type();
 
     @Override
-    public ByteTag test(ByteTag progress, Advancement input) {
+    public ByteTag test(QuestTaskType<?> type, ByteTag progress, Advancement input) {
         return storage().of(progress, advancements.contains(input.getId()));
     }
 

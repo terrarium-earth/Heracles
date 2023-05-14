@@ -19,7 +19,7 @@ public record RecipeTask(String id,
     public static final QuestTaskType<RecipeTask> TYPE = new Type();
 
     @Override
-    public ByteTag test(ByteTag progress, Recipe<?> input) {
+    public ByteTag test(QuestTaskType<?> type, ByteTag progress, Recipe<?> input) {
         return storage().of(progress, recipes.contains(input.getId()));
     }
 

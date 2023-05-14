@@ -1,7 +1,10 @@
 package earth.terrarium.heracles.fabric;
 
 import com.mojang.brigadier.arguments.StringArgumentType;
+import com.mojang.datafixers.util.Pair;
 import earth.terrarium.heracles.Heracles;
+import earth.terrarium.heracles.api.tasks.defaults.BlockInteractionTask;
+import earth.terrarium.heracles.api.tasks.defaults.ItemInteractionTask;
 import earth.terrarium.heracles.api.tasks.defaults.KillEntityQuestTask;
 import earth.terrarium.heracles.common.handlers.progress.QuestProgressHandler;
 import earth.terrarium.heracles.common.team.TeamProvider;
@@ -9,10 +12,20 @@ import earth.terrarium.heracles.common.utils.ModUtils;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.entity.event.v1.ServerEntityCombatEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
+import net.fabricmc.fabric.api.event.player.UseBlockCallback;
+import net.fabricmc.fabric.api.event.player.UseItemCallback;
 import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder;
+import net.fabricmc.fabric.impl.event.interaction.InteractionEventsRouter;
 import net.minecraft.commands.Commands;
 import net.minecraft.core.Registry;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.entity.EntityEvent;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.LevelEvent;
+
+import java.awt.*;
 
 public class HeraclesFabric {
     public static final Registry<TeamProvider> TEAM_PROVIDER_REGISTRY = FabricRegistryBuilder.createSimple(Heracles.TEAM_PROVIDER_REGISTRY_KEY).buildAndRegister();
@@ -45,6 +58,27 @@ public class HeraclesFabric {
                     .testAndProgressTaskType(player, entity, KillEntityQuestTask.TYPE);
             }
         });
+
+        UseItemCallback.EVENT.register((player, world, hand) -> {
+            if (!(player instanceof ServerPlayer serverPlayer)) return InteractionResultHolder.pass(ItemStack.EMPTY);
+
+            ItemStack stack = player.getItemInHand(hand);
+
+            QuestProgressHandler.getProgress(serverPlayer.server, serverPlayer.getUUID())
+                .testAndProgressTaskType(serverPlayer, stack, ItemInteractionTask.TYPE);
+
+            return InteractionResultHolder.pass(stack);
+        });
+
+        UseBlockCallback.EVENT.register((player, world, hand, hitResult) -> {
+            if (!(player instanceof ServerPlayer serverPlayer)) return InteractionResult.PASS;
+
+            QuestProgressHandler.getProgress(serverPlayer.server, serverPlayer.getUUID())
+                .testAndProgressTaskType(serverPlayer, Pair.of(serverPlayer.getLevel(), hitResult.getBlockPos()), BlockInteractionTask.TYPE);
+
+            return InteractionResult.PASS;
+        });
+
         ServerLifecycleEvents.SERVER_STARTED.register(server -> Heracles.setRegistryAccess(server::registryAccess));
     }
 }

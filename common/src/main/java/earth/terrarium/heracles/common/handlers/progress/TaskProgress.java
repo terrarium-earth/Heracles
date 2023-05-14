@@ -5,6 +5,7 @@ import com.mojang.serialization.DataResult;
 import com.mojang.serialization.Dynamic;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import earth.terrarium.heracles.api.tasks.QuestTask;
+import earth.terrarium.heracles.api.tasks.QuestTaskType;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.Tag;
 
@@ -34,9 +35,9 @@ public class TaskProgress<S extends Tag> {
         this.complete = complete;
     }
 
-    public <T> void addProgress(QuestTask<T, S, ?> task, T input) {
+    public <T> void addProgress(QuestTaskType<?> type, QuestTask<T, S, ?> task, T input) {
         if (complete) return;
-        progress = task.test(progress, input);
+        progress = task.test(type, progress, input);
         if (task.getProgress(progress) >= 1f) {
             complete = true;
         }

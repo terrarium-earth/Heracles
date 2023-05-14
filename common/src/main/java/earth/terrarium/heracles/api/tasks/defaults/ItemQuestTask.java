@@ -22,7 +22,7 @@ public record ItemQuestTask(
     public static final QuestTaskType<ItemQuestTask> TYPE = new Type();
 
     @Override
-    public NumericTag test(NumericTag progress, ItemStack input) {
+    public NumericTag test(QuestTaskType<?> type, NumericTag progress, ItemStack input) {
         if (input.is(item::contains) && nbt.matches(input) && input.getCount() >= target()) {
             input.shrink(target());
             return storage().of(progress, target());

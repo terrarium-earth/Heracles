@@ -19,7 +19,7 @@ public interface QuestTask<I, S extends Tag, T extends QuestTask<I, S, T>> {
      * @param input    The input to test.
      * @return The added progress.
      */
-    S test(S progress, I input);
+    S test(QuestTaskType<?> type, S progress, I input);
 
 
     /**

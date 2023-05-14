@@ -38,5 +38,8 @@ public final class QuestTasks {
         register(EnterDimensionTask.TYPE);
         register(AdvancementTask.TYPE);
         register(RecipeTask.TYPE);
+        register(ItemInteractionTask.TYPE);
+        register(ItemUseTask.TYPE);
+        register(BlockInteractionTask.TYPE);
     }
 }

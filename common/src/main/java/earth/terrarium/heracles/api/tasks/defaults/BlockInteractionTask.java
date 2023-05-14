@@ -35,7 +35,7 @@ public record BlockInteractionTask(String id, HolderSet<Block> block, BlockState
             storage().readBoolean(progress) ||
                 block().contains(blockState.getBlockHolder()) &&
                     state().matches(blockState) &&
-                    nbt.matches(blockEntity == null ? null : blockEntity.saveWithFullMetadata())
+                    nbt().matches(blockEntity == null ? null : blockEntity.saveWithFullMetadata())
         );
     }
 

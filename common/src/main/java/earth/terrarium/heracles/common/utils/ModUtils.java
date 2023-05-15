@@ -29,6 +29,11 @@ public class ModUtils {
             vector3f -> List.of(vector3f.x(), vector3f.y())
         );
 
+    @SuppressWarnings("unchecked")
+    public static <T, U> U cast(T value) {
+        return (U) value;
+    }
+
     public static void openQuest(ServerPlayer player, String id) {
         Quest quest = QuestHandler.get(id);
         BasicContentMenuProvider.open(

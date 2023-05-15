@@ -4,8 +4,9 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.teamresourceful.resourcefullib.client.scissor.ScissorBoxStack;
 import earth.terrarium.heracles.api.client.DisplayWidget;
 import earth.terrarium.heracles.api.client.WidgetUtils;
-import earth.terrarium.heracles.api.tasks.QuestTaskDisplayFormatter;
 import earth.terrarium.heracles.api.tasks.defaults.ItemQuestTask;
+import earth.terrarium.heracles.api.tasks.display.QuestTaskDisplayFormatter;
+import earth.terrarium.heracles.api.tasks.display.TaskTitleFormatter;
 import earth.terrarium.heracles.common.handlers.progress.TaskProgress;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -19,8 +20,6 @@ import java.util.List;
 public record ItemTaskWidget(ItemQuestTask task, TaskProgress<NumericTag> progress,
                              List<ItemStack> stacks) implements DisplayWidget {
 
-    private static final String TITLE_SINGULAR = "task.heracles.item.title.singular";
-    private static final String TITLE_PLURAL = "task.heracles.item.title.plural";
     private static final String DESC_SINGULAR = "task.heracles.item.desc.singular";
     private static final String DESC_PLURAL = "task.heracles.item.desc.plural";
 
@@ -37,10 +36,9 @@ public record ItemTaskWidget(ItemQuestTask task, TaskProgress<NumericTag> progre
         Minecraft.getInstance().getItemRenderer().renderGuiItem(
             pose, item, x + 5 + (int) (iconSize / 2f) - 8, y + 5 + (int) (iconSize / 2f) - 8
         );
-        String title = this.task.target() == 1 ? TITLE_SINGULAR : TITLE_PLURAL;
         String desc = this.task.target() == 1 ? DESC_SINGULAR : DESC_PLURAL;
         Component name = getItemName();
-        font.draw(pose, Component.translatable(title, name), x + iconSize + 10, y + 5, 0xFFFFFFFF);
+        font.draw(pose, TaskTitleFormatter.create(this.task), x + iconSize + 10, y + 5, 0xFFFFFFFF);
         font.draw(pose, Component.translatable(desc, this.task.target(), name), x + iconSize + 10, y + 7 + font.lineHeight, 0xFF808080);
         String progress = QuestTaskDisplayFormatter.create(this.task, this.progress);
         font.draw(pose, progress, x + width - 5 - font.width(progress), y + 5, 0xFFFFFFFF);

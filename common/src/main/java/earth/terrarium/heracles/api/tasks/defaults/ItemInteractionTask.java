@@ -6,7 +6,6 @@ import com.teamresourceful.resourcefullib.common.codecs.predicates.NbtPredicate;
 import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.api.tasks.QuestTask;
 import earth.terrarium.heracles.api.tasks.QuestTaskType;
-import earth.terrarium.heracles.api.tasks.storage.TaskStorage;
 import earth.terrarium.heracles.api.tasks.storage.defaults.BooleanTaskStorage;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.RegistryCodecs;
@@ -16,7 +15,8 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
-public record ItemInteractionTask(String id, HolderSet<Item> item, NbtPredicate nbt) implements QuestTask<ItemStack, ByteTag, ItemInteractionTask> {
+public record ItemInteractionTask(String id, HolderSet<Item> item,
+                                  NbtPredicate nbt) implements QuestTask<ItemStack, ByteTag, ItemInteractionTask> {
     public static final QuestTaskType<ItemInteractionTask> TYPE = new Type();
 
     @Override

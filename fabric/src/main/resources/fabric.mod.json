@@ -2,30 +2,26 @@
   "schemaVersion": 1,
   "id": "heracles",
   "version": "${version}",
-
   "name": "Heracles",
   "description": "",
   "authors": [
     ""
   ],
-
   "license": "Terrarium Licence",
-
   "environment": "*",
   "entrypoints": {
     "main": [
       "earth.terrarium.heracles.fabric.HeraclesFabric::init"
     ],
     "client": [
-      "earth.terrarium.heracles.client.HeraclesClient::init"
+      "earth.terrarium.heracles.client.HeraclesClient::init",
+      "earth.terrarium.heracles.fabric.HeraclesFabricClient"
     ]
   },
-
   "mixins": [
     "heracles.mixins.json",
     "heracles-common.mixins.json"
   ],
-
   "depends": {
     "fabric": ">=0.14.19",
     "fabric-api": "*",

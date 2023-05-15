@@ -5,6 +5,7 @@ import com.mojang.datafixers.util.Pair;
 import earth.terrarium.heracles.api.quests.Quest;
 import earth.terrarium.heracles.api.tasks.QuestTask;
 import earth.terrarium.heracles.api.tasks.QuestTaskType;
+import earth.terrarium.heracles.common.handlers.pinned.PinnedQuestHandler;
 import earth.terrarium.heracles.common.handlers.quests.CompletableQuests;
 import earth.terrarium.heracles.common.handlers.quests.QuestHandler;
 import earth.terrarium.heracles.common.network.NetworkHandler;
@@ -15,9 +16,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public record QuestsProgress(Map<String, QuestProgress> progress, CompletableQuests completableQuests) {
 
@@ -50,6 +49,11 @@ public record QuestsProgress(Map<String, QuestProgress> progress, CompletableQue
             }
         }
         if (editedQuests.isEmpty()) return;
+        Set<String> updatedQuests = new HashSet<>();
+        editedQuests.forEach(pair -> updatedQuests.add(pair.getFirst()));
+        PinnedQuestHandler.syncIfChanged(player, updatedQuests);
+
+
         this.completableQuests.updateCompleteQuests(this);
 
         TeamProvider.getAllTeams(player)

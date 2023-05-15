@@ -6,8 +6,9 @@ import com.teamresourceful.resourcefullib.client.utils.RenderUtils;
 import com.teamresourceful.resourcefullib.common.caches.CacheableFunction;
 import earth.terrarium.heracles.api.client.DisplayWidget;
 import earth.terrarium.heracles.api.client.WidgetUtils;
-import earth.terrarium.heracles.api.tasks.QuestTaskDisplayFormatter;
 import earth.terrarium.heracles.api.tasks.defaults.KillEntityQuestTask;
+import earth.terrarium.heracles.api.tasks.display.QuestTaskDisplayFormatter;
+import earth.terrarium.heracles.api.tasks.display.TaskTitleFormatter;
 import earth.terrarium.heracles.common.handlers.progress.TaskProgress;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -21,8 +22,6 @@ import net.minecraft.world.entity.LivingEntity;
 public record KillEntityTaskWidget(KillEntityQuestTask task, TaskProgress<NumericTag> progress,
                                    CacheableFunction<EntityType<?>, Entity> factory) implements DisplayWidget {
 
-    private static final String TITLE_SINGULAR = "task.heracles.kill_entity.title.singular";
-    private static final String TITLE_PLURAL = "task.heracles.kill_entity.title.plural";
     private static final String DESC_SINGULAR = "task.heracles.kill_entity.desc.singular";
     private static final String DESC_PLURAL = "task.heracles.kill_entity.desc.plural";
 
@@ -47,10 +46,9 @@ public record KillEntityTaskWidget(KillEntityQuestTask task, TaskProgress<Numeri
                 InventoryScreen.renderEntityInInventoryFollowsMouse(pose, x + 5 + (int) (iconSize / 2f), y + 5 + iconSize, (int) (iconSize * 0.5f), x - mouseX, y - mouseY, living);
             }
         }
-        String title = this.task.target() == 1 ? TITLE_SINGULAR : TITLE_PLURAL;
         String desc = this.task.target() == 1 ? DESC_SINGULAR : DESC_PLURAL;
         Component entityName = this.task.entity().entityType().getDescription();
-        font.draw(pose, Component.translatable(title, entityName), x + iconSize + 10, y + 5, 0xFFFFFFFF);
+        font.draw(pose, TaskTitleFormatter.create(this.task), x + iconSize + 10, y + 5, 0xFFFFFFFF);
         font.draw(pose, Component.translatable(desc, this.task.target(), entityName), x + iconSize + 10, y + 7 + font.lineHeight, 0xFF808080);
         String progress = QuestTaskDisplayFormatter.create(this.task, this.progress);
         font.draw(pose, progress, x + width - 5 - font.width(progress), y + 5, 0xFFFFFFFF);

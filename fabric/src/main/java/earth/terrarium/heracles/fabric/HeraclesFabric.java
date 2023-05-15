@@ -6,6 +6,7 @@ import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.api.tasks.defaults.BlockInteractionTask;
 import earth.terrarium.heracles.api.tasks.defaults.ItemInteractionTask;
 import earth.terrarium.heracles.api.tasks.defaults.KillEntityQuestTask;
+import earth.terrarium.heracles.common.handlers.pinned.PinnedQuestHandler;
 import earth.terrarium.heracles.common.handlers.progress.QuestProgressHandler;
 import earth.terrarium.heracles.common.team.TeamProvider;
 import earth.terrarium.heracles.common.utils.ModUtils;
@@ -15,17 +16,12 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.fabricmc.fabric.api.event.player.UseItemCallback;
 import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder;
-import net.fabricmc.fabric.impl.event.interaction.InteractionEventsRouter;
 import net.minecraft.commands.Commands;
 import net.minecraft.core.Registry;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
-import net.minecraft.world.entity.EntityEvent;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.LevelEvent;
-
-import java.awt.*;
 
 public class HeraclesFabric {
     public static final Registry<TeamProvider> TEAM_PROVIDER_REGISTRY = FabricRegistryBuilder.createSimple(Heracles.TEAM_PROVIDER_REGISTRY_KEY).buildAndRegister();
@@ -33,7 +29,7 @@ public class HeraclesFabric {
     public static void init() {
         Heracles.init();
 
-        CommandRegistrationCallback.EVENT.register((dispatcher, context, env) -> {
+        CommandRegistrationCallback.EVENT.register((dispatcher, context, env) ->
             dispatcher.register(Commands.literal(Heracles.MOD_ID)
                 .then(Commands.literal("test").then(Commands.argument("quest", StringArgumentType.greedyString()).executes(context1 -> {
                     ServerPlayer player = context1.getSource().getPlayerOrException();
@@ -49,8 +45,19 @@ public class HeraclesFabric {
                     ModUtils.editGroup(context1.getSource().getPlayerOrException(), StringArgumentType.getString(context1, "group"));
                     return 1;
                 })))
-            );
-        });
+                .then(Commands.literal("pin").then(Commands.argument("quest", StringArgumentType.string()).executes(context1 -> {
+                    String quest = StringArgumentType.getString(context1, "quest");
+                    var pinned = PinnedQuestHandler.getPinned(context1.getSource().getPlayerOrException());
+                    if (pinned.contains(quest)) {
+                        pinned.remove(quest);
+                    } else {
+                        pinned.add(quest);
+                    }
+                    PinnedQuestHandler.sync(context1.getSource().getPlayerOrException());
+                    return 1;
+                })))
+            )
+        );
 
         ServerEntityCombatEvents.AFTER_KILLED_OTHER_ENTITY.register((level, killer, entity) -> {
             if (killer instanceof ServerPlayer player) {

@@ -3,6 +3,7 @@ package earth.terrarium.heracles.common.handlers.syncing;
 import com.google.common.collect.Maps;
 import earth.terrarium.heracles.api.quests.Quest;
 import earth.terrarium.heracles.api.quests.QuestDisplay;
+import earth.terrarium.heracles.common.handlers.pinned.PinnedQuestHandler;
 import earth.terrarium.heracles.common.handlers.quests.QuestHandler;
 import earth.terrarium.heracles.common.network.NetworkHandler;
 import earth.terrarium.heracles.common.network.packets.SyncQuestsPacket;
@@ -19,6 +20,7 @@ public final class QuestSyncer {
 
     public static void sync(ServerPlayer player) {
         NetworkHandler.CHANNEL.sendToPlayer(createPacket(), player);
+        PinnedQuestHandler.sync(player);
     }
 
     private static SyncQuestsPacket createPacket() {

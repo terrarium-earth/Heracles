@@ -15,7 +15,8 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
-public record ItemUseTask(String id, HolderSet<Item> item, NbtPredicate nbt) implements QuestTask<ItemStack, ByteTag, ItemUseTask> {
+public record ItemUseTask(String id, HolderSet<Item> item,
+                          NbtPredicate nbt) implements QuestTask<ItemStack, ByteTag, ItemUseTask> {
     public static final QuestTaskType<ItemUseTask> TYPE = new Type();
 
     @Override

@@ -8,7 +8,6 @@ import com.teamresourceful.resourcefullib.common.codecs.predicates.properties.Bl
 import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.api.tasks.QuestTask;
 import earth.terrarium.heracles.api.tasks.QuestTaskType;
-import earth.terrarium.heracles.api.tasks.storage.TaskStorage;
 import earth.terrarium.heracles.api.tasks.storage.defaults.BooleanTaskStorage;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderSet;
@@ -17,7 +16,6 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.ByteTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -32,9 +30,9 @@ public record BlockInteractionTask(String id, HolderSet<Block> block, BlockState
         BlockState blockState = input.getFirst().getBlockState(input.getSecond());
         BlockEntity blockEntity = input.getFirst().getBlockEntity(input.getSecond());
         return storage().of(progress,
-                block().contains(blockState.getBlockHolder()) &&
-                    state().matches(blockState) &&
-                    nbt().matches(blockEntity == null ? null : blockEntity.saveWithFullMetadata())
+            block().contains(blockState.getBlockHolder()) &&
+                state().matches(blockState) &&
+                nbt().matches(blockEntity == null ? null : blockEntity.saveWithFullMetadata())
         );
     }
 

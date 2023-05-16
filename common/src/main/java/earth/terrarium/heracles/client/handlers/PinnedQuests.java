@@ -2,8 +2,8 @@ package earth.terrarium.heracles.client.handlers;
 
 import earth.terrarium.heracles.api.quests.Quest;
 import earth.terrarium.heracles.api.tasks.QuestTask;
-import earth.terrarium.heracles.api.tasks.display.QuestTaskDisplayFormatter;
-import earth.terrarium.heracles.api.tasks.display.TaskTitleFormatter;
+import earth.terrarium.heracles.api.tasks.QuestTaskDisplayFormatter;
+import earth.terrarium.heracles.api.tasks.client.display.TaskTitleFormatter;
 import earth.terrarium.heracles.client.screens.pinned.PinnedDisplay;
 import earth.terrarium.heracles.common.handlers.progress.QuestProgress;
 import earth.terrarium.heracles.common.utils.ModUtils;

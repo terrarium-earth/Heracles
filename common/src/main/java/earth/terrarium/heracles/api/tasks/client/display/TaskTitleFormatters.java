@@ -1,19 +1,18 @@
-package earth.terrarium.heracles.api.tasks.display;
+package earth.terrarium.heracles.api.tasks.client.display;
 
 import earth.terrarium.heracles.api.tasks.QuestTask;
+import earth.terrarium.heracles.api.tasks.defaults.AdvancementTask;
 import earth.terrarium.heracles.api.tasks.defaults.ItemQuestTask;
 import earth.terrarium.heracles.api.tasks.defaults.KillEntityQuestTask;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
-import static earth.terrarium.heracles.api.tasks.display.TaskTitleFormatter.register;
-
 public class TaskTitleFormatters {
 
     public static void init() {
-        register(KillEntityQuestTask.TYPE, (task) -> Component.translatable(toTranslationKey(task, task.target() == 1), task.entity().entityType().getDescription()));
-        register(ItemQuestTask.TYPE, (task) -> {
+        TaskTitleFormatter.register(KillEntityQuestTask.TYPE, (task) -> Component.translatable(toTranslationKey(task, task.target() == 1), task.entity().entityType().getDescription()));
+        TaskTitleFormatter.register(ItemQuestTask.TYPE, (task) -> {
             Component title = switch (task.item().size()) {
                 case 0 -> CommonComponents.EMPTY;
                 case 1 ->
@@ -22,6 +21,7 @@ public class TaskTitleFormatters {
             };
             return Component.translatable(toTranslationKey(task, task.target() == 1), title);
         });
+        TaskTitleFormatter.register(AdvancementTask.TYPE, (task) -> Component.translatable(toTranslationKey(task, task.advancements().size() == 1)));
     }
 
     private static String toTranslationKey(QuestTask<?, ?, ?> task, boolean singular) {

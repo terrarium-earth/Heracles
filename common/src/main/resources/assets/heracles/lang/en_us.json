@@ -6,15 +6,5 @@
     "quest.heracles.in_progress": "In progress",
     "quest.heracles.completed": "Completed",
 
-    "quest.heracles.toast": "Quest Complete!",
-
-    "task.heracles.kill_entity.title.singular": "Kill a %s",
-    "task.heracles.kill_entity.title.plural": "Kill %ss",
-    "task.heracles.kill_entity.desc.singular": "Kill %s %s",
-    "task.heracles.kill_entity.desc.plural": "Kill %s %ss",
-
-    "task.heracles.item.title.singular": "Gather a %s",
-    "task.heracles.item.title.plural": "Gather %ss",
-    "task.heracles.item.desc.singular": "Gather %s %s",
-    "task.heracles.item.desc.plural": "Gather %s %ss"
+    "quest.heracles.toast": "Quest Complete!"
 }

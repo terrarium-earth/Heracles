@@ -1,0 +1,16 @@
+{
+  "task.heracles.kill_entity.title.singular": "Kill a %s",
+  "task.heracles.kill_entity.title.plural": "Kill %ss",
+  "task.heracles.kill_entity.desc.singular": "Kill %s %s",
+  "task.heracles.kill_entity.desc.plural": "Kill %s %ss",
+
+  "task.heracles.item.title.singular": "Gather a %s",
+  "task.heracles.item.title.plural": "Gather %ss",
+  "task.heracles.item.desc.singular": "Gather %s %s",
+  "task.heracles.item.desc.plural": "Gather %s %ss",
+
+  "task.heracles.advancement.title.singular": "Complete the advancement:",
+  "task.heracles.advancement.title.plural": "Complete one of the advancements",
+  "task.heracles.advancement.desc.singular": "%s",
+  "task.heracles.advancement.desc.plural": "%s Complete 1 of the following advancements"
+}

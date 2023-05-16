@@ -1,4 +1,4 @@
-package earth.terrarium.heracles.api.tasks.display;
+package earth.terrarium.heracles.api.tasks.client.display;
 
 import earth.terrarium.heracles.api.tasks.QuestTask;
 import earth.terrarium.heracles.api.tasks.QuestTaskType;

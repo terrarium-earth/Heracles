@@ -4,9 +4,9 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.teamresourceful.resourcefullib.client.scissor.ScissorBoxStack;
 import earth.terrarium.heracles.api.client.DisplayWidget;
 import earth.terrarium.heracles.api.client.WidgetUtils;
+import earth.terrarium.heracles.api.tasks.QuestTaskDisplayFormatter;
+import earth.terrarium.heracles.api.tasks.client.display.TaskTitleFormatter;
 import earth.terrarium.heracles.api.tasks.defaults.ItemQuestTask;
-import earth.terrarium.heracles.api.tasks.display.QuestTaskDisplayFormatter;
-import earth.terrarium.heracles.api.tasks.display.TaskTitleFormatter;
 import earth.terrarium.heracles.common.handlers.progress.TaskProgress;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -48,7 +48,7 @@ public record ItemTaskWidget(ItemQuestTask task, TaskProgress<NumericTag> progre
     }
 
     private ItemStack getCurrentItem() {
-        int index = Math.max(0, (int) ((System.currentTimeMillis() / 1000) % this.task.item().size()));
+        int index = Math.max(0, (int) ((System.currentTimeMillis() / 1000) % this.stacks.size()));
         return this.stacks.get(index);
     }
 

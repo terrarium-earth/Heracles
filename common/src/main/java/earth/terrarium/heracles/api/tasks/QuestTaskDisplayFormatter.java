@@ -1,7 +1,6 @@
-package earth.terrarium.heracles.api.tasks.display;
+package earth.terrarium.heracles.api.tasks;
 
-import earth.terrarium.heracles.api.tasks.QuestTask;
-import earth.terrarium.heracles.api.tasks.QuestTaskType;
+import earth.terrarium.heracles.api.tasks.defaults.AdvancementTask;
 import earth.terrarium.heracles.api.tasks.defaults.ItemQuestTask;
 import earth.terrarium.heracles.api.tasks.defaults.KillEntityQuestTask;
 import earth.terrarium.heracles.common.handlers.progress.TaskProgress;
@@ -34,6 +33,7 @@ public final class QuestTaskDisplayFormatter {
     static {
         register(KillEntityQuestTask.TYPE, (progress, task) -> String.format("%d/%d", task.storage().read(progress.progress()), task.target()));
         register(ItemQuestTask.TYPE, (progress, task) -> String.format("%d/%d", task.storage().read(progress.progress()), task.target()));
+        register(AdvancementTask.TYPE, (progress, task) -> String.format("%d/%d", task.storage().read(progress.progress()) ? 1 : 0, 1));
     }
 
     @FunctionalInterface

@@ -1,5 +1,6 @@
 package earth.terrarium.heracles.api.quests;
 
+import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import earth.terrarium.heracles.Heracles;
@@ -12,18 +13,23 @@ import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.item.Items;
 import org.joml.Vector2i;
 
+import java.util.List;
 import java.util.Objects;
+import java.util.function.Function;
 
 public final class QuestDisplay {
 
     private static final ResourceLocation DEFAULT_BACKGROUND = new ResourceLocation(Heracles.MOD_ID, "textures/gui/quest_backgrounds/default.png");
+
+    public static final Codec<List<String>> DESCRIPTION_CODEC = Codec.either(Codec.STRING, Codec.STRING.listOf())
+        .xmap(either -> either.map(List::of, Function.identity()), Either::right);
 
     public static Codec<QuestDisplay> CODEC = RecordCodecBuilder.create(instance -> instance.group(
         QuestIcons.CODEC.fieldOf("icon").orElse(new ItemQuestIcon(Items.MAP)).forGetter(QuestDisplay::icon),
         ResourceLocation.CODEC.fieldOf("icon_background").orElse(DEFAULT_BACKGROUND).forGetter(QuestDisplay::iconBackground),
         ExtraCodecs.COMPONENT.fieldOf("title").orElse(Component.literal("New Quest")).forGetter(QuestDisplay::title),
         ExtraCodecs.COMPONENT.fieldOf("subtitle").orElse(CommonComponents.EMPTY).forGetter(QuestDisplay::subtitle),
-        Codec.STRING.fieldOf("description").orElse("").forGetter(QuestDisplay::description),
+        DESCRIPTION_CODEC.fieldOf("description").orElse(List.of()).forGetter(QuestDisplay::description),
         ModUtils.VECTOR2I.fieldOf("position").orElse(new Vector2i()).forGetter(QuestDisplay::position),
         Codec.STRING.fieldOf("group").orElse("Main").forGetter(QuestDisplay::group)
     ).apply(instance, QuestDisplay::new));
@@ -33,7 +39,7 @@ public final class QuestDisplay {
     private ResourceLocation iconBackground;
     private Component title;
     private Component subtitle;
-    private String description;
+    private List<String> description;
     private String group;
 
     public QuestDisplay(
@@ -41,7 +47,7 @@ public final class QuestDisplay {
         ResourceLocation iconBackground,
         Component title,
         Component subtitle,
-        String description,
+        List<String> description,
         Vector2i position,
         String group
     ) {
@@ -86,11 +92,11 @@ public final class QuestDisplay {
         this.subtitle = subtitle == null ? CommonComponents.EMPTY : subtitle;
     }
 
-    public String description() {
+    public List<String> description() {
         return description;
     }
 
-    public void setDescription(String description) {
+    public void setDescription(List<String> description) {
         this.description = description;
     }
 

@@ -83,7 +83,8 @@ public class QuestScreen extends AbstractQuestScreen<QuestMenu> {
         try {
             this.descriptionError = null;
             TagProvider provider = new QuestTagProvider();
-            this.description = new DocumentWidget(contentX, contentY, contentWidth, contentHeight, new DefaultTheme(), provider.parse(this.menu.quest().display().description()));
+            String desc = String.join("", this.menu.quest().display().description());
+            this.description = new DocumentWidget(contentX, contentY, contentWidth, contentHeight, new DefaultTheme(), provider.parse(desc));
         } catch (Exception e) {
             this.descriptionError = e.getMessage();
         }

@@ -1,4 +1,4 @@
-package earth.terrarium.heracles.client.widgets;
+package earth.terrarium.heracles.client.widgets.modals;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.teamresourceful.resourcefullib.client.utils.RenderUtils;
@@ -39,9 +39,9 @@ public class CreateGroupModal extends BaseModal {
             }
         }));
         submitButton.active = false;
-        addChild(createButton(Component.nullToEmpty("Cancel"), submitButton.getX() - 2, this.y + HEIGHT - 20, b -> {
-            this.visible = false;
-        }));
+        addChild(createButton(Component.nullToEmpty("Cancel"), submitButton.getX() - 2, this.y + HEIGHT - 20, b ->
+            this.visible = false
+        ));
         editBox.setMaxLength(32);
         editBox.setResponder(s -> submitButton.active = !s.trim().isEmpty() && !ClientQuests.groups().contains(s.trim()));
     }
@@ -83,9 +83,6 @@ public class CreateGroupModal extends BaseModal {
         int y = screenHeight / 2 - (HEIGHT / 2);
 
         if (mouseX < x || mouseX > x + WIDTH || mouseY < y || mouseY > y + HEIGHT) {
-            setVisible(false);
-        }
-        if (mouseX >= x + WIDTH - 18 && mouseX <= x + WIDTH - 7 && mouseY >= y + 5 && mouseY <= y + 16) {
             setVisible(false);
         }
         return true;

@@ -72,6 +72,13 @@ public class SelectQuestWidget extends BaseWidget {
                 });
             }
         }).bounds(this.x + 6, this.y + 157, this.width - 12, 14).build());
+
+        addChild(Button.builder(Component.literal("+ Dependencies"), b -> {
+            if (Minecraft.getInstance().screen instanceof QuestsEditScreen screen) {
+                screen.dependencyModal().setVisible(true);
+                screen.dependencyModal().update(this.entry, () -> changeOption(quest -> {}));
+            }
+        }).bounds(this.x + 6, this.y + 187, this.width - 12, 14).build());
     }
 
 
@@ -100,6 +107,11 @@ public class SelectQuestWidget extends BaseWidget {
 
         //Icon
         font.draw(stack, Component.literal("Icon"), this.x + 7, this.y + 126, 0x808080);
+
+        Gui.fill(stack, this.x + 4, this.y + 173, this.x + this.width - 4, this.y + 174, 0xff808080);
+
+        // Options
+        font.draw(stack, Component.literal("Options"), this.x + 7, this.y + 176, 0x808080);
 
 
         renderChildren(stack, mouseX, mouseY, partialTick);

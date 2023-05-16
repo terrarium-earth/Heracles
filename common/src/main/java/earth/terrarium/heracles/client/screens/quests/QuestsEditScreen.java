@@ -4,11 +4,12 @@ import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.vertex.PoseStack;
 import earth.terrarium.heracles.client.handlers.ClientQuests;
 import earth.terrarium.heracles.client.screens.MouseMode;
-import earth.terrarium.heracles.client.widgets.CreateGroupModal;
 import earth.terrarium.heracles.client.widgets.SelectableImageButton;
-import earth.terrarium.heracles.client.widgets.icon.IconModal;
-import earth.terrarium.heracles.client.widgets.icon.background.IconBackgroundModal;
-import earth.terrarium.heracles.client.widgets.upload.UploadModal;
+import earth.terrarium.heracles.client.widgets.modals.AddDependencyModal;
+import earth.terrarium.heracles.client.widgets.modals.CreateGroupModal;
+import earth.terrarium.heracles.client.widgets.modals.icon.IconModal;
+import earth.terrarium.heracles.client.widgets.modals.icon.background.IconBackgroundModal;
+import earth.terrarium.heracles.client.widgets.modals.upload.UploadModal;
 import earth.terrarium.heracles.common.menus.quests.QuestsMenu;
 import net.minecraft.client.gui.components.ImageButton;
 import net.minecraft.client.gui.components.Tooltip;
@@ -26,6 +27,7 @@ public class QuestsEditScreen extends QuestsScreen {
     private CreateGroupModal groupModal;
     private IconBackgroundModal iconBackgroundModal;
     private IconModal iconModal;
+    private AddDependencyModal dependencyModal;
 
     public QuestsEditScreen(QuestsMenu menu, Inventory inventory, Component component) {
         super(menu, inventory, component);
@@ -89,6 +91,7 @@ public class QuestsEditScreen extends QuestsScreen {
         this.groupModal = addTemporary(new CreateGroupModal(this.width, this.height));
         this.iconBackgroundModal = addTemporary(new IconBackgroundModal(this.width, this.height));
         this.iconModal = addTemporary(new IconModal(this.width, this.height));
+        this.dependencyModal = addTemporary(new AddDependencyModal(this.width, this.height));
     }
 
     @Override
@@ -172,5 +175,9 @@ public class QuestsEditScreen extends QuestsScreen {
 
     public IconModal iconModal() {
         return this.iconModal;
+    }
+
+    public AddDependencyModal dependencyModal() {
+        return this.dependencyModal;
     }
 }

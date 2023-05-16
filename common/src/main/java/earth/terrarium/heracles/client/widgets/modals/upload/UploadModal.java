@@ -1,4 +1,4 @@
-package earth.terrarium.heracles.client.widgets.upload;
+package earth.terrarium.heracles.client.widgets.modals.upload;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.teamresourceful.resourcefullib.client.scissor.ScissorBoxStack;
@@ -108,9 +108,6 @@ public class UploadModal extends BaseModal implements FileWidget {
             if (this.items.isEmpty()) {
                 setVisible(false);
             }
-        }
-        if (mouseX >= x + WIDTH - 18 && mouseX <= x + WIDTH - 7 && mouseY >= y + 5 && mouseY <= y + 16) {
-            setVisible(false);
         }
 
         y += 19;

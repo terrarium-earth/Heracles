@@ -1,4 +1,4 @@
-package earth.terrarium.heracles.client.widgets.icon;
+package earth.terrarium.heracles.client.widgets.modals.icon;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.teamresourceful.resourcefullib.client.screens.CursorScreen;
@@ -112,9 +112,6 @@ public class IconModal extends BaseModal {
         if (super.mouseClicked(mouseX, mouseY, button)) return true;
 
         if (mouseX < x || mouseX > x + WIDTH || mouseY < y || mouseY > y + HEIGHT) {
-            setVisible(false);
-        }
-        if (mouseX >= x + WIDTH - 18 && mouseX <= x + WIDTH - 7 && mouseY >= y + 5 && mouseY <= y + 16) {
             setVisible(false);
         }
 

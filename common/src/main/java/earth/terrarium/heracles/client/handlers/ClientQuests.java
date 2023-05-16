@@ -40,7 +40,7 @@ public class ClientQuests {
         List<QuestEntry> dependencies = new ArrayList<>();
         for (String dependency : quest.dependencies()) {
             Quest dependent = quests.get(dependency);
-            if (dependent != null) {
+            if (dependent != null && !dependent.dependencies().contains(key) && !key.equals(dependency)) {
                 QuestEntry dependencyEntry = addEntry(dependency, dependent, quests);
                 if (dependencyEntry != null) {
                     dependencies.add(dependencyEntry);
@@ -70,6 +70,10 @@ public class ClientQuests {
         }
         NetworkHandler.CHANNEL.sendToServer(new QuestActionPacket(QuestActionPacket.Action.SAVE));
         DIRTY.clear();
+    }
+
+    public static Collection<QuestEntry> entries() {
+        return ENTRIES.values();
     }
 
     public record QuestEntry(List<QuestEntry> dependencies, String key, Quest value, List<QuestEntry> children) {}

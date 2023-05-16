@@ -4,11 +4,11 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.teamresourceful.resourcefullib.client.screens.CursorScreen;
 import com.teamresourceful.resourcefullib.client.utils.CursorUtils;
-import com.teamresourceful.resourcefullib.client.utils.RenderUtils;
 import earth.terrarium.heracles.client.screens.AbstractQuestScreen;
 import earth.terrarium.heracles.client.utils.ClientUtils;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Gui;
+import net.minecraft.client.gui.components.ImageButton;
+import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.network.chat.Component;
 
 public abstract class BaseModal extends BaseWidget implements TemporyWidget {
@@ -31,6 +31,10 @@ public abstract class BaseModal extends BaseWidget implements TemporyWidget {
         this.height = height;
         this.x = (screenWidth / 2) - (width / 2);
         this.y = (screenHeight / 2) - (height / 2);
+
+        addChild(new ImageButton(this.x + width - 18, this.y + 5, 11, 11, 11, 15, 11, AbstractQuestScreen.HEADING, 256, 256, b ->
+            setVisible(false)
+        )).setTooltip(Tooltip.create(Component.literal("Close")));
     }
 
     @Override
@@ -54,15 +58,6 @@ public abstract class BaseModal extends BaseWidget implements TemporyWidget {
 
         RenderSystem.disableDepthTest();
         renderBackground(pose, mouseX, mouseY, partialTick);
-
-        RenderUtils.bindTexture(AbstractQuestScreen.HEADING);
-        boolean hoveringClose = mouseX >= x + width - 18 && mouseX <= x + width - 7 && mouseY >= y + 5 && mouseY <= y + 16;
-        Gui.blit(pose, x + width - 18, y + 5, 11, hoveringClose ? 26 : 15, 11, 11);
-
-        if (hoveringClose) {
-            ClientUtils.setTooltip(Component.literal("Close"));
-        }
-        CursorUtils.setCursor(true, hoveringClose ? CursorScreen.Cursor.POINTER : CursorScreen.Cursor.DEFAULT);
 
         renderForeground(pose, mouseX, mouseY, partialTick);
         RenderSystem.enableDepthTest();

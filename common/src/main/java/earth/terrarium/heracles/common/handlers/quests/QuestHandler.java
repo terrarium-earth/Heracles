@@ -47,6 +47,7 @@ public class QuestHandler {
         try {
             JsonObject element = Constants.GSON.fromJson(reader, JsonObject.class);
             Quest quest = Quest.CODEC.parse(RegistryOps.create(JsonOps.INSTANCE, access), element).getOrThrow(false, LOGGER::error);
+            quest.dependencies().remove(id); // Remove self from dependencies
             QUESTS.put(id, quest);
         } catch (Exception e) {
             LOGGER.error("Failed to load quest " + id, e);

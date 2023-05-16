@@ -1,4 +1,4 @@
-package earth.terrarium.heracles.client.widgets.upload;
+package earth.terrarium.heracles.client.widgets.modals.upload;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;

@@ -98,6 +98,8 @@ public class QuestsWidget extends BaseWidget {
                 RenderSystem.setShaderColor(0.9F, 0.9F, 0.9F, isHovered ? 0.45f : 0.25F);
 
                 for (ClientQuests.QuestEntry child : entry.children()) {
+                    if (!child.value().display().group().equals(entry.value().display().group())) continue;
+
                     var childPosition = child.value().display().position();
 
                     int cx = x + offset.x() + childPosition.x() + 10;

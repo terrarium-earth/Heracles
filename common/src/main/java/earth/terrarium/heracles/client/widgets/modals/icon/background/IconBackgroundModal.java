@@ -1,11 +1,11 @@
-package earth.terrarium.heracles.client.widgets.icon.background;
+package earth.terrarium.heracles.client.widgets.modals.icon.background;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.teamresourceful.resourcefullib.client.scissor.ScissorBoxStack;
 import com.teamresourceful.resourcefullib.client.utils.RenderUtils;
 import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.client.widgets.base.BaseModal;
-import earth.terrarium.heracles.client.widgets.upload.UploadModalItem;
+import earth.terrarium.heracles.client.widgets.modals.upload.UploadModalItem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.Gui;
@@ -74,9 +74,6 @@ public class IconBackgroundModal extends BaseModal {
         int y = screenHeight / 2 - (HEIGHT / 2);
 
         if (mouseX < x || mouseX > x + WIDTH || mouseY < y || mouseY > y + HEIGHT) {
-            setVisible(false);
-        }
-        if (mouseX >= x + WIDTH - 18 && mouseX <= x + WIDTH - 7 && mouseY >= y + 5 && mouseY <= y + 16) {
             setVisible(false);
         }
 

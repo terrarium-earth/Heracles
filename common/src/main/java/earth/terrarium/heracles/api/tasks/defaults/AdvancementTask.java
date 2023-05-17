@@ -13,8 +13,9 @@ import net.minecraft.resources.ResourceLocation;
 
 import java.util.Set;
 
-public record AdvancementTask(String id,
-                              Set<ResourceLocation> advancements) implements QuestTask<Advancement, ByteTag, AdvancementTask> {
+public record AdvancementTask(
+    String id, Set<ResourceLocation> advancements
+) implements QuestTask<Advancement, ByteTag, AdvancementTask> {
 
     public static final QuestTaskType<AdvancementTask> TYPE = new Type();
 

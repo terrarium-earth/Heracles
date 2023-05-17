@@ -6,25 +6,35 @@ import earth.terrarium.heracles.api.client.DisplayWidget;
 import earth.terrarium.heracles.api.client.WidgetUtils;
 import earth.terrarium.heracles.api.tasks.QuestTaskDisplayFormatter;
 import earth.terrarium.heracles.api.tasks.client.display.TaskTitleFormatter;
-import earth.terrarium.heracles.api.tasks.defaults.ItemQuestTask;
+import earth.terrarium.heracles.api.tasks.defaults.GatherItemTask;
 import earth.terrarium.heracles.common.handlers.progress.TaskProgress;
+import earth.terrarium.heracles.common.utils.ModUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.NumericTag;
-import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
 import java.util.List;
 
-public record ItemTaskWidget(ItemQuestTask task, TaskProgress<NumericTag> progress,
-                             List<ItemStack> stacks) implements DisplayWidget {
+public record ItemTaskWidget(
+    GatherItemTask task, TaskProgress<NumericTag> progress, List<ItemStack> stacks
+) implements DisplayWidget {
 
     private static final String DESC_SINGULAR = "task.heracles.item.desc.singular";
     private static final String DESC_PLURAL = "task.heracles.item.desc.plural";
 
-    public ItemTaskWidget(ItemQuestTask task, TaskProgress<NumericTag> progress) {
-        this(task, progress, task.item().stream().map(ItemStack::new).toList());
+    public ItemTaskWidget(GatherItemTask task, TaskProgress<NumericTag> progress) {
+        this(
+            task,
+            progress,
+            task.item().value().map(
+                item -> List.of(item.getDefaultInstance()),
+                tag -> ModUtils.getValue(Registries.ITEM, tag).stream().map(ItemStack::new).toList()
+            )
+        );
     }
 
     @Override
@@ -37,9 +47,8 @@ public record ItemTaskWidget(ItemQuestTask task, TaskProgress<NumericTag> progre
             pose, item, x + 5 + (int) (iconSize / 2f) - 8, y + 5 + (int) (iconSize / 2f) - 8
         );
         String desc = this.task.target() == 1 ? DESC_SINGULAR : DESC_PLURAL;
-        Component name = getItemName();
         font.draw(pose, TaskTitleFormatter.create(this.task), x + iconSize + 10, y + 5, 0xFFFFFFFF);
-        font.draw(pose, Component.translatable(desc, this.task.target(), name), x + iconSize + 10, y + 7 + font.lineHeight, 0xFF808080);
+        font.draw(pose, Component.translatable(desc, this.task.target(), task.item().getDisplayName(Item::getDescription)), x + iconSize + 10, y + 7 + font.lineHeight, 0xFF808080);
         String progress = QuestTaskDisplayFormatter.create(this.task, this.progress);
         font.draw(pose, progress, x + width - 5 - font.width(progress), y + 5, 0xFFFFFFFF);
 
@@ -48,16 +57,11 @@ public record ItemTaskWidget(ItemQuestTask task, TaskProgress<NumericTag> progre
     }
 
     private ItemStack getCurrentItem() {
+        if (this.stacks.isEmpty()) {
+            return ItemStack.EMPTY;
+        }
         int index = Math.max(0, (int) ((System.currentTimeMillis() / 1000) % this.stacks.size()));
         return this.stacks.get(index);
-    }
-
-    private Component getItemName() {
-        return switch (this.stacks.size()) {
-            case 0 -> CommonComponents.EMPTY;
-            case 1 -> this.stacks.get(0).getHoverName();
-            default -> Component.literal("???");
-        };
     }
 
     @Override

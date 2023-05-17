@@ -1,6 +1,7 @@
 package earth.terrarium.heracles.common.utils;
 
 import com.mojang.serialization.Codec;
+import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.api.quests.Quest;
 import earth.terrarium.heracles.common.handlers.progress.QuestProgressHandler;
 import earth.terrarium.heracles.common.handlers.progress.QuestsProgress;
@@ -11,9 +12,13 @@ import earth.terrarium.heracles.common.menus.quest.QuestMenu;
 import earth.terrarium.heracles.common.menus.quests.QuestsContent;
 import earth.terrarium.heracles.common.menus.quests.QuestsMenu;
 import net.minecraft.Util;
+import net.minecraft.core.Holder;
+import net.minecraft.core.Registry;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.tags.TagKey;
 import org.joml.Vector2i;
 
 import java.util.HashMap;
@@ -28,6 +33,16 @@ public class ModUtils {
             list -> Util.fixedSize(list, 2).map(listx -> new Vector2i(listx.get(0), listx.get(1))),
             vector3f -> List.of(vector3f.x(), vector3f.y())
         );
+
+    public static <T> List<T> getValue(ResourceKey<? extends Registry<T>> key, TagKey<T> tag) {
+        return Heracles.getRegistryAccess().registry(key)
+            .map(registry ->
+                registry.getTag(tag).map(v ->
+                    v.stream().filter(Holder::isBound).map(Holder::value).toList()
+                ).orElse(List.of())
+            )
+            .orElse(List.of());
+    }
 
     @SuppressWarnings("unchecked")
     public static <T, U> U cast(T value) {

@@ -8,28 +8,29 @@ import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.api.tasks.QuestTask;
 import earth.terrarium.heracles.api.tasks.QuestTaskType;
 import earth.terrarium.heracles.api.tasks.storage.defaults.BooleanTaskStorage;
+import earth.terrarium.heracles.common.utils.RegistryValue;
 import net.minecraft.Optionull;
 import net.minecraft.core.BlockSource;
-import net.minecraft.core.HolderSet;
-import net.minecraft.core.RegistryCodecs;
-import net.minecraft.core.registries.Registries;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.ByteTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 
-public record BlockInteractionTask(String id, HolderSet<Block> block, BlockStatePredicate state,
-                                   NbtPredicate nbt) implements QuestTask<BlockSource, ByteTag, BlockInteractionTask> {
+public record BlockInteractionTask(
+    String id, RegistryValue<Block, Block> block, BlockStatePredicate state, NbtPredicate nbt
+) implements QuestTask<BlockSource, ByteTag, BlockInteractionTask> {
 
     public static final QuestTaskType<BlockInteractionTask> TYPE = new Type();
 
+    @SuppressWarnings("deprecation")
     @Override
     public ByteTag test(QuestTaskType<?> type, ByteTag progress, BlockSource input) {
         BlockState blockState = input.getBlockState();
         BlockEntity blockEntity = input.getEntity();
         return storage().of(progress,
-            block().contains(blockState.getBlockHolder()) &&
+            block().is(blockState.getBlock(), Block::builtInRegistryHolder) &&
                 state().matches(blockState) &&
                 nbt().matches(Optionull.map(blockEntity, BlockEntity::saveWithFullMetadata))
         );
@@ -60,7 +61,7 @@ public record BlockInteractionTask(String id, HolderSet<Block> block, BlockState
         public Codec<BlockInteractionTask> codec(String id) {
             return RecordCodecBuilder.create(instance -> instance.group(
                 RecordCodecBuilder.point(id),
-                RegistryCodecs.homogeneousList(Registries.BLOCK).fieldOf("block").forGetter(BlockInteractionTask::block),
+                RegistryValue.codec(BuiltInRegistries.BLOCK).fieldOf("block").forGetter(BlockInteractionTask::block),
                 BlockStatePredicate.CODEC.fieldOf("state").orElse(BlockStatePredicate.ANY).forGetter(BlockInteractionTask::state),
                 NbtPredicate.CODEC.fieldOf("nbt").orElse(NbtPredicate.ANY).forGetter(BlockInteractionTask::nbt)
             ).apply(instance, BlockInteractionTask::new));

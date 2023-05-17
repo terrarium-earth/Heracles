@@ -7,7 +7,7 @@ import earth.terrarium.heracles.api.tasks.client.defaults.AdvancementTaskWidget;
 import earth.terrarium.heracles.api.tasks.client.defaults.ItemTaskWidget;
 import earth.terrarium.heracles.api.tasks.client.defaults.KillEntityTaskWidget;
 import earth.terrarium.heracles.api.tasks.defaults.AdvancementTask;
-import earth.terrarium.heracles.api.tasks.defaults.ItemQuestTask;
+import earth.terrarium.heracles.api.tasks.defaults.GatherItemTask;
 import earth.terrarium.heracles.api.tasks.defaults.KillEntityQuestTask;
 import earth.terrarium.heracles.common.handlers.progress.TaskProgress;
 import net.minecraft.Optionull;
@@ -40,7 +40,7 @@ public final class QuestTaskWidgets {
 
     static {
         register(KillEntityQuestTask.TYPE, KillEntityTaskWidget::new);
-        register(ItemQuestTask.TYPE, ItemTaskWidget::new);
+        register(GatherItemTask.TYPE, ItemTaskWidget::new);
         register(AdvancementTask.TYPE, AdvancementTaskWidget::new);
     }
 }

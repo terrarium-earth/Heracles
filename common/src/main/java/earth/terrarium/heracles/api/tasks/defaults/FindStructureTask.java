@@ -16,8 +16,9 @@ import net.minecraft.world.level.levelgen.structure.Structure;
 
 import java.util.Collection;
 
-public record FindStructureTask(String id,
-                                HolderSet<Structure> structures) implements QuestTask<Collection<Structure>, ByteTag, FindStructureTask> {
+public record FindStructureTask(
+    String id, HolderSet<Structure> structures
+) implements QuestTask<Collection<Structure>, ByteTag, FindStructureTask> {
 
     public static final QuestTaskType<FindStructureTask> TYPE = new Type();
     public static final Codec<HolderSet<Structure>> STRUCTURE_LIST_CODEC = RegistryCodecs.homogeneousList(Registries.STRUCTURE, Structure.DIRECT_CODEC, true);

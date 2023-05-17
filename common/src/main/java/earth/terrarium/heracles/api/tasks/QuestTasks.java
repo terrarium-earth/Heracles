@@ -32,7 +32,7 @@ public final class QuestTasks {
     static {
         register(CompositeTask.TYPE);
         register(KillEntityQuestTask.TYPE);
-        register(ItemQuestTask.TYPE);
+        register(GatherItemTask.TYPE);
         register(FindBiomeTask.TYPE);
         register(FindStructureTask.TYPE);
         register(EnterDimensionTask.TYPE);

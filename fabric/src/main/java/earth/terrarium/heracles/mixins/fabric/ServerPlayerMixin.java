@@ -36,8 +36,15 @@ public abstract class ServerPlayerMixin extends Player {
         super(level, blockPos, f, gameProfile);
     }
 
+    @Inject(method = "changeDimension", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/level/ServerLevel;removePlayerImmediately(Lnet/minecraft/server/level/ServerPlayer;Lnet/minecraft/world/entity/Entity$RemovalReason;)V", ordinal = 0))
+    private void heracles$changeDimensionFirst(ServerLevel destination, CallbackInfoReturnable<Entity> cir) {
+        QuestProgressHandler.getProgress(server, getUUID())
+            .testAndProgressTaskType((ServerPlayer) (Object) this, destination, EnterDimensionTask.TYPE);
+    }
+
+
     @Inject(method = "changeDimension", at = @At(value = "FIELD", target = "Lnet/minecraft/server/level/ServerPlayer;lastSentFood:I"))
-    private void heracles$changeDimension(ServerLevel destination, CallbackInfoReturnable<Entity> cir) {
+    private void heracles$changeDimensionSecond(ServerLevel destination, CallbackInfoReturnable<Entity> cir) {
         QuestProgressHandler.getProgress(server, getUUID())
             .testAndProgressTaskType((ServerPlayer) (Object) this, destination, EnterDimensionTask.TYPE);
     }

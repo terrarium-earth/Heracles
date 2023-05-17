@@ -1,7 +1,7 @@
 package earth.terrarium.heracles.api.tasks;
 
 import earth.terrarium.heracles.api.tasks.defaults.AdvancementTask;
-import earth.terrarium.heracles.api.tasks.defaults.ItemQuestTask;
+import earth.terrarium.heracles.api.tasks.defaults.GatherItemTask;
 import earth.terrarium.heracles.api.tasks.defaults.KillEntityQuestTask;
 import earth.terrarium.heracles.common.handlers.progress.TaskProgress;
 import net.minecraft.Optionull;
@@ -32,7 +32,7 @@ public final class QuestTaskDisplayFormatter {
 
     static {
         register(KillEntityQuestTask.TYPE, (progress, task) -> String.format("%d/%d", task.storage().read(progress.progress()), task.target()));
-        register(ItemQuestTask.TYPE, (progress, task) -> String.format("%d/%d", task.storage().read(progress.progress()), task.target()));
+        register(GatherItemTask.TYPE, (progress, task) -> String.format("%d/%d", task.storage().read(progress.progress()), task.target()));
         register(AdvancementTask.TYPE, (progress, task) -> String.format("%d/%d", task.storage().read(progress.progress()) ? 1 : 0, 1));
     }
 

@@ -7,21 +7,22 @@ import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.api.tasks.QuestTask;
 import earth.terrarium.heracles.api.tasks.QuestTaskType;
 import earth.terrarium.heracles.api.tasks.storage.defaults.BooleanTaskStorage;
-import net.minecraft.core.HolderSet;
-import net.minecraft.core.RegistryCodecs;
-import net.minecraft.core.registries.Registries;
+import earth.terrarium.heracles.common.utils.RegistryValue;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.ByteTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
-public record ItemUseTask(String id, HolderSet<Item> item,
-                          NbtPredicate nbt) implements QuestTask<ItemStack, ByteTag, ItemUseTask> {
+public record ItemUseTask(
+    String id, RegistryValue<Item, Item> item, NbtPredicate nbt
+) implements QuestTask<ItemStack, ByteTag, ItemUseTask> {
+
     public static final QuestTaskType<ItemUseTask> TYPE = new Type();
 
     @Override
     public ByteTag test(QuestTaskType<?> type, ByteTag progress, ItemStack input) {
-        return storage().of(progress, input.is(item()::contains) && nbt().matches(input));
+        return storage().of(progress, item.is(input.getItemHolder()) && nbt().matches(input));
     }
 
     @Override
@@ -49,7 +50,7 @@ public record ItemUseTask(String id, HolderSet<Item> item,
         public Codec<ItemUseTask> codec(String id) {
             return RecordCodecBuilder.create(instance -> instance.group(
                 RecordCodecBuilder.point(id),
-                RegistryCodecs.homogeneousList(Registries.ITEM).fieldOf("item").forGetter(ItemUseTask::item),
+                RegistryValue.codec(BuiltInRegistries.ITEM).fieldOf("item").forGetter(ItemUseTask::item),
                 NbtPredicate.CODEC.fieldOf("nbt").orElse(NbtPredicate.ANY).forGetter(ItemUseTask::nbt)
             ).apply(instance, ItemUseTask::new));
         }

@@ -13,8 +13,9 @@ import net.minecraft.world.item.crafting.Recipe;
 
 import java.util.Set;
 
-public record RecipeTask(String id,
-                         Set<ResourceLocation> recipes) implements QuestTask<Recipe<?>, ByteTag, RecipeTask> {
+public record RecipeTask(
+    String id, Set<ResourceLocation> recipes
+) implements QuestTask<Recipe<?>, ByteTag, RecipeTask> {
 
     public static final QuestTaskType<RecipeTask> TYPE = new Type();
 

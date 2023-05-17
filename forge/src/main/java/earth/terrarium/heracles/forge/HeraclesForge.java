@@ -1,6 +1,5 @@
 package earth.terrarium.heracles.forge;
 
-import com.mojang.datafixers.util.Pair;
 import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.api.tasks.defaults.*;
 import earth.terrarium.heracles.common.handlers.progress.QuestProgressHandler;
@@ -9,6 +8,7 @@ import earth.terrarium.heracles.common.handlers.quests.QuestHandler;
 import earth.terrarium.heracles.common.team.ScoreboardTeamProvider;
 import earth.terrarium.heracles.common.team.TeamProvider;
 import it.unimi.dsi.fastutil.longs.LongSet;
+import net.minecraft.core.BlockSourceImpl;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.levelgen.structure.Structure;
 import net.minecraftforge.common.MinecraftForge;
@@ -105,6 +105,6 @@ public class HeraclesForge {
         if (!(event.getEntity() instanceof ServerPlayer player)) return;
 
         QuestProgressHandler.getProgress(player.server, player.getUUID())
-            .testAndProgressTaskType(player, Pair.of(player.getLevel(), event.getPos()), BlockInteractionTask.TYPE);
+            .testAndProgressTaskType(player, new BlockSourceImpl(player.getLevel(), event.getPos()), BlockInteractionTask.TYPE);
     }
 }

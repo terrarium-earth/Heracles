@@ -1,7 +1,6 @@
 package earth.terrarium.heracles.fabric;
 
 import com.mojang.brigadier.arguments.StringArgumentType;
-import com.mojang.datafixers.util.Pair;
 import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.api.tasks.defaults.BlockInteractionTask;
 import earth.terrarium.heracles.api.tasks.defaults.ItemInteractionTask;
@@ -17,6 +16,7 @@ import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.fabricmc.fabric.api.event.player.UseItemCallback;
 import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder;
 import net.minecraft.commands.Commands;
+import net.minecraft.core.BlockSourceImpl;
 import net.minecraft.core.Registry;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionResult;
@@ -81,7 +81,7 @@ public class HeraclesFabric {
             if (!(player instanceof ServerPlayer serverPlayer)) return InteractionResult.PASS;
 
             QuestProgressHandler.getProgress(serverPlayer.server, serverPlayer.getUUID())
-                .testAndProgressTaskType(serverPlayer, Pair.of(serverPlayer.getLevel(), hitResult.getBlockPos()), BlockInteractionTask.TYPE);
+                .testAndProgressTaskType(serverPlayer, new BlockSourceImpl(serverPlayer.getLevel(), hitResult.getBlockPos()), BlockInteractionTask.TYPE);
 
             return InteractionResult.PASS;
         });

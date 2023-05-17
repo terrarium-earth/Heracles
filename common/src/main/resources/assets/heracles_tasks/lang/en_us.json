@@ -1,4 +1,8 @@
 {
+
+  "task.heracles.require_quest.title": "Complete %s",
+  "task.heracles.require_quest.desc": "Complete the quest",
+
   "task.heracles.kill_entity.title.singular": "Kill a %s",
   "task.heracles.kill_entity.title.plural": "Kill %ss",
   "task.heracles.kill_entity.desc.singular": "Kill %s %s",

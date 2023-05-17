@@ -6,5 +6,7 @@
     "quest.heracles.in_progress": "In progress",
     "quest.heracles.completed": "Completed",
 
-    "quest.heracles.toast": "Quest Complete!"
+    "quest.heracles.toast": "Quest Complete!",
+
+    "item.heracles.quest_book": "Quest Book"
 }

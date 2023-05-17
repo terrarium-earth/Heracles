@@ -120,6 +120,10 @@ public class QuestHandler {
     }
 
     public static List<String> groups() {
+        if (GROUPS.isEmpty()) {
+            GROUPS.add("Main");
+            saveGroups();
+        }
         return GROUPS;
     }
 }

@@ -1,6 +1,7 @@
 package earth.terrarium.heracles;
 
 import earth.terrarium.heracles.common.network.NetworkHandler;
+import earth.terrarium.heracles.common.regisitries.ModItems;
 import earth.terrarium.heracles.common.regisitries.ModMenus;
 import earth.terrarium.heracles.common.team.TeamProvider;
 import net.minecraft.core.Registry;
@@ -21,6 +22,7 @@ public class Heracles {
 
     public static void init() {
         ModMenus.MENUS.init();
+        ModItems.ITEMS.init();
         NetworkHandler.init();
     }
 

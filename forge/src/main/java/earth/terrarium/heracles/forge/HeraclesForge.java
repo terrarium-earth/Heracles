@@ -16,7 +16,6 @@ import net.minecraftforge.event.AddReloadListenerEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.living.LivingEntityUseItemEvent;
 import net.minecraftforge.event.entity.player.AdvancementEvent;
-import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.server.ServerAboutToStartEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -44,7 +43,6 @@ public class HeraclesForge {
         MinecraftForge.EVENT_BUS.addListener(HeraclesForge::onResourcesLoad);
         MinecraftForge.EVENT_BUS.addListener(HeraclesForge::onServerStarting);
         MinecraftForge.EVENT_BUS.addListener(HeraclesForge::onAdvancementEarn);
-        MinecraftForge.EVENT_BUS.addListener(HeraclesForge::onTravelToDimension);
         MinecraftForge.EVENT_BUS.addListener(HeraclesForge::onTick);
         MinecraftForge.EVENT_BUS.addListener(HeraclesForge::onItemUse);
         MinecraftForge.EVENT_BUS.addListener(HeraclesForge::onItemInteract);
@@ -64,13 +62,6 @@ public class HeraclesForge {
 
         QuestProgressHandler.getProgress(player.server, player.getUUID())
             .testAndProgressTaskType(player, event.getAdvancement(), AdvancementTask.TYPE);
-    }
-
-    private static void onTravelToDimension(PlayerEvent.PlayerChangedDimensionEvent event) {
-        if (!(event.getEntity() instanceof ServerPlayer player)) return;
-
-        QuestProgressHandler.getProgress(player.server, player.getUUID())
-            .testAndProgressTaskType(player, player.getLevel(), EnterDimensionTask.TYPE);
     }
 
     private static void onTick(TickEvent.PlayerTickEvent event) {

@@ -8,14 +8,14 @@ import earth.terrarium.heracles.api.tasks.QuestTask;
 import earth.terrarium.heracles.api.tasks.QuestTaskType;
 import earth.terrarium.heracles.api.tasks.storage.defaults.IntegerTaskStorage;
 import earth.terrarium.heracles.common.utils.RegistryValue;
-import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.NumericTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
 public record GatherItemTask(
-    String id, RegistryValue<Item, Item> item, NbtPredicate nbt, int target
+    String id, RegistryValue<Item> item, NbtPredicate nbt, int target
 ) implements QuestTask<ItemStack, NumericTag, GatherItemTask> {
 
     public static final QuestTaskType<GatherItemTask> TYPE = new Type();
@@ -55,7 +55,7 @@ public record GatherItemTask(
         public Codec<GatherItemTask> codec(String id) {
             return RecordCodecBuilder.create(instance -> instance.group(
                 RecordCodecBuilder.point(id),
-                RegistryValue.codec(BuiltInRegistries.ITEM).fieldOf("item").forGetter(GatherItemTask::item),
+                RegistryValue.codec(Registries.ITEM).fieldOf("item").forGetter(GatherItemTask::item),
                 NbtPredicate.CODEC.fieldOf("nbt").orElse(NbtPredicate.ANY).forGetter(GatherItemTask::nbt),
                 Codec.INT.fieldOf("amount").orElse(1).forGetter(GatherItemTask::target)
             ).apply(instance, GatherItemTask::new));

@@ -8,14 +8,14 @@ import earth.terrarium.heracles.api.tasks.QuestTask;
 import earth.terrarium.heracles.api.tasks.QuestTaskType;
 import earth.terrarium.heracles.api.tasks.storage.defaults.BooleanTaskStorage;
 import earth.terrarium.heracles.common.utils.RegistryValue;
-import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.ByteTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
 public record ItemInteractionTask(
-    String id, RegistryValue<Item, Item> item, NbtPredicate nbt
+    String id, RegistryValue<Item> item, NbtPredicate nbt
 ) implements QuestTask<ItemStack, ByteTag, ItemInteractionTask> {
     public static final QuestTaskType<ItemInteractionTask> TYPE = new Type();
 
@@ -49,7 +49,7 @@ public record ItemInteractionTask(
         public Codec<ItemInteractionTask> codec(String id) {
             return RecordCodecBuilder.create(instance -> instance.group(
                 RecordCodecBuilder.point(id),
-                RegistryValue.codec(BuiltInRegistries.ITEM).fieldOf("item").forGetter(ItemInteractionTask::item),
+                RegistryValue.codec(Registries.ITEM).fieldOf("item").forGetter(ItemInteractionTask::item),
                 NbtPredicate.CODEC.fieldOf("nbt").orElse(NbtPredicate.ANY).forGetter(ItemInteractionTask::nbt)
             ).apply(instance, ItemInteractionTask::new));
         }

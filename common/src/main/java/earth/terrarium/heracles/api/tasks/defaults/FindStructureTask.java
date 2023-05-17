@@ -6,9 +6,9 @@ import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.api.tasks.QuestTask;
 import earth.terrarium.heracles.api.tasks.QuestTaskType;
 import earth.terrarium.heracles.api.tasks.storage.defaults.BooleanTaskStorage;
-import net.minecraft.core.HolderSet;
+import earth.terrarium.heracles.common.utils.RegistryValue;
 import net.minecraft.core.Registry;
-import net.minecraft.core.RegistryCodecs;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.ByteTag;
 import net.minecraft.resources.ResourceLocation;
@@ -17,18 +17,23 @@ import net.minecraft.world.level.levelgen.structure.Structure;
 import java.util.Collection;
 
 public record FindStructureTask(
-    String id, HolderSet<Structure> structures
+    String id, RegistryValue<Structure> structures
 ) implements QuestTask<Collection<Structure>, ByteTag, FindStructureTask> {
 
     public static final QuestTaskType<FindStructureTask> TYPE = new Type();
-    public static final Codec<HolderSet<Structure>> STRUCTURE_LIST_CODEC = RegistryCodecs.homogeneousList(Registries.STRUCTURE, Structure.DIRECT_CODEC, true);
 
     @Override
     public ByteTag test(QuestTaskType<?> type, ByteTag progress, Collection<Structure> input) {
-        return storage().of(progress, input.stream().anyMatch(structure -> {
-            Registry<Structure> structuresRegistry = Heracles.getRegistryAccess().registryOrThrow(Registries.STRUCTURE);
-            return structures.contains(structuresRegistry.getResourceKey(structure).flatMap(structuresRegistry::getHolder).orElseThrow());
-        }));
+        final RegistryAccess access = Heracles.getRegistryAccess();
+        final Registry<Structure> registry = access.registry(Registries.STRUCTURE).orElse(null);
+        if (registry != null) {
+            for (Structure structure : input) {
+                if (structures().is(registry.wrapAsHolder(structure))) {
+                    return storage().of(progress, true);
+                }
+            }
+        }
+        return storage().of(progress, false);
     }
 
     @Override
@@ -57,7 +62,7 @@ public record FindStructureTask(
         public Codec<FindStructureTask> codec(String id) {
             return RecordCodecBuilder.create(instance -> instance.group(
                 RecordCodecBuilder.point(id),
-                STRUCTURE_LIST_CODEC.fieldOf("structures").forGetter(FindStructureTask::structures)
+                RegistryValue.codec(Registries.STRUCTURE).fieldOf("structures").forGetter(FindStructureTask::structures)
             ).apply(instance, FindStructureTask::new));
         }
     }

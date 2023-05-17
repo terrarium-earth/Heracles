@@ -30,7 +30,7 @@ public record ItemTaskWidget(
         this(
             task,
             progress,
-            task.item().value().map(
+            task.item().getValue().map(
                 item -> List.of(item.getDefaultInstance()),
                 tag -> ModUtils.getValue(Registries.ITEM, tag).stream().map(ItemStack::new).toList()
             )

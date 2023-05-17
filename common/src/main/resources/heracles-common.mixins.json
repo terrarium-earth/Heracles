@@ -4,6 +4,7 @@
   "package": "earth.terrarium.heracles.mixins",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
+    "ChangeDimensionTriggerMixin",
     "PlayerListMixin",
     "ServerPlayerMixin"
   ],

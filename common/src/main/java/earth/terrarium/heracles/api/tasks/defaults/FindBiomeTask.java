@@ -14,7 +14,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.biome.Biome;
 
 public record FindBiomeTask(
-    String id, RegistryValue<Holder<Biome>, Biome> biomes
+    String id, RegistryValue<Biome> biomes
 ) implements QuestTask<Holder<Biome>, ByteTag, FindBiomeTask> {
 
     public static final QuestTaskType<FindBiomeTask> TYPE = new Type();
@@ -50,7 +50,7 @@ public record FindBiomeTask(
         public Codec<FindBiomeTask> codec(String id) {
             return RecordCodecBuilder.create(instance -> instance.group(
                 RecordCodecBuilder.point(id),
-                RegistryValue.codec(Biome.CODEC, Registries.BIOME).fieldOf("biomes").forGetter(FindBiomeTask::biomes)
+                RegistryValue.codec(Registries.BIOME).fieldOf("biomes").forGetter(FindBiomeTask::biomes)
             ).apply(instance, FindBiomeTask::new));
         }
     }

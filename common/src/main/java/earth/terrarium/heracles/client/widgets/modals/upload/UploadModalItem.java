@@ -7,6 +7,7 @@ import com.mojang.serialization.JsonOps;
 import com.teamresourceful.resourcefullib.client.scissor.ScissorBoxStack;
 import com.teamresourceful.resourcefullib.client.utils.RenderUtils;
 import com.teamresourceful.resourcefullib.common.lib.Constants;
+import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.api.quests.Quest;
 import earth.terrarium.heracles.client.utils.ClientUtils;
 import net.minecraft.Util;
@@ -15,6 +16,7 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.RegistryOps;
 import net.minecraft.util.Mth;
 import org.apache.commons.io.FileUtils;
 import org.jetbrains.annotations.Nullable;
@@ -48,7 +50,7 @@ public record UploadModalItem(Path path, @Nullable Quest quest, String size, Lis
                 try {
                     JsonObject json = Constants.GSON.fromJson(content, JsonObject.class);
                     final String finalSize = size;
-                    return Quest.CODEC.parse(JsonOps.INSTANCE, json).get()
+                    return Quest.CODEC.parse(RegistryOps.create(JsonOps.INSTANCE, Heracles.getRegistryAccess()), json).get()
                         .map(
                             quest -> new UploadModalItem(path, quest, finalSize, List.of(), Icon.SUCCESS),
                             error -> {

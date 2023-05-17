@@ -35,8 +35,11 @@ public class SelectQuestHandler {
                 quest.quest().dependencies().remove(selectedQuest.id());
                 selectedQuest.entry().children().remove(quest.entry());
             } else {
-                quest.quest().dependencies().add(selectedQuest.id());
-                selectedQuest.entry().children().add(quest.entry());
+                if (!quest.entry().children().contains(selectedQuest.entry())) {
+                    if (quest.quest().dependencies().add(selectedQuest.id())) {
+                        selectedQuest.entry().children().add(quest.entry());
+                    }
+                }
             }
             ClientQuests.setDirty(quest.id());
             return;

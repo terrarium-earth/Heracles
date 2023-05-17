@@ -80,7 +80,7 @@ public class QuestHandler {
             org.apache.commons.io.FileUtils.deleteDirectory(questsPath.toFile());
             for (Map.Entry<String, Quest> entry : QUESTS.entrySet()) {
                 File file = new File(questsPath.toFile(), entry.getKey() + ".json");
-                String json = Constants.GSON.toJson(Quest.CODEC.encodeStart(JsonOps.INSTANCE, entry.getValue())
+                String json = Constants.GSON.toJson(Quest.CODEC.encodeStart(RegistryOps.create(JsonOps.INSTANCE, Heracles.getRegistryAccess()), entry.getValue())
                     .getOrThrow(false, LOGGER::error));
                 org.apache.commons.io.FileUtils.write(file, json, StandardCharsets.UTF_8);
             }

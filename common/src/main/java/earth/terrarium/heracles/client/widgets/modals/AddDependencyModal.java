@@ -92,6 +92,7 @@ public class AddDependencyModal extends BaseModal {
                     this.dependencies.remove(dependency);
                     for (ClientQuests.QuestEntry questEntry : ClientQuests.entries()) {
                         if (questEntry.value().equals(dependency)) {
+                            questEntry.children().remove(this.entry);
                             this.entry.dependencies().remove(questEntry);
                             this.entry.value().dependencies().remove(questEntry.key());
                             this.callback.run();

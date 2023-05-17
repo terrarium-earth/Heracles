@@ -2,6 +2,7 @@ package earth.terrarium.heracles.client.screens.quest;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
+import earth.terrarium.heracles.client.handlers.ClientQuests;
 import earth.terrarium.heracles.client.screens.AbstractQuestScreen;
 import earth.terrarium.heracles.client.screens.quest.rewards.RewardListWidget;
 import earth.terrarium.heracles.client.screens.quest.tasks.TaskListWidget;
@@ -24,6 +25,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class QuestScreen extends AbstractQuestScreen<QuestMenu> {
 
@@ -39,6 +41,7 @@ public class QuestScreen extends AbstractQuestScreen<QuestMenu> {
 
     public QuestScreen(QuestMenu menu, Inventory inventory, Component component) {
         super(menu, inventory, Optionull.mapOrDefault(menu.quest(), quest -> quest.display().title(), component));
+        ClientQuests.updateProgress(Map.of(menu.id(), menu.progress()));
     }
 
     @Override

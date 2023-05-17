@@ -1,6 +1,7 @@
 package earth.terrarium.heracles.client.handlers;
 
 import earth.terrarium.heracles.api.quests.Quest;
+import earth.terrarium.heracles.common.handlers.progress.QuestProgress;
 import earth.terrarium.heracles.common.network.NetworkHandler;
 import earth.terrarium.heracles.common.network.packets.QuestActionPacket;
 import earth.terrarium.heracles.common.network.packets.UploadQuestPacket;
@@ -11,6 +12,8 @@ public class ClientQuests {
     private static final Map<String, QuestEntry> ENTRIES = new HashMap<>();
     private static final Set<String> DIRTY = new HashSet<>();
     private static final List<String> GROUPS = new ArrayList<>();
+
+    private static final Map<String, QuestProgress> PROGRESS = new HashMap<>();
 
     public static Optional<QuestEntry> get(String key) {
         return Optional.ofNullable(ENTRIES.get(key));
@@ -30,6 +33,11 @@ public class ClientQuests {
         }
 
         GROUPS.addAll(groups);
+    }
+
+    public static void updateProgress(Map<String, QuestProgress> progress) {
+        PROGRESS.clear();
+        PROGRESS.putAll(progress);
     }
 
     private static QuestEntry addEntry(
@@ -74,6 +82,10 @@ public class ClientQuests {
 
     public static Collection<QuestEntry> entries() {
         return ENTRIES.values();
+    }
+
+    public static QuestProgress getProgress(String id) {
+        return PROGRESS.get(id);
     }
 
     public record QuestEntry(List<QuestEntry> dependencies, String key, Quest value, List<QuestEntry> children) {}

@@ -4,6 +4,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.teamresourceful.resourcefullib.common.codecs.maps.DispatchMapCodec;
 import earth.terrarium.heracles.api.rewards.defaults.ItemReward;
+import earth.terrarium.heracles.api.rewards.defaults.SelectableReward;
 import earth.terrarium.heracles.api.rewards.defaults.WeightedItemReward;
 import earth.terrarium.heracles.api.rewards.defaults.XpQuestReward;
 import net.minecraft.resources.ResourceLocation;
@@ -35,5 +36,6 @@ public class QuestRewards {
         register(XpQuestReward.TYPE);
         register(ItemReward.TYPE);
         register(WeightedItemReward.TYPE);
+        register(SelectableReward.TYPE);
     }
 }

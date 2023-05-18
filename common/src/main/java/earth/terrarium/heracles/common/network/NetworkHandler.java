@@ -6,6 +6,8 @@ import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.common.network.packets.*;
 import earth.terrarium.heracles.common.network.packets.pinned.SetPinnedQuestPacket;
 import earth.terrarium.heracles.common.network.packets.pinned.SyncPinnedQuestsPacket;
+import earth.terrarium.heracles.common.network.packets.rewards.ClaimRewardsPacket;
+import earth.terrarium.heracles.common.network.packets.rewards.ClaimSelectableRewardsPacket;
 
 public class NetworkHandler {
 
@@ -24,5 +26,6 @@ public class NetworkHandler {
         CHANNEL.registerPacket(NetworkDirection.CLIENT_TO_SERVER, CreateGroupPacket.ID, CreateGroupPacket.HANDLER, CreateGroupPacket.class);
         CHANNEL.registerPacket(NetworkDirection.CLIENT_TO_SERVER, ClaimRewardsPacket.ID, ClaimRewardsPacket.HANDLER, ClaimRewardsPacket.class);
         CHANNEL.registerPacket(NetworkDirection.CLIENT_TO_SERVER, SetPinnedQuestPacket.ID, SetPinnedQuestPacket.HANDLER, SetPinnedQuestPacket.class);
+        CHANNEL.registerPacket(NetworkDirection.CLIENT_TO_SERVER, ClaimSelectableRewardsPacket.ID, ClaimSelectableRewardsPacket.HANDLER, ClaimSelectableRewardsPacket.class);
     }
 }

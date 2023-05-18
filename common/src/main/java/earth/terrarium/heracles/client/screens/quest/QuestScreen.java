@@ -7,10 +7,11 @@ import earth.terrarium.heracles.client.screens.AbstractQuestScreen;
 import earth.terrarium.heracles.client.screens.quest.rewards.RewardListWidget;
 import earth.terrarium.heracles.client.screens.quest.tasks.TaskListWidget;
 import earth.terrarium.heracles.client.widgets.SelectableTabButton;
+import earth.terrarium.heracles.client.widgets.base.TemporyWidget;
 import earth.terrarium.heracles.common.menus.quest.QuestMenu;
 import earth.terrarium.heracles.common.network.NetworkHandler;
-import earth.terrarium.heracles.common.network.packets.ClaimRewardsPacket;
 import earth.terrarium.heracles.common.network.packets.OpenGroupPacket;
+import earth.terrarium.heracles.common.network.packets.rewards.ClaimRewardsPacket;
 import earth.terrarium.hermes.api.TagProvider;
 import earth.terrarium.hermes.api.themes.DefaultTheme;
 import earth.terrarium.hermes.client.DocumentWidget;
@@ -131,18 +132,17 @@ public class QuestScreen extends AbstractQuestScreen<QuestMenu> {
     }
 
     @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        if (this.tasks != null && this.tasks.isSelected() && this.taskList.mouseClicked(mouseX, mouseY, button)) {
-            return true;
-        }
-        if (this.rewards != null && this.rewards.isSelected() && this.rewardList.mouseClicked(mouseX, mouseY, button)) {
-            return true;
-        }
-        return super.mouseClicked(mouseX, mouseY, button);
-    }
-
-    @Override
     public @NotNull List<? extends GuiEventListener> children() {
+        List<GuiEventListener> listeners = new ArrayList<>();
+        for (TemporyWidget widget : temporaryWidgets) {
+            if (widget.isVisible() && widget instanceof GuiEventListener listener) {
+                listeners.add(listener);
+            }
+        }
+        if (!listeners.isEmpty()) {
+            return listeners;
+        }
+
         List<GuiEventListener> children = new ArrayList<>();
         if (this.tasks != null && this.tasks.isSelected()) {
             children.add(this.taskList);

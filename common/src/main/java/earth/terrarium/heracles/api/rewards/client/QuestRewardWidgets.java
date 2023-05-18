@@ -4,9 +4,11 @@ import earth.terrarium.heracles.api.client.DisplayWidget;
 import earth.terrarium.heracles.api.rewards.QuestReward;
 import earth.terrarium.heracles.api.rewards.QuestRewardType;
 import earth.terrarium.heracles.api.rewards.client.defaults.ItemRewardWidget;
+import earth.terrarium.heracles.api.rewards.client.defaults.SelectableRewardWidget;
 import earth.terrarium.heracles.api.rewards.client.defaults.WeightedItemRewardWidget;
 import earth.terrarium.heracles.api.rewards.client.defaults.XpRewardWidget;
 import earth.terrarium.heracles.api.rewards.defaults.ItemReward;
+import earth.terrarium.heracles.api.rewards.defaults.SelectableReward;
 import earth.terrarium.heracles.api.rewards.defaults.WeightedItemReward;
 import earth.terrarium.heracles.api.rewards.defaults.XpQuestReward;
 import net.minecraft.Optionull;
@@ -40,5 +42,6 @@ public final class QuestRewardWidgets {
         register(XpQuestReward.TYPE, XpRewardWidget::new);
         register(ItemReward.TYPE, ItemRewardWidget::new);
         register(WeightedItemReward.TYPE, WeightedItemRewardWidget::new);
+        register(SelectableReward.TYPE, SelectableRewardWidget::of);
     }
 }

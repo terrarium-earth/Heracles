@@ -55,10 +55,14 @@ public abstract class AbstractQuestScreen<T extends AbstractContainerMenu> exten
         this.temporaryWidgets.clear();
     }
 
-    protected <R extends Renderable & TemporyWidget> R addTemporary(R renderable) {
+    public <R extends Renderable & TemporyWidget> R addTemporary(R renderable) {
         addRenderableOnly(renderable);
         this.temporaryWidgets.add(renderable);
         return renderable;
+    }
+
+    public List<TemporyWidget> temporaryWidgets() {
+        return this.temporaryWidgets;
     }
 
     protected void goBack() {

@@ -1,4 +1,4 @@
-package earth.terrarium.heracles.common.network.packets;
+package earth.terrarium.heracles.common.network.packets.rewards;
 
 import com.teamresourceful.resourcefullib.common.networking.base.Packet;
 import com.teamresourceful.resourcefullib.common.networking.base.PacketContext;
@@ -41,7 +41,7 @@ public record ClaimRewardsPacket(String quest) implements Packet<ClaimRewardsPac
             return (player, level) -> {
                 Quest quest = QuestHandler.get(message.quest);
                 if (quest != null) {
-                    quest.reward((ServerPlayer) player);
+                    quest.claimAllowedRewards((ServerPlayer) player);
                 }
             };
         }

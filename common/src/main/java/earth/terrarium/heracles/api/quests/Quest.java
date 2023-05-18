@@ -7,7 +7,6 @@ import earth.terrarium.heracles.api.rewards.QuestReward;
 import earth.terrarium.heracles.api.rewards.QuestRewards;
 import earth.terrarium.heracles.api.tasks.QuestTask;
 import earth.terrarium.heracles.api.tasks.QuestTasks;
-import earth.terrarium.heracles.common.handlers.progress.QuestProgress;
 import earth.terrarium.heracles.common.handlers.progress.QuestProgressHandler;
 import earth.terrarium.heracles.common.handlers.progress.QuestsProgress;
 import earth.terrarium.heracles.common.handlers.quests.QuestHandler;
@@ -17,13 +16,12 @@ import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.ExtraCodecs;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Stream;
 
 public record Quest(
     QuestDisplay display,
@@ -54,30 +52,36 @@ public record Quest(
         return new Quest(display, settings, dependencies, new HashMap<>(tasks), rewardText, new HashMap<>(rewards));
     }
 
-    public void reward(ServerPlayer player) {
+    public void claimAllowedRewards(ServerPlayer player) {
         QuestsProgress progress = QuestProgressHandler.getProgress(player.server, player.getUUID());
         String id = QuestHandler.getKey(this);
         if (!progress.isComplete(id)) return;
         if (progress.isClaimed(id, this)) return;
 
-        QuestProgress questProgress = progress.getProgress(id);
+        var questProgress = progress.getProgress(id);
 
-        NetworkHandler.CHANNEL.sendToPlayer(
-            new QuestRewardClaimedPacket(
-                this,
-                rewards()
-                    .values()
-                    .stream()
-                    .filter(reward -> !questProgress.claimedRewards().contains(reward.id()))
-                    .peek(reward -> questProgress.claimReward(reward.id()))
-                    .flatMap(reward -> reward.reward(player))
-                    .filter(stack -> !stack.is(Items.AIR))
-                    .map(ItemStack::getItem)
-                    .distinct()
-                    .toList()
-            ),
-            player
+        claimRewards(
+            player,
+            rewards().values().stream().
+                filter(QuestReward::canBeMassClaimed)
+                .filter(reward -> !questProgress.claimedRewards().contains(reward.id()))
+                .peek(reward -> questProgress.claimReward(reward.id()))
         );
+    }
+
+    public void claimRewards(ServerPlayer player, Stream<? extends QuestReward<?>> rewards) {
+        List<Item> items = rewards
+            .flatMap(reward -> reward.reward(player))
+            .filter(stack -> !stack.is(Items.AIR))
+            .map(ItemStack::getItem)
+            .distinct()
+            .toList();
+        if (!items.isEmpty()) {
+            NetworkHandler.CHANNEL.sendToPlayer(
+                new QuestRewardClaimedPacket(this, items),
+                player
+            );
+        }
         player.containerMenu.broadcastChanges();
         player.inventoryMenu.broadcastChanges();
     }

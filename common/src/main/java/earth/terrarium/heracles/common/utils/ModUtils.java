@@ -2,7 +2,8 @@ package earth.terrarium.heracles.common.utils;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.mojang.serialization.Codec;
+import com.mojang.datafixers.util.Pair;
+import com.mojang.serialization.*;
 import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.api.quests.Quest;
 import earth.terrarium.heracles.common.handlers.progress.QuestProgressHandler;
@@ -37,6 +38,23 @@ public class ModUtils {
             list -> Util.fixedSize(list, 2).map(listx -> new Vector2i(listx.get(0), listx.get(1))),
             vector3f -> List.of(vector3f.x(), vector3f.y())
         );
+
+    public static <T> Codec<T> codecFail(String message) {
+        return Codec.of(
+            new Encoder<>() {
+                @Override
+                public <T1> DataResult<T1> encode(T input, DynamicOps<T1> ops, T1 prefix) {
+                    return DataResult.error(() -> message);
+                }
+            },
+            new Decoder<>() {
+                @Override
+                public <T1> DataResult<Pair<T, T1>> decode(DynamicOps<T1> ops, T1 input) {
+                    return DataResult.error(() -> message);
+                }
+            }
+        );
+    }
 
     public static <T> List<T> getValue(ResourceKey<? extends Registry<T>> key, TagKey<T> tag) {
         return Heracles.getRegistryAccess().registry(key)

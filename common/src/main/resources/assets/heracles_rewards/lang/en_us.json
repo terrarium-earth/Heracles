@@ -18,5 +18,10 @@
     "reward.heracles.weighted_item.title.singular": "Receive a Random Item",
     "reward.heracles.weighted_item.title.plural": "Receive Random Items",
     "reward.heracles.weighted_item.desc.singular": "Receive %s random item",
-    "reward.heracles.weighted_item.desc.plural": "Receive %s random items"
+    "reward.heracles.weighted_item.desc.plural": "Receive %s random items",
+
+    "reward.heracles.select.title.singular": "Select a reward",
+    "reward.heracles.select.title.plural": "Select rewards",
+    "reward.heracles.select.desc.singular": "Click the button to select %s reward",
+    "reward.heracles.select.desc.plural": "Click the button to select %s rewards"
 }

@@ -6,6 +6,7 @@ import com.teamresourceful.resourcefullib.common.codecs.CodecExtras;
 import com.teamresourceful.resourcefullib.common.codecs.maps.DispatchMapCodec;
 import earth.terrarium.heracles.api.quests.Quest;
 import earth.terrarium.heracles.api.tasks.QuestTask;
+import earth.terrarium.heracles.common.utils.ModUtils;
 import net.minecraft.nbt.Tag;
 
 import java.util.HashMap;
@@ -19,7 +20,11 @@ public class QuestProgress {
         return RecordCodecBuilder.create(instance -> instance.group(
             Codec.BOOL.fieldOf("complete").orElse(false).forGetter(QuestProgress::isComplete),
             CodecExtras.set(Codec.STRING).fieldOf("rewards").orElse(new HashSet<>()).forGetter(QuestProgress::claimedRewards),
-            DispatchMapCodec.of(Codec.STRING, id -> TaskProgress.codec(quest.tasks().get(id)))
+            DispatchMapCodec.of(Codec.STRING, id -> {
+                    QuestTask<?, ?, ?> task = quest.tasks().get(id);
+                    if (task == null) return ModUtils.codecFail("Task with id'" + id + "' does not exist.");
+                    return TaskProgress.codec(quest.tasks().get(id));
+                })
                 .orElse(new HashMap<>()).fieldOf("tasks").forGetter(QuestProgress::tasks)
         ).apply(instance, QuestProgress::new));
     }
@@ -63,6 +68,10 @@ public class QuestProgress {
 
     public Set<String> claimedRewards() {
         return claimed;
+    }
+
+    public boolean canClaim(String reward) {
+        return !claimed.contains(reward) && complete;
     }
 
     @SuppressWarnings("unchecked")

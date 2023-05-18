@@ -9,6 +9,7 @@ import earth.terrarium.heracles.api.rewards.QuestReward;
 import earth.terrarium.heracles.api.rewards.client.QuestRewardWidgets;
 import earth.terrarium.heracles.client.handlers.ClientQuests;
 import earth.terrarium.heracles.client.screens.quest.HeadingWidget;
+import earth.terrarium.heracles.client.utils.MouseClick;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.gui.components.events.AbstractContainerEventHandler;
@@ -48,7 +49,7 @@ public class RewardListWidget extends AbstractContainerEventHandler implements R
         for (QuestReward<?> reward : quest.rewards().values()) {
             DisplayWidget widget = QuestRewardWidgets.create(reward);
             if (widget == null) continue;
-            this.widgets.add(QuestRewardWidgets.create(reward));
+            this.widgets.add(widget);
         }
         ClientQuests.get(id).ifPresent(entry -> {
             if (entry.children().isEmpty()) return;
@@ -105,6 +106,4 @@ public class RewardListWidget extends AbstractContainerEventHandler implements R
     public @NotNull List<? extends GuiEventListener> children() {
         return List.of();
     }
-
-    private record MouseClick(double x, double y, int button) {}
 }

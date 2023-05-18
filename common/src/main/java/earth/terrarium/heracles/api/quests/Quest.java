@@ -7,6 +7,7 @@ import earth.terrarium.heracles.api.rewards.QuestReward;
 import earth.terrarium.heracles.api.rewards.QuestRewards;
 import earth.terrarium.heracles.api.tasks.QuestTask;
 import earth.terrarium.heracles.api.tasks.QuestTasks;
+import earth.terrarium.heracles.common.handlers.progress.QuestProgress;
 import earth.terrarium.heracles.common.handlers.progress.QuestProgressHandler;
 import earth.terrarium.heracles.common.handlers.progress.QuestsProgress;
 import earth.terrarium.heracles.common.handlers.quests.QuestHandler;
@@ -57,11 +58,9 @@ public record Quest(
         QuestsProgress progress = QuestProgressHandler.getProgress(player.server, player.getUUID());
         String id = QuestHandler.getKey(this);
         if (!progress.isComplete(id)) return;
-        if (progress.isClaimed(id)) return;
+        if (progress.isClaimed(id, this)) return;
 
-        progress.getProgress(id).claim();
-
-        if (!progress.isClaimed(id)) return;
+        QuestProgress questProgress = progress.getProgress(id);
 
         NetworkHandler.CHANNEL.sendToPlayer(
             new QuestRewardClaimedPacket(
@@ -69,6 +68,8 @@ public record Quest(
                 rewards()
                     .values()
                     .stream()
+                    .filter(reward -> !questProgress.claimedRewards().contains(reward.id()))
+                    .peek(reward -> questProgress.claimReward(reward.id()))
                     .flatMap(reward -> reward.reward(player))
                     .filter(stack -> !stack.is(Items.AIR))
                     .map(ItemStack::getItem)

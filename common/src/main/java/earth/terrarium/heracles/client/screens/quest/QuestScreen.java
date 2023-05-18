@@ -68,7 +68,7 @@ public class QuestScreen extends AbstractQuestScreen<QuestMenu> {
             NetworkHandler.CHANNEL.sendToServer(new ClaimRewardsPacket(this.menu.id()));
             this.claimRewards.active = false;
         }).bounds(5, this.height - 25, buttonWidth, 20).build());
-        this.claimRewards.active = this.menu.progress().isComplete() && !this.menu.progress().isClaimed();
+        this.claimRewards.active = this.menu.progress().isComplete() && this.menu.progress().claimedRewards().size() < this.menu.quest().rewards().size();
 
         this.overview.setSelected(true);
 

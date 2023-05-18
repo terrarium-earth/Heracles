@@ -66,7 +66,7 @@ public record QuestsProgress(Map<String, QuestProgress> progress, CompletableQue
                     var currentProgress = memberProgress.progress().get(quest.getFirst());
                     var questProgress = progress.get(quest.getFirst());
                     var newTasks = copyTasks(questProgress.tasks());
-                    memberProgress.progress.put(quest.getFirst(), new QuestProgress(questProgress.isComplete(), currentProgress != null && currentProgress.isClaimed(), newTasks));
+                    memberProgress.progress.put(quest.getFirst(), new QuestProgress(questProgress.isComplete(), Set.copyOf(Optionull.mapOrDefault(currentProgress, QuestProgress::claimedRewards, new HashSet<>())), newTasks));
                     ServerPlayer serverPlayer = player.server.getPlayerList().getPlayer(member);
                     if (serverPlayer != null && questProgress.isComplete()) {
                         Quest questObj = QuestHandler.get(quest.getFirst());
@@ -97,8 +97,10 @@ public record QuestsProgress(Map<String, QuestProgress> progress, CompletableQue
         return Optionull.mapOrDefault(progress.get(id), QuestProgress::isComplete, false);
     }
 
-    public boolean isClaimed(String id) {
-        return Optionull.mapOrDefault(progress.get(id), QuestProgress::isClaimed, true);
+    public boolean isClaimed(String id, Quest quest) {
+        QuestProgress progress = this.progress.get(id);
+        if (progress == null) return true;
+        return progress.claimedRewards().size() >= quest.rewards().size();
     }
 
     public QuestProgress getProgress(String id) {

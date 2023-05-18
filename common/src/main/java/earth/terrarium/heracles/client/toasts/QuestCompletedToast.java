@@ -21,7 +21,14 @@ public record QuestCompletedToast(Quest quest) implements Toast {
 
         GuiComponent.blit(poseStack, 0, 0, 0, 0, width(), height());
         toastComponent.getMinecraft().font.draw(poseStack, TITLE_TEXT, 32.0F, 7.0F, 0xFF800080);
-        toastComponent.getMinecraft().font.draw(poseStack, quest.display().title(), 32.0F, 18.0F, 0xFFFFFFFF);
+
+        double time = DISPLAY_TIME * toastComponent.getNotificationDisplayTimeMultiplier();
+
+        Component text = timeSinceLastVisible >= (time / 2) ?
+            Component.translatable("quest.heracles.toast.desc", Component.keybind("key.heracles.open_quests")) :
+            quest.display().title();
+
+        toastComponent.getMinecraft().font.draw(poseStack, text, 32.0F, 18.0F, 0xFFFFFFFF);
 
         quest.display().icon().render(poseStack, new ScissorBoxStack(), 0, 0, height(), height());
 

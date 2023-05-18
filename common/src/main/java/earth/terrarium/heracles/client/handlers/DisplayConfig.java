@@ -1,32 +1,32 @@
 package earth.terrarium.heracles.client.handlers;
 
 import com.google.gson.JsonObject;
-import com.teamresourceful.resourcefullib.common.lib.Constants;
-import earth.terrarium.heracles.Heracles;
+import earth.terrarium.heracles.common.utils.ModUtils;
 import net.minecraft.util.GsonHelper;
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
 import java.nio.file.Path;
 
 public class DisplayConfig {
 
+    private static final String DISPLAY_FILE = "heracles_options.json";
+
     private static Path lastPath;
 
     public static int pinnedIndex = 0;
+    public static boolean showTutorial = true;
 
     public static void load(Path path) {
-        Path heraclesPath = path.resolve(Heracles.MOD_ID);
-        DisplayConfig.lastPath = heraclesPath;
-        File displayFile = heraclesPath.resolve("display.json").toFile();
+        DisplayConfig.lastPath = path;
+        File displayFile = path.resolve(DISPLAY_FILE).toFile();
         try {
-            Files.createDirectories(heraclesPath);
             if (displayFile.exists()) {
                 String displayString = FileUtils.readFileToString(displayFile, StandardCharsets.UTF_8);
-                JsonObject displayObject = Constants.GSON.fromJson(displayString, JsonObject.class);
+                JsonObject displayObject = ModUtils.PRETTY_GSON.fromJson(displayString, JsonObject.class);
                 pinnedIndex = GsonHelper.getAsInt(displayObject, "pinnedIndex", 0);
+                showTutorial = GsonHelper.getAsBoolean(displayObject, "showTutorial", true);
             } else {
                 save();
             }
@@ -37,11 +37,12 @@ public class DisplayConfig {
 
     public static void save() {
         if (lastPath == null) return;
-        File displayFile = lastPath.resolve("display.json").toFile();
+        File displayFile = lastPath.resolve(DISPLAY_FILE).toFile();
         JsonObject displayObject = new JsonObject();
         displayObject.addProperty("pinnedIndex", pinnedIndex);
+        displayObject.addProperty("showTutorial", showTutorial);
         try {
-            FileUtils.write(displayFile, Constants.GSON.toJson(displayObject), StandardCharsets.UTF_8);
+            FileUtils.write(displayFile, ModUtils.PRETTY_GSON.toJson(displayObject), StandardCharsets.UTF_8);
         } catch (Exception e) {
             e.printStackTrace();
         }

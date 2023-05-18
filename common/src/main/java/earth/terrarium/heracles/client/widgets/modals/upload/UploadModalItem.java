@@ -6,10 +6,10 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.serialization.JsonOps;
 import com.teamresourceful.resourcefullib.client.scissor.ScissorBoxStack;
 import com.teamresourceful.resourcefullib.client.utils.RenderUtils;
-import com.teamresourceful.resourcefullib.common.lib.Constants;
 import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.api.quests.Quest;
 import earth.terrarium.heracles.client.utils.ClientUtils;
+import earth.terrarium.heracles.common.utils.ModUtils;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -48,7 +48,7 @@ public record UploadModalItem(Path path, @Nullable Quest quest, String size, Lis
             size = " - " + FileUtils.byteCountToDisplaySize(file.length()).toLowerCase(Locale.ROOT);
             if (file.getName().endsWith(".json")) {
                 try {
-                    JsonObject json = Constants.GSON.fromJson(content, JsonObject.class);
+                    JsonObject json = ModUtils.PRETTY_GSON.fromJson(content, JsonObject.class);
                     final String finalSize = size;
                     return Quest.CODEC.parse(RegistryOps.create(JsonOps.INSTANCE, Heracles.getRegistryAccess()), json).get()
                         .map(

@@ -1,5 +1,7 @@
 package earth.terrarium.heracles.common.utils;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.mojang.serialization.Codec;
 import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.api.quests.Quest;
@@ -26,6 +28,8 @@ import java.util.List;
 import java.util.Map;
 
 public class ModUtils {
+
+    public static final Gson PRETTY_GSON = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
 
     public static final Codec<Vector2i> VECTOR2I = Codec.INT
         .listOf()

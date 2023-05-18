@@ -7,6 +7,13 @@
     "quest.heracles.completed": "Completed",
 
     "quest.heracles.toast": "Quest Complete!",
+    "quest.heracles.toast.desc": "Press [%s] to open",
 
-    "item.heracles.quest_book": "Quest Book"
+    "quest.heracles.tutorial.title": "Discover Quests!",
+    "quest.heracles.tutorial.desc": "Press [%s] to open",
+
+    "item.heracles.quest_book": "Quest Book",
+
+    "key.heracles.open_quests": "Open Quests",
+    "key.categories.odyssey": "Odyssey"
 }

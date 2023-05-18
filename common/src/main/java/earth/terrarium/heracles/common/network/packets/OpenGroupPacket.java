@@ -4,6 +4,7 @@ import com.teamresourceful.resourcefullib.common.networking.base.Packet;
 import com.teamresourceful.resourcefullib.common.networking.base.PacketContext;
 import com.teamresourceful.resourcefullib.common.networking.base.PacketHandler;
 import earth.terrarium.heracles.Heracles;
+import earth.terrarium.heracles.common.handlers.quests.QuestHandler;
 import earth.terrarium.heracles.common.utils.ModUtils;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
@@ -40,10 +41,14 @@ public record OpenGroupPacket(String group, boolean edit) implements Packet<Open
         public PacketContext handle(OpenGroupPacket message) {
             return (player, level) -> {
                 if (player instanceof ServerPlayer serverPlayer) {
+                    String group = message.group;
+                    if (group.isEmpty()) {
+                        group = QuestHandler.groups().get(0);
+                    }
                     if (message.edit) {
-                        ModUtils.editGroup(serverPlayer, message.group);
+                        ModUtils.editGroup(serverPlayer, group);
                     } else {
-                        ModUtils.openGroup(serverPlayer, message.group);
+                        ModUtils.openGroup(serverPlayer, group);
                     }
                 }
             };

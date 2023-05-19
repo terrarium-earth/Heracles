@@ -9,7 +9,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 
-public record OpenQuestPacket(String quest) implements Packet<OpenQuestPacket> {
+public record OpenQuestPacket(String quest, boolean edit) implements Packet<OpenQuestPacket> {
     public static final ResourceLocation ID = new ResourceLocation(Heracles.MOD_ID, "open_quest");
     public static final PacketHandler<OpenQuestPacket> HANDLER = new Handler();
 
@@ -28,18 +28,23 @@ public record OpenQuestPacket(String quest) implements Packet<OpenQuestPacket> {
         @Override
         public void encode(OpenQuestPacket message, FriendlyByteBuf buffer) {
             buffer.writeUtf(message.quest);
+            buffer.writeBoolean(message.edit);
         }
 
         @Override
         public OpenQuestPacket decode(FriendlyByteBuf buffer) {
-            return new OpenQuestPacket(buffer.readUtf());
+            return new OpenQuestPacket(buffer.readUtf(), buffer.readBoolean());
         }
 
         @Override
         public PacketContext handle(OpenQuestPacket message) {
             return (player, level) -> {
                 if (player instanceof ServerPlayer serverPlayer) {
-                    ModUtils.openQuest(serverPlayer, message.quest());
+                    if (message.edit() && player.hasPermissions(2)) {
+                        ModUtils.openEditQuest(serverPlayer, message.quest());
+                    } else {
+                        ModUtils.openQuest(serverPlayer, message.quest());
+                    }
                 }
             };
         }

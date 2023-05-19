@@ -13,6 +13,10 @@ import java.util.function.Function;
 
 public record RegistryValue<T>(Either<Holder<T>, TagKey<T>> value) {
 
+    public RegistryValue(Holder<T> value) {
+        this(Either.left(value));
+    }
+
     public static <T> Codec<RegistryValue<T>> codec(ResourceKey<? extends Registry<T>> registry) {
         return Codec.either(RegistryFixedCodec.create(registry), TagKey.hashedCodec(registry))
             .xmap(RegistryValue::new, RegistryValue::value);
@@ -40,6 +44,10 @@ public record RegistryValue<T>(Either<Holder<T>, TagKey<T>> value) {
             fallbackKey = namespace + "/" + path + "#" + tag.location();
         }
         return Component.translatableWithFallback(translationKey, fallbackKey);
+    }
+
+    public String toRegistryString() {
+        return getValue().map(Object::toString, tag -> "#" + tag.location());
     }
 
     public boolean is(Holder<T> value) {

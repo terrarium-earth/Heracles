@@ -9,8 +9,8 @@ import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.msrandom.extensions.annotations.ImplementedByExtension;
-import org.apache.commons.lang3.NotImplementedException;
 
+import java.util.List;
 import java.util.function.Supplier;
 
 public class Heracles {
@@ -28,7 +28,9 @@ public class Heracles {
 
     @ImplementedByExtension
     public static Iterable<TeamProvider> getTeamProviders() {
-        throw new NotImplementedException();
+        System.out.println("getTeamProviders not implemented");
+        //throw new NotImplementedException();
+        return List.of();
     }
 
     public static void setRegistryAccess(Supplier<RegistryAccess> access) {

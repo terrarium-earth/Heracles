@@ -7,6 +7,8 @@
   "task.heracles.kill_entity.title.plural": "Kill %ss",
   "task.heracles.kill_entity.desc.singular": "Kill %s %s",
   "task.heracles.kill_entity.desc.plural": "Kill %s %ss",
+  "task_entry.heracles.kill_entity.entity": "Entity to Kill:",
+  "task_entry.heracles.kill_entity.amount": "Amount to Kill:",
 
   "task.heracles.item.title.singular": "Gather a %s",
   "task.heracles.item.title.plural": "Gather %ss",

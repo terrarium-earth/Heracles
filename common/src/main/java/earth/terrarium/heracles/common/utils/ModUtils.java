@@ -81,7 +81,22 @@ public class ModUtils {
                 getQuests(player)
             ),
             CommonComponents.EMPTY,
-            QuestMenu::new,
+            QuestMenu::of,
+            player
+        );
+    }
+
+    public static void openEditQuest(ServerPlayer player, String id) {
+        Quest quest = QuestHandler.get(id);
+        BasicContentMenuProvider.open(
+            new QuestContent(
+                id,
+                quest,
+                QuestProgressHandler.getProgress(player.server, player.getUUID()).getProgress(id),
+                getQuests(player)
+            ),
+            CommonComponents.EMPTY,
+            QuestMenu::ofEditing,
             player
         );
     }

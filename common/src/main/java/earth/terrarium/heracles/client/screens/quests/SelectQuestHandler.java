@@ -26,7 +26,7 @@ public class SelectQuestHandler {
             if (Screen.hasShiftDown()) {
                 release();
                 return;
-            } else if (System.currentTimeMillis() - lastClickTime < 250) {
+            } else if (System.currentTimeMillis() - lastClickTime < 500) {
                 selectedQuest = null;
                 quest.onClicked();
             }

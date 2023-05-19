@@ -35,12 +35,7 @@ public class IconBackgroundModal extends BaseModal {
     @Override
     protected void renderBackground(PoseStack pose, int mouseX, int mouseY, float partialTick) {
         RenderUtils.bindTexture(TEXTURE);
-
-        pose.pushPose();
-        pose.translate(0, 0, 150);
-        Gui.fill(pose, 0, 15, screenWidth, screenHeight, 0x80000000);
         Gui.blit(pose, x, y, 0, 0, WIDTH, HEIGHT, 256, 256);
-
         renderChildren(pose, mouseX, mouseY, partialTick);
     }
 
@@ -62,8 +57,6 @@ public class IconBackgroundModal extends BaseModal {
                 tempY += 28;
             }
         }
-
-        pose.popPose();
     }
 
     @Override

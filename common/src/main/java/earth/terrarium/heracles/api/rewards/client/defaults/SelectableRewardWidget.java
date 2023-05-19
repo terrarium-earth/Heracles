@@ -10,7 +10,7 @@ import earth.terrarium.heracles.api.client.DisplayWidget;
 import earth.terrarium.heracles.api.client.WidgetUtils;
 import earth.terrarium.heracles.api.rewards.defaults.SelectableReward;
 import earth.terrarium.heracles.client.handlers.ClientQuests;
-import earth.terrarium.heracles.client.screens.quest.QuestScreen;
+import earth.terrarium.heracles.client.screens.quest.BaseQuestScreen;
 import earth.terrarium.heracles.client.utils.ClientUtils;
 import earth.terrarium.heracles.client.widgets.base.TemporyWidget;
 import earth.terrarium.heracles.client.widgets.modals.SelectRewardsModal;
@@ -36,7 +36,7 @@ public record SelectableRewardWidget(SelectableReward reward, String quest,
     private static final String DESC_PLURAL = "reward.heracles.select.desc.plural";
 
     public static SelectableRewardWidget of(SelectableReward reward) {
-        if (Minecraft.getInstance().screen instanceof QuestScreen screen) {
+        if (Minecraft.getInstance().screen instanceof BaseQuestScreen screen) {
             return new SelectableRewardWidget(reward, screen.getMenu().id(), ClientQuests.getProgress(screen.getMenu().id()));
         }
         return new SelectableRewardWidget(reward, "", null);
@@ -76,7 +76,7 @@ public record SelectableRewardWidget(SelectableReward reward, String quest,
         int buttonY = ((int) (width * 0.1f) - 10) / 2;
         boolean buttonHovered = mouseX > width - 30 && mouseX < width - 10 && mouseY > buttonY && mouseY < buttonY + 20;
         if (buttonHovered && progress != null && progress.canClaim(reward.id())) {
-            if (Minecraft.getInstance().screen instanceof QuestScreen screen) {
+            if (Minecraft.getInstance().screen instanceof BaseQuestScreen screen) {
                 boolean found = false;
                 SelectRewardsModal widget = new SelectRewardsModal(screen.width, screen.height);
                 for (TemporyWidget temporaryWidget : screen.temporaryWidgets()) {

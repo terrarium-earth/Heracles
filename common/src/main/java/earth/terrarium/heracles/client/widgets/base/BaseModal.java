@@ -4,14 +4,19 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.teamresourceful.resourcefullib.client.screens.CursorScreen;
 import com.teamresourceful.resourcefullib.client.utils.CursorUtils;
+import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.client.screens.AbstractQuestScreen;
 import earth.terrarium.heracles.client.utils.ClientUtils;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.components.ImageButton;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 
 public abstract class BaseModal extends BaseWidget implements TemporyWidget {
+
+    public static final ResourceLocation TEXTURE = new ResourceLocation(Heracles.MOD_ID, "textures/gui/modal.png");
 
     protected final int screenWidth;
     protected final int screenHeight;
@@ -57,9 +62,13 @@ public abstract class BaseModal extends BaseWidget implements TemporyWidget {
         }
 
         RenderSystem.disableDepthTest();
+        pose.pushPose();
+        pose.translate(0, 0, 150);
+        Gui.fill(pose, 0, 15, this.screenWidth, this.screenHeight, 0x80000000);
         renderBackground(pose, mouseX, mouseY, partialTick);
 
         renderForeground(pose, mouseX, mouseY, partialTick);
+        pose.popPose();
         RenderSystem.enableDepthTest();
 
         if (Minecraft.getInstance().screen instanceof CursorScreen cursorScreen) {

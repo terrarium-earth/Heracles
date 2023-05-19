@@ -50,13 +50,9 @@ public class CreateGroupModal extends BaseModal {
     protected void renderBackground(PoseStack pose, int mouseX, int mouseY, float partialTick) {
         RenderUtils.bindTexture(TEXTURE);
 
-        pose.pushPose();
-        pose.translate(0, 0, 150);
-        Gui.fill(pose, 0, 15, this.screenWidth, this.screenHeight, 0x80000000);
         Gui.blit(pose, this.x, this.y, 0, 0, this.width, this.height, 256, 256);
 
         renderChildren(pose, mouseX, mouseY, partialTick);
-
     }
 
     @Override
@@ -64,8 +60,6 @@ public class CreateGroupModal extends BaseModal {
         Font font = Minecraft.getInstance().font;
 
         font.draw(pose, "Create Group", x + 8, y + 6, 0x404040);
-
-        pose.popPose();
     }
 
     private Button createButton(Component component, int x, int y, Button.OnPress onPress) {

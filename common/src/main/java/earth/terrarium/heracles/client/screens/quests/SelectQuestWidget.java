@@ -7,9 +7,10 @@ import earth.terrarium.heracles.api.quests.defaults.ItemQuestIcon;
 import earth.terrarium.heracles.client.handlers.ClientQuests;
 import earth.terrarium.heracles.client.screens.AbstractQuestScreen;
 import earth.terrarium.heracles.client.utils.ClientUtils;
-import earth.terrarium.heracles.client.widgets.NumberEditBox;
 import earth.terrarium.heracles.client.widgets.base.BaseWidget;
+import earth.terrarium.heracles.client.widgets.boxes.IntEditBox;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
@@ -30,8 +31,8 @@ public class SelectQuestWidget extends BaseWidget {
 
     private final EditBox titleBox;
 
-    private final NumberEditBox xBox;
-    private final NumberEditBox yBox;
+    private final IntEditBox xBox;
+    private final IntEditBox yBox;
     private final MultiLineEditBox subtitleBox;
 
     public SelectQuestWidget(int x, int y, int width, int height) {
@@ -45,8 +46,8 @@ public class SelectQuestWidget extends BaseWidget {
 
         int boxWidth = (this.width - 40) / 2;
 
-        this.xBox = this.addChild(new NumberEditBox(this.font, this.x + 16, this.y + 44, boxWidth, 10, Component.literal("x")));
-        this.yBox = this.addChild(new NumberEditBox(this.font, this.x + 33 + boxWidth, this.y + 44, boxWidth, 10, Component.literal("y")));
+        this.xBox = this.addChild(new PositionBox(this.font, this.x + 16, this.y + 44, boxWidth, 10, Component.literal("x")));
+        this.yBox = this.addChild(new PositionBox(this.font, this.x + 33 + boxWidth, this.y + 44, boxWidth, 10, Component.literal("y")));
         this.xBox.setNumberResponder(value -> changeOption(quest -> quest.display().position().x = value));
         this.yBox.setNumberResponder(value -> changeOption(quest -> quest.display().position().y = value));
 
@@ -140,5 +141,28 @@ public class SelectQuestWidget extends BaseWidget {
         if (this.entry == null) return;
         consumer.accept(this.entry.value());
         ClientQuests.setDirty(this.entry.key());
+    }
+
+    private static class PositionBox extends IntEditBox {
+
+        public PositionBox(Font font, int x, int y, int width, int height, Component message) {
+            super(font, x, y, width, height, message);
+            setBordered(true);
+        }
+
+        @Override
+        public void renderWidget(PoseStack poseStack, int i, int j, float f) {
+            Font font = Minecraft.getInstance().font;
+            if (isVisible()) {
+                int textWidth = font.width(getMessage());
+                font.draw(poseStack, getMessage(), getX() - textWidth - 4, getY() + (this.height - font.lineHeight - 1) / 2f, isFocused() ? 0xffffff : 0x808080);
+            }
+            super.renderWidget(poseStack, i, j, f);
+        }
+
+        @Override
+        public int getInnerWidth() {
+            return this.width - 8;
+        }
     }
 }

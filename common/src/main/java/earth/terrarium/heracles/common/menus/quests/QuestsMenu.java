@@ -42,10 +42,6 @@ public class QuestsMenu extends AbstractContainerMenu {
         return new QuestsMenu(ModMenus.EDIT_QUESTS.get(), id, content);
     }
 
-    public boolean canEdit() {
-        return this.content != null && this.content.canEdit();
-    }
-
     public Map<String, ModUtils.QuestStatus> quests() {
         Map<String, ModUtils.QuestStatus> quests = new HashMap<>();
         if (this.content != null) {

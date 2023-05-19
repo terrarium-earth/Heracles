@@ -10,6 +10,7 @@ import earth.terrarium.heracles.client.handlers.ClientQuests;
 import earth.terrarium.heracles.common.network.NetworkHandler;
 import earth.terrarium.heracles.common.network.packets.OpenQuestPacket;
 import earth.terrarium.heracles.common.utils.ModUtils;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import org.joml.Vector2i;
 
@@ -44,7 +45,9 @@ public class QuestWidget {
     }
 
     public void onClicked() {
-        NetworkHandler.CHANNEL.sendToServer(new OpenQuestPacket(this.id));
+        NetworkHandler.CHANNEL.sendToServer(new OpenQuestPacket(
+            this.id, Minecraft.getInstance().screen instanceof QuestsEditScreen
+        ));
     }
 
     public boolean isMouseOver(double mouseX, double mouseY) {

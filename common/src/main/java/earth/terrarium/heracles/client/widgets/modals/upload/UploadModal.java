@@ -59,12 +59,7 @@ public class UploadModal extends BaseModal implements FileWidget {
     @Override
     protected void renderBackground(PoseStack pose, int mouseX, int mouseY, float partialTick) {
         RenderUtils.bindTexture(TEXTURE);
-
-        pose.pushPose();
-        pose.translate(0, 0, 150);
-        Gui.fill(pose, 0, 15, screenWidth, screenHeight, 0x80000000);
         Gui.blit(pose, x, y, 0, 0, WIDTH, HEIGHT, 256, 256);
-
         renderChildren(pose, mouseX, mouseY, partialTick);
     }
 
@@ -86,8 +81,6 @@ public class UploadModal extends BaseModal implements FileWidget {
                 tempY += 28;
             }
         }
-
-        pose.popPose();
     }
 
     private Button createButton(Component component, int x, int y, Button.OnPress onPress) {

@@ -18,5 +18,6 @@ public class ModMenus {
 
     public static final RegistryEntry<MenuType<QuestsMenu>> QUESTS = MENUS.register("quests", () -> MenuContentHelper.create(QuestsMenu::ofOptional, QuestsContent.SERIALIZER));
     public static final RegistryEntry<MenuType<QuestsMenu>> EDIT_QUESTS = MENUS.register("edit_quests", () -> MenuContentHelper.create(QuestsMenu::ofEditingOptional, QuestsContent.SERIALIZER));
-    public static final RegistryEntry<MenuType<QuestMenu>> QUEST = MENUS.register("quest", () -> MenuContentHelper.create(QuestMenu::new, QuestContent.SERIALIZER));
+    public static final RegistryEntry<MenuType<QuestMenu>> QUEST = MENUS.register("quest", () -> MenuContentHelper.create(QuestMenu::ofOptional, QuestContent.SERIALIZER));
+    public static final RegistryEntry<MenuType<QuestMenu>> EDIT_QUEST = MENUS.register("edit_quest", () -> MenuContentHelper.create(QuestMenu::ofEditingOptional, QuestContent.SERIALIZER));
 }

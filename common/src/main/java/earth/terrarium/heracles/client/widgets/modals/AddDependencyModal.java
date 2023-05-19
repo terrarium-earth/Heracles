@@ -8,8 +8,8 @@ import com.teamresourceful.resourcefullib.client.utils.RenderUtils;
 import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.api.quests.Quest;
 import earth.terrarium.heracles.client.handlers.ClientQuests;
-import earth.terrarium.heracles.client.widgets.AutocompleteEditBox;
 import earth.terrarium.heracles.client.widgets.base.BaseModal;
+import earth.terrarium.heracles.client.widgets.boxes.AutocompleteEditBox;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.Gui;
@@ -57,8 +57,6 @@ public class AddDependencyModal extends BaseModal {
 
     @Override
     protected void renderBackground(PoseStack pose, int mouseX, int mouseY, float partialTick) {
-        pose.pushPose();
-        pose.translate(0, 0, 150);
         RenderUtils.bindTexture(TEXTURE);
         Gui.blit(pose, x, y, 0, 0, WIDTH, HEIGHT, 256, 256);
 
@@ -112,7 +110,6 @@ public class AddDependencyModal extends BaseModal {
         Font font = Minecraft.getInstance().font;
 
         font.draw(pose, "Dependencies", x + 8, y + 6, 0x404040);
-        pose.popPose();
     }
 
     public void update(ClientQuests.QuestEntry entry, Runnable callback) {

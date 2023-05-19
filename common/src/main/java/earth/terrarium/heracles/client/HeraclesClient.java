@@ -6,6 +6,7 @@ import earth.terrarium.heracles.api.quests.Quest;
 import earth.terrarium.heracles.client.handlers.DisplayConfig;
 import earth.terrarium.heracles.client.handlers.QuestTutorial;
 import earth.terrarium.heracles.client.screens.QuestTutorialScreen;
+import earth.terrarium.heracles.client.screens.quest.QuestEditScreen;
 import earth.terrarium.heracles.client.screens.quest.QuestScreen;
 import earth.terrarium.heracles.client.screens.quests.QuestsEditScreen;
 import earth.terrarium.heracles.client.screens.quests.QuestsScreen;
@@ -38,6 +39,7 @@ public class HeraclesClient {
 
     public static void init() {
         registerScreen(ModMenus.QUEST.get(), QuestScreen::new);
+        registerScreen(ModMenus.EDIT_QUEST.get(), QuestEditScreen::new);
         registerScreen(ModMenus.QUESTS.get(), QuestsScreen::new);
         registerScreen(ModMenus.EDIT_QUESTS.get(), QuestsEditScreen::new);
 

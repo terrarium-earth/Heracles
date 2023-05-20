@@ -1,11 +1,13 @@
 package earth.terrarium.heracles.api.tasks;
 
 import earth.terrarium.heracles.api.tasks.defaults.AdvancementTask;
+import earth.terrarium.heracles.api.tasks.defaults.CompositeTask;
 import earth.terrarium.heracles.api.tasks.defaults.GatherItemTask;
 import earth.terrarium.heracles.api.tasks.defaults.KillEntityQuestTask;
 import earth.terrarium.heracles.common.handlers.progress.TaskProgress;
 import net.minecraft.Optionull;
 import net.minecraft.nbt.Tag;
+import net.minecraft.util.Mth;
 
 import java.util.IdentityHashMap;
 import java.util.Map;
@@ -34,6 +36,7 @@ public final class QuestTaskDisplayFormatter {
         register(KillEntityQuestTask.TYPE, (progress, task) -> String.format("%d/%d", task.storage().read(progress.progress()), task.target()));
         register(GatherItemTask.TYPE, (progress, task) -> String.format("%d/%d", task.storage().read(progress.progress()), task.target()));
         register(AdvancementTask.TYPE, (progress, task) -> String.format("%d/%d", task.storage().read(progress.progress()) ? 1 : 0, 1));
+        register(CompositeTask.TYPE, (progress, task) -> String.format("%d/%d", Mth.floor(task.getCompletedTasks(progress.progress())), 1));
     }
 
     @FunctionalInterface

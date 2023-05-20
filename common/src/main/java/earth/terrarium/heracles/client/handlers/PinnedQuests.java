@@ -10,7 +10,9 @@ import earth.terrarium.heracles.common.utils.ModUtils;
 import net.minecraft.Optionull;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.components.ComponentRenderUtils;
 import net.minecraft.network.chat.Component;
+import net.minecraft.util.FormattedCharSequence;
 
 import java.util.*;
 
@@ -25,17 +27,32 @@ public final class PinnedQuests {
     public static void update(Map<String, QuestProgress> pinnedQuests) {
         DISPLAY.clear();
 
+        Font font = Minecraft.getInstance().font;
         for (var entry : pinnedQuests.entrySet()) {
             ClientQuests.QuestEntry questEntry = ClientQuests.get(entry.getKey()).orElse(null);
             Quest quest = Optionull.map(questEntry, ClientQuests.QuestEntry::value);
             QuestProgress progress = entry.getValue();
             if (quest != null) {
-                List<Component> tasks = new ArrayList<>();
+                List<FormattedCharSequence> tasks = new ArrayList<>();
                 for (var taskEntry : quest.tasks().entrySet()) {
                     QuestTask<?, ?, ?> task = taskEntry.getValue();
-                    Component taskTitle = TaskTitleFormatter.create(task);
+                    var components = ComponentRenderUtils.wrapComponents(TaskTitleFormatter.create(task), 10000, font);
                     Component taskProgress = Component.literal(QuestTaskDisplayFormatter.create(ModUtils.cast(task), progress.getTask(task)));
-                    tasks.add(Component.literal(" • ").append(taskTitle).append(Component.literal(" - ")).append(taskProgress));
+
+                    for (int i = 0; i < components.size(); i++) {
+                        if (i == 0) {
+                            tasks.add(FormattedCharSequence.composite(
+                                Component.literal(" • ").getVisualOrderText(),
+                                components.get(i),
+                                taskProgress.getVisualOrderText()
+                            ));
+                        } else {
+                            tasks.add(FormattedCharSequence.composite(
+                                Component.literal(" — ").getVisualOrderText(),
+                                components.get(i)
+                            ));
+                        }
+                    }
                 }
                 float completion = calculationCompletion(quest, progress);
                 DISPLAY.add(new PinnedDisplay(
@@ -52,12 +69,10 @@ public final class PinnedQuests {
 
         updateHeight();
 
-        Font font = Minecraft.getInstance().font;
-
         for (PinnedDisplay display : PinnedQuests.display()) {
             PinnedQuests.width = Math.max(PinnedQuests.width, font.width(display.title()) + font.width("▶ "));
             if (!COLLAPSED_QUESTS.contains(display.quest().key())) {
-                for (Component task : display.tasks()) {
+                for (FormattedCharSequence task : display.tasks()) {
                     PinnedQuests.width = Math.max(PinnedQuests.width, font.width(task));
                 }
             }

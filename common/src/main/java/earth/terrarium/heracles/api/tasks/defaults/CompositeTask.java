@@ -62,6 +62,10 @@ public final class CompositeTask implements QuestTask<Object, ListTag, Composite
 
     @Override
     public float getProgress(ListTag progress) {
+        return Mth.clamp(getCompletedTasks(progress) / amount, 0, 1);
+    }
+
+    public float getCompletedTasks(ListTag progress) {
         float totalProgress = 0;
 
         int i = 0;
@@ -70,7 +74,7 @@ public final class CompositeTask implements QuestTask<Object, ListTag, Composite
             i++;
         }
 
-        return Mth.clamp(totalProgress / amount, 0, 1);
+        return totalProgress;
     }
 
     @Override

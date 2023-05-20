@@ -3,7 +3,6 @@ package earth.terrarium.heracles.common.handlers.progress;
 import earth.terrarium.heracles.api.quests.Quest;
 import earth.terrarium.heracles.common.handlers.quests.QuestHandler;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NbtOps;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.level.saveddata.SavedData;
 import org.jetbrains.annotations.NotNull;
@@ -42,8 +41,12 @@ public class QuestProgressHandler extends SavedData {
             entry.getValue().progress().forEach((id, progress) -> {
                 Quest quest = QuestHandler.get(id);
                 if (quest == null) return;
-                progressTag.put(id, QuestProgress.codec(quest).encodeStart(NbtOps.INSTANCE, progress)
-                    .getOrThrow(false, System.err::println));
+                try {
+                    progressTag.put(id, progress.save());
+                } catch (Exception e) {
+                    System.err.println("Failed to save quest progress for player " + id);
+                    e.printStackTrace();
+                }
             });
             tag.put(entry.getKey().toString(), progressTag);
         }
@@ -61,10 +64,15 @@ public class QuestProgressHandler extends SavedData {
                     System.err.println("Quest " + quest + " does not exist!");
                     continue;
                 }
-                questProgress.put(quest, QuestProgress.codec(questObj).parse(NbtOps.INSTANCE, progress.getCompound(quest))
-                    .getOrThrow(false, System.err::println));
+                try {
+                    QuestProgress progressObj = new QuestProgress(questObj, progress.getCompound(quest));
+                    questProgress.put(quest, progressObj);
+                } catch (Exception e) {
+                    System.err.println("Failed to load quest progress for player " + player);
+                    e.printStackTrace();
+                }
+                this.progress.put(UUID.fromString(player), new QuestsProgress(questProgress));
             }
-            this.progress.put(UUID.fromString(player), new QuestsProgress(questProgress));
         }
     }
 

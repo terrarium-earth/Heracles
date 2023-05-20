@@ -35,15 +35,12 @@ public record RegistryValue<T>(Either<Holder<T>, TagKey<T>> value) {
         String path = tag.registry().location().getPath();
 
         String translationKey;
-        String fallbackKey;
         if (namespace.equals("minecraft")) {
             translationKey = "tag." + path + "." + tag.location().getNamespace() + "." + tag.location().getPath();
-            fallbackKey = path + "#" + tag.location();
         } else {
             translationKey = "tag." + namespace + "." + path + "." + tag.location().getNamespace() + "." + tag.location().getPath();
-            fallbackKey = namespace + "/" + path + "#" + tag.location();
         }
-        return Component.translatableWithFallback(translationKey, fallbackKey);
+        return Component.translatableWithFallback(translationKey, "#" + tag.location());
     }
 
     public String toRegistryString() {

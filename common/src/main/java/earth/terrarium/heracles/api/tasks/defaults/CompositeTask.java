@@ -48,7 +48,7 @@ public final class CompositeTask implements QuestTask<Object, CollectionTag<Tag>
     }
 
     @Override
-    public CollectionTag<Tag> test(QuestTaskType<?> type,  CollectionTag<Tag> progress, Object input) {
+    public CollectionTag<Tag> test(QuestTaskType<?> type, CollectionTag<Tag> progress, Object input) {
         int i = 0;
         for (QuestTask<?, ?, ?> task : tasks.values()) {
             if (!task.isCompatibleWith(type)) continue;

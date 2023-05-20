@@ -1,12 +1,10 @@
 package earth.terrarium.heracles.common.handlers.progress;
 
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
-import com.teamresourceful.resourcefullib.common.codecs.CodecExtras;
-import com.teamresourceful.resourcefullib.common.codecs.maps.DispatchMapCodec;
 import earth.terrarium.heracles.api.quests.Quest;
 import earth.terrarium.heracles.api.tasks.QuestTask;
 import earth.terrarium.heracles.common.utils.ModUtils;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.StringTag;
 import net.minecraft.nbt.Tag;
 
 import java.util.HashMap;
@@ -16,25 +14,24 @@ import java.util.Set;
 
 public class QuestProgress {
 
-    public static Codec<QuestProgress> codec(Quest quest) {
-        return RecordCodecBuilder.create(instance -> instance.group(
-            Codec.BOOL.fieldOf("complete").orElse(false).forGetter(QuestProgress::isComplete),
-            CodecExtras.set(Codec.STRING).fieldOf("rewards").orElse(new HashSet<>()).forGetter(QuestProgress::claimedRewards),
-            DispatchMapCodec.of(Codec.STRING, id -> {
-                    QuestTask<?, ?, ?> task = quest.tasks().get(id);
-                    if (task == null) return ModUtils.codecFail("Task with id'" + id + "' does not exist.");
-                    return TaskProgress.codec(quest.tasks().get(id));
-                })
-                .orElse(new HashMap<>()).fieldOf("tasks").forGetter(QuestProgress::tasks)
-        ).apply(instance, QuestProgress::new));
-    }
-
     private final Map<String, TaskProgress<?>> tasks = new HashMap<>();
     private final Set<String> claimed = new HashSet<>();
     private boolean complete;
 
     public QuestProgress() {
         this.complete = false;
+    }
+
+    public QuestProgress(Quest quest, CompoundTag tag) {
+        if (tag == null) return;
+        this.complete = tag.getBoolean("complete");
+        this.claimed.addAll(ModUtils.readSet(tag.getList("rewards", 8), Tag::getAsString));
+        var compound = tag.getCompound("tasks");
+        for (String taskKey : compound.getAllKeys()) {
+            if (!quest.tasks().containsKey(taskKey)) continue;
+            CompoundTag task = compound.getCompound(taskKey);
+            tasks.put(taskKey, new TaskProgress<>(task.get("progress"), task.getBoolean("complete")));
+        }
     }
 
     public QuestProgress(boolean complete, Set<String> claimed, Map<String, TaskProgress<?>> tasks) {
@@ -81,5 +78,20 @@ public class QuestProgress {
 
     public Map<String, TaskProgress<?>> tasks() {
         return this.tasks;
+    }
+
+    public CompoundTag save() {
+        CompoundTag tag = new CompoundTag();
+        tag.putBoolean("complete", complete);
+        tag.put("rewards", ModUtils.writeSet(claimed, StringTag::valueOf));
+        CompoundTag tasks = new CompoundTag();
+        for (var entry : this.tasks.entrySet()) {
+            CompoundTag task = new CompoundTag();
+            task.put("progress", entry.getValue().progress());
+            task.putBoolean("complete", entry.getValue().isComplete());
+            tasks.put(entry.getKey(), task);
+        }
+        tag.put("tasks", tasks);
+        return tag;
     }
 }

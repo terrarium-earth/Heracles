@@ -2,8 +2,7 @@ package earth.terrarium.heracles.common.utils;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.mojang.datafixers.util.Pair;
-import com.mojang.serialization.*;
+import com.mojang.serialization.Codec;
 import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.api.quests.Quest;
 import earth.terrarium.heracles.common.handlers.progress.QuestProgressHandler;
@@ -17,6 +16,8 @@ import earth.terrarium.heracles.common.menus.quests.QuestsMenu;
 import net.minecraft.Util;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
@@ -24,9 +25,8 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.TagKey;
 import org.joml.Vector2i;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.function.Function;
 
 public class ModUtils {
 
@@ -39,21 +39,20 @@ public class ModUtils {
             vector3f -> List.of(vector3f.x(), vector3f.y())
         );
 
-    public static <T> Codec<T> codecFail(String message) {
-        return Codec.of(
-            new Encoder<>() {
-                @Override
-                public <T1> DataResult<T1> encode(T input, DynamicOps<T1> ops, T1 prefix) {
-                    return DataResult.error(() -> message);
-                }
-            },
-            new Decoder<>() {
-                @Override
-                public <T1> DataResult<Pair<T, T1>> decode(DynamicOps<T1> ops, T1 input) {
-                    return DataResult.error(() -> message);
-                }
+    public static <T> Set<T> readSet(ListTag tag, Function<Tag, T> function) {
+        return Util.make(new HashSet<>(), set -> {
+            for (Tag value : tag) {
+                set.add(function.apply(value));
             }
-        );
+        });
+    }
+
+    public static <T> ListTag writeSet(Set<T> set, Function<T, Tag> function) {
+        return Util.make(new ListTag(), list -> {
+            for (T value : set) {
+                list.add(function.apply(value));
+            }
+        });
     }
 
     public static <T> List<T> getValue(ResourceKey<? extends Registry<T>> key, TagKey<T> tag) {

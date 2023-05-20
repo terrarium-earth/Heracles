@@ -33,8 +33,7 @@ public record QuestContent(String id,
             String id = buffer.readUtf();
             Quest quest = PacketHelper.readWithYabn(Heracles.getRegistryAccess(), buffer, Quest.CODEC, true)
                 .getOrThrow(false, System.err::println);
-            QuestProgress progress = PacketHelper.readWithYabn(Heracles.getRegistryAccess(), buffer, QuestProgress.codec(quest), true)
-                .getOrThrow(false, System.err::println);
+            QuestProgress progress = new QuestProgress(quest, buffer.readNbt());
             Map<String, ModUtils.QuestStatus> quests = new HashMap<>();
             int size = buffer.readVarInt();
             for (int i = 0; i < size; i++) {
@@ -47,7 +46,7 @@ public record QuestContent(String id,
         public void to(FriendlyByteBuf buffer, QuestContent content) {
             buffer.writeUtf(content.id());
             PacketHelper.writeWithYabn(Heracles.getRegistryAccess(), buffer, Quest.CODEC, content.quest(), true);
-            PacketHelper.writeWithYabn(Heracles.getRegistryAccess(), buffer, QuestProgress.codec(content.quest()), content.progress(), true);
+            buffer.writeNbt(content.progress().save());
             buffer.writeVarInt(content.quests.size());
             for (var entry : content.quests.entrySet()) {
                 buffer.writeUtf(entry.getKey());

@@ -4,11 +4,9 @@ import com.teamresourceful.resourcefullib.common.networking.base.Packet;
 import com.teamresourceful.resourcefullib.common.networking.base.PacketContext;
 import com.teamresourceful.resourcefullib.common.networking.base.PacketHandler;
 import earth.terrarium.heracles.Heracles;
-import earth.terrarium.heracles.api.quests.Quest;
+import earth.terrarium.heracles.client.handlers.ClientQuests;
 import earth.terrarium.heracles.client.handlers.PinnedQuests;
 import earth.terrarium.heracles.common.handlers.progress.QuestProgress;
-import earth.terrarium.heracles.common.handlers.quests.QuestHandler;
-import earth.terrarium.heracles.common.utils.PacketHelper;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 
@@ -36,8 +34,7 @@ public record SyncPinnedQuestsPacket(Map<String, QuestProgress> quests) implemen
             buffer.writeVarInt(message.quests.size());
             for (var entry : message.quests.entrySet()) {
                 buffer.writeUtf(entry.getKey());
-                Quest quest = QuestHandler.get(entry.getKey());
-                PacketHelper.writeWithYabn(Heracles.getRegistryAccess(), buffer, QuestProgress.codec(quest), entry.getValue(), true);
+                buffer.writeNbt(entry.getValue().save());
             }
         }
 
@@ -47,9 +44,10 @@ public record SyncPinnedQuestsPacket(Map<String, QuestProgress> quests) implemen
             int size = buffer.readVarInt();
             for (int i = 0; i < size; i++) {
                 String quest = buffer.readUtf();
-                QuestProgress progress = PacketHelper.readWithYabn(Heracles.getRegistryAccess(), buffer, QuestProgress.codec(QuestHandler.get(quest)), true)
-                    .getOrThrow(false, System.err::println);
-                quests.put(quest, progress);
+                ClientQuests.get(quest).ifPresent(entry -> {
+                    QuestProgress progress = new QuestProgress(entry.value(), buffer.readNbt());
+                    quests.put(quest, progress);
+                });
             }
             return new SyncPinnedQuestsPacket(quests);
         }

@@ -8,7 +8,7 @@ import net.minecraft.nbt.Tag;
 import java.util.List;
 
 public record CompositeTaskStorage(
-    List<? extends TaskStorage<?, ?>> taskStorages) implements TaskStorage<CollectionTag<Tag>,  CollectionTag<Tag>> {
+    List<? extends TaskStorage<?, ?>> taskStorages) implements TaskStorage<CollectionTag<Tag>, CollectionTag<Tag>> {
     @Override
     public CollectionTag<Tag> createDefault() {
         CollectionTag<Tag> tags = new ListTag();
@@ -21,7 +21,7 @@ public record CompositeTaskStorage(
     }
 
     @Override
-    public  CollectionTag<Tag> read( CollectionTag<Tag> tag) {
+    public CollectionTag<Tag> read(CollectionTag<Tag> tag) {
         return tag;
     }
 }

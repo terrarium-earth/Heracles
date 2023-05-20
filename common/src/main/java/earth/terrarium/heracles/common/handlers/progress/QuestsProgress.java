@@ -11,6 +11,7 @@ import earth.terrarium.heracles.common.handlers.quests.QuestHandler;
 import earth.terrarium.heracles.common.network.NetworkHandler;
 import earth.terrarium.heracles.common.network.packets.QuestCompletedPacket;
 import earth.terrarium.heracles.common.team.TeamProvider;
+import earth.terrarium.heracles.common.utils.ModUtils;
 import net.minecraft.Optionull;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
@@ -24,11 +25,6 @@ public record QuestsProgress(Map<String, QuestProgress> progress, CompletableQue
         this(progress, new CompletableQuests());
     }
 
-    @SuppressWarnings("unchecked")
-    private static <F, T> T cast(F object) {
-        return (T) object;
-    }
-
     public <I, T extends QuestTask<I, ?, T>> void testAndProgressTaskType(ServerPlayer player, I input, QuestTaskType<T> taskType) {
         List<Pair<String, Quest>> editedQuests = new ArrayList<>();
         for (String id : this.completableQuests.getQuests(this)) {
@@ -38,7 +34,7 @@ public record QuestsProgress(Map<String, QuestProgress> progress, CompletableQue
                 if (task.isCompatibleWith(taskType)) {
                     TaskProgress<?> progress = questProgress.getTask(task);
                     if (progress.isComplete()) continue;
-                    progress.addProgress(taskType, cast(task), input);
+                    progress.addProgress(taskType, ModUtils.cast(task), input);
                     editedQuests.add(Pair.of(id, quest));
                 }
             }

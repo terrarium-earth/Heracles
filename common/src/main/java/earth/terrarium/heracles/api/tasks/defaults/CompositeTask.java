@@ -8,7 +8,7 @@ import earth.terrarium.heracles.api.tasks.QuestTaskType;
 import earth.terrarium.heracles.api.tasks.QuestTasks;
 import earth.terrarium.heracles.api.tasks.storage.TaskStorage;
 import earth.terrarium.heracles.api.tasks.storage.defaults.CompositeTaskStorage;
-import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.CollectionTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.ExtraCodecs;
@@ -17,7 +17,7 @@ import net.minecraft.util.Mth;
 import java.util.Map;
 
 @SuppressWarnings("unchecked")
-public final class CompositeTask implements QuestTask<Object, ListTag, CompositeTask> {
+public final class CompositeTask implements QuestTask<Object, CollectionTag<Tag>, CompositeTask> {
 
     public static final QuestTaskType<CompositeTask> TYPE = new Type();
 
@@ -48,7 +48,7 @@ public final class CompositeTask implements QuestTask<Object, ListTag, Composite
     }
 
     @Override
-    public ListTag test(QuestTaskType<?> type, ListTag progress, Object input) {
+    public CollectionTag<Tag> test(QuestTaskType<?> type,  CollectionTag<Tag> progress, Object input) {
         int i = 0;
         for (QuestTask<?, ?, ?> task : tasks.values()) {
             if (!task.isCompatibleWith(type)) continue;
@@ -61,11 +61,11 @@ public final class CompositeTask implements QuestTask<Object, ListTag, Composite
     }
 
     @Override
-    public float getProgress(ListTag progress) {
+    public float getProgress(CollectionTag<Tag> progress) {
         return Mth.clamp(getCompletedTasks(progress) / amount, 0, 1);
     }
 
-    public float getCompletedTasks(ListTag progress) {
+    public float getCompletedTasks(CollectionTag<Tag> progress) {
         float totalProgress = 0;
 
         int i = 0;
@@ -78,7 +78,7 @@ public final class CompositeTask implements QuestTask<Object, ListTag, Composite
     }
 
     @Override
-    public TaskStorage<?, ListTag> storage() {
+    public TaskStorage<?, CollectionTag<Tag>> storage() {
         return storage;
     }
 

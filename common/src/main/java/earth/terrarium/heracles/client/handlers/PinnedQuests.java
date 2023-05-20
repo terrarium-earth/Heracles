@@ -44,6 +44,7 @@ public final class PinnedQuests {
                             tasks.add(FormattedCharSequence.composite(
                                 Component.literal(" • ").getVisualOrderText(),
                                 components.get(i),
+                                Component.literal(" - ").getVisualOrderText(),
                                 taskProgress.getVisualOrderText()
                             ));
                         } else {
@@ -68,7 +69,12 @@ public final class PinnedQuests {
         }
 
         updateHeight();
+        updateWidth();
+    }
 
+    private static void updateWidth() {
+        PinnedQuests.width = 0;
+        Font font = Minecraft.getInstance().font;
         for (PinnedDisplay display : PinnedQuests.display()) {
             PinnedQuests.width = Math.max(PinnedQuests.width, font.width(display.title()) + font.width("▶ "));
             if (!COLLAPSED_QUESTS.contains(display.quest().key())) {
@@ -121,5 +127,6 @@ public final class PinnedQuests {
             COLLAPSED_QUESTS.add(questKey);
         }
         updateHeight();
+        updateWidth();
     }
 }

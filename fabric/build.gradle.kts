@@ -1,9 +1,13 @@
-repositories {
-    maven(url = "https://ladysnake.jfrog.io/artifactory/mods")
+architectury {
+    platformSetupLoomIde()
 }
 
 classExtensions {
     registerForSourceSet(sourceSets.main.get(), "earth.terrarium.heracles.fabric.extensions")
+}
+
+repositories {
+    maven(url = "https://ladysnake.jfrog.io/artifactory/mods")
 }
 
 dependencies {

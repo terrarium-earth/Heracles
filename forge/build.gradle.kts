@@ -1,3 +1,7 @@
+architectury {
+    platformSetupLoomIde()
+}
+
 classExtensions {
     registerForSourceSet(sourceSets.main.get(), "earth.terrarium.heracles.forge.extensions")
 }

@@ -3,8 +3,10 @@ package earth.terrarium.heracles.forge;
 import earth.terrarium.heracles.client.HeraclesClient;
 import earth.terrarium.heracles.client.handlers.DisplayConfig;
 import earth.terrarium.heracles.client.handlers.QuestTutorial;
+import earth.terrarium.heracles.client.screens.pinned.PinnedQuestDisplay;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
+import net.minecraftforge.client.event.ScreenEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -22,6 +24,7 @@ public class HeraclesForgeClient {
         QuestTutorial.load(FMLPaths.CONFIGDIR.get());
         event.enqueueWork(HeraclesClient::init);
         MinecraftForge.EVENT_BUS.addListener(HeraclesForgeClient::onClientTick);
+        MinecraftForge.EVENT_BUS.addListener(HeraclesForgeClient::onMouseClickedPreScreen);
 
         FMLJavaModLoadingContext.get().getModEventBus().addListener(HeraclesForgeClient::onRegisterKeyBindings);
     }
@@ -33,6 +36,12 @@ public class HeraclesForgeClient {
     public static void onClientTick(TickEvent.ClientTickEvent event) {
         if (event.phase.equals(TickEvent.Phase.START)) {
             HeraclesClient.clientTick();
+        }
+    }
+
+    public static void onMouseClickedPreScreen(ScreenEvent.MouseButtonPressed.Pre event) {
+        if (PinnedQuestDisplay.click(event.getMouseX(), event.getMouseY())) {
+            event.setCanceled(true);
         }
     }
 }

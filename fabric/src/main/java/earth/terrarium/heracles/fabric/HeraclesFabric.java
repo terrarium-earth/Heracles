@@ -8,7 +8,6 @@ import earth.terrarium.heracles.api.tasks.defaults.KillEntityQuestTask;
 import earth.terrarium.heracles.common.handlers.pinned.PinnedQuestHandler;
 import earth.terrarium.heracles.common.handlers.progress.QuestProgressHandler;
 import earth.terrarium.heracles.common.team.TeamProvider;
-import earth.terrarium.heracles.common.utils.ModUtils;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.entity.event.v1.ServerEntityCombatEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
@@ -31,20 +30,6 @@ public class HeraclesFabric {
 
         CommandRegistrationCallback.EVENT.register((dispatcher, context, env) ->
             dispatcher.register(Commands.literal(Heracles.MOD_ID)
-                .then(Commands.literal("test").then(Commands.argument("quest", StringArgumentType.greedyString()).executes(context1 -> {
-                    ServerPlayer player = context1.getSource().getPlayerOrException();
-                    String id = StringArgumentType.getString(context1, "quest");
-                    ModUtils.openQuest(player, id);
-                    return 1;
-                })))
-                .then(Commands.literal("tests").then(Commands.argument("group", StringArgumentType.string()).executes(context1 -> {
-                    ModUtils.openGroup(context1.getSource().getPlayerOrException(), StringArgumentType.getString(context1, "group"));
-                    return 1;
-                })))
-                .then(Commands.literal("edit").then(Commands.argument("group", StringArgumentType.string()).executes(context1 -> {
-                    ModUtils.editGroup(context1.getSource().getPlayerOrException(), StringArgumentType.getString(context1, "group"));
-                    return 1;
-                })))
                 .then(Commands.literal("pin").then(Commands.argument("quest", StringArgumentType.string()).executes(context1 -> {
                     String quest = StringArgumentType.getString(context1, "quest");
                     var pinned = PinnedQuestHandler.getPinned(context1.getSource().getPlayerOrException());

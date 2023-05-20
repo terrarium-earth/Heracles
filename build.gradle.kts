@@ -4,7 +4,7 @@ import net.fabricmc.loom.task.RemapJarTask
 plugins {
     java
     id("jvm-class-extensions") version "1.3" apply false
-    id("dev.architectury.loom") version "1.1-SNAPSHOT" apply false
+    id("dev.architectury.loom") version "1.2-SNAPSHOT" apply false
     id("architectury-plugin") version "3.4-SNAPSHOT" apply false
     id("io.github.juuxel.loom-quiltflower") version "1.8.0" apply false
 }
@@ -16,6 +16,7 @@ subprojects {
     apply(plugin = "io.github.juuxel.loom-quiltflower")
 
     val minecraftVersion: String by project
+    val isCommon = name == rootProject.projects.common.name
 
     base {
         archivesName.set(rootProject.name)
@@ -52,12 +53,11 @@ subprojects {
 
         compileOnly(group = "com.teamresourceful", name = "yabn", version = "1.0.3")
         "modApi"(group = "com.teamresourceful.resourcefullib", name = "resourcefullib-$name-$minecraftVersion", version = resourcefulLibVersion)
-        "include"("modImplementation"(
-            group = "earth.terrarium.hermes",
-            name = "hermes-$name-$minecraftVersion",
-            version = hermesLibVersion
-        )) {
+        val hermes = "modImplementation"(group = "earth.terrarium.hermes", name = "hermes-$name-$minecraftVersion", version = hermesLibVersion) {
             isTransitive = false
+        }
+        if (!isCommon) {
+            "include"(hermes)
         }
     }
 
@@ -69,7 +69,7 @@ subprojects {
         archiveClassifier.set("${project.name}-$minecraftVersion")
     }
 
-    if (name != rootProject.projects.common.name) {
+    if (!isCommon) {
         sourceSets.main {
             val main = this
 

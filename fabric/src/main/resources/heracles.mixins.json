@@ -1,16 +1,17 @@
 {
-    "required": true,
-    "minVersion": "0.8",
-    "package": "earth.terrarium.heracles.mixins.fabric",
-    "compatibilityLevel": "JAVA_17",
-    "mixins": [
-        "ReloadableServerResourcesMixin",
-        "PlayerAdvancementsMixin",
-        "ServerPlayerMixin"
-    ],
-    "client": [
-    ],
-    "injectors": {
-        "defaultRequire": 1
-    }
+  "required": true,
+  "minVersion": "0.8",
+  "package": "earth.terrarium.heracles.mixins.fabric",
+  "compatibilityLevel": "JAVA_17",
+  "mixins": [
+    "PlayerAdvancementsMixin",
+    "ReloadableServerResourcesMixin",
+    "ServerPlayerMixin"
+  ],
+  "client": [
+    "MouseHandlerMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
 }

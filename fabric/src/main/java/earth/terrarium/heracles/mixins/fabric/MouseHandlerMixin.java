@@ -1,4 +1,4 @@
-package earth.terrarium.heracles.mixins;
+package earth.terrarium.heracles.mixins.fabric;
 
 import earth.terrarium.heracles.client.screens.pinned.PinnedQuestDisplay;
 import net.minecraft.client.MouseHandler;

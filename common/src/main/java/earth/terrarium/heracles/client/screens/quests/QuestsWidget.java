@@ -148,6 +148,21 @@ public class QuestsWidget extends BaseWidget {
                 }
             }
         }
+
+        int width = (int)((this.width - 10) * (offset.x / 500f));
+        int height = (int)((this.height - 10) * (offset.y / 500f));
+
+        if (offset.x > this.width / 4) {
+            Gui.fill(pose, this.x + 1 + width, this.y + this.height - 4, this.x - 6 + this.width, this.y + this.height - 2, 0xFFFFFFFF);
+        } else if (offset.x < -this.width / 4) {
+            Gui.fill(pose, this.x + 1, this.y + this.height - 4, this.x - 6 + this.width + width, this.y + this.height - 2, 0xFFFFFFFF);
+        }
+
+        if (offset.y > this.height / 4) {
+            Gui.fill(pose, this.x + this.width - 4, this.y + 1 + height, this.x + this.width - 2, this.y - 6 + this.height, 0xFFFFFFFF);
+        } else if (offset.y < -this.height / 4) {
+            Gui.fill(pose, this.x + this.width - 4, this.y + 1, this.x + this.width - 2, this.y - 6 + this.height + height, 0xFFFFFFFF);
+        }
     }
 
     @Override
@@ -157,6 +172,7 @@ public class QuestsWidget extends BaseWidget {
         } else {
             offset.add(0, (int) scrollAmount * 10);
         }
+        offset.set(Mth.clamp(offset.x(), MIN.x(), MAX.x()), Mth.clamp(offset.y(), MIN.y(), MAX.y()));
         return true;
     }
 

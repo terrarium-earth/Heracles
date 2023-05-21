@@ -10,6 +10,7 @@ import java.util.*;
 
 public class ClientQuests {
     private static final Map<String, QuestEntry> ENTRIES = new HashMap<>();
+    private static final Map<String, List<QuestEntry>> BY_GROUPS = new HashMap<>();
     private static final Set<String> DIRTY = new HashSet<>();
     private static final List<String> GROUPS = new ArrayList<>();
 
@@ -33,6 +34,9 @@ public class ClientQuests {
         }
 
         GROUPS.addAll(groups);
+        for (QuestEntry value : ENTRIES.values()) {
+            BY_GROUPS.computeIfAbsent(value.value.display().group(), k -> new ArrayList<>()).add(value);
+        }
     }
 
     public static void updateProgress(Map<String, QuestProgress> progress) {
@@ -65,6 +69,14 @@ public class ClientQuests {
         }
 
         return ENTRIES.computeIfAbsent(key, k -> entry);
+    }
+
+    public static QuestEntry addQuest(String id, Quest quest) {
+        QuestEntry entry = new QuestEntry(new ArrayList<>(), id, quest, new ArrayList<>());
+        ENTRIES.put(id, entry);
+        DIRTY.add(id);
+        BY_GROUPS.computeIfAbsent(quest.display().group(), k -> new ArrayList<>()).add(entry);
+        return entry;
     }
 
     public static void setDirty(String id) {

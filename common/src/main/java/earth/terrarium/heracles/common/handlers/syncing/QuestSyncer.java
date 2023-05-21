@@ -48,7 +48,6 @@ public final class QuestSyncer {
             quest.settings(),
             quest.dependencies(),
             quest.tasks(),
-            quest.rewardText(),
             quest.rewards()
         );
     }

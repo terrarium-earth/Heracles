@@ -61,6 +61,8 @@ public abstract class BaseModal extends BaseWidget implements TemporyWidget {
             ClientUtils.clearTooltip();
         }
 
+        CursorUtils.setCursor(true, CursorScreen.Cursor.DEFAULT);
+
         RenderSystem.disableDepthTest();
         pose.pushPose();
         pose.translate(0, 0, 150);

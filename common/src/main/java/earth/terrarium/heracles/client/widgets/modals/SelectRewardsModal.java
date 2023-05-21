@@ -46,8 +46,6 @@ public class SelectRewardsModal extends BaseModal {
     protected void renderBackground(PoseStack pose, int mouseX, int mouseY, float partialTick) {
         RenderUtils.bindTexture(TEXTURE);
 
-        CursorUtils.setCursor(true, CursorScreen.Cursor.DEFAULT);
-
         pose.pushPose();
         pose.translate(0, 0, 150);
 

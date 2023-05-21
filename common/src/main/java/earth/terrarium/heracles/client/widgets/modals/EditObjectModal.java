@@ -2,8 +2,6 @@ package earth.terrarium.heracles.client.widgets.modals;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.teamresourceful.resourcefullib.client.scissor.ScissorBoxStack;
-import com.teamresourceful.resourcefullib.client.screens.CursorScreen;
-import com.teamresourceful.resourcefullib.client.utils.CursorUtils;
 import com.teamresourceful.resourcefullib.client.utils.RenderUtils;
 import earth.terrarium.heracles.api.client.settings.SettingInitializer;
 import earth.terrarium.heracles.client.widgets.base.BaseModal;
@@ -49,11 +47,8 @@ public class EditObjectModal extends BaseModal {
     protected void renderBackground(PoseStack pose, int mouseX, int mouseY, float partialTick) {
         RenderUtils.bindTexture(TEXTURE);
 
-        CursorUtils.setCursor(true, CursorScreen.Cursor.DEFAULT);
-
         Gui.blitNineSliced(pose, x, y, width, height, 4, 4, 4, 4, 128, 128, 0, 0);
         Gui.blitNineSliced(pose, x + 7, y + 18, width - 14, height - 40, 1, 1, 1, 1, 128, 128, 128, 0);
-
     }
 
     @Override

@@ -3,12 +3,8 @@ package earth.terrarium.heracles.client.widgets.modals;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.teamresourceful.resourcefullib.client.utils.RenderUtils;
 import earth.terrarium.heracles.Heracles;
-import earth.terrarium.heracles.client.handlers.ClientQuests;
-import earth.terrarium.heracles.client.screens.quests.GroupsList;
-import earth.terrarium.heracles.client.screens.quests.QuestsScreen;
 import earth.terrarium.heracles.client.widgets.base.BaseModal;
 import earth.terrarium.heracles.common.network.NetworkHandler;
-import earth.terrarium.heracles.common.network.packets.CreateGroupPacket;
 import earth.terrarium.heracles.common.network.packets.QuestActionPacket;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -18,22 +14,26 @@ import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
-public class CreateGroupModal extends BaseModal {
+import java.util.function.BiConsumer;
+import java.util.function.Predicate;
 
-    public static final ResourceLocation TEXTURE = new ResourceLocation(Heracles.MOD_ID, "textures/gui/create.png");
+public class TextInputModal<T> extends BaseModal {
+
+    public static final ResourceLocation TEXTURE = new ResourceLocation(Heracles.MOD_ID, "textures/gui/text.png");
     private static final int WIDTH = 168;
     private static final int HEIGHT = 57;
 
-    public CreateGroupModal(int screenWidth, int screenHeight) {
+    private final Component title;
+
+    private T data;
+
+    public TextInputModal(int screenWidth, int screenHeight, Component title, BiConsumer<T, String> callback, Predicate<String> validator) {
         super(screenWidth, screenHeight, WIDTH, HEIGHT);
+        this.title = title;
         var editBox = addChild(new EditBox(Minecraft.getInstance().font, this.x + 8, this.y + 19, 152, 14, Component.nullToEmpty("Group Name")));
         var submitButton = addChild(createButton(Component.nullToEmpty("Submit"), this.x + WIDTH - 7, this.y + HEIGHT - 20, b -> {
             if (editBox != null && !editBox.getValue().isBlank()) {
-                NetworkHandler.CHANNEL.sendToServer(new CreateGroupPacket(editBox.getValue()));
-                ClientQuests.groups().add(editBox.getValue());
-                if (Minecraft.getInstance().screen instanceof QuestsScreen screen) {
-                    screen.getGroupsList().addEntry(new GroupsList.Entry(editBox.getValue()));
-                }
+                callback.accept(this.data, editBox.getValue());
                 editBox.setValue("");
                 visible = false;
             }
@@ -43,7 +43,7 @@ public class CreateGroupModal extends BaseModal {
             this.visible = false
         ));
         editBox.setMaxLength(32);
-        editBox.setResponder(s -> submitButton.active = !s.trim().isEmpty() && !ClientQuests.groups().contains(s.trim()));
+        editBox.setResponder(s -> submitButton.active = !s.trim().isEmpty() && validator.test(s.trim()));
     }
 
     @Override
@@ -59,7 +59,7 @@ public class CreateGroupModal extends BaseModal {
     protected void renderForeground(PoseStack pose, int mouseX, int mouseY, float partialTick) {
         Font font = Minecraft.getInstance().font;
 
-        font.draw(pose, "Create Group", x + 8, y + 6, 0x404040);
+        font.draw(pose, this.title, x + 8, y + 6, 0x404040);
     }
 
     private Button createButton(Component component, int x, int y, Button.OnPress onPress) {
@@ -95,5 +95,9 @@ public class CreateGroupModal extends BaseModal {
         if (!visible) {
             NetworkHandler.CHANNEL.sendToServer(new QuestActionPacket(QuestActionPacket.Action.SAVE));
         }
+    }
+
+    public void setData(T data) {
+        this.data = data;
     }
 }

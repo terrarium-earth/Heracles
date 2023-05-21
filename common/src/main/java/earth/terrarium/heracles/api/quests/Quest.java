@@ -12,10 +12,7 @@ import earth.terrarium.heracles.common.handlers.progress.QuestsProgress;
 import earth.terrarium.heracles.common.handlers.quests.QuestHandler;
 import earth.terrarium.heracles.common.network.NetworkHandler;
 import earth.terrarium.heracles.common.network.packets.QuestRewardClaimedPacket;
-import net.minecraft.network.chat.CommonComponents;
-import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -31,25 +28,23 @@ public record Quest(
     Set<String> dependencies,
 
     Map<String, QuestTask<?, ?, ?>> tasks,
-    Component rewardText,
     Map<String, QuestReward<?>> rewards
 ) {
 
     public static Codec<Quest> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-        QuestDisplay.CODEC.fieldOf("display").forGetter(Quest::display),
-        QuestSettings.CODEC.fieldOf("settings").orElse(QuestSettings.createDefault()).forGetter(Quest::settings),
+        QuestDisplay.CODEC.fieldOf("display").orElseGet(QuestDisplay::createDefault).forGetter(Quest::display),
+        QuestSettings.CODEC.fieldOf("settings").orElseGet(QuestSettings::createDefault).forGetter(Quest::settings),
         CodecExtras.set(Codec.STRING).fieldOf("dependencies").orElse(new HashSet<>()).forGetter(Quest::dependencies),
         QuestTasks.CODEC.fieldOf("tasks").orElse(new HashMap<>()).forGetter(Quest::tasks),
-        ExtraCodecs.COMPONENT.fieldOf("reward_text").orElse(CommonComponents.EMPTY).forGetter(Quest::rewardText),
         QuestRewards.CODEC.fieldOf("rewards").orElse(new HashMap<>()).forGetter(Quest::rewards)
     ).apply(instance, Quest::fromCodec));
 
     /**
      * This method is used by the codec to create a new quest instance.
-     * This is needed as codecs make immutable objects and we need to be able to add tasks and rewards to the quest.
+     * This is needed as codecs make immutable objects, and we need to be able to add tasks and rewards to the quest.
      */
-    private static Quest fromCodec(QuestDisplay display, QuestSettings settings, Set<String> dependencies, Map<String, QuestTask<?, ?, ?>> tasks, Component rewardText, Map<String, QuestReward<?>> rewards) {
-        return new Quest(display, settings, dependencies, new HashMap<>(tasks), rewardText, new HashMap<>(rewards));
+    private static Quest fromCodec(QuestDisplay display, QuestSettings settings, Set<String> dependencies, Map<String, QuestTask<?, ?, ?>> tasks, Map<String, QuestReward<?>> rewards) {
+        return new Quest(display, settings, dependencies, new HashMap<>(tasks), new HashMap<>(rewards));
     }
 
     public void claimAllowedRewards(ServerPlayer player) {

@@ -125,4 +125,15 @@ public final class QuestDisplay {
         return Objects.hash(icon, iconBackground, title, subtitle, description, position, group);
     }
 
+    public static QuestDisplay createDefault() {
+        return new QuestDisplay(
+            new ItemQuestIcon(Items.MAP),
+            DEFAULT_BACKGROUND,
+            Component.literal("New Quest"),
+            CommonComponents.EMPTY,
+            List.of(),
+            new Vector2i(),
+            "Main"
+        );
+    }
 }

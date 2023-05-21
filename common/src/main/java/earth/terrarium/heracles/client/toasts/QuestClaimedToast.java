@@ -63,12 +63,11 @@ public class QuestClaimedToast implements Toast {
             RenderUtils.bindTexture(TEXTURE);
 
             GuiComponent.blit(poseStack, 0, 0, 0, 0, width(), height());
-            toastComponent.getMinecraft().font.draw(poseStack, TITLE_TEXT, 30.0F, 7.0F, 0xFF500050);
-            toastComponent.getMinecraft().font.draw(poseStack, entry.getFirst().rewardText(), 30.0F, 18.0F, 0xFF000000);
+            toastComponent.getMinecraft().font.draw(poseStack, TITLE_TEXT, 30.0F, 7.0F, 0xFF800080);
 
             toastComponent.getMinecraft().getItemRenderer().renderAndDecorateFakeItem(poseStack, entry.getSecond(), 8, 8);
 
-            return timeSinceLastVisible - lastChanged >= DISPLAY_TIME * questItems.size() ? Toast.Visibility.HIDE : Toast.Visibility.SHOW;
+            return timeSinceLastVisible - lastChanged >= DISPLAY_TIME * questItems.size() * toastComponent.getNotificationDisplayTimeMultiplier() ? Toast.Visibility.HIDE : Toast.Visibility.SHOW;
         }
     }
 

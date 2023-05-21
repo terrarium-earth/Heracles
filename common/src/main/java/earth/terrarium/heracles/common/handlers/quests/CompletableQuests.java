@@ -25,6 +25,7 @@ public class CompletableQuests {
             Quest quest = entry.getValue();
             String id = entry.getKey();
             if (progress.isComplete(id)) continue;
+            if (quest.tasks().isEmpty()) continue;
             if (quest.dependencies().isEmpty()) {
                 this.quests.add(id);
             } else {

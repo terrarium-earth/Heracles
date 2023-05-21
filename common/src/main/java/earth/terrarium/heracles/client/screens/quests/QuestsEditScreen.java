@@ -2,19 +2,30 @@ package earth.terrarium.heracles.client.screens.quests;
 
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.vertex.PoseStack;
+import earth.terrarium.heracles.api.quests.Quest;
+import earth.terrarium.heracles.api.quests.QuestDisplay;
+import earth.terrarium.heracles.api.quests.QuestSettings;
 import earth.terrarium.heracles.client.handlers.ClientQuests;
 import earth.terrarium.heracles.client.screens.MouseMode;
+import earth.terrarium.heracles.client.utils.MouseClick;
 import earth.terrarium.heracles.client.widgets.SelectableImageButton;
 import earth.terrarium.heracles.client.widgets.modals.AddDependencyModal;
-import earth.terrarium.heracles.client.widgets.modals.CreateGroupModal;
+import earth.terrarium.heracles.client.widgets.modals.TextInputModal;
 import earth.terrarium.heracles.client.widgets.modals.icon.IconModal;
 import earth.terrarium.heracles.client.widgets.modals.icon.background.IconBackgroundModal;
 import earth.terrarium.heracles.client.widgets.modals.upload.UploadModal;
 import earth.terrarium.heracles.common.menus.quests.QuestsMenu;
+import earth.terrarium.heracles.common.network.NetworkHandler;
+import earth.terrarium.heracles.common.network.packets.CreateGroupPacket;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.ImageButton;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.network.chat.Component;
+import net.minecraft.util.Unit;
 import net.minecraft.world.entity.player.Inventory;
+
+import java.util.HashMap;
+import java.util.HashSet;
 
 public class QuestsEditScreen extends QuestsScreen {
 
@@ -24,10 +35,11 @@ public class QuestsEditScreen extends QuestsScreen {
     private SelectableImageButton linkTool;
 
     private UploadModal uploadModal;
-    private CreateGroupModal groupModal;
+    private TextInputModal<Unit> groupModal;
     private IconBackgroundModal iconBackgroundModal;
     private IconModal iconModal;
     private AddDependencyModal dependencyModal;
+    private TextInputModal<MouseClick> questModal;
 
     public QuestsEditScreen(QuestsMenu menu, Inventory inventory, Component component) {
         super(menu, inventory, component);
@@ -88,10 +100,29 @@ public class QuestsEditScreen extends QuestsScreen {
         this.dragTool.setSelected(true);
 
         this.uploadModal = addTemporary(new UploadModal(this.width, this.height));
-        this.groupModal = addTemporary(new CreateGroupModal(this.width, this.height));
+        this.groupModal = addTemporary(new TextInputModal<>(this.width, this.height, Component.literal("Create Group"), (ignored, text) -> {
+            NetworkHandler.CHANNEL.sendToServer(new CreateGroupPacket(text));
+            ClientQuests.groups().add(text);
+            if (Minecraft.getInstance().screen instanceof QuestsScreen screen) {
+                screen.getGroupsList().addEntry(new GroupsList.Entry(text));
+            }
+        }, text -> !ClientQuests.groups().contains(text.trim())));
         this.iconBackgroundModal = addTemporary(new IconBackgroundModal(this.width, this.height));
         this.iconModal = addTemporary(new IconModal(this.width, this.height));
         this.dependencyModal = addTemporary(new AddDependencyModal(this.width, this.height));
+        this.questModal = addTemporary(new TextInputModal<>(this.width, this.height, Component.literal("Create Quest"), (position, text) -> {
+            MouseClick local = this.questsWidget.getLocal(position);
+            QuestDisplay display = QuestDisplay.createDefault();
+            display.position().set((int) local.x() - 12, (int) local.y() - 12);
+            Quest quest = new Quest(
+                display,
+                QuestSettings.createDefault(),
+                new HashSet<>(),
+                new HashMap<>(),
+                new HashMap<>()
+            );
+            this.questsWidget.addQuest(ClientQuests.addQuest(text, quest));
+        }, text -> ClientQuests.get(text.trim()).isEmpty()));
     }
 
     @Override
@@ -115,6 +146,16 @@ public class QuestsEditScreen extends QuestsScreen {
             return MouseMode.SELECT_LINK;
         }
         return MouseMode.SELECT_MOVE;
+    }
+
+    @Override
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        if (!isTemporaryWidgetVisible() && getMouseMode() == MouseMode.ADD && this.questsWidget.isMouseOver(mouseX, mouseY)) {
+            this.questModal.setVisible(true);
+            this.questModal.setData(new MouseClick(mouseX, mouseY, button));
+            return true;
+        }
+        return super.mouseClicked(mouseX, mouseY, button);
     }
 
     @Override

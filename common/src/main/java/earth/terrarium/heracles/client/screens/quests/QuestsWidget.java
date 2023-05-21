@@ -9,6 +9,7 @@ import com.teamresourceful.resourcefullib.client.utils.RenderUtils;
 import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.client.handlers.ClientQuests;
 import earth.terrarium.heracles.client.screens.MouseMode;
+import earth.terrarium.heracles.client.utils.MouseClick;
 import earth.terrarium.heracles.client.widgets.base.BaseWidget;
 import earth.terrarium.heracles.common.utils.ModUtils;
 import net.minecraft.client.Minecraft;
@@ -70,6 +71,11 @@ public class QuestsWidget extends BaseWidget {
             this.widgets.add(new QuestWidget(quest.getFirst(), quest.getSecond()));
             this.entries.add(quest.getFirst());
         }
+    }
+
+    public void addQuest(ClientQuests.QuestEntry quest) {
+        this.widgets.add(new QuestWidget(quest, ModUtils.QuestStatus.IN_PROGRESS));
+        this.entries.add(quest);
     }
 
     @Override
@@ -192,5 +198,11 @@ public class QuestsWidget extends BaseWidget {
 
     public SelectQuestHandler selectHandler() {
         return this.selectHandler;
+    }
+
+    public MouseClick getLocal(MouseClick click) {
+        int localX = (int) (click.x() - (this.x + (this.fullWidth / 2f) + offset.x()));
+        int localY = (int) (click.y() - (this.y + (this.height / 2f) + offset.y()));
+        return new MouseClick(localX, localY, click.button());
     }
 }

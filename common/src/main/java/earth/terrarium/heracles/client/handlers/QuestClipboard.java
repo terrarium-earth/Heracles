@@ -1,5 +1,6 @@
 package earth.terrarium.heracles.client.handlers;
 
+import earth.terrarium.heracles.api.quests.GroupDisplay;
 import earth.terrarium.heracles.api.quests.Quest;
 import earth.terrarium.heracles.api.quests.QuestDisplay;
 import earth.terrarium.heracles.client.screens.quests.QuestsEditScreen;
@@ -8,6 +9,7 @@ import earth.terrarium.heracles.client.screens.quests.SelectQuestWidget;
 import earth.terrarium.heracles.client.utils.ClientUtils;
 import earth.terrarium.heracles.client.utils.MouseClick;
 import earth.terrarium.heracles.client.widgets.modals.TextInputModal;
+import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import org.joml.Vector2i;
@@ -24,10 +26,10 @@ public class QuestClipboard {
     private String key;
 
     public boolean action(int keyCode, SelectQuestWidget widget) {
-        if (Screen.isCut(keyCode)) {
+        if (Screen.isCut(keyCode) && widget.entry() != null) {
             action(widget.widget(), widget.entry(), QuestAction.CUT);
             return true;
-        } else if (Screen.isCopy(keyCode)) {
+        } else if (Screen.isCopy(keyCode) && widget.entry() != null) {
             action(widget.widget(), widget.entry(), QuestAction.COPY);
             return true;
         } else if (Screen.isPaste(keyCode)) {
@@ -36,8 +38,24 @@ public class QuestClipboard {
                 paste(widget.widget(), screen.questModal(), entry -> widget.widget().addQuest(entry));
                 return true;
             }
+        } else if (isSpecialPaste(keyCode)) {
+            if (Minecraft.getInstance().screen instanceof QuestsEditScreen screen) {
+                MouseClick pos = widget.widget().getLocal(ClientUtils.getMousePos());
+                String group = screen.getMenu().group();
+                ClientQuests.get(this.key).ifPresent(entry -> {
+                    if (entry.value().display().groups().containsKey(group)) return;
+                    entry.value().display().groups().put(group, new GroupDisplay(group, new Vector2i((int) pos.x() - 12, (int) pos.y() - 12)));
+                    ClientQuests.addToGroup(group, entry);
+                    widget.widget().addQuest(entry);
+                });
+                return true;
+            }
         }
         return false;
+    }
+
+    private static boolean isSpecialPaste(int keycode) {
+        return keycode == 86 && Screen.hasControlDown() && Screen.hasShiftDown() && !Screen.hasAltDown();
     }
 
     public void action(QuestsWidget widget, ClientQuests.QuestEntry entry, QuestAction action) {
@@ -47,10 +65,16 @@ public class QuestClipboard {
             case CUT -> {
                 this.quest = entry.value();
                 this.key = entry.key();
-                ClientQuests.removeQuest(entry);
+                if (this.quest.display().groups().size() == 1) {
+                    ClientQuests.removeQuest(entry);
+                }
+                ClientQuests.removeFromGroup(widget.group(), entry);
                 widget.removeQuest(entry);
             }
-            case COPY -> this.quest = entry.value();
+            case COPY -> {
+                this.quest = entry.value();
+                this.key = entry.key();
+            }
             default -> throw new IllegalStateException("Unexpected value: " + action);
         }
     }
@@ -87,8 +111,9 @@ public class QuestClipboard {
                     quest.display().title(),
                     quest.display().subtitle(),
                     quest.display().description(),
-                    new Vector2i((int) local.x() - 12, (int) local.y() - 12),
-                    group
+                    Util.make(quest.display().groups(), groups ->
+                        groups.put(group, new GroupDisplay(group, new Vector2i((int) local.x() - 12, (int) local.y() - 12)))
+                    )
                 ),
                 quest.settings(),
                 Set.copyOf(quest.dependencies()),

@@ -29,6 +29,7 @@ public class ClientQuests {
         DIRTY.clear();
         ENTRIES.clear();
         GROUPS.clear();
+        BY_GROUPS.clear();
 
         for (Map.Entry<String, Quest> entry : quests.entrySet()) {
             addEntry(entry.getKey(), entry.getValue(), quests);
@@ -36,7 +37,9 @@ public class ClientQuests {
 
         GROUPS.addAll(groups);
         for (QuestEntry value : ENTRIES.values()) {
-            BY_GROUPS.computeIfAbsent(value.value.display().group(), k -> new ArrayList<>()).add(value);
+            for (String s : value.value.display().groups().keySet()) {
+                BY_GROUPS.computeIfAbsent(s, k -> new ArrayList<>()).add(value);
+            }
         }
     }
 
@@ -95,14 +98,18 @@ public class ClientQuests {
         }
         ENTRIES.put(id, entry);
         DIRTY.add(id);
-        BY_GROUPS.computeIfAbsent(quest.display().group(), k -> new ArrayList<>()).add(entry);
+        for (String s : quest.display().groups().keySet()) {
+            BY_GROUPS.computeIfAbsent(s, k -> new ArrayList<>()).add(entry);
+        }
         return entry;
     }
 
     public static void removeQuest(QuestEntry entry) {
         ENTRIES.remove(entry.key());
         DIRTY.add(entry.key());
-        BY_GROUPS.get(entry.value.display().group()).remove(entry);
+        for (String s : entry.value().display().groups().keySet()) {
+            BY_GROUPS.computeIfAbsent(s, k -> new ArrayList<>()).remove(entry);
+        }
 
         for (QuestEntry child : entry.children()) {
             child.dependencies().remove(entry);
@@ -142,5 +149,28 @@ public class ClientQuests {
         return BY_GROUPS.getOrDefault(group, List.of());
     }
 
-    public record QuestEntry(List<QuestEntry> dependencies, String key, Quest value, List<QuestEntry> children) {}
+    public static void addToGroup(String group, QuestEntry entry) {
+        var questEntries = BY_GROUPS.computeIfAbsent(group, k -> new ArrayList<>());
+        if (!questEntries.contains(entry)) {
+            questEntries.add(entry);
+        }
+        DIRTY.add(entry.key());
+    }
+
+    public static void removeFromGroup(String group, QuestEntry entry) {
+        var questEntries = BY_GROUPS.get(group);
+        if (questEntries != null) {
+            questEntries.remove(entry);
+        }
+        DIRTY.add(entry.key());
+        entry.value().display().groups().remove(group);
+    }
+
+    public record QuestEntry(List<QuestEntry> dependencies, String key, Quest value, List<QuestEntry> children) {
+
+        @Override
+        public String toString() {
+            return "QuestEntry{ key='" + key + "', value=" + value + " }";
+        }
+    }
 }

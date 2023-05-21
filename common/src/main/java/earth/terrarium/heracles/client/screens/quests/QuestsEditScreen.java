@@ -114,7 +114,7 @@ public class QuestsEditScreen extends QuestsScreen {
         this.questModal = addTemporary(new TextInputModal<>(this.width, this.height, Component.literal("Create Quest"), (position, text) -> {
             MouseClick local = this.questsWidget.getLocal(position);
             QuestDisplay display = QuestDisplay.createDefault();
-            display.position().set((int) local.x() - 12, (int) local.y() - 12);
+            display.position(this.menu.group()).set((int) local.x() - 12, (int) local.y() - 12);
             Quest quest = new Quest(
                 display,
                 QuestSettings.createDefault(),

@@ -93,10 +93,7 @@ public abstract class BaseQuestScreen extends AbstractQuestScreen<QuestMenu> {
 
     @Override
     protected void goBack() {
-        NetworkHandler.CHANNEL.sendToServer(new OpenGroupPacket(
-            this.menu.quest().display().group(),
-            this instanceof QuestEditScreen
-        ));
+        NetworkHandler.CHANNEL.sendToServer(new OpenGroupPacket(this.menu.fromGroup(), this instanceof QuestEditScreen));
     }
 
     private void clearSelected() {

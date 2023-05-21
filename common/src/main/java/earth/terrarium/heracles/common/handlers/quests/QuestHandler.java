@@ -64,8 +64,10 @@ public class QuestHandler {
             }
         }
         for (Quest value : QUESTS.values()) {
-            if (!GROUPS.contains(value.display().group())) {
-                GROUPS.add(value.display().group());
+            for (String s : value.display().groups().keySet()) {
+                if (!GROUPS.contains(s)) {
+                    GROUPS.add(s);
+                }
             }
         }
     }

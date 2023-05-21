@@ -13,10 +13,8 @@ import org.jetbrains.annotations.Nullable;
 import java.util.HashMap;
 import java.util.Map;
 
-public record QuestContent(String id,
-                           Quest quest,
-                           QuestProgress progress,
-                           Map<String, ModUtils.QuestStatus> quests
+public record QuestContent(
+    String id, String fromGroup, Quest quest, QuestProgress progress, Map<String, ModUtils.QuestStatus> quests
 ) implements MenuContent<QuestContent> {
 
     public static final MenuContentSerializer<QuestContent> SERIALIZER = new Serializer();
@@ -31,6 +29,7 @@ public record QuestContent(String id,
         @Override
         public @Nullable QuestContent from(FriendlyByteBuf buffer) {
             String id = buffer.readUtf();
+            String fromGroup = buffer.readUtf();
             Quest quest = PacketHelper.readWithYabn(Heracles.getRegistryAccess(), buffer, Quest.CODEC, true)
                 .getOrThrow(false, System.err::println);
             QuestProgress progress = new QuestProgress(quest, buffer.readNbt());
@@ -39,12 +38,13 @@ public record QuestContent(String id,
             for (int i = 0; i < size; i++) {
                 quests.put(buffer.readUtf(), buffer.readEnum(ModUtils.QuestStatus.class));
             }
-            return new QuestContent(id, quest, progress, quests);
+            return new QuestContent(id, fromGroup, quest, progress, quests);
         }
 
         @Override
         public void to(FriendlyByteBuf buffer, QuestContent content) {
             buffer.writeUtf(content.id());
+            buffer.writeUtf(content.fromGroup());
             PacketHelper.writeWithYabn(Heracles.getRegistryAccess(), buffer, Quest.CODEC, content.quest(), true);
             buffer.writeNbt(content.progress().save());
             buffer.writeVarInt(content.quests.size());

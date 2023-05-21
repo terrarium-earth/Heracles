@@ -7,9 +7,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.level.saveddata.SavedData;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 public class QuestProgressHandler extends SavedData {
 
@@ -55,13 +53,14 @@ public class QuestProgressHandler extends SavedData {
     }
 
     public void load(CompoundTag tag) {
+        Set<String> badQuests = new HashSet<>();
         for (var player : tag.getAllKeys()) {
             CompoundTag progress = tag.getCompound(player);
             Map<String, QuestProgress> questProgress = new HashMap<>();
             for (var quest : progress.getAllKeys()) {
                 Quest questObj = QuestHandler.get(quest);
                 if (questObj == null) {
-                    System.err.println("Quest " + quest + " does not exist!");
+                    badQuests.add(quest);
                     continue;
                 }
                 try {
@@ -73,6 +72,9 @@ public class QuestProgressHandler extends SavedData {
                 }
                 this.progress.put(UUID.fromString(player), new QuestsProgress(questProgress));
             }
+        }
+        if (!badQuests.isEmpty()) {
+            System.err.println("Failed to load quest progress for quests: " + String.join(", ", badQuests));
         }
     }
 

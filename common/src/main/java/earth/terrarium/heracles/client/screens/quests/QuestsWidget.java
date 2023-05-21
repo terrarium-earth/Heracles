@@ -9,8 +9,11 @@ import com.teamresourceful.resourcefullib.client.utils.RenderUtils;
 import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.client.handlers.ClientQuests;
 import earth.terrarium.heracles.client.screens.MouseMode;
+import earth.terrarium.heracles.client.utils.ClientUtils;
 import earth.terrarium.heracles.client.utils.MouseClick;
 import earth.terrarium.heracles.client.widgets.base.BaseWidget;
+import earth.terrarium.heracles.common.network.NetworkHandler;
+import earth.terrarium.heracles.common.network.packets.quests.OpenQuestPacket;
 import earth.terrarium.heracles.common.utils.ModUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
@@ -53,6 +56,8 @@ public class QuestsWidget extends BaseWidget {
     private final Supplier<MouseMode> mouseMode;
     private final BooleanSupplier inspectorOpened;
 
+    private final String group;
+
     public QuestsWidget(int x, int y, int width, int selectedWidth, int height, BooleanSupplier inspectorOpened, Supplier<MouseMode> mouseMode, Consumer<ClientQuests.QuestEntry> onSelection) {
         this.x = x;
         this.y = y;
@@ -62,7 +67,8 @@ public class QuestsWidget extends BaseWidget {
         this.height = height;
         this.inspectorOpened = inspectorOpened;
         this.mouseMode = mouseMode;
-        this.selectHandler = new SelectQuestHandler(onSelection);
+        this.group = ClientUtils.screen() instanceof QuestsScreen screen ? screen.getMenu().group() : "";
+        this.selectHandler = new SelectQuestHandler(this.group, onSelection);
     }
 
     public void update(List<Pair<ClientQuests.QuestEntry, ModUtils.QuestStatus>> quests) {
@@ -75,6 +81,11 @@ public class QuestsWidget extends BaseWidget {
     }
 
     public void addQuest(ClientQuests.QuestEntry quest) {
+        for (QuestWidget widget : this.widgets) {
+            if (widget.id().equals(quest.key())) {
+                return;
+            }
+        }
         this.widgets.add(new QuestWidget(quest, ModUtils.QuestStatus.IN_PROGRESS));
         this.entries.add(quest);
     }
@@ -104,7 +115,7 @@ public class QuestsWidget extends BaseWidget {
             BufferBuilder buffer = tesselator.getBuilder();
 
             for (ClientQuests.QuestEntry entry : this.entries) {
-                var position = entry.value().display().position();
+                var position = entry.value().display().position(this.group);
 
                 int px = x + offset.x() + position.x() + 10;
                 int py = y + offset.y() + position.y() + 10;
@@ -114,9 +125,9 @@ public class QuestsWidget extends BaseWidget {
                 RenderSystem.setShaderColor(0.9F, 0.9F, 0.9F, isHovered ? 0.45f : 0.25F);
 
                 for (ClientQuests.QuestEntry child : entry.children()) {
-                    if (!child.value().display().group().equals(entry.value().display().group())) continue;
+                    if (!child.value().display().groups().containsKey(this.group)) continue;
 
-                    var childPosition = child.value().display().position();
+                    var childPosition = child.value().display().position(this.group);
 
                     int cx = x + offset.x() + childPosition.x() + 10;
                     int cy = y + offset.y() + childPosition.y() + 10;
@@ -149,8 +160,8 @@ public class QuestsWidget extends BaseWidget {
             }
         }
 
-        int width = (int)((this.width - 10) * (offset.x / 500f));
-        int height = (int)((this.height - 10) * (offset.y / 500f));
+        int width = (int) ((this.width - 10) * (offset.x / 500f));
+        int height = (int) ((this.height - 10) * (offset.y / 500f));
 
         if (offset.x > this.width / 4) {
             Gui.fill(pose, this.x + 1 + width, this.y + this.height - 4, this.x - 6 + this.width, this.y + this.height - 2, 0xFFFFFFFF);
@@ -185,7 +196,9 @@ public class QuestsWidget extends BaseWidget {
                     if (mode.canSelect()) {
                         this.selectHandler.clickQuest(mode, (int) mouseX, (int) mouseY, widget);
                     } else if (mode.canOpen()) {
-                        widget.onClicked();
+                        NetworkHandler.CHANNEL.sendToServer(new OpenQuestPacket(
+                            this.group, widget.id(), Minecraft.getInstance().screen instanceof QuestsEditScreen
+                        ));
                     }
                     return true;
                 }
@@ -231,5 +244,9 @@ public class QuestsWidget extends BaseWidget {
         int localX = (int) (click.x() - (this.x + (this.fullWidth / 2f) + offset.x()));
         int localY = (int) (click.y() - (this.y + (this.height / 2f) + offset.y()));
         return new MouseClick(localX, localY, click.button());
+    }
+
+    public String group() {
+        return this.group;
     }
 }

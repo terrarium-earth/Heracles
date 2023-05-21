@@ -70,11 +70,12 @@ public class ModUtils {
         return (U) value;
     }
 
-    public static void openQuest(ServerPlayer player, String id) {
+    public static void openQuest(ServerPlayer player, String group, String id) {
         Quest quest = QuestHandler.get(id);
         BasicContentMenuProvider.open(
             new QuestContent(
                 id,
+                group,
                 quest,
                 QuestProgressHandler.getProgress(player.server, player.getUUID()).getProgress(id),
                 getQuests(player)
@@ -85,11 +86,12 @@ public class ModUtils {
         );
     }
 
-    public static void openEditQuest(ServerPlayer player, String id) {
+    public static void openEditQuest(ServerPlayer player, String group, String id) {
         Quest quest = QuestHandler.get(id);
         BasicContentMenuProvider.open(
             new QuestContent(
                 id,
+                group,
                 quest,
                 QuestProgressHandler.getProgress(player.server, player.getUUID()).getProgress(id),
                 getQuests(player)

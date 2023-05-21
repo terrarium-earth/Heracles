@@ -2,6 +2,9 @@ package earth.terrarium.heracles.client.screens.quests;
 
 import earth.terrarium.heracles.client.handlers.ClientQuests;
 import earth.terrarium.heracles.client.screens.MouseMode;
+import earth.terrarium.heracles.common.network.NetworkHandler;
+import earth.terrarium.heracles.common.network.packets.quests.OpenQuestPacket;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import org.joml.Vector2i;
 
@@ -9,6 +12,7 @@ import java.util.function.Consumer;
 
 public class SelectQuestHandler {
 
+    private final String group;
     private final Consumer<ClientQuests.QuestEntry> onSelection;
 
     private long lastClickTime = 0;
@@ -17,7 +21,8 @@ public class SelectQuestHandler {
     private Vector2i start = null;
     private Vector2i startOffset = null;
 
-    public SelectQuestHandler(Consumer<ClientQuests.QuestEntry> onSelection) {
+    public SelectQuestHandler(String group, Consumer<ClientQuests.QuestEntry> onSelection) {
+        this.group = group;
         this.onSelection = onSelection;
     }
 
@@ -28,7 +33,9 @@ public class SelectQuestHandler {
                 return;
             } else if (System.currentTimeMillis() - lastClickTime < 500) {
                 selectedQuest = null;
-                quest.onClicked();
+                NetworkHandler.CHANNEL.sendToServer(new OpenQuestPacket(
+                    this.group, quest.id(), Minecraft.getInstance().screen instanceof QuestsEditScreen
+                ));
             }
         } else if (mode == MouseMode.SELECT_LINK && selectedQuest != null) {
             if (Screen.hasShiftDown()) {

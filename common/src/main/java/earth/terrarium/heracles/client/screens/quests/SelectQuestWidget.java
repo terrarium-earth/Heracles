@@ -39,12 +39,15 @@ public class SelectQuestWidget extends BaseWidget {
 
     private final QuestsWidget widget;
 
+    private final String group;
+
     public SelectQuestWidget(int x, int y, int width, int height, QuestsWidget widget) {
         this.x = x;
         this.y = y;
         this.width = width;
         this.height = height;
         this.widget = widget;
+        this.group = ClientUtils.screen() instanceof QuestsScreen screen ? screen.getMenu().group() : "";
 
         this.titleBox = this.addChild(new EditBox(this.font, this.x + 6, this.y + 14, this.width - 12, 10, CommonComponents.EMPTY));
         this.titleBox.setResponder(s -> changeOption(quest -> quest.display().setTitle(s.isEmpty() ? null : Component.literal(s))));
@@ -53,8 +56,8 @@ public class SelectQuestWidget extends BaseWidget {
 
         this.xBox = this.addChild(new PositionBox(this.font, this.x + 16, this.y + 44, boxWidth, 10, Component.literal("x")));
         this.yBox = this.addChild(new PositionBox(this.font, this.x + 33 + boxWidth, this.y + 44, boxWidth, 10, Component.literal("y")));
-        this.xBox.setNumberResponder(value -> changeOption(quest -> quest.display().position().x = value));
-        this.yBox.setNumberResponder(value -> changeOption(quest -> quest.display().position().y = value));
+        this.xBox.setNumberResponder(value -> changeOption(quest -> quest.display().position(this.group).x = value));
+        this.yBox.setNumberResponder(value -> changeOption(quest -> quest.display().position(this.group).y = value));
 
         this.subtitleBox = this.addChild(new MultiLineEditBox(this.font, this.x + 6, this.y + 76, this.width - 12, 40, CommonComponents.EMPTY, CommonComponents.EMPTY));
         this.subtitleBox.setValueListener(s -> changeOption(quest -> quest.display().setSubtitle(s.isEmpty() ? null : Component.literal(s))));
@@ -96,7 +99,10 @@ public class SelectQuestWidget extends BaseWidget {
                 if (Minecraft.getInstance().screen instanceof QuestsEditScreen screen) {
                     screen.confirmModal().setVisible(true);
                     screen.confirmModal().setCallback(() -> {
-                        ClientQuests.removeQuest(this.entry);
+                        if (this.entry.value().display().groups().size() == 1) {
+                            ClientQuests.removeQuest(entry);
+                        }
+                        ClientQuests.removeFromGroup(widget.group(), entry);
                         screen.questsWidget.removeQuest(this.entry);
                     });
                 }
@@ -144,7 +150,7 @@ public class SelectQuestWidget extends BaseWidget {
 
     public void updateWidgets() {
         if (this.entry == null) return;
-        var position = this.entry.value().display().position();
+        var position = this.entry.value().display().position(this.group);
         this.xBox.setIfNotFocused(position.x());
         this.yBox.setIfNotFocused(position.y());
         String subtitle = this.entry.value().display().subtitle().getString();

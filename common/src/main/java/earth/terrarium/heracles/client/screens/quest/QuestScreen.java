@@ -31,7 +31,7 @@ public class QuestScreen extends BaseQuestScreen {
 
         if (Minecraft.getInstance().player != null && Minecraft.getInstance().player.hasPermissions(2)) {
             addRenderableWidget(new ImageButton(this.width - 24, 1, 11, 11, 33, 15, 11, HEADING, 256, 256, (button) ->
-                NetworkHandler.CHANNEL.sendToServer(new OpenQuestPacket(this.menu.id(), this.getClass() == QuestScreen.class))
+                NetworkHandler.CHANNEL.sendToServer(new OpenQuestPacket(this.menu.fromGroup(), this.menu.id(), true))
             )).setTooltip(Tooltip.create(Component.literal("Toggle Edit Mode")));
         }
     }

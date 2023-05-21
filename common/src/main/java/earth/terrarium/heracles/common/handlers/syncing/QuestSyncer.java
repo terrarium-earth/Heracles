@@ -39,8 +39,7 @@ public final class QuestSyncer {
             quest.display().title(),
             quest.display().subtitle(),
             List.of(),
-            quest.display().position(),
-            quest.display().group()
+            quest.display().groups()
         );
 
         return new Quest(

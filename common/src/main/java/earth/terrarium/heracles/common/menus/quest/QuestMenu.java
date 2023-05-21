@@ -44,6 +44,10 @@ public class QuestMenu extends AbstractContainerMenu {
         return this.content != null ? this.content.id() : null;
     }
 
+    public String fromGroup() {
+        return this.content != null ? this.content.fromGroup() : null;
+    }
+
     public Quest quest() {
         return this.content != null ? this.content.quest() : null;
     }

@@ -49,7 +49,9 @@ public class QuestsMenu extends AbstractContainerMenu {
                 ClientQuests.get(entry.getKey())
                     .map(ClientQuests.QuestEntry::value)
                     .map(Quest::display)
-                    .map(QuestDisplay::group).filter(group -> group.equals(this.content.group()))
+                    .map(QuestDisplay::groups)
+                    .map(Map::keySet)
+                    .filter(group -> group.contains(this.content.group()))
                     .ifPresent(group -> quests.put(entry.getKey(), entry.getValue()));
             }
         }

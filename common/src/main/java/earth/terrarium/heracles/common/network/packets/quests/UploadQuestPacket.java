@@ -1,4 +1,4 @@
-package earth.terrarium.heracles.common.network.packets;
+package earth.terrarium.heracles.common.network.packets.quests;
 
 import com.teamresourceful.resourcefullib.common.networking.base.Packet;
 import com.teamresourceful.resourcefullib.common.networking.base.PacketContext;
@@ -45,9 +45,7 @@ public record UploadQuestPacket(String id, Quest quest) implements Packet<Upload
         public PacketContext handle(UploadQuestPacket message) {
             return (player, level) -> {
                 if (player.hasPermissions(2)) {
-                    if (!QuestHandler.upload(message.id(), message.quest())) {
-                        //TODO: Send error message to client
-                    }
+                    QuestHandler.upload(message.id(), message.quest());
                 }
             };
         }

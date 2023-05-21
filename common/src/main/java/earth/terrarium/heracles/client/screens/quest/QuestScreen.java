@@ -2,6 +2,11 @@ package earth.terrarium.heracles.client.screens.quest;
 
 import earth.terrarium.heracles.client.screens.quest.tasks.TaskListWidget;
 import earth.terrarium.heracles.common.menus.quest.QuestMenu;
+import earth.terrarium.heracles.common.network.NetworkHandler;
+import earth.terrarium.heracles.common.network.packets.quests.OpenQuestPacket;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.components.ImageButton;
+import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
@@ -23,6 +28,12 @@ public class QuestScreen extends BaseQuestScreen {
         int contentHeight = this.height - 45;
         this.taskList = new TaskListWidget(contentX, contentY, contentWidth, contentHeight, this.menu.id(), this.menu.quest(), this.menu.progress(), this.menu.quests());
         this.taskList.update(this.menu.quest().tasks().values());
+
+        if (Minecraft.getInstance().player != null && Minecraft.getInstance().player.hasPermissions(2)) {
+            addRenderableWidget(new ImageButton(this.width - 24, 1, 11, 11, 33, 15, 11, HEADING, 256, 256, (button) ->
+                NetworkHandler.CHANNEL.sendToServer(new OpenQuestPacket(this.menu.id(), this.getClass() == QuestScreen.class))
+            )).setTooltip(Tooltip.create(Component.literal("Toggle Edit Mode")));
+        }
     }
 
     @Override

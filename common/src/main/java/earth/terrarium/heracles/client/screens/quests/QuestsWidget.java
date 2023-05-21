@@ -21,6 +21,7 @@ import org.joml.Vector2i;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
@@ -76,6 +77,15 @@ public class QuestsWidget extends BaseWidget {
     public void addQuest(ClientQuests.QuestEntry quest) {
         this.widgets.add(new QuestWidget(quest, ModUtils.QuestStatus.IN_PROGRESS));
         this.entries.add(quest);
+    }
+
+    public void removeQuest(ClientQuests.QuestEntry quest) {
+        this.widgets.removeIf(widget -> widget.id().equals(quest.key()));
+        this.entries.remove(quest);
+        QuestWidget questWidget = this.selectHandler.selectedQuest();
+        if (questWidget != null && Objects.equals(this.selectHandler.selectedQuest().id(), quest.key())) {
+            this.selectHandler.release();
+        }
     }
 
     @Override
@@ -180,6 +190,7 @@ public class QuestsWidget extends BaseWidget {
 
     @Override
     public boolean mouseDragged(double mouseX, double mouseY, int button, double dragX, double dragY) {
+        if (button != 0) return false;
         MouseMode mode = this.mouseMode.get();
         if (mode.canDrag()) {
             int newX = (int) (mouseX - start.x() + startOffset.x());

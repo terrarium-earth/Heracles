@@ -15,6 +15,7 @@ import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.MultiLineEditBox;
+import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 
@@ -54,7 +55,7 @@ public class SelectQuestWidget extends BaseWidget {
         this.subtitleBox = this.addChild(new MultiLineEditBox(this.font, this.x + 6, this.y + 76, this.width - 12, 40, CommonComponents.EMPTY, CommonComponents.EMPTY));
         this.subtitleBox.setValueListener(s -> changeOption(quest -> quest.display().setSubtitle(s.isEmpty() ? null : Component.literal(s))));
 
-        addChild(Button.builder(Component.literal("⇄ Icon"), b -> {
+        addChild(Button.builder(Component.literal("ℹ"), b -> {
             if (Minecraft.getInstance().screen instanceof QuestsEditScreen screen) {
                 screen.iconModal().setVisible(true);
                 screen.iconModal().setCallback(item -> {
@@ -62,9 +63,11 @@ public class SelectQuestWidget extends BaseWidget {
                     screen.iconModal().setVisible(false);
                 });
             }
-        }).bounds(this.x + 6, this.y + 137, this.width - 12, 14).build());
+        }).bounds(this.x + 6, this.y + 137, 16, 16)
+            .tooltip(Tooltip.create(Component.literal("Change Icon")))
+            .build());
 
-        addChild(Button.builder(Component.literal("⇄ Background"), b -> {
+        addChild(Button.builder(Component.literal("□"), b -> {
             if (Minecraft.getInstance().screen instanceof QuestsEditScreen screen) {
                 screen.iconBackgroundModal().setVisible(true);
                 screen.iconBackgroundModal().update(ClientUtils.getTextures("gui/quest_backgrounds"), selected -> {
@@ -72,14 +75,30 @@ public class SelectQuestWidget extends BaseWidget {
                     screen.iconBackgroundModal().setVisible(false);
                 });
             }
-        }).bounds(this.x + 6, this.y + 157, this.width - 12, 14).build());
+        }).bounds(this.x + 24, this.y + 137, 16, 16)
+            .tooltip(Tooltip.create(Component.literal("Change Icon Background")))
+            .build());
 
-        addChild(Button.builder(Component.literal("+ Dependencies"), b -> {
+        addChild(Button.builder(Component.literal("⬈"), b -> {
             if (Minecraft.getInstance().screen instanceof QuestsEditScreen screen) {
                 screen.dependencyModal().setVisible(true);
                 screen.dependencyModal().update(this.entry, () -> changeOption(quest -> {}));
             }
-        }).bounds(this.x + 6, this.y + 187, this.width - 12, 14).build());
+        }).bounds(this.x + 42, this.y + 137, 16, 16)
+            .tooltip(Tooltip.create(Component.literal("Change Dependencies")))
+            .build());
+
+        addChild(Button.builder(Component.literal("x"), b -> {
+            if (Minecraft.getInstance().screen instanceof QuestsEditScreen screen) {
+                screen.confirmModal().setVisible(true);
+                screen.confirmModal().setCallback(() -> {
+                    ClientQuests.removeQuest(this.entry);
+                    screen.questsWidget.removeQuest(this.entry);
+                });
+            }
+        }).bounds(this.x + 58, this.y + 137, 16, 16)
+            .tooltip(Tooltip.create(Component.literal("Delete Quest")))
+            .build());
     }
 
 
@@ -106,14 +125,8 @@ public class SelectQuestWidget extends BaseWidget {
 
         Gui.fill(stack, this.x + 4, this.y + 121, this.x + this.width - 4, this.y + 122, 0xff808080);
 
-        //Icon
-        font.draw(stack, Component.literal("Icon"), this.x + 7, this.y + 126, 0x808080);
-
-        Gui.fill(stack, this.x + 4, this.y + 173, this.x + this.width - 4, this.y + 174, 0xff808080);
-
-        // Options
-        font.draw(stack, Component.literal("Options"), this.x + 7, this.y + 176, 0x808080);
-
+        //Actions
+        font.draw(stack, Component.literal("Actions"), this.x + 7, this.y + 126, 0x808080);
 
         renderChildren(stack, mouseX, mouseY, partialTick);
     }

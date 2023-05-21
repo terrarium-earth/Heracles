@@ -5,10 +5,12 @@ import com.mojang.datafixers.util.Pair;
 import earth.terrarium.heracles.client.handlers.ClientQuests;
 import earth.terrarium.heracles.client.screens.AbstractQuestScreen;
 import earth.terrarium.heracles.client.screens.MouseMode;
+import earth.terrarium.heracles.client.widgets.modals.ConfirmModal;
 import earth.terrarium.heracles.common.menus.quests.QuestsMenu;
 import earth.terrarium.heracles.common.network.NetworkHandler;
 import earth.terrarium.heracles.common.network.packets.OpenGroupPacket;
 import earth.terrarium.heracles.common.utils.ModUtils;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.ImageButton;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.network.chat.Component;
@@ -23,6 +25,8 @@ public class QuestsScreen extends AbstractQuestScreen<QuestsMenu> {
     protected QuestsWidget questsWidget;
     protected GroupsList groupsList;
 
+    protected ConfirmModal confirmModal;
+
     public QuestsScreen(QuestsMenu menu, Inventory inventory, Component component) {
         super(menu, inventory, component);
         this.hasBackButton = false;
@@ -32,9 +36,11 @@ public class QuestsScreen extends AbstractQuestScreen<QuestsMenu> {
     protected void init() {
         super.init();
         int sidebarWidth = (int) (this.width * 0.25f) - 2;
-        addRenderableWidget(new ImageButton(this.width - 24, 1, 11, 11, 33, 15, 11, HEADING, 256, 256, (button) ->
-            NetworkHandler.CHANNEL.sendToServer(new OpenGroupPacket(this.menu.group(), this.getClass() == QuestsScreen.class))
-        )).setTooltip(Tooltip.create(Component.literal("Enable Edit Mode")));
+        if (Minecraft.getInstance().player != null && Minecraft.getInstance().player.hasPermissions(2)) {
+            addRenderableWidget(new ImageButton(this.width - 24, 1, 11, 11, 33, 15, 11, HEADING, 256, 256, (button) ->
+                NetworkHandler.CHANNEL.sendToServer(new OpenGroupPacket(this.menu.group(), this.getClass() == QuestsScreen.class))
+            )).setTooltip(Tooltip.create(Component.literal("Toggle Edit Mode")));
+        }
         List<Pair<ClientQuests.QuestEntry, ModUtils.QuestStatus>> quests = new ArrayList<>();
         menu.quests().forEach((id, status) ->
             ClientQuests.get(id).ifPresent(quest -> quests.add(Pair.of(quest, status)))
@@ -72,6 +78,8 @@ public class QuestsScreen extends AbstractQuestScreen<QuestsMenu> {
             }
         ));
         this.groupsList.update(ClientQuests.groups(), this.menu.group());
+
+        this.confirmModal = addTemporary(new ConfirmModal(this.width, this.height));
     }
 
     protected MouseMode getMouseMode() {
@@ -97,5 +105,9 @@ public class QuestsScreen extends AbstractQuestScreen<QuestsMenu> {
 
     public GroupsList getGroupsList() {
         return groupsList;
+    }
+
+    public ConfirmModal confirmModal() {
+        return confirmModal;
     }
 }

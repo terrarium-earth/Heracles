@@ -1,4 +1,4 @@
-package earth.terrarium.heracles.common.network.packets;
+package earth.terrarium.heracles.common.network.packets.quests;
 
 import com.mojang.serialization.Codec;
 import com.teamresourceful.resourcefullib.common.networking.base.Packet;

@@ -6,7 +6,7 @@ import earth.terrarium.heracles.api.quests.QuestDisplay;
 import earth.terrarium.heracles.common.handlers.pinned.PinnedQuestHandler;
 import earth.terrarium.heracles.common.handlers.quests.QuestHandler;
 import earth.terrarium.heracles.common.network.NetworkHandler;
-import earth.terrarium.heracles.common.network.packets.SyncQuestsPacket;
+import earth.terrarium.heracles.common.network.packets.quests.SyncQuestsPacket;
 import net.minecraft.server.level.ServerPlayer;
 
 import java.util.List;

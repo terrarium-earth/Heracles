@@ -3,8 +3,9 @@ package earth.terrarium.heracles.client.handlers;
 import earth.terrarium.heracles.api.quests.Quest;
 import earth.terrarium.heracles.common.handlers.progress.QuestProgress;
 import earth.terrarium.heracles.common.network.NetworkHandler;
-import earth.terrarium.heracles.common.network.packets.QuestActionPacket;
-import earth.terrarium.heracles.common.network.packets.UploadQuestPacket;
+import earth.terrarium.heracles.common.network.packets.quests.DeleteQuestPacket;
+import earth.terrarium.heracles.common.network.packets.quests.QuestActionPacket;
+import earth.terrarium.heracles.common.network.packets.quests.UploadQuestPacket;
 
 import java.util.*;
 
@@ -79,6 +80,20 @@ public class ClientQuests {
         return entry;
     }
 
+    public static void removeQuest(QuestEntry entry) {
+        ENTRIES.remove(entry.key());
+        DIRTY.add(entry.key());
+        BY_GROUPS.get(entry.value.display().group()).remove(entry);
+
+        for (QuestEntry child : entry.children()) {
+            child.dependencies().remove(entry);
+        }
+
+        for (QuestEntry dependency : entry.dependencies()) {
+            dependency.children().remove(entry);
+        }
+    }
+
     public static void setDirty(String id) {
         DIRTY.add(id);
     }
@@ -86,7 +101,11 @@ public class ClientQuests {
     public static void sendDirty() {
         for (String id : DIRTY) {
             QuestEntry entry = ENTRIES.get(id);
-            NetworkHandler.CHANNEL.sendToServer(new UploadQuestPacket(id, entry.value));
+            if (entry == null) {
+                NetworkHandler.CHANNEL.sendToServer(new DeleteQuestPacket(id));
+            } else {
+                NetworkHandler.CHANNEL.sendToServer(new UploadQuestPacket(id, entry.value));
+            }
         }
         NetworkHandler.CHANNEL.sendToServer(new QuestActionPacket(QuestActionPacket.Action.SAVE));
         DIRTY.clear();

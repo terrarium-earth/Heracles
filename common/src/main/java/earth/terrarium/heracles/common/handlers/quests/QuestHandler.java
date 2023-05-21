@@ -105,10 +105,14 @@ public class QuestHandler {
         return QUESTS.get(id);
     }
 
-    public static boolean upload(String id, Quest quest) {
+    public static void upload(String id, Quest quest) {
         QUESTS.put(id, quest);
         dirty = true;
-        return true;
+    }
+
+    public static void delete(String id) {
+        QUESTS.remove(id);
+        dirty = true;
     }
 
     public static String getKey(Quest quest) {

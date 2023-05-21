@@ -1,6 +1,7 @@
 package earth.terrarium.heracles.client.utils;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FormattedCharSequence;
@@ -23,9 +24,13 @@ public class ClientUtils {
     }
 
     public static void setTooltip(List<Component> component) {
-        if (Minecraft.getInstance().screen != null) {
-            List<FormattedCharSequence> formattedCharSequences = component.stream().map(Component::getVisualOrderText).toList();
-            Minecraft.getInstance().screen.setTooltipForNextRenderPass(formattedCharSequences);
+        Screen screen = screen();
+        if (screen != null) {
+            List<FormattedCharSequence> formattedCharSequences = component.stream()
+                .map(c -> Minecraft.getInstance().font.split(c, 10000))
+                .flatMap(List::stream)
+                .toList();
+            screen.setTooltipForNextRenderPass(formattedCharSequences);
         }
     }
 
@@ -33,5 +38,9 @@ public class ClientUtils {
         if (Minecraft.getInstance().screen != null) {
             Minecraft.getInstance().screen.setTooltipForNextRenderPass(List.of());
         }
+    }
+
+    public static Screen screen() {
+        return Minecraft.getInstance().screen;
     }
 }

@@ -7,12 +7,15 @@ import com.teamresourceful.resourcefullib.client.utils.CursorUtils;
 import com.teamresourceful.resourcefullib.client.utils.RenderUtils;
 import earth.terrarium.heracles.api.quests.Quest;
 import earth.terrarium.heracles.client.handlers.ClientQuests;
+import earth.terrarium.heracles.client.utils.ClientUtils;
 import earth.terrarium.heracles.common.network.NetworkHandler;
 import earth.terrarium.heracles.common.network.packets.quests.OpenQuestPacket;
 import earth.terrarium.heracles.common.utils.ModUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import org.joml.Vector2i;
+
+import java.util.List;
 
 public class QuestWidget {
 
@@ -42,6 +45,17 @@ public class QuestWidget {
         }
         quest.display().icon().render(pose, scissor, x + x(), y + y(), 24, 24);
         CursorUtils.setCursor(hovered, CursorScreen.Cursor.POINTER);
+        if (hovered && (!(ClientUtils.screen() instanceof QuestsScreen screen) || !screen.isTemporaryWidgetVisible())) {
+            String subtitleText = quest.display().subtitle().getString().trim();
+            if (subtitleText.isBlank()) {
+                ClientUtils.setTooltip(quest.display().title().copy().withStyle(style -> style.withBold(true)));
+            } else {
+                ClientUtils.setTooltip(List.of(
+                    quest.display().title().copy().withStyle(style -> style.withBold(true)),
+                    quest.display().subtitle()
+                ));
+            }
+        }
     }
 
     public void onClicked() {

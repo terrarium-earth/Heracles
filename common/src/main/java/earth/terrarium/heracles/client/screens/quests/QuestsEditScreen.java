@@ -16,7 +16,7 @@ import earth.terrarium.heracles.client.widgets.modals.icon.background.IconBackgr
 import earth.terrarium.heracles.client.widgets.modals.upload.UploadModal;
 import earth.terrarium.heracles.common.menus.quests.QuestsMenu;
 import earth.terrarium.heracles.common.network.NetworkHandler;
-import earth.terrarium.heracles.common.network.packets.CreateGroupPacket;
+import earth.terrarium.heracles.common.network.packets.groups.CreateGroupPacket;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.ImageButton;
 import net.minecraft.client.gui.components.Tooltip;
@@ -104,7 +104,7 @@ public class QuestsEditScreen extends QuestsScreen {
             NetworkHandler.CHANNEL.sendToServer(new CreateGroupPacket(text));
             ClientQuests.groups().add(text);
             if (Minecraft.getInstance().screen instanceof QuestsScreen screen) {
-                screen.getGroupsList().addEntry(new GroupsList.Entry(text));
+                screen.getGroupsList().addGroup(text);
             }
         }, text -> !ClientQuests.groups().contains(text.trim())));
         this.iconBackgroundModal = addTemporary(new IconBackgroundModal(this.width, this.height));

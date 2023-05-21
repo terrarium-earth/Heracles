@@ -56,47 +56,47 @@ public class SelectQuestWidget extends BaseWidget {
         this.subtitleBox.setValueListener(s -> changeOption(quest -> quest.display().setSubtitle(s.isEmpty() ? null : Component.literal(s))));
 
         addChild(Button.builder(Component.literal("ℹ"), b -> {
-            if (Minecraft.getInstance().screen instanceof QuestsEditScreen screen) {
-                screen.iconModal().setVisible(true);
-                screen.iconModal().setCallback(item -> {
-                    changeOption(quest -> quest.display().setIcon(new ItemQuestIcon(item)));
-                    screen.iconModal().setVisible(false);
-                });
-            }
-        }).bounds(this.x + 6, this.y + 137, 16, 16)
+                if (Minecraft.getInstance().screen instanceof QuestsEditScreen screen) {
+                    screen.iconModal().setVisible(true);
+                    screen.iconModal().setCallback(item -> {
+                        changeOption(quest -> quest.display().setIcon(new ItemQuestIcon(item)));
+                        screen.iconModal().setVisible(false);
+                    });
+                }
+            }).bounds(this.x + 6, this.y + 137, 16, 16)
             .tooltip(Tooltip.create(Component.literal("Change Icon")))
             .build());
 
         addChild(Button.builder(Component.literal("□"), b -> {
-            if (Minecraft.getInstance().screen instanceof QuestsEditScreen screen) {
-                screen.iconBackgroundModal().setVisible(true);
-                screen.iconBackgroundModal().update(ClientUtils.getTextures("gui/quest_backgrounds"), selected -> {
-                    changeOption(quest -> quest.display().setIconBackground(selected));
-                    screen.iconBackgroundModal().setVisible(false);
-                });
-            }
-        }).bounds(this.x + 24, this.y + 137, 16, 16)
+                if (Minecraft.getInstance().screen instanceof QuestsEditScreen screen) {
+                    screen.iconBackgroundModal().setVisible(true);
+                    screen.iconBackgroundModal().update(ClientUtils.getTextures("gui/quest_backgrounds"), selected -> {
+                        changeOption(quest -> quest.display().setIconBackground(selected));
+                        screen.iconBackgroundModal().setVisible(false);
+                    });
+                }
+            }).bounds(this.x + 24, this.y + 137, 16, 16)
             .tooltip(Tooltip.create(Component.literal("Change Icon Background")))
             .build());
 
         addChild(Button.builder(Component.literal("⬈"), b -> {
-            if (Minecraft.getInstance().screen instanceof QuestsEditScreen screen) {
-                screen.dependencyModal().setVisible(true);
-                screen.dependencyModal().update(this.entry, () -> changeOption(quest -> {}));
-            }
-        }).bounds(this.x + 42, this.y + 137, 16, 16)
+                if (Minecraft.getInstance().screen instanceof QuestsEditScreen screen) {
+                    screen.dependencyModal().setVisible(true);
+                    screen.dependencyModal().update(this.entry, () -> changeOption(quest -> {}));
+                }
+            }).bounds(this.x + 42, this.y + 137, 16, 16)
             .tooltip(Tooltip.create(Component.literal("Change Dependencies")))
             .build());
 
         addChild(Button.builder(Component.literal("x"), b -> {
-            if (Minecraft.getInstance().screen instanceof QuestsEditScreen screen) {
-                screen.confirmModal().setVisible(true);
-                screen.confirmModal().setCallback(() -> {
-                    ClientQuests.removeQuest(this.entry);
-                    screen.questsWidget.removeQuest(this.entry);
-                });
-            }
-        }).bounds(this.x + 58, this.y + 137, 16, 16)
+                if (Minecraft.getInstance().screen instanceof QuestsEditScreen screen) {
+                    screen.confirmModal().setVisible(true);
+                    screen.confirmModal().setCallback(() -> {
+                        ClientQuests.removeQuest(this.entry);
+                        screen.questsWidget.removeQuest(this.entry);
+                    });
+                }
+            }).bounds(this.x + 58, this.y + 137, 16, 16)
             .tooltip(Tooltip.create(Component.literal("Delete Quest")))
             .build());
     }

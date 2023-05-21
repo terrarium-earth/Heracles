@@ -3,7 +3,11 @@ package earth.terrarium.heracles.common.network;
 import com.teamresourceful.resourcefullib.common.networking.NetworkChannel;
 import com.teamresourceful.resourcefullib.common.networking.base.NetworkDirection;
 import earth.terrarium.heracles.Heracles;
-import earth.terrarium.heracles.common.network.packets.*;
+import earth.terrarium.heracles.common.network.packets.QuestCompletedPacket;
+import earth.terrarium.heracles.common.network.packets.QuestRewardClaimedPacket;
+import earth.terrarium.heracles.common.network.packets.groups.CreateGroupPacket;
+import earth.terrarium.heracles.common.network.packets.groups.DeleteGroupPacket;
+import earth.terrarium.heracles.common.network.packets.groups.OpenGroupPacket;
 import earth.terrarium.heracles.common.network.packets.pinned.SetPinnedQuestPacket;
 import earth.terrarium.heracles.common.network.packets.pinned.SyncPinnedQuestsPacket;
 import earth.terrarium.heracles.common.network.packets.quests.*;
@@ -29,5 +33,6 @@ public class NetworkHandler {
         CHANNEL.registerPacket(NetworkDirection.CLIENT_TO_SERVER, SetPinnedQuestPacket.ID, SetPinnedQuestPacket.HANDLER, SetPinnedQuestPacket.class);
         CHANNEL.registerPacket(NetworkDirection.CLIENT_TO_SERVER, ClaimSelectableRewardsPacket.ID, ClaimSelectableRewardsPacket.HANDLER, ClaimSelectableRewardsPacket.class);
         CHANNEL.registerPacket(NetworkDirection.CLIENT_TO_SERVER, DeleteQuestPacket.ID, DeleteQuestPacket.HANDLER, DeleteQuestPacket.class);
+        CHANNEL.registerPacket(NetworkDirection.CLIENT_TO_SERVER, DeleteGroupPacket.ID, DeleteGroupPacket.HANDLER, DeleteGroupPacket.class);
     }
 }

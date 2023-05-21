@@ -13,7 +13,7 @@ import earth.terrarium.heracles.client.screens.quests.QuestsScreen;
 import earth.terrarium.heracles.client.toasts.QuestClaimedToast;
 import earth.terrarium.heracles.client.toasts.QuestCompletedToast;
 import earth.terrarium.heracles.common.network.NetworkHandler;
-import earth.terrarium.heracles.common.network.packets.OpenGroupPacket;
+import earth.terrarium.heracles.common.network.packets.groups.OpenGroupPacket;
 import earth.terrarium.heracles.common.regisitries.ModMenus;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;

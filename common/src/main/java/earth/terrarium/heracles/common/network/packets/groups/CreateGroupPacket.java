@@ -1,4 +1,4 @@
-package earth.terrarium.heracles.common.network.packets;
+package earth.terrarium.heracles.common.network.packets.groups;
 
 import com.teamresourceful.resourcefullib.common.networking.base.Packet;
 import com.teamresourceful.resourcefullib.common.networking.base.PacketContext;

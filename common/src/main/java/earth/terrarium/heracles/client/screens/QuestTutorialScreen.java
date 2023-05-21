@@ -5,7 +5,7 @@ import com.teamresourceful.resourcefullib.client.screens.BaseCursorScreen;
 import earth.terrarium.heracles.client.handlers.DisplayConfig;
 import earth.terrarium.heracles.client.handlers.QuestTutorial;
 import earth.terrarium.heracles.common.network.NetworkHandler;
-import earth.terrarium.heracles.common.network.packets.OpenGroupPacket;
+import earth.terrarium.heracles.common.network.packets.groups.OpenGroupPacket;
 import earth.terrarium.hermes.api.DefaultTagProvider;
 import earth.terrarium.hermes.api.TagElement;
 import earth.terrarium.hermes.api.defaults.ParagraphTagElement;

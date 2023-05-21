@@ -119,5 +119,9 @@ public class ClientQuests {
         return PROGRESS.get(id);
     }
 
+    public static List<QuestEntry> byGroup(String group) {
+        return BY_GROUPS.getOrDefault(group, List.of());
+    }
+
     public record QuestEntry(List<QuestEntry> dependencies, String key, Quest value, List<QuestEntry> children) {}
 }

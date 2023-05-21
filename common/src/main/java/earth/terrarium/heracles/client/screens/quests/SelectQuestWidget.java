@@ -5,6 +5,7 @@ import com.teamresourceful.resourcefullib.client.utils.RenderUtils;
 import earth.terrarium.heracles.api.quests.Quest;
 import earth.terrarium.heracles.api.quests.defaults.ItemQuestIcon;
 import earth.terrarium.heracles.client.handlers.ClientQuests;
+import earth.terrarium.heracles.client.handlers.QuestClipboard;
 import earth.terrarium.heracles.client.screens.AbstractQuestScreen;
 import earth.terrarium.heracles.client.utils.ClientUtils;
 import earth.terrarium.heracles.client.widgets.base.BaseWidget;
@@ -36,11 +37,14 @@ public class SelectQuestWidget extends BaseWidget {
     private final IntEditBox yBox;
     private final MultiLineEditBox subtitleBox;
 
-    public SelectQuestWidget(int x, int y, int width, int height) {
+    private final QuestsWidget widget;
+
+    public SelectQuestWidget(int x, int y, int width, int height, QuestsWidget widget) {
         this.x = x;
         this.y = y;
         this.width = width;
         this.height = height;
+        this.widget = widget;
 
         this.titleBox = this.addChild(new EditBox(this.font, this.x + 6, this.y + 14, this.width - 12, 10, CommonComponents.EMPTY));
         this.titleBox.setResponder(s -> changeOption(quest -> quest.display().setTitle(s.isEmpty() ? null : Component.literal(s))));
@@ -96,7 +100,7 @@ public class SelectQuestWidget extends BaseWidget {
                         screen.questsWidget.removeQuest(this.entry);
                     });
                 }
-            }).bounds(this.x + 58, this.y + 137, 16, 16)
+            }).bounds(this.x + 60, this.y + 137, 16, 16)
             .tooltip(Tooltip.create(Component.literal("Delete Quest")))
             .build());
     }
@@ -131,6 +135,13 @@ public class SelectQuestWidget extends BaseWidget {
         renderChildren(stack, mouseX, mouseY, partialTick);
     }
 
+    @Override
+    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+        boolean result = super.keyPressed(keyCode, scanCode, modifiers);
+        if (result) return true;
+        return QuestClipboard.INSTANCE.action(keyCode, this);
+    }
+
     public void updateWidgets() {
         if (this.entry == null) return;
         var position = this.entry.value().display().position();
@@ -150,10 +161,18 @@ public class SelectQuestWidget extends BaseWidget {
         this.entry = entry;
     }
 
+    public ClientQuests.QuestEntry entry() {
+        return this.entry;
+    }
+
     private void changeOption(Consumer<Quest> consumer) {
         if (this.entry == null) return;
         consumer.accept(this.entry.value());
         ClientQuests.setDirty(this.entry.key());
+    }
+
+    public QuestsWidget widget() {
+        return this.widget;
     }
 
     private static class PositionBox extends IntEditBox {

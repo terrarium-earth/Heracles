@@ -74,6 +74,25 @@ public class ClientQuests {
 
     public static QuestEntry addQuest(String id, Quest quest) {
         QuestEntry entry = new QuestEntry(new ArrayList<>(), id, quest, new ArrayList<>());
+        for (String dependency : quest.dependencies()) {
+            QuestEntry dependent = ENTRIES.get(dependency);
+            if (dependent != null) {
+                boolean isAlreadyChild = dependent.children().stream().anyMatch(d -> d.key().equals(id));
+                if (!isAlreadyChild) {
+                    entry.dependencies().add(dependent);
+                    dependent.children().add(entry);
+                }
+            }
+        }
+        for (QuestEntry value : ENTRIES.values()) {
+            if (value.value.dependencies().contains(id)) {
+                boolean isAlreadyDependency = value.dependencies().stream().anyMatch(d -> d.key().equals(id));
+                if (!isAlreadyDependency) {
+                    entry.children().add(value);
+                    value.dependencies().add(entry);
+                }
+            }
+        }
         ENTRIES.put(id, entry);
         DIRTY.add(id);
         BY_GROUPS.computeIfAbsent(quest.display().group(), k -> new ArrayList<>()).add(entry);

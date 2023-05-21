@@ -1,6 +1,8 @@
 package earth.terrarium.heracles.client.utils;
 
+import com.mojang.blaze3d.platform.Window;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.MouseHandler;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -42,5 +44,13 @@ public class ClientUtils {
 
     public static Screen screen() {
         return Minecraft.getInstance().screen;
+    }
+
+    public static MouseClick getMousePos() {
+        MouseHandler mouse = Minecraft.getInstance().mouseHandler;
+        Window window = Minecraft.getInstance().getWindow();
+        double mouseX = mouse.xpos() * (double) window.getGuiScaledWidth() / (double) window.getScreenWidth();
+        double mouseY = mouse.ypos() * (double) window.getGuiScaledHeight() / (double) window.getScreenHeight();
+        return new MouseClick((int) mouseX, (int) mouseY, -1);
     }
 }

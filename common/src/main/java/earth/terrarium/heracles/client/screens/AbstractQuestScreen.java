@@ -133,6 +133,9 @@ public abstract class AbstractQuestScreen<T extends AbstractContainerMenu> exten
         if (Minecraft.getInstance().options.keyInventory.matches(keyCode, scanCode)) {
             return true;
         }
+        if (this instanceof InternalKeyPressHook hook) {
+            return hook.heracles$internalKeyPressed(keyCode, scanCode, modifiers);
+        }
         return super.keyPressed(keyCode, scanCode, modifiers);
     }
 }

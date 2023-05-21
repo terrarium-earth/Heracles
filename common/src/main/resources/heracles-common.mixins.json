@@ -9,6 +9,7 @@
     "ServerPlayerMixin"
   ],
   "client": [
+    "InternalKeyPressedScreen",
     "ScreenMixin"
   ],
   "injectors": {

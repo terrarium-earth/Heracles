@@ -59,7 +59,8 @@ public class QuestsEditScreen extends QuestsScreen {
             (int) (this.width * 0.75f) + 2,
             15,
             (int) (this.width * 0.25f) - 2,
-            this.height - 15
+            this.height - 15,
+            this.questsWidget
         );
 
         this.moveTool = addRenderableWidget(new SelectableImageButton(sidebarWidth + 3, 1, 11, 11, 0, 37, 11, HEADING, 256, 256, (button) -> {
@@ -160,8 +161,10 @@ public class QuestsEditScreen extends QuestsScreen {
 
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-        boolean result = super.keyPressed(keyCode, scanCode, modifiers);
-        if (result) {
+        if (super.keyPressed(keyCode, scanCode, modifiers)) {
+            return true;
+        }
+        if (selectQuestWidget.keyPressed(keyCode, scanCode, modifiers)) {
             return true;
         }
         return switch (keyCode) {
@@ -220,5 +223,9 @@ public class QuestsEditScreen extends QuestsScreen {
 
     public AddDependencyModal dependencyModal() {
         return this.dependencyModal;
+    }
+
+    public TextInputModal<MouseClick> questModal() {
+        return this.questModal;
     }
 }

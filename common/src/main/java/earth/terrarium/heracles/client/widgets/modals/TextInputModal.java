@@ -26,14 +26,16 @@ public class TextInputModal<T> extends BaseModal {
     private final Component title;
 
     private T data;
+    private BiConsumer<T, String> callback;
 
     public TextInputModal(int screenWidth, int screenHeight, Component title, BiConsumer<T, String> callback, Predicate<String> validator) {
         super(screenWidth, screenHeight, WIDTH, HEIGHT);
         this.title = title;
+        this.callback = callback;
         var editBox = addChild(new EditBox(Minecraft.getInstance().font, this.x + 8, this.y + 19, 152, 14, Component.nullToEmpty("Group Name")));
         var submitButton = addChild(createButton(Component.nullToEmpty("Submit"), this.x + WIDTH - 7, this.y + HEIGHT - 20, b -> {
             if (editBox != null && !editBox.getValue().isBlank()) {
-                callback.accept(this.data, editBox.getValue());
+                this.callback.accept(this.data, editBox.getValue());
                 editBox.setValue("");
                 visible = false;
             }
@@ -99,5 +101,13 @@ public class TextInputModal<T> extends BaseModal {
 
     public void setData(T data) {
         this.data = data;
+    }
+
+    public T getData() {
+        return data;
+    }
+
+    public void setCallback(BiConsumer<T, String> callback) {
+        this.callback = callback;
     }
 }

@@ -8,6 +8,7 @@ import com.teamresourceful.resourcefullib.client.scissor.ScissorBoxStack;
 import com.teamresourceful.resourcefullib.client.utils.RenderUtils;
 import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.api.quests.Quest;
+import earth.terrarium.heracles.client.handlers.ClientQuests;
 import earth.terrarium.heracles.client.utils.ClientUtils;
 import earth.terrarium.heracles.common.utils.ModUtils;
 import net.minecraft.Util;
@@ -47,6 +48,10 @@ public record UploadModalItem(Path path, @Nullable Quest quest, String size, Lis
             String content = FileUtils.readFileToString(file, StandardCharsets.UTF_8);
             size = " - " + FileUtils.byteCountToDisplaySize(file.length()).toLowerCase(Locale.ROOT);
             if (file.getName().endsWith(".json")) {
+                String filename = path.getFileName().toString();
+                if (ClientQuests.get(filename.substring(0, filename.lastIndexOf("."))).isPresent()) {
+                    return new UploadModalItem(path, null, size, List.of(Component.literal("Quest with id already exists.")), Icon.WARNING);
+                }
                 try {
                     JsonObject json = ModUtils.PRETTY_GSON.fromJson(content, JsonObject.class);
                     final String finalSize = size;

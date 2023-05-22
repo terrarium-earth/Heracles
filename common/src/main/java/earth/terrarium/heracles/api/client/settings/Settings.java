@@ -3,9 +3,7 @@ package earth.terrarium.heracles.api.client.settings;
 import earth.terrarium.heracles.api.client.settings.rewards.ItemRewardSettings;
 import earth.terrarium.heracles.api.client.settings.rewards.LootRewardSettings;
 import earth.terrarium.heracles.api.client.settings.rewards.XpRewardSettings;
-import earth.terrarium.heracles.api.client.settings.tasks.DimensionTaskSettings;
-import earth.terrarium.heracles.api.client.settings.tasks.ItemTaskSettings;
-import earth.terrarium.heracles.api.client.settings.tasks.KillEntityTaskSettings;
+import earth.terrarium.heracles.api.client.settings.tasks.*;
 import earth.terrarium.heracles.api.rewards.QuestReward;
 import earth.terrarium.heracles.api.rewards.QuestRewardType;
 import earth.terrarium.heracles.api.rewards.defaults.ItemReward;
@@ -13,9 +11,7 @@ import earth.terrarium.heracles.api.rewards.defaults.LootTableReward;
 import earth.terrarium.heracles.api.rewards.defaults.XpQuestReward;
 import earth.terrarium.heracles.api.tasks.QuestTask;
 import earth.terrarium.heracles.api.tasks.QuestTaskType;
-import earth.terrarium.heracles.api.tasks.defaults.ChangedDimensionTask;
-import earth.terrarium.heracles.api.tasks.defaults.GatherItemTask;
-import earth.terrarium.heracles.api.tasks.defaults.KillEntityQuestTask;
+import earth.terrarium.heracles.api.tasks.defaults.*;
 
 import java.util.IdentityHashMap;
 import java.util.Map;
@@ -53,6 +49,8 @@ public final class Settings {
         register(ChangedDimensionTask.TYPE, DimensionTaskSettings.INSTANCE);
         register(KillEntityQuestTask.TYPE, KillEntityTaskSettings.INSTANCE);
         register(GatherItemTask.TYPE, ItemTaskSettings.INSTANCE);
+        register(RecipeTask.TYPE, RecipeTaskSettings.INSTANCE);
+        register(AdvancementTask.TYPE, AdvancementTaskSettings.INSTANCE);
 
         register(LootTableReward.TYPE, LootRewardSettings.INSTANCE);
         register(ItemReward.TYPE, ItemRewardSettings.INSTANCE);

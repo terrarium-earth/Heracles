@@ -8,9 +8,13 @@ import earth.terrarium.heracles.api.tasks.QuestTask;
 import earth.terrarium.heracles.api.tasks.QuestTaskType;
 import earth.terrarium.heracles.api.tasks.storage.defaults.BooleanTaskStorage;
 import net.minecraft.nbt.ByteTag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.Recipe;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 public record RecipeTask(
@@ -37,6 +41,18 @@ public record RecipeTask(
     @Override
     public QuestTaskType<RecipeTask> type() {
         return TYPE;
+    }
+
+    public List<Component> titles() {
+        List<Component> titles = new ArrayList<>();
+        for (ResourceLocation id : recipes()) {
+            titles.add(Component.translatableWithFallback(
+                "recipes." + id.toLanguageKey().replace('/', '.'),
+                id.toString()
+            ));
+        }
+        titles.removeIf(Objects::isNull);
+        return titles;
     }
 
     private static class Type implements QuestTaskType<RecipeTask> {

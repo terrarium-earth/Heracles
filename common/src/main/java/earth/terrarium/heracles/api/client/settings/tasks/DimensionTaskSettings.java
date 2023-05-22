@@ -22,8 +22,8 @@ public class DimensionTaskSettings implements SettingInitializer<ChangedDimensio
     public ChangedDimensionTask create(String id, @Nullable ChangedDimensionTask object, Data data) {
         return new ChangedDimensionTask(
             id,
-            data.get("from", TextSetting.DIMENSION).orElse(null),
-            data.get("to", TextSetting.DIMENSION).orElse(null)
+            data.get("from", TextSetting.DIMENSION).orElse(Optionull.map(object, ChangedDimensionTask::from)),
+            data.get("to", TextSetting.DIMENSION).orElse(Optionull.map(object, ChangedDimensionTask::from))
         );
     }
 }

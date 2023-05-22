@@ -14,10 +14,7 @@ import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.item.Items;
 import org.joml.Vector2i;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.function.Function;
 
 public final class QuestDisplay {
@@ -97,7 +94,7 @@ public final class QuestDisplay {
     }
 
     public void setDescription(List<String> description) {
-        this.description = description;
+        this.description = new ArrayList<>(description);
     }
 
     public Vector2i position(String group) {

@@ -43,6 +43,15 @@ public class ClientQuests {
         }
     }
 
+    public static void syncDescriptions(Map<String, String> descriptions) {
+        for (Map.Entry<String, String> entry : descriptions.entrySet()) {
+            get(entry.getKey())
+                .map(QuestEntry::value)
+                .map(Quest::display)
+                .ifPresent(display -> display.setDescription(List.of(entry.getValue().split("\n"))));
+        }
+    }
+
     public static void updateProgress(Map<String, QuestProgress> progress) {
         PROGRESS.clear();
         PROGRESS.putAll(progress);

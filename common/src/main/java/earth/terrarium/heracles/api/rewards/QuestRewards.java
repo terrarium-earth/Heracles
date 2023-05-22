@@ -32,6 +32,14 @@ public class QuestRewards {
         TYPES.put(type.id(), type);
     }
 
+    public static QuestRewardType<?> get(ResourceLocation id) {
+        return TYPES.get(id);
+    }
+
+    public static Map<ResourceLocation, QuestRewardType<?>> types() {
+        return TYPES;
+    }
+
     static {
         register(XpQuestReward.TYPE);
         register(ItemReward.TYPE);

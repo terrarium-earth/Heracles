@@ -6,6 +6,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.network.chat.CommonComponents;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -24,12 +25,25 @@ public class AutocompleteEditBox<T> extends EditBox {
 
     private final Consumer<String> onEnter;
 
+    @Nullable
+    private Consumer<String> responder;
+
     public AutocompleteEditBox(Font font, int x, int y, int width, int height, BiPredicate<String, T> filter, Function<T, String> mapper, Consumer<String> onEnter) {
         super(font, x, y, width, height, CommonComponents.EMPTY);
         this.filter = filter;
         this.mapper = mapper;
         this.onEnter = onEnter;
-        setResponder(value -> filter());
+        super.setResponder(value -> {
+            if (this.responder != null) {
+                this.responder.accept(value);
+            }
+            filter();
+        });
+    }
+
+    @Override
+    public void setResponder(@Nullable Consumer<String> responder) {
+        this.responder = responder;
     }
 
     @Override
@@ -105,5 +119,16 @@ public class AutocompleteEditBox<T> extends EditBox {
                 this.filteredSuggestions.add(mapper.apply(suggestion));
             }
         }
+    }
+
+    @Nullable
+    public T value() {
+        String text = this.getValue();
+        for (T suggestion : suggestions) {
+            if (mapper.apply(suggestion).equals(text)) {
+                return suggestion;
+            }
+        }
+        return null;
     }
 }

@@ -11,7 +11,9 @@ import earth.terrarium.heracles.api.tasks.QuestTask;
 import earth.terrarium.heracles.api.tasks.client.QuestTaskWidgets;
 import earth.terrarium.heracles.client.handlers.ClientQuests;
 import earth.terrarium.heracles.client.screens.AbstractQuestScreen;
+import earth.terrarium.heracles.client.screens.quest.AddDisplayWidget;
 import earth.terrarium.heracles.client.screens.quest.HeadingWidget;
+import earth.terrarium.heracles.client.utils.MouseClick;
 import earth.terrarium.heracles.common.handlers.progress.QuestProgress;
 import earth.terrarium.heracles.common.handlers.progress.TaskProgress;
 import earth.terrarium.heracles.common.utils.ModUtils;
@@ -34,8 +36,9 @@ import java.util.function.BiConsumer;
 
 public class TaskListWidget extends AbstractContainerEventHandler implements Renderable {
 
-    private static final Component IN_PROGRESS = Component.translatable("quest.heracles.in_progress");
-    private static final Component COMPLETED = Component.translatable("quest.heracles.completed");
+    private static final HeadingWidget IN_PROGRESS = new HeadingWidget(Component.translatable("quest.heracles.in_progress"), 0xFF5691FF);
+    private static final HeadingWidget COMPLETED = new HeadingWidget(Component.translatable("quest.heracles.completed"), 0xFF04CB40);
+    private static final HeadingWidget DEPENDENCIES = new HeadingWidget(Component.literal("Dependencies"), 0xFF000080);
 
     private final List<MutablePair<QuestTask<?, ?, ?>, DisplayWidget>> widgets = new ArrayList<>();
 
@@ -55,9 +58,14 @@ public class TaskListWidget extends AbstractContainerEventHandler implements Ren
 
     private MouseClick mouse = null;
 
-    private BiConsumer<QuestTask<?, ?, ?>, Boolean> onClick;
+    private final BiConsumer<QuestTask<?, ?, ?>, Boolean> onClick;
+    private final Runnable onCreate;
 
-    public TaskListWidget(int x, int y, int width, int height, String questId, Quest quest, QuestProgress progress, Map<String, ModUtils.QuestStatus> quests) {
+    public TaskListWidget(
+        int x, int y, int width, int height,
+        String questId, Quest quest, QuestProgress progress,
+        Map<String, ModUtils.QuestStatus> quests, BiConsumer<QuestTask<?, ?, ?>, Boolean> onClick, Runnable onCreate
+    ) {
         this.progress = progress;
         this.completion = progress.isComplete() ? 1 : calculationCompletion(quest, progress);
         this.quests = quests;
@@ -68,6 +76,8 @@ public class TaskListWidget extends AbstractContainerEventHandler implements Ren
         this.width = width;
         this.height = height;
         this.lastFullHeight = this.height;
+        this.onClick = onClick;
+        this.onCreate = onCreate;
     }
 
     public void update(Collection<QuestTask<?, ?, ?>> tasks) {
@@ -95,16 +105,19 @@ public class TaskListWidget extends AbstractContainerEventHandler implements Ren
         this.widgets.clear();
         this.widgets.add(new MutablePair<>(null, new TaskListHeadingWidget(this.completion)));
         if (!dependencies.isEmpty()) {
-            this.widgets.add(new MutablePair<>(null, new HeadingWidget(Component.literal("Dependencies"), 0xFF000080)));
+            this.widgets.add(new MutablePair<>(null, DEPENDENCIES));
             this.widgets.addAll(dependencies);
         }
         if (!inProgress.isEmpty()) {
-            this.widgets.add(new MutablePair<>(null, new HeadingWidget(IN_PROGRESS, 0xFF5691FF)));
+            this.widgets.add(new MutablePair<>(null, IN_PROGRESS));
             this.widgets.addAll(inProgress);
         }
         if (!completed.isEmpty()) {
-            this.widgets.add(new MutablePair<>(null, new HeadingWidget(COMPLETED, 0xFF04CB40)));
+            this.widgets.add(new MutablePair<>(null, COMPLETED));
             this.widgets.addAll(completed);
+        }
+        if (this.onCreate != null) {
+            this.widgets.add(new MutablePair<>(null, new AddDisplayWidget(this.onCreate)));
         }
     }
 
@@ -156,7 +169,7 @@ public class TaskListWidget extends AbstractContainerEventHandler implements Ren
                 y += itemheight;
                 fullHeight += itemheight;
             }
-            if (clicked != null && this.onClick != null) {
+            if (clicked != null) {
                 this.onClick.accept(clicked.getLeft(), clicked.getRight());
             }
 
@@ -190,10 +203,6 @@ public class TaskListWidget extends AbstractContainerEventHandler implements Ren
         return List.of();
     }
 
-    public void setOnClick(BiConsumer<QuestTask<?, ?, ?>, Boolean> onClick) {
-        this.onClick = onClick;
-    }
-
     public void updateTask(QuestTask<?, ?, ?> task) {
         for (var pair : this.widgets) {
             if (pair.left != null && pair.left.id().equals(task.id())) {
@@ -209,18 +218,4 @@ public class TaskListWidget extends AbstractContainerEventHandler implements Ren
         ClientQuests.setDirty(this.questId);
         ClientQuests.get(this.questId).ifPresent(entry -> entry.value().tasks().put(task.id(), task));
     }
-
-    public void removeTask(QuestTask<?, ?, ?> task) {
-        for (var pair : this.widgets) {
-            if (pair.left != null && pair.left.id().equals(task.id())) {
-                this.widgets.remove(pair);
-                break;
-            }
-        }
-        this.quest.tasks().remove(task.id());
-        ClientQuests.setDirty(this.questId);
-        ClientQuests.get(this.questId).ifPresent(entry -> entry.value().tasks().remove(task.id()));
-    }
-
-    private record MouseClick(double x, double y, int button) {}
 }

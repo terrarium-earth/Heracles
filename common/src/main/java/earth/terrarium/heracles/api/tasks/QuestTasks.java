@@ -29,6 +29,14 @@ public final class QuestTasks {
         TYPES.put(type.id(), type);
     }
 
+    public static Map<ResourceLocation, QuestTaskType<?>> types() {
+        return TYPES;
+    }
+
+    public static QuestTaskType<?> get(ResourceLocation id) {
+        return TYPES.get(id);
+    }
+
     static {
         register(CompositeTask.TYPE);
         register(KillEntityQuestTask.TYPE);

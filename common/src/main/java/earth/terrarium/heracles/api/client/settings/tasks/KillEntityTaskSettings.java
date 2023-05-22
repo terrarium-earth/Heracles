@@ -1,11 +1,16 @@
 package earth.terrarium.heracles.api.client.settings.tasks;
 
+import com.teamresourceful.resourcefullib.common.codecs.predicates.NbtPredicate;
 import com.teamresourceful.resourcefullib.common.codecs.predicates.RestrictedEntityPredicate;
 import earth.terrarium.heracles.api.client.settings.SettingInitializer;
 import earth.terrarium.heracles.api.client.settings.base.IntSetting;
 import earth.terrarium.heracles.api.client.settings.base.RegistrySetting;
 import earth.terrarium.heracles.api.tasks.defaults.KillEntityQuestTask;
 import net.minecraft.Optionull;
+import net.minecraft.advancements.critereon.EntityFlagsPredicate;
+import net.minecraft.advancements.critereon.EntityPredicate;
+import net.minecraft.advancements.critereon.LocationPredicate;
+import net.minecraft.advancements.critereon.MobEffectsPredicate;
 import net.minecraft.world.entity.EntityType;
 import org.jetbrains.annotations.Nullable;
 
@@ -28,11 +33,11 @@ public class KillEntityTaskSettings implements SettingInitializer<KillEntityQues
 
         RestrictedEntityPredicate entity = new RestrictedEntityPredicate(
             entityType,
-            Optionull.map(old, RestrictedEntityPredicate::location),
-            Optionull.map(old, RestrictedEntityPredicate::effects),
-            Optionull.map(old, RestrictedEntityPredicate::nbt),
-            Optionull.map(old, RestrictedEntityPredicate::flags),
-            Optionull.map(old, RestrictedEntityPredicate::targetedEntity)
+            Optionull.mapOrDefault(old, RestrictedEntityPredicate::location, LocationPredicate.ANY),
+            Optionull.mapOrDefault(old, RestrictedEntityPredicate::effects, MobEffectsPredicate.ANY),
+            Optionull.mapOrDefault(old, RestrictedEntityPredicate::nbt, NbtPredicate.ANY),
+            Optionull.mapOrDefault(old, RestrictedEntityPredicate::flags, EntityFlagsPredicate.ANY),
+            Optionull.mapOrDefault(old, RestrictedEntityPredicate::targetedEntity, EntityPredicate.ANY)
         );
 
         return new KillEntityQuestTask(id, entity, data.get("amount", IntSetting.ONE).orElse(1));

@@ -11,6 +11,7 @@ import earth.terrarium.heracles.api.rewards.QuestReward;
 import earth.terrarium.heracles.api.rewards.client.QuestRewardWidgets;
 import earth.terrarium.heracles.client.handlers.ClientQuests;
 import earth.terrarium.heracles.client.screens.AbstractQuestScreen;
+import earth.terrarium.heracles.client.screens.quest.AddDisplayWidget;
 import earth.terrarium.heracles.client.screens.quest.HeadingWidget;
 import earth.terrarium.heracles.client.utils.MouseClick;
 import earth.terrarium.heracles.common.utils.ModUtils;
@@ -45,9 +46,15 @@ public class RewardListWidget extends AbstractContainerEventHandler implements R
     private int lastFullHeight;
 
     private MouseClick mouse = null;
-    private BiConsumer<QuestReward<?>, Boolean> onClick;
 
-    public RewardListWidget(int x, int y, int width, int height, String questId, Quest quest) {
+    private final BiConsumer<QuestReward<?>, Boolean> onClick;
+    private final Runnable onCreate;
+
+    public RewardListWidget(
+        int x, int y, int width, int height,
+        String questId, Quest quest,
+        BiConsumer<QuestReward<?>, Boolean> onClick, Runnable onCreate
+    ) {
         this.x = x;
         this.y = y;
         this.width = width;
@@ -55,6 +62,8 @@ public class RewardListWidget extends AbstractContainerEventHandler implements R
         this.lastFullHeight = this.height;
         this.questId = questId;
         this.quest = quest;
+        this.onClick = onClick;
+        this.onCreate = onCreate;
     }
 
     public void update(String id, Quest quest) {
@@ -72,6 +81,9 @@ public class RewardListWidget extends AbstractContainerEventHandler implements R
                 this.widgets.add(new MutablePair<>(null, new QuestDependentWidget(dependent.value())));
             }
         });
+        if (this.onCreate != null) {
+            this.widgets.add(new MutablePair<>(null, new AddDisplayWidget(this.onCreate)));
+        }
     }
 
     @Override
@@ -114,7 +126,7 @@ public class RewardListWidget extends AbstractContainerEventHandler implements R
                 y += itemheight;
                 fullHeight += itemheight;
             }
-            if (clicked != null && this.onClick != null) {
+            if (clicked != null) {
                 this.onClick.accept(clicked.getLeft(), clicked.getRight());
             }
 
@@ -148,10 +160,6 @@ public class RewardListWidget extends AbstractContainerEventHandler implements R
         return List.of();
     }
 
-    public void setOnClick(BiConsumer<QuestReward<?>, Boolean> onClick) {
-        this.onClick = onClick;
-    }
-
     public void updateReward(QuestReward<?> reward) {
         for (var pair : this.widgets) {
             if (pair.left != null && pair.left.id().equals(reward.id())) {
@@ -166,17 +174,5 @@ public class RewardListWidget extends AbstractContainerEventHandler implements R
         this.quest.rewards().put(reward.id(), reward);
         ClientQuests.setDirty(this.questId);
         ClientQuests.get(this.questId).ifPresent(entry -> entry.value().rewards().put(reward.id(), reward));
-    }
-
-    public void removeReward(QuestReward<?> reward) {
-        for (var pair : this.widgets) {
-            if (pair.left != null && pair.left.id().equals(reward.id())) {
-                this.widgets.remove(pair);
-                break;
-            }
-        }
-        this.quest.rewards().remove(reward.id());
-        ClientQuests.setDirty(this.questId);
-        ClientQuests.get(this.questId).ifPresent(entry -> entry.value().rewards().remove(reward.id()));
     }
 }

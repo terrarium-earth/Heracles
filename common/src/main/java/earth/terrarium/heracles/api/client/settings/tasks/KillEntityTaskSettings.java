@@ -16,15 +16,14 @@ public class KillEntityTaskSettings implements SettingInitializer<KillEntityQues
     @Override
     public CreationData create(@Nullable KillEntityQuestTask object) {
         CreationData settings = new CreationData();
-        settings.put("entity", RegistrySetting.ENTITY, Optionull.map(object, task -> task.entity().entityType()));
-        settings.put("amount", IntSetting.ONE, Optionull.map(object, KillEntityQuestTask::target));
+        settings.put("entity", RegistrySetting.ENTITY, getDefaultEntity(object));
+        settings.put("amount", IntSetting.ONE, getDefaultAmount(object));
         return settings;
     }
 
     @Override
     public KillEntityQuestTask create(String id, KillEntityQuestTask object, Data data) {
-        EntityType<?> entityType = data.get("entity", RegistrySetting.ENTITY)
-            .orElse(Optionull.mapOrDefault(object, task -> task.entity().entityType(), EntityType.PIG));
+        EntityType<?> entityType = data.get("entity", RegistrySetting.ENTITY).orElse(getDefaultEntity(object));
         RestrictedEntityPredicate old = Optionull.map(object, KillEntityQuestTask::entity);
 
         RestrictedEntityPredicate entity = new RestrictedEntityPredicate(
@@ -37,5 +36,13 @@ public class KillEntityTaskSettings implements SettingInitializer<KillEntityQues
         );
 
         return new KillEntityQuestTask(id, entity, data.get("amount", IntSetting.ONE).orElse(1));
+    }
+
+    private static EntityType<?> getDefaultEntity(KillEntityQuestTask object) {
+        return Optionull.mapOrDefault(object, task -> task.entity().entityType(), EntityType.PIG);
+    }
+
+    private static int getDefaultAmount(KillEntityQuestTask object) {
+        return Optionull.mapOrDefault(object, KillEntityQuestTask::target, 1);
     }
 }

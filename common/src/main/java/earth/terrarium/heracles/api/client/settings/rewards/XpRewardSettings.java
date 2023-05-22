@@ -16,8 +16,8 @@ public class XpRewardSettings implements SettingInitializer<XpQuestReward> {
     @Override
     public CreationData create(@Nullable XpQuestReward object) {
         CreationData settings = new CreationData();
-        settings.put("type", TYPE, Optionull.map(object, XpQuestReward::xpType));
-        settings.put("amount", IntSetting.ONE, Optionull.map(object, XpQuestReward::amount));
+        settings.put("type", TYPE, getDefaultType(object));
+        settings.put("amount", IntSetting.ONE, getDefaultAmount(object));
         return settings;
     }
 
@@ -25,9 +25,17 @@ public class XpRewardSettings implements SettingInitializer<XpQuestReward> {
     public XpQuestReward create(String id, @Nullable XpQuestReward object, Data data) {
         return new XpQuestReward(
             id,
-            data.get("type", TYPE).orElse(Optionull.mapOrDefault(object, XpQuestReward::xpType, XpQuestReward.XpType.LEVEL)),
-            data.get("amount", IntSetting.ONE).orElse(Optionull.mapOrDefault(object, XpQuestReward::amount, 1))
+            data.get("type", TYPE).orElse(getDefaultType(object)),
+            data.get("amount", IntSetting.ONE).orElse(getDefaultAmount(object))
         );
+    }
+
+    private static XpQuestReward.XpType getDefaultType(XpQuestReward object) {
+        return Optionull.mapOrDefault(object, XpQuestReward::xpType, XpQuestReward.XpType.LEVEL);
+    }
+
+    private static int getDefaultAmount(XpQuestReward object) {
+        return Optionull.mapOrDefault(object, XpQuestReward::amount, 1);
     }
 }
 

@@ -1,5 +1,6 @@
 package earth.terrarium.heracles.client.screens.quest;
 
+import earth.terrarium.heracles.client.screens.quest.rewards.RewardListWidget;
 import earth.terrarium.heracles.client.screens.quest.tasks.TaskListWidget;
 import earth.terrarium.heracles.common.menus.quest.QuestMenu;
 import earth.terrarium.heracles.common.network.NetworkHandler;
@@ -14,6 +15,7 @@ import net.minecraft.world.entity.player.Inventory;
 public class QuestScreen extends BaseQuestScreen {
 
     private TaskListWidget taskList;
+    private RewardListWidget rewardList;
 
     public QuestScreen(QuestMenu menu, Inventory inventory, Component component) {
         super(menu, inventory, component);
@@ -26,8 +28,12 @@ public class QuestScreen extends BaseQuestScreen {
         int contentY = 30;
         int contentWidth = (int) (this.width * 0.63f);
         int contentHeight = this.height - 45;
+
         this.taskList = new TaskListWidget(contentX, contentY, contentWidth, contentHeight, this.menu.id(), this.menu.quest(), this.menu.progress(), this.menu.quests());
         this.taskList.update(this.menu.quest().tasks().values());
+
+        this.rewardList = new RewardListWidget(contentX, contentY, contentWidth, contentHeight, this.menu.id(), this.menu.quest());
+        this.rewardList.update(this.menu.id(), this.menu.quest());
 
         if (Minecraft.getInstance().player != null && Minecraft.getInstance().player.hasPermissions(2)) {
             addRenderableWidget(new ImageButton(this.width - 24, 1, 11, 11, 33, 15, 11, HEADING, 256, 256, (button) ->
@@ -39,5 +45,10 @@ public class QuestScreen extends BaseQuestScreen {
     @Override
     public GuiEventListener getTaskList() {
         return this.taskList;
+    }
+
+    @Override
+    public GuiEventListener getRewardList() {
+        return this.rewardList;
     }
 }

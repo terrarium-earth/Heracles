@@ -77,7 +77,7 @@ public class EditObjectModal extends BaseModal {
             Collections.reverse(children);
             for (var child : children) {
                 if (child.getValue() instanceof Renderable renderable) {
-                    Component title = Component.translatable(this.id.toLanguageKey("task_entry", child.getKey()));
+                    Component title = Component.translatable(this.id.toLanguageKey("setting", child.getKey()));
                     int renderY = ((LayoutElement) renderable).getY();
                     font.draw(pose, title, this.x + 15, renderY + 2, 0xFFFFFF);
                     renderable.render(pose, mouseX, mouseY, partialTick);

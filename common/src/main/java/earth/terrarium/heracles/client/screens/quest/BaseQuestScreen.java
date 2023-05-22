@@ -4,7 +4,6 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import earth.terrarium.heracles.client.handlers.ClientQuests;
 import earth.terrarium.heracles.client.screens.AbstractQuestScreen;
-import earth.terrarium.heracles.client.screens.quest.rewards.RewardListWidget;
 import earth.terrarium.heracles.client.widgets.SelectableTabButton;
 import earth.terrarium.heracles.client.widgets.base.TemporyWidget;
 import earth.terrarium.heracles.common.menus.quest.QuestMenu;
@@ -35,7 +34,6 @@ public abstract class BaseQuestScreen extends AbstractQuestScreen<QuestMenu> {
     private SelectableTabButton rewards;
     private Button claimRewards;
 
-    private RewardListWidget rewardList;
     private DocumentWidget description;
     private String descriptionError;
 
@@ -78,9 +76,6 @@ public abstract class BaseQuestScreen extends AbstractQuestScreen<QuestMenu> {
         int contentWidth = (int) (this.width * 0.63f);
         int contentHeight = this.height - 45;
 
-        this.rewardList = new RewardListWidget(contentX, contentY, contentWidth, contentHeight);
-        this.rewardList.update(this.menu.id(), this.menu.quest());
-
         try {
             this.descriptionError = null;
             TagProvider provider = new QuestTagProvider();
@@ -109,8 +104,8 @@ public abstract class BaseQuestScreen extends AbstractQuestScreen<QuestMenu> {
         if (this.tasks != null && this.tasks.isSelected() && getTaskList() instanceof Renderable renderable) {
             renderable.render(stack, mouseX, mouseY, partialTick);
         }
-        if (this.rewards != null && this.rewards.isSelected()) {
-            this.rewardList.render(stack, mouseX, mouseY, partialTick);
+        if (this.rewards != null && this.rewards.isSelected() && getRewardList() instanceof Renderable renderable) {
+            renderable.render(stack, mouseX, mouseY, partialTick);
         }
         if (this.description != null && this.overview.isSelected()) {
             this.description.render(stack, mouseX, mouseY, partialTick);
@@ -145,7 +140,7 @@ public abstract class BaseQuestScreen extends AbstractQuestScreen<QuestMenu> {
             children.add(getTaskList());
         }
         if (this.rewards != null && this.rewards.isSelected()) {
-            children.add(this.rewardList);
+            children.add(getRewardList());
         }
         if (this.description != null && this.overview.isSelected()) {
             children.add(this.description);
@@ -155,4 +150,6 @@ public abstract class BaseQuestScreen extends AbstractQuestScreen<QuestMenu> {
     }
 
     public abstract GuiEventListener getTaskList();
+
+    public abstract GuiEventListener getRewardList();
 }

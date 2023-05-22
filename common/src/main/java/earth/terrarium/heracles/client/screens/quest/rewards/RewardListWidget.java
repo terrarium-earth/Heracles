@@ -13,6 +13,7 @@ import earth.terrarium.heracles.client.handlers.ClientQuests;
 import earth.terrarium.heracles.client.screens.AbstractQuestScreen;
 import earth.terrarium.heracles.client.screens.quest.HeadingWidget;
 import earth.terrarium.heracles.client.utils.MouseClick;
+import earth.terrarium.heracles.common.utils.ModUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.components.Renderable;
@@ -37,18 +38,23 @@ public class RewardListWidget extends AbstractContainerEventHandler implements R
     private final int width;
     private final int height;
 
+    private final String questId;
+    private final Quest quest;
+
     private double scrollAmount;
     private int lastFullHeight;
 
     private MouseClick mouse = null;
     private BiConsumer<QuestReward<?>, Boolean> onClick;
 
-    public RewardListWidget(int x, int y, int width, int height) {
+    public RewardListWidget(int x, int y, int width, int height, String questId, Quest quest) {
         this.x = x;
         this.y = y;
         this.width = width;
         this.height = height;
         this.lastFullHeight = this.height;
+        this.questId = questId;
+        this.quest = quest;
     }
 
     public void update(String id, Quest quest) {
@@ -76,14 +82,15 @@ public class RewardListWidget extends AbstractContainerEventHandler implements R
         int fullHeight = 0;
         Pair<QuestReward<?>, Boolean> clicked = null;
 
-        try (var scissor = RenderUtils.createScissorBoxStack(new ScissorBoxStack(), Minecraft.getInstance(), pose, x, y, width, height)) {
+        try (var scissor = RenderUtils.createScissorBoxStack(new ScissorBoxStack(), Minecraft.getInstance(), pose, x, y, width + 30, height)) {
             for (var pair : this.widgets) {
                 var widget = pair.getRight();
                 if (this.mouse != null && widget.mouseClicked(this.mouse.x() - x, this.mouse.y() - (y - this.scrollAmount), this.mouse.button(), this.width)) {
                     this.mouse = null;
                 }
-                var itemheight = widget.getHeight(this.width);
                 widget.render(pose, scissor.stack(), x, y - (int) this.scrollAmount, this.width, mouseX, mouseY, this.isMouseOver(mouseX, mouseY), partialTick);
+
+                var itemheight = widget.getHeight(this.width);
 
                 boolean hovered = mouseX > x && mouseX < x + this.width + 14 && mouseY > y && mouseY < y + itemheight;
 
@@ -133,11 +140,43 @@ public class RewardListWidget extends AbstractContainerEventHandler implements R
 
     @Override
     public boolean isMouseOver(double mouseX, double mouseY) {
-        return mouseX >= this.x && mouseX <= this.x + this.width && mouseY >= this.y && mouseY <= this.y + this.height;
+        return mouseX >= this.x && mouseX <= this.x + this.width + 30 && mouseY >= this.y && mouseY <= this.y + this.height;
     }
 
     @Override
     public @NotNull List<? extends GuiEventListener> children() {
         return List.of();
+    }
+
+    public void setOnClick(BiConsumer<QuestReward<?>, Boolean> onClick) {
+        this.onClick = onClick;
+    }
+
+    public void updateReward(QuestReward<?> reward) {
+        for (var pair : this.widgets) {
+            if (pair.left != null && pair.left.id().equals(reward.id())) {
+                var widget = QuestRewardWidgets.create(ModUtils.cast(reward));
+                if (widget != null) {
+                    pair.left = reward;
+                    pair.right = widget;
+                }
+                break;
+            }
+        }
+        this.quest.rewards().put(reward.id(), reward);
+        ClientQuests.setDirty(this.questId);
+        ClientQuests.get(this.questId).ifPresent(entry -> entry.value().rewards().put(reward.id(), reward));
+    }
+
+    public void removeReward(QuestReward<?> reward) {
+        for (var pair : this.widgets) {
+            if (pair.left != null && pair.left.id().equals(reward.id())) {
+                this.widgets.remove(pair);
+                break;
+            }
+        }
+        this.quest.rewards().remove(reward.id());
+        ClientQuests.setDirty(this.questId);
+        ClientQuests.get(this.questId).ifPresent(entry -> entry.value().rewards().remove(reward.id()));
     }
 }

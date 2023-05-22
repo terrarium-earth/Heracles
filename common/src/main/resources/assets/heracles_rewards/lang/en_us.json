@@ -6,6 +6,8 @@
     "reward.heracles.xp.title.plural": "Receive xp %ss",
     "reward.heracles.xp.desc.singular": "Receive xp %s %s",
     "reward.heracles.xp.desc.plural": "Receive xp %s %ss",
+    "setting.heracles.xp.type": "Experience Type:",
+    "setting.heracles.xp.amount": "Experience Amount:",
 
     "reward.heracles.xp.type.point": "point",
     "reward.heracles.xp.type.level": "level",
@@ -14,11 +16,12 @@
     "reward.heracles.item.title.plural": "Receive %ss",
     "reward.heracles.item.desc.singular": "Receive %s %s",
     "reward.heracles.item.desc.plural": "Receive %s %ss",
+    "setting.heracles.item.item": "Item:",
+    "setting.heracles.item.count": "Amount:",
 
-    "reward.heracles.weighted_item.title.singular": "Receive a Random Item",
-    "reward.heracles.weighted_item.title.plural": "Receive Random Items",
-    "reward.heracles.weighted_item.desc.singular": "Receive %s random item",
-    "reward.heracles.weighted_item.desc.plural": "Receive %s random items",
+    "reward.heracles.loottable.title.singular": "Receive a Loot Table",
+    "reward.heracles.loottable.desc.singular": "Receive %s Loot Table",
+    "setting.heracles.loottable.loottable": "Loot Table:",
 
     "reward.heracles.select.title.singular": "Select a reward",
     "reward.heracles.select.title.plural": "Select rewards",

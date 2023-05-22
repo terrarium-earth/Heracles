@@ -8,16 +8,19 @@ import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.item.Item;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
 
-public record RegistrySetting<T>(boolean allowsTags,
-                                 Registry<T> registry) implements Setting<T, AutocompleteEditBox<String>> {
+public record RegistrySetting<T>(
+    boolean allowsTags, Registry<T> registry
+) implements Setting<T, AutocompleteEditBox<String>> {
 
     public static final RegistrySetting<EntityType<?>> ENTITY = new RegistrySetting<>(false, BuiltInRegistries.ENTITY_TYPE);
+    public static final RegistrySetting<Item> ITEM = new RegistrySetting<>(false, BuiltInRegistries.ITEM);
 
     @Override
     public AutocompleteEditBox<String> createWidget(int width, T value) {

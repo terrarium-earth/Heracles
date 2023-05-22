@@ -9,7 +9,9 @@ import earth.terrarium.heracles.api.rewards.QuestRewardType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.stream.Stream;
 
@@ -53,7 +55,7 @@ public record XpQuestReward(String id, XpType xpType, int amount) implements Que
         }
     }
 
-    public enum XpType {
+    public enum XpType implements StringRepresentable {
         LEVEL,
         POINTS;
 
@@ -62,6 +64,11 @@ public record XpQuestReward(String id, XpType xpType, int amount) implements Que
                 case LEVEL -> Component.translatable("reward.heracles.xp.type.level");
                 case POINTS -> Component.translatable("reward.heracles.xp.type.point");
             };
+        }
+
+        @Override
+        public @NotNull String getSerializedName() {
+            return text().getString();
         }
     }
 }

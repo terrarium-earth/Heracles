@@ -74,7 +74,7 @@ public class HeraclesForge {
         progress.testAndProgressTaskType(player, player.level.getBiome(player.getOnPos()), FindBiomeTask.TYPE);
 
         if (!structures.isEmpty()) {
-            progress.testAndProgressTaskType(player, structures.keySet(), FindStructureTask.TYPE);
+            progress.testAndProgressTaskType(player, structures.keySet(), StructureTask.TYPE);
         }
     }
 

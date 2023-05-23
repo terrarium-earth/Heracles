@@ -14,6 +14,7 @@
   "task.heracles.item.title.plural": "Gather %ss",
   "task.heracles.item.desc.singular": "Gather %s %s",
   "task.heracles.item.desc.plural": "Gather %s %ss",
+  "setting.heracles.item.amount": "Amount:",
 
   "task.heracles.advancement.title.singular": "Complete the advancement:",
   "task.heracles.advancement.title.plural": "Complete one of the advancements",
@@ -26,6 +27,10 @@
   "task.heracles.recipe.desc.singular": "Craft the recipe",
   "task.heracles.recipe.desc.plural": "%s Craft 1 of the following recipes",
   "setting.heracles.recipe.recipe": "Recipe:",
+
+  "task.heracles.structure.title.singular": "Find %s",
+  "task.heracles.structure.desc.singular": "Visit the structure",
+  "setting.heracles.structure.structure": "Structure:",
 
   "task.heracles.composite.title.singular": "Complete 1 of the tasks",
   "task.heracles.composite.title.plural": "Complete %s of the tasks"

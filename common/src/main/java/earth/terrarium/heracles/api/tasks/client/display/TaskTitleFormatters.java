@@ -3,6 +3,7 @@ package earth.terrarium.heracles.api.tasks.client.display;
 import earth.terrarium.heracles.api.tasks.QuestTask;
 import earth.terrarium.heracles.api.tasks.defaults.*;
 import net.minecraft.Optionull;
+import net.minecraft.Util;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -18,6 +19,7 @@ public class TaskTitleFormatters {
         TaskTitleFormatter.register(GatherItemTask.TYPE, (task) -> Component.translatable(toTranslationKey(task, task.target() == 1), task.item().getDisplayName(Item::getDescription)));
         TaskTitleFormatter.register(AdvancementTask.TYPE, (task) -> Component.translatable(toTranslationKey(task, task.advancements().size() == 1)));
         TaskTitleFormatter.register(RecipeTask.TYPE, (task) -> Component.translatable(toTranslationKey(task, task.recipes().size() == 1), Optionull.firstOrDefault(task.titles(), CommonComponents.EMPTY)));
+        TaskTitleFormatter.register(StructureTask.TYPE, (task) -> Component.translatable(toTranslationKey(task, true), task.structures().getDisplayName((id, structure) -> Component.translatableWithFallback(Util.makeDescriptionId("structure", id), id.toString()))));
         TaskTitleFormatter.register(CompositeTask.TYPE, (task) -> {
             List<Component> titles = new ArrayList<>();
             titles.add(Component.translatable(toTranslationKey(task, task.amount() == 1), task.amount()));

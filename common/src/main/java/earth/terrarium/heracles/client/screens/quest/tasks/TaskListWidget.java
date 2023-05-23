@@ -143,23 +143,24 @@ public class TaskListWidget extends AbstractContainerEventHandler implements Ren
                 if (this.mouse != null && widget.mouseClicked(this.mouse.x() - x, this.mouse.y() - (y - this.scrollAmount), this.mouse.button(), this.width)) {
                     this.mouse = null;
                 }
-                widget.render(pose, scissor.stack(), x, y - (int) this.scrollAmount, this.width, mouseX, mouseY, this.isMouseOver(mouseX, mouseY), partialTick);
+                int tempY = y - (int) this.scrollAmount;
+                widget.render(pose, scissor.stack(), x, tempY, this.width, mouseX, mouseY, this.isMouseOver(mouseX, mouseY), partialTick);
 
                 var itemheight = widget.getHeight(this.width);
 
-                boolean hovered = mouseX > x && mouseX < x + this.width + 14 && mouseY > y && mouseY < y + itemheight;
+                boolean hovered = mouseX > x && mouseX < x + this.width + 14 && mouseY > tempY && mouseY < tempY + itemheight;
 
                 if (hovered && pair.left != null && this.onClick != null) {
                     RenderUtils.bindTexture(AbstractQuestScreen.HEADING);
-                    boolean editHovered = mouseX > x + width + 1 && mouseX < x + width + 12 && mouseY > y + 1 && mouseY < y + 12;
-                    Gui.blit(pose, x + width + 1, y + 1, 33, editHovered ? 26 : 15, 11, 11, 256, 256);
+                    boolean editHovered = mouseX > x + width + 1 && mouseX < x + width + 12 && mouseY > tempY + 1 && mouseY < tempY + 12;
+                    Gui.blit(pose, x + width + 1, tempY + 1, 33, editHovered ? 26 : 15, 11, 11, 256, 256);
                     CursorUtils.setCursor(editHovered, CursorScreen.Cursor.POINTER);
-                    if (mouse != null && mouse.x() > x + width + 1 && mouse.x() < x + width + 12 && mouse.y() > y + 1 && mouse.y() < y + 12 && mouse.button() == 0) {
+                    if (mouse != null && mouse.x() > x + width + 1 && mouse.x() < x + width + 12 && mouse.y() > tempY + 1 && mouse.y() < tempY + 12 && mouse.button() == 0) {
                         clicked = Pair.of(pair.left, false);
                     }
 
-                    boolean removeHovered = mouseX > x + width + 1 && mouseX < x + width + 12 && mouseY > y + 13 && mouseY < y + 24;
-                    Gui.blit(pose, x + width + 1, y + 13, 11, removeHovered ? 70 : 59, 11, 11, 256, 256);
+                    boolean removeHovered = mouseX > x + width + 1 && mouseX < x + width + 12 && mouseY > tempY + 13 && mouseY < tempY + 24;
+                    Gui.blit(pose, x + width + 1, tempY + 13, 11, removeHovered ? 70 : 59, 11, 11, 256, 256);
                     CursorUtils.setCursor(removeHovered, CursorScreen.Cursor.POINTER);
                     if (mouse != null && mouse.x() > x + width + 1 && mouse.x() < x + width + 12 && mouse.y() > y + 13 && mouse.y() < y + 24 && mouse.button() == 0) {
                         clicked = Pair.of(pair.left, true);

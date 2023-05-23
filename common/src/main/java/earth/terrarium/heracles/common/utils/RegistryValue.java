@@ -7,8 +7,10 @@ import net.minecraft.core.Registry;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.RegistryFixedCodec;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 
+import java.util.function.BiFunction;
 import java.util.function.Function;
 
 public record RegistryValue<T>(Either<Holder<T>, TagKey<T>> value) {
@@ -30,6 +32,13 @@ public record RegistryValue<T>(Either<Holder<T>, TagKey<T>> value) {
         return getValue().map(mapper, RegistryValue::getDisplayName);
     }
 
+    public Component getDisplayName(BiFunction<ResourceLocation, T, Component> mapper) {
+        return this.value.map(
+            holder -> mapper.apply(holder.unwrapKey().map(ResourceKey::location).orElse(null), holder.value()),
+            RegistryValue::getDisplayName
+        );
+    }
+
     private static Component getDisplayName(TagKey<?> tag) {
         String namespace = tag.registry().location().getNamespace();
         String path = tag.registry().location().getPath();
@@ -44,7 +53,14 @@ public record RegistryValue<T>(Either<Holder<T>, TagKey<T>> value) {
     }
 
     public String toRegistryString() {
-        return getValue().map(Object::toString, tag -> "#" + tag.location());
+        return value
+            .map(
+                holder -> holder.unwrapKey()
+                    .map(ResourceKey::location)
+                    .map(ResourceLocation::toString)
+                    .orElse(null),
+                tag -> "#" + tag.location()
+            );
     }
 
     public boolean is(Holder<T> value) {

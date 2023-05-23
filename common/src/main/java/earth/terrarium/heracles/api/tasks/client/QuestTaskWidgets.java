@@ -3,14 +3,8 @@ package earth.terrarium.heracles.api.tasks.client;
 import earth.terrarium.heracles.api.client.DisplayWidget;
 import earth.terrarium.heracles.api.tasks.QuestTask;
 import earth.terrarium.heracles.api.tasks.QuestTaskType;
-import earth.terrarium.heracles.api.tasks.client.defaults.AdvancementTaskWidget;
-import earth.terrarium.heracles.api.tasks.client.defaults.ItemTaskWidget;
-import earth.terrarium.heracles.api.tasks.client.defaults.KillEntityTaskWidget;
-import earth.terrarium.heracles.api.tasks.client.defaults.RecipeTaskWidget;
-import earth.terrarium.heracles.api.tasks.defaults.AdvancementTask;
-import earth.terrarium.heracles.api.tasks.defaults.GatherItemTask;
-import earth.terrarium.heracles.api.tasks.defaults.KillEntityQuestTask;
-import earth.terrarium.heracles.api.tasks.defaults.RecipeTask;
+import earth.terrarium.heracles.api.tasks.client.defaults.*;
+import earth.terrarium.heracles.api.tasks.defaults.*;
 import earth.terrarium.heracles.common.handlers.progress.TaskProgress;
 import net.minecraft.Optionull;
 import net.minecraft.nbt.Tag;
@@ -45,5 +39,6 @@ public final class QuestTaskWidgets {
         register(GatherItemTask.TYPE, ItemTaskWidget::new);
         register(AdvancementTask.TYPE, AdvancementTaskWidget::new);
         register(RecipeTask.TYPE, RecipeTaskWidget::new);
+        register(StructureTask.TYPE, StructureTaskWidget::new);
     }
 }

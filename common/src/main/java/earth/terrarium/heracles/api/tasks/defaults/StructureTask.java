@@ -16,11 +16,11 @@ import net.minecraft.world.level.levelgen.structure.Structure;
 
 import java.util.Collection;
 
-public record FindStructureTask(
+public record StructureTask(
     String id, RegistryValue<Structure> structures
-) implements QuestTask<Collection<Structure>, ByteTag, FindStructureTask> {
+) implements QuestTask<Collection<Structure>, ByteTag, StructureTask> {
 
-    public static final QuestTaskType<FindStructureTask> TYPE = new Type();
+    public static final QuestTaskType<StructureTask> TYPE = new Type();
 
     @Override
     public ByteTag test(QuestTaskType<?> type, ByteTag progress, Collection<Structure> input) {
@@ -47,23 +47,23 @@ public record FindStructureTask(
     }
 
     @Override
-    public QuestTaskType<FindStructureTask> type() {
+    public QuestTaskType<StructureTask> type() {
         return TYPE;
     }
 
-    private static class Type implements QuestTaskType<FindStructureTask> {
+    private static class Type implements QuestTaskType<StructureTask> {
 
         @Override
         public ResourceLocation id() {
-            return new ResourceLocation(Heracles.MOD_ID, "find_structure");
+            return new ResourceLocation(Heracles.MOD_ID, "structure");
         }
 
         @Override
-        public Codec<FindStructureTask> codec(String id) {
+        public Codec<StructureTask> codec(String id) {
             return RecordCodecBuilder.create(instance -> instance.group(
                 RecordCodecBuilder.point(id),
-                RegistryValue.codec(Registries.STRUCTURE).fieldOf("structures").forGetter(FindStructureTask::structures)
-            ).apply(instance, FindStructureTask::new));
+                RegistryValue.codec(Registries.STRUCTURE).fieldOf("structures").forGetter(StructureTask::structures)
+            ).apply(instance, StructureTask::new));
         }
     }
 }

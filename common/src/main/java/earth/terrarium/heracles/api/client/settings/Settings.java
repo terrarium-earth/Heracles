@@ -51,6 +51,7 @@ public final class Settings {
         register(GatherItemTask.TYPE, ItemTaskSettings.INSTANCE);
         register(RecipeTask.TYPE, RecipeTaskSettings.INSTANCE);
         register(AdvancementTask.TYPE, AdvancementTaskSettings.INSTANCE);
+        register(StructureTask.TYPE, StructureTaskSettings.INSTANCE);
 
         register(LootTableReward.TYPE, LootRewardSettings.INSTANCE);
         register(ItemReward.TYPE, ItemRewardSettings.INSTANCE);

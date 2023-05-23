@@ -48,6 +48,6 @@ public final class QuestTasks {
         register(RecipeTask.TYPE);
         register(ItemInteractionTask.TYPE);
         register(ItemUseTask.TYPE);
-        register(BlockInteractionTask.TYPE);
+        register(BlockInteractTask.TYPE);
     }
 }

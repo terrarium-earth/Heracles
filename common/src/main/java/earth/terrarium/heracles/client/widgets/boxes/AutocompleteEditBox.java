@@ -66,7 +66,7 @@ public class AutocompleteEditBox<T> extends EditBox {
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        if (button == 0 && isMouseOver(mouseX, mouseY) && mouseY > (this.getY() + this.getHeight() + 1)) {
+        if (isHoveredOrFocused() && button == 0 && isMouseOver(mouseX, mouseY) && mouseY > (this.getY() + this.getHeight() + 1)) {
             if (!filteredSuggestions.isEmpty()) {
                 String suggestion = filteredSuggestions.get((int) ((mouseY - (this.getY() + this.getHeight() + 1)) / 10));
                 this.setValue(suggestion);

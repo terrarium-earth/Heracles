@@ -96,6 +96,6 @@ public class HeraclesForge {
         if (!(event.getEntity() instanceof ServerPlayer player)) return;
 
         QuestProgressHandler.getProgress(player.server, player.getUUID())
-            .testAndProgressTaskType(player, new BlockSourceImpl(player.getLevel(), event.getPos()), BlockInteractionTask.TYPE);
+            .testAndProgressTaskType(player, new BlockSourceImpl(player.getLevel(), event.getPos()), BlockInteractTask.TYPE);
     }
 }

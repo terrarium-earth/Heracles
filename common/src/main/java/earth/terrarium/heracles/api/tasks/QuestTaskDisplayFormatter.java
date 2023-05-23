@@ -36,6 +36,7 @@ public final class QuestTaskDisplayFormatter {
         register(RecipeTask.TYPE, (progress, task) -> String.format("%d/%d", task.storage().read(progress.progress()) ? 1 : 0, 1));
         register(StructureTask.TYPE, (progress, task) -> String.format("%d/%d", task.storage().read(progress.progress()) ? 1 : 0, 1));
         register(BiomeTask.TYPE, (progress, task) -> String.format("%d/%d", task.storage().read(progress.progress()) ? 1 : 0, 1));
+        register(BlockInteractTask.TYPE, (progress, task) -> String.format("%d/%d", task.storage().read(progress.progress()) ? 1 : 0, 1));
         register(CompositeTask.TYPE, (progress, task) -> String.format("%d/%d", Mth.floor(task.getCompletedTasks(progress.progress())), task.amount()));
     }
 

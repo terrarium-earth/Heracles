@@ -18,11 +18,11 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 
-public record BlockInteractionTask(
+public record BlockInteractTask(
     String id, RegistryValue<Block> block, BlockStatePredicate state, NbtPredicate nbt
-) implements QuestTask<BlockSource, ByteTag, BlockInteractionTask> {
+) implements QuestTask<BlockSource, ByteTag, BlockInteractTask> {
 
-    public static final QuestTaskType<BlockInteractionTask> TYPE = new Type();
+    public static final QuestTaskType<BlockInteractTask> TYPE = new Type();
 
     @Override
     public ByteTag test(QuestTaskType<?> type, ByteTag progress, BlockSource input) {
@@ -46,24 +46,24 @@ public record BlockInteractionTask(
     }
 
     @Override
-    public QuestTaskType<BlockInteractionTask> type() {
+    public QuestTaskType<BlockInteractTask> type() {
         return TYPE;
     }
 
-    private static class Type implements QuestTaskType<BlockInteractionTask> {
+    private static class Type implements QuestTaskType<BlockInteractTask> {
         @Override
         public ResourceLocation id() {
             return new ResourceLocation(Heracles.MOD_ID, "block_interaction");
         }
 
         @Override
-        public Codec<BlockInteractionTask> codec(String id) {
+        public Codec<BlockInteractTask> codec(String id) {
             return RecordCodecBuilder.create(instance -> instance.group(
                 RecordCodecBuilder.point(id),
-                RegistryValue.codec(Registries.BLOCK).fieldOf("block").forGetter(BlockInteractionTask::block),
-                BlockStatePredicate.CODEC.fieldOf("state").orElse(BlockStatePredicate.ANY).forGetter(BlockInteractionTask::state),
-                NbtPredicate.CODEC.fieldOf("nbt").orElse(NbtPredicate.ANY).forGetter(BlockInteractionTask::nbt)
-            ).apply(instance, BlockInteractionTask::new));
+                RegistryValue.codec(Registries.BLOCK).fieldOf("block").forGetter(BlockInteractTask::block),
+                BlockStatePredicate.CODEC.fieldOf("state").orElse(BlockStatePredicate.ANY).forGetter(BlockInteractTask::state),
+                NbtPredicate.CODEC.fieldOf("nbt").orElse(NbtPredicate.ANY).forGetter(BlockInteractTask::nbt)
+            ).apply(instance, BlockInteractTask::new));
         }
     }
 }

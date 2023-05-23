@@ -3,7 +3,7 @@ package earth.terrarium.heracles.fabric;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.api.tasks.defaults.BlockInteractTask;
-import earth.terrarium.heracles.api.tasks.defaults.ItemInteractionTask;
+import earth.terrarium.heracles.api.tasks.defaults.ItemInteractTask;
 import earth.terrarium.heracles.api.tasks.defaults.KillEntityQuestTask;
 import earth.terrarium.heracles.common.handlers.pinned.PinnedQuestHandler;
 import earth.terrarium.heracles.common.handlers.progress.QuestProgressHandler;
@@ -57,7 +57,7 @@ public class HeraclesFabric {
             ItemStack stack = player.getItemInHand(hand);
 
             QuestProgressHandler.getProgress(serverPlayer.server, serverPlayer.getUUID())
-                .testAndProgressTaskType(serverPlayer, stack, ItemInteractionTask.TYPE);
+                .testAndProgressTaskType(serverPlayer, stack, ItemInteractTask.TYPE);
 
             return InteractionResultHolder.pass(stack);
         });

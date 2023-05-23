@@ -40,6 +40,10 @@
   "task.heracles.block_interaction.desc.singular": "[Right-Click] the block",
   "setting.heracles.block_interaction.block": "Block:",
 
+  "task.heracles.item_interaction.title.singular": "Interact with %s",
+  "task.heracles.item_interaction.desc.singular": "[Right-Click] with the item",
+  "setting.heracles.item_interaction.item": "Item:",
+
   "task.heracles.composite.title.singular": "Complete 1 of the tasks",
   "task.heracles.composite.title.plural": "Complete %s of the tasks"
 }

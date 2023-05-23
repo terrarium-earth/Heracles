@@ -14,10 +14,10 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
-public record ItemInteractionTask(
+public record ItemInteractTask(
     String id, RegistryValue<Item> item, NbtPredicate nbt
-) implements QuestTask<ItemStack, ByteTag, ItemInteractionTask> {
-    public static final QuestTaskType<ItemInteractionTask> TYPE = new Type();
+) implements QuestTask<ItemStack, ByteTag, ItemInteractTask> {
+    public static final QuestTaskType<ItemInteractTask> TYPE = new Type();
 
     @Override
     public ByteTag test(QuestTaskType<?> type, ByteTag progress, ItemStack input) {
@@ -35,23 +35,23 @@ public record ItemInteractionTask(
     }
 
     @Override
-    public QuestTaskType<ItemInteractionTask> type() {
+    public QuestTaskType<ItemInteractTask> type() {
         return TYPE;
     }
 
-    private static class Type implements QuestTaskType<ItemInteractionTask> {
+    private static class Type implements QuestTaskType<ItemInteractTask> {
         @Override
         public ResourceLocation id() {
             return new ResourceLocation(Heracles.MOD_ID, "item_interaction");
         }
 
         @Override
-        public Codec<ItemInteractionTask> codec(String id) {
+        public Codec<ItemInteractTask> codec(String id) {
             return RecordCodecBuilder.create(instance -> instance.group(
                 RecordCodecBuilder.point(id),
-                RegistryValue.codec(Registries.ITEM).fieldOf("item").forGetter(ItemInteractionTask::item),
-                NbtPredicate.CODEC.fieldOf("nbt").orElse(NbtPredicate.ANY).forGetter(ItemInteractionTask::nbt)
-            ).apply(instance, ItemInteractionTask::new));
+                RegistryValue.codec(Registries.ITEM).fieldOf("item").forGetter(ItemInteractTask::item),
+                NbtPredicate.CODEC.fieldOf("nbt").orElse(NbtPredicate.ANY).forGetter(ItemInteractTask::nbt)
+            ).apply(instance, ItemInteractTask::new));
         }
     }
 }

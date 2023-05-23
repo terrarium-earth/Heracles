@@ -46,7 +46,7 @@ public final class QuestTasks {
         register(ChangedDimensionTask.TYPE);
         register(AdvancementTask.TYPE);
         register(RecipeTask.TYPE);
-        register(ItemInteractionTask.TYPE);
+        register(ItemInteractTask.TYPE);
         register(ItemUseTask.TYPE);
         register(BlockInteractTask.TYPE);
     }

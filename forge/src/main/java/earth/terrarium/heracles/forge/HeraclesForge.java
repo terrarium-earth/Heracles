@@ -89,7 +89,7 @@ public class HeraclesForge {
         if (!(event.getEntity() instanceof ServerPlayer player)) return;
 
         QuestProgressHandler.getProgress(player.server, player.getUUID())
-            .testAndProgressTaskType(player, event.getItemStack(), ItemInteractionTask.TYPE);
+            .testAndProgressTaskType(player, event.getItemStack(), ItemInteractTask.TYPE);
     }
 
     private static void onBlockInteract(PlayerInteractEvent.RightClickBlock event) {

@@ -40,5 +40,6 @@ public final class QuestTaskWidgets {
         register(AdvancementTask.TYPE, AdvancementTaskWidget::new);
         register(RecipeTask.TYPE, RecipeTaskWidget::new);
         register(StructureTask.TYPE, StructureTaskWidget::new);
+        register(BiomeTask.TYPE, BiomeTaskWidget::new);
     }
 }

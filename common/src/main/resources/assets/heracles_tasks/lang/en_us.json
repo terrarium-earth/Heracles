@@ -32,6 +32,10 @@
   "task.heracles.structure.desc.singular": "Visit the structure",
   "setting.heracles.structure.structure": "Structure:",
 
+  "task.heracles.biome.title.singular": "Visit %s",
+  "task.heracles.biome.desc.singular": "Visit the biome",
+  "setting.heracles.biome.biome": "Biome:",
+
   "task.heracles.composite.title.singular": "Complete 1 of the tasks",
   "task.heracles.composite.title.plural": "Complete %s of the tasks"
 }

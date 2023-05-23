@@ -52,6 +52,7 @@ public final class Settings {
         register(RecipeTask.TYPE, RecipeTaskSettings.INSTANCE);
         register(AdvancementTask.TYPE, AdvancementTaskSettings.INSTANCE);
         register(StructureTask.TYPE, StructureTaskSettings.INSTANCE);
+        register(BiomeTask.TYPE, BiomeTaskSettings.INSTANCE);
 
         register(LootTableReward.TYPE, LootRewardSettings.INSTANCE);
         register(ItemReward.TYPE, ItemRewardSettings.INSTANCE);

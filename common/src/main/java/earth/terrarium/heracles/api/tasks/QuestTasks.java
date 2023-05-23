@@ -41,7 +41,7 @@ public final class QuestTasks {
         register(CompositeTask.TYPE);
         register(KillEntityQuestTask.TYPE);
         register(GatherItemTask.TYPE);
-        register(FindBiomeTask.TYPE);
+        register(BiomeTask.TYPE);
         register(StructureTask.TYPE);
         register(ChangedDimensionTask.TYPE);
         register(AdvancementTask.TYPE);

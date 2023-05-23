@@ -13,11 +13,11 @@ import net.minecraft.nbt.ByteTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.biome.Biome;
 
-public record FindBiomeTask(
+public record BiomeTask(
     String id, RegistryValue<Biome> biomes
-) implements QuestTask<Holder<Biome>, ByteTag, FindBiomeTask> {
+) implements QuestTask<Holder<Biome>, ByteTag, BiomeTask> {
 
-    public static final QuestTaskType<FindBiomeTask> TYPE = new Type();
+    public static final QuestTaskType<BiomeTask> TYPE = new Type();
 
     @Override
     public ByteTag test(QuestTaskType<?> type, ByteTag progress, Holder<Biome> input) {
@@ -35,23 +35,23 @@ public record FindBiomeTask(
     }
 
     @Override
-    public QuestTaskType<FindBiomeTask> type() {
+    public QuestTaskType<BiomeTask> type() {
         return TYPE;
     }
 
-    private static class Type implements QuestTaskType<FindBiomeTask> {
+    private static class Type implements QuestTaskType<BiomeTask> {
 
         @Override
         public ResourceLocation id() {
-            return new ResourceLocation(Heracles.MOD_ID, "find_biome");
+            return new ResourceLocation(Heracles.MOD_ID, "biome");
         }
 
         @Override
-        public Codec<FindBiomeTask> codec(String id) {
+        public Codec<BiomeTask> codec(String id) {
             return RecordCodecBuilder.create(instance -> instance.group(
                 RecordCodecBuilder.point(id),
-                RegistryValue.codec(Registries.BIOME).fieldOf("biomes").forGetter(FindBiomeTask::biomes)
-            ).apply(instance, FindBiomeTask::new));
+                RegistryValue.codec(Registries.BIOME).fieldOf("biomes").forGetter(BiomeTask::biomes)
+            ).apply(instance, BiomeTask::new));
         }
     }
 }

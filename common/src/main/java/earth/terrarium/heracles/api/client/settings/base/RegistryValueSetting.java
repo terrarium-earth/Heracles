@@ -13,6 +13,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.levelgen.structure.Structure;
 
 import java.util.ArrayList;
@@ -25,6 +26,7 @@ public record RegistryValueSetting<T>(
 
     public static final RegistryValueSetting<Item> ITEM = new RegistryValueSetting<>(Registries.ITEM);
     public static final RegistryValueSetting<Structure> STRUCTURE = new RegistryValueSetting<>(Registries.STRUCTURE);
+    public static final RegistryValueSetting<Biome> BIOME = new RegistryValueSetting<>(Registries.BIOME);
 
     @Override
     public AutocompleteEditBox<String> createWidget(int width, RegistryValue<T> value) {

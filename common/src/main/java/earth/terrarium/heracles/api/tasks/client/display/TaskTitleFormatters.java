@@ -19,6 +19,7 @@ public class TaskTitleFormatters {
         TaskTitleFormatter.register(KillEntityQuestTask.TYPE, (task) -> Component.translatable(toTranslationKey(task, task.target() == 1), task.entity().entityType().getDescription()));
         TaskTitleFormatter.register(GatherItemTask.TYPE, (task) -> Component.translatable(toTranslationKey(task, task.target() == 1), task.item().getDisplayName(Item::getDescription)));
         TaskTitleFormatter.register(AdvancementTask.TYPE, (task) -> Component.translatable(toTranslationKey(task, task.advancements().size() == 1)));
+        TaskTitleFormatter.register(ChangedDimensionTask.TYPE, (task) -> Component.translatable(toTranslationKey(task, true)));
         TaskTitleFormatter.register(RecipeTask.TYPE, (task) -> Component.translatable(toTranslationKey(task, task.recipes().size() == 1), Optionull.firstOrDefault(task.titles(), CommonComponents.EMPTY)));
         TaskTitleFormatter.register(StructureTask.TYPE, (task) -> Component.translatable(toTranslationKey(task, true), task.structures().getDisplayName((id, structure) -> Component.translatableWithFallback(Util.makeDescriptionId("structure", id), id.toString()))));
         TaskTitleFormatter.register(BiomeTask.TYPE, (task) -> Component.translatable(toTranslationKey(task, true), task.biomes().getDisplayName((id, structure) -> Component.translatableWithFallback(Util.makeDescriptionId("biome", id), id.toString()))));

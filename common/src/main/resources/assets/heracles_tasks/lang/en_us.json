@@ -44,6 +44,11 @@
   "task.heracles.item_interaction.desc.singular": "[Right-Click] with the item",
   "setting.heracles.item_interaction.item": "Item:",
 
+  "task.heracles.changed_dimension.title.singular": "Travel between dimensions",
+  "task.heracles.changed_dimension.desc.singular": "From %s To %s",
+  "setting.heracles.changed_dimension.from": "From:",
+  "setting.heracles.changed_dimension.to": "To:",
+
   "task.heracles.composite.title.singular": "Complete 1 of the tasks",
   "task.heracles.composite.title.plural": "Complete %s of the tasks"
 }

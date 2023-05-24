@@ -9,23 +9,21 @@ import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.item.Item;
+import net.minecraft.world.level.Level;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
 
-public record RegistrySetting<T>(
-    boolean allowsTags, ResourceKey<? extends Registry<T>> key
-) implements Setting<T, AutocompleteEditBox<String>> {
+public record RegistryKeySetting<T>(
+    ResourceKey<? extends Registry<T>> key
+) implements Setting<ResourceKey<T>, AutocompleteEditBox<String>> {
 
-    public static final RegistrySetting<EntityType<?>> ENTITY = new RegistrySetting<>(false, Registries.ENTITY_TYPE);
-    public static final RegistrySetting<Item> ITEM = new RegistrySetting<>(false, Registries.ITEM);
+    public static final RegistryKeySetting<Level> DIMENSION = new RegistryKeySetting<>(Registries.DIMENSION);
 
     @Override
-    public AutocompleteEditBox<String> createWidget(int width, T value) {
+    public AutocompleteEditBox<String> createWidget(int width, ResourceKey<T> value) {
         AutocompleteEditBox<String> box = new AutocompleteEditBox<>(Minecraft.getInstance().font, 0, 0, width, 11,
             (text, item) -> item.contains(text) && !item.equals(text), Function.identity(), s -> {});
         List<String> suggestions = new ArrayList<>();
@@ -33,26 +31,19 @@ public record RegistrySetting<T>(
         if (registry == null) {
             return box;
         }
-        if (allowsTags) {
-            registry.getTagNames().map(tag -> "#" + tag.location()).forEach(suggestions::add);
-        }
         registry.keySet().stream().map(ResourceLocation::toString).forEach(suggestions::add);
         box.setSuggestions(suggestions);
 
-        ResourceLocation id = Optionull.map(value, registry::getKey);
+        ResourceLocation id = Optionull.map(value, ResourceKey::location);
         box.setValue(id == null ? "" : id.toString());
         return box;
     }
 
     @Override
-    public T getValue(AutocompleteEditBox<String> widget) {
+    public ResourceKey<T> getValue(AutocompleteEditBox<String> widget) {
         ResourceLocation id = ResourceLocation.tryParse(widget.getValue());
-        var registry = Heracles.getRegistryAccess().registry(key).orElse(null);
-        if (registry == null) {
-            return null;
-        }
         return Optional.ofNullable(id)
-            .flatMap(registry::getOptional)
+            .map(ignored -> ResourceKey.create(key, id))
             .orElse(null);
     }
 }

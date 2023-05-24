@@ -49,8 +49,8 @@ public record ItemInteractTaskWidget(
         String progress = QuestTaskDisplayFormatter.create(this.task, this.progress);
         font.draw(pose, progress, x + width - 5 - font.width(progress), y + 5, 0xFFFFFFFF);
 
-        int progressY = y + 5 + (font.lineHeight + 2) * 2;
-        WidgetUtils.drawProgressBar(pose, x + iconSize + 10, progressY + 2, x + width - 5, progressY + font.lineHeight - 2, this.task, this.progress);
+        int height = getHeight(width);
+        WidgetUtils.drawProgressBar(pose, x + iconSize + 10, y + height - font.lineHeight + 2, x + width - 5, y + height - 2, this.task, this.progress);
     }
 
     private ItemStack getCurrentItem() {

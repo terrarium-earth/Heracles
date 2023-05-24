@@ -58,6 +58,7 @@ public final class RecipeTaskWidget implements DisplayWidget {
     @Override
     public void render(PoseStack pose, ScissorBoxStack scissor, int x, int y, int width, int mouseX, int mouseY, boolean hovered, float partialTicks) {
         int height = getHeight(width);
+        int actualY = y;
 
         Font font = Minecraft.getInstance().font;
         Gui.fill(pose, x, y, x + width, y + height, 0x80808080);
@@ -85,7 +86,7 @@ public final class RecipeTaskWidget implements DisplayWidget {
             }
         }
 
-        WidgetUtils.drawProgressBar(pose, x + iconSize + 10, y + 2, x + width - 5, y + font.lineHeight - 2, this.task, this.progress);
+        WidgetUtils.drawProgressBar(pose, x + iconSize + 10, actualY + height - font.lineHeight + 2, x + width - 5, actualY + height - 2, this.task, this.progress);
     }
 
     @Override

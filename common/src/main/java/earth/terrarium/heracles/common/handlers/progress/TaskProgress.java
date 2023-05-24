@@ -22,13 +22,18 @@ public class TaskProgress<S extends Tag> {
     public <T> void addProgress(QuestTaskType<?> type, QuestTask<T, S, ?> task, T input) {
         if (complete) return;
         progress = task.test(type, progress, input);
-        if (task.getProgress(progress) >= 1f) {
-            complete = true;
-        }
+        updateComplete(task);
     }
 
     public boolean isComplete() {
         return complete;
+    }
+
+    public void updateComplete(QuestTask<?, S, ?> task) {
+        if (complete) return;
+        if (task.getProgress(progress) >= 1f) {
+            complete = true;
+        }
     }
 
     public S progress() {

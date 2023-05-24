@@ -44,5 +44,6 @@ public final class QuestTaskWidgets {
         register(BlockInteractTask.TYPE, BlockInteractTaskWidget::new);
         register(ItemInteractTask.TYPE, ItemInteractTaskWidget::new);
         register(ChangedDimensionTask.TYPE, DimensionTaskWidget::new);
+        register(CompositeTask.TYPE, CompositeTaskWidget::new);
     }
 }

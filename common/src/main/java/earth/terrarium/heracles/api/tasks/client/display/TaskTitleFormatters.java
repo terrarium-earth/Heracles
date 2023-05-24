@@ -33,7 +33,7 @@ public class TaskTitleFormatters {
         });
     }
 
-    private static String toTranslationKey(QuestTask<?, ?, ?> task, boolean singular) {
+    public static String toTranslationKey(QuestTask<?, ?, ?> task, boolean singular) {
         ResourceLocation id = task.type().id();
         return "task." + id.getNamespace() + "." + id.getPath() + ".title" + (singular ? ".singular" : ".plural");
     }

@@ -51,6 +51,7 @@ public record AutocompleteTextSetting<T>(
         AutocompleteEditBox<T> box = new AutocompleteEditBox<>(Minecraft.getInstance().font, 0, 0, width, 11, filter, mapper, s -> {});
         box.setSuggestions(this.suggestions.get());
         box.setValue(mapper.apply(value));
+        box.setMaxLength(Short.MAX_VALUE);
         return box;
     }
 

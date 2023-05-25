@@ -12,6 +12,7 @@ import net.minecraft.client.gui.narration.NarrationElementOutput;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public abstract class BaseWidget extends AbstractContainerEventHandler implements Renderable, NarratableEntry {
@@ -25,13 +26,15 @@ public abstract class BaseWidget extends AbstractContainerEventHandler implement
     }
 
     public void renderChildren(PoseStack pose, int mouseX, int mouseY, float partialTicks) {
-        for (var child : this.children) {
+        List<GuiEventListener> children = new ArrayList<>(this.children());
+        Collections.reverse(children);
+        for (GuiEventListener child : children) {
             if (child instanceof Renderable renderable) {
                 renderable.render(pose, mouseX, mouseY, partialTicks);
             }
         }
         if (Minecraft.getInstance().screen instanceof CursorScreen cursorScreen) {
-            cursorScreen.setCursor(children());
+            cursorScreen.setCursor(children);
         }
     }
 

@@ -3,8 +3,9 @@ package earth.terrarium.heracles.client.widgets.modals;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.teamresourceful.resourcefullib.client.utils.RenderUtils;
 import earth.terrarium.heracles.Heracles;
+import earth.terrarium.heracles.client.widgets.Dropdown;
 import earth.terrarium.heracles.client.widgets.base.BaseModal;
-import earth.terrarium.heracles.client.widgets.boxes.AutocompleteEditBox;
+import earth.terrarium.heracles.client.widgets.boxes.PlaceholerEditBox;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.Gui;
@@ -15,7 +16,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.Collection;
-import java.util.Locale;
 import java.util.function.BiConsumer;
 import java.util.function.BiPredicate;
 import java.util.function.BooleanSupplier;
@@ -26,7 +26,7 @@ public class CreateObjectModal extends BaseModal {
     private static final int WIDTH = 168;
     private static final int HEIGHT = 84;
 
-    private final AutocompleteEditBox<ResourceLocation> typeBox;
+    private final Dropdown<ResourceLocation> typeBox;
     private final EditBox nameBox;
 
     private Component title = CommonComponents.EMPTY;
@@ -35,22 +35,21 @@ public class CreateObjectModal extends BaseModal {
 
     public CreateObjectModal(int screenWidth, int screenHeight) {
         super(screenWidth, screenHeight, WIDTH, HEIGHT);
+        this.typeBox = addChild(new Dropdown<>(
+            this.x + 8, this.y + 19, 152, 14,
+            "Type",
+            ResourceLocation::toString
+        ));
+
         Button submitButton = addChild(createButton(Component.nullToEmpty("Submit"), this.x + WIDTH - 7, this.y + HEIGHT - 20, b -> onSubmit()));
         submitButton.active = false;
         addChild(createButton(Component.nullToEmpty("Cancel"), submitButton.getX() - 2, this.y + HEIGHT - 20, b ->
             this.visible = false
         ));
-        this.nameBox = addChild(new EditBox(Minecraft.getInstance().font, this.x + 8, this.y + 46, 152, 14, CommonComponents.EMPTY));
-        this.typeBox = addChild(new AutocompleteEditBox<>(
-            Minecraft.getInstance().font, this.x + 8, this.y + 19, 152, 14,
-            (s, r) -> r.toString().toLowerCase(Locale.ROOT).contains(s.toLowerCase(Locale.ROOT)) && !r.toString().equalsIgnoreCase(s),
-            ResourceLocation::toString,
-            s -> {}
-        ));
-        BooleanSupplier valid = () -> !nameBox.getValue().trim().isEmpty() && !this.typeBox.getValue().trim().isEmpty() && validator.test(this.typeBox.value(), nameBox.getValue().trim());
+        this.nameBox = addChild(new PlaceholerEditBox(Minecraft.getInstance().font, this.x + 8, this.y + 46, 152, 14, Component.literal("Identifier")));
+        BooleanSupplier valid = () -> !nameBox.getValue().trim().isEmpty() && this.typeBox.value() != null && validator.test(this.typeBox.value(), nameBox.getValue().trim());
         nameBox.setMaxLength(32);
         nameBox.setResponder(s -> submitButton.active = valid.getAsBoolean());
-        this.typeBox.setMaxLength(256);
         this.typeBox.setResponder(s -> submitButton.active = valid.getAsBoolean());
     }
 
@@ -61,7 +60,7 @@ public class CreateObjectModal extends BaseModal {
         if (typeValid && nameValid) {
             this.callback.accept(this.typeBox.value(), nameBox.getValue());
             nameBox.setValue("");
-            this.typeBox.setValue("");
+            this.typeBox.setSelectedOption(null);
             visible = false;
         }
     }
@@ -73,14 +72,6 @@ public class CreateObjectModal extends BaseModal {
         Gui.blit(pose, this.x, this.y, 0, 0, this.width, this.height, 256, 256);
 
         renderChildren(pose, mouseX, mouseY, partialTick);
-
-        if (this.nameBox != null && this.nameBox.getValue().trim().isEmpty() && !this.nameBox.isFocused()) {
-            font.draw(pose, "Identifier", this.nameBox.getX() + 4, this.nameBox.getY() + 3, 0x808080);
-        }
-
-        if (this.typeBox != null && this.typeBox.getValue().trim().isEmpty() && !this.typeBox.isFocused()) {
-            font.draw(pose, "Type", this.typeBox.getX() + 4, this.typeBox.getY() + 3, 0x808080);
-        }
     }
 
     @Override
@@ -126,6 +117,6 @@ public class CreateObjectModal extends BaseModal {
         this.callback = callback;
         this.validator = validator;
         this.title = title;
-        this.typeBox.setSuggestions(suggestions);
+        this.typeBox.setOptions(suggestions);
     }
 }

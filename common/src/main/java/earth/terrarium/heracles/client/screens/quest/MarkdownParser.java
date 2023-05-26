@@ -88,7 +88,22 @@ public class MarkdownParser {
         STRIKETHROUGH("~~", ChatFormatting.STRIKETHROUGH),
         OBFUSCATED("||", ChatFormatting.OBFUSCATED),
 
-        RED("^&c", ChatFormatting.RED);
+        BLACK("&&0", ChatFormatting.BLACK),
+        DARK_BLUE("&&1", ChatFormatting.DARK_BLUE),
+        DARK_GREEN("&&2", ChatFormatting.DARK_GREEN),
+        DARK_AQUA("&&3", ChatFormatting.DARK_AQUA),
+        DARK_RED("&&4", ChatFormatting.DARK_RED),
+        DARK_PURPLE("&&5", ChatFormatting.DARK_PURPLE),
+        GOLD("&&6", ChatFormatting.GOLD),
+        GRAY("&&7", ChatFormatting.GRAY),
+        DARK_GRAY("&&8", ChatFormatting.DARK_GRAY),
+        BLUE("&&9", ChatFormatting.BLUE),
+        GREEN("&&a", ChatFormatting.GREEN),
+        AQUA("&&b", ChatFormatting.AQUA),
+        RED("&&c", ChatFormatting.RED),
+        LIGHT_PURPLE("&&d", ChatFormatting.LIGHT_PURPLE),
+        YELLOW("&&e", ChatFormatting.YELLOW),
+        WHITE("&&f", ChatFormatting.WHITE);
 
         final String symbol;
         final ChatFormatting formatting;

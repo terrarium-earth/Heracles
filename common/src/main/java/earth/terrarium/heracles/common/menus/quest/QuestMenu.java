@@ -1,6 +1,5 @@
 package earth.terrarium.heracles.common.menus.quest;
 
-import earth.terrarium.heracles.api.quests.Quest;
 import earth.terrarium.heracles.common.handlers.progress.QuestProgress;
 import earth.terrarium.heracles.common.regisitries.ModMenus;
 import earth.terrarium.heracles.common.utils.ModUtils;
@@ -46,10 +45,6 @@ public class QuestMenu extends AbstractContainerMenu {
 
     public String fromGroup() {
         return this.content != null ? this.content.fromGroup() : null;
-    }
-
-    public Quest quest() {
-        return this.content != null ? this.content.quest() : null;
     }
 
     public QuestProgress progress() {

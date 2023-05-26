@@ -20,12 +20,15 @@ import earth.terrarium.heracles.common.network.packets.quests.OpenQuestPacket;
 import earth.terrarium.heracles.common.utils.ModUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.ImageButton;
+import net.minecraft.client.gui.components.MultiLineEditBox;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.components.events.GuiEventListener;
+import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Arrays;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
@@ -33,6 +36,7 @@ public class QuestEditScreen extends BaseQuestScreen {
 
     private TaskListWidget taskList;
     private RewardListWidget rewardList;
+    private MultiLineEditBox descriptionBox;
 
     private CreateObjectModal createModal;
 
@@ -52,28 +56,28 @@ public class QuestEditScreen extends BaseQuestScreen {
         int contentHeight = this.height - 45;
 
         this.taskList = new TaskListWidget(contentX, contentY, contentWidth, contentHeight,
-            this.menu.id(), this.menu.quest(), this.menu.progress(), this.menu.quests(), (task, isRemoving) -> {
+            this.menu.id(), this.quest(), this.menu.progress(), this.menu.quests(), (task, isRemoving) -> {
             if (isRemoving) {
-                this.menu.quest().tasks().remove(task.id());
+                this.quest().tasks().remove(task.id());
                 ClientQuests.setDirty(this.menu.id());
                 ClientQuests.get(this.menu.id()).ifPresent(entry -> entry.value().tasks().remove(task.id()));
-                this.taskList.update(this.menu.quest().tasks().values());
+                this.taskList.update(this.quest().tasks().values());
                 return;
             }
             taskPopup(ModUtils.cast(task.type()), task.id(), ModUtils.cast(task), this.taskList::updateTask);
         }, () -> {
             BiConsumer<String, QuestTaskType<?>> creator = (id, type) ->
                 taskPopup(ModUtils.cast(type), id, null, newTask -> {
-                    this.menu.quest().tasks().put(id, newTask);
+                    this.quest().tasks().put(id, newTask);
                     ClientQuests.setDirty(this.menu.id());
                     ClientQuests.get(this.menu.id()).ifPresent(entry -> entry.value().tasks().put(id, newTask));
-                    this.taskList.update(this.menu.quest().tasks().values());
+                    this.taskList.update(this.quest().tasks().values());
                 });
 
             this.createModal.setVisible(true);
             this.createModal.update(
                 (type, id) -> creator.accept(id, QuestTasks.get(type)),
-                (type, id) -> !this.menu.quest().tasks().containsKey(id) && QuestTasks.types().containsKey(type),
+                (type, id) -> !this.quest().tasks().containsKey(id) && QuestTasks.types().containsKey(type),
                 Component.literal("Create Task"),
                 QuestTasks.types().values()
                     .stream()
@@ -82,33 +86,33 @@ public class QuestEditScreen extends BaseQuestScreen {
                     .toList()
             );
         });
-        this.taskList.update(this.menu.quest().tasks().values());
+        this.taskList.update(this.quest().tasks().values());
 
         this.rewardList = new RewardListWidget(
             contentX, contentY, contentWidth, contentHeight,
-            this.menu.id(), this.menu.quest(),
+            this.menu.id(), this.quest(),
             (reward, isRemoving) -> {
                 if (isRemoving) {
-                    this.menu.quest().rewards().remove(reward.id());
+                    this.quest().rewards().remove(reward.id());
                     ClientQuests.setDirty(this.menu.id());
                     ClientQuests.get(this.menu.id()).ifPresent(entry -> entry.value().rewards().remove(reward.id()));
-                    this.rewardList.update(this.menu.id(), this.menu.quest());
+                    this.rewardList.update(this.menu.id(), this.quest());
                     return;
                 }
                 rewardPopup(ModUtils.cast(reward.type()), reward.id(), ModUtils.cast(reward), this.rewardList::updateReward);
             }, () -> {
             BiConsumer<String, QuestRewardType<?>> creator = (id, type) ->
                 rewardPopup(ModUtils.cast(type), id, null, newReward -> {
-                    this.menu.quest().rewards().put(id, newReward);
+                    this.quest().rewards().put(id, newReward);
                     ClientQuests.setDirty(this.menu.id());
                     ClientQuests.get(this.menu.id()).ifPresent(entry -> entry.value().rewards().put(id, newReward));
-                    this.rewardList.update(this.menu.id(), this.menu.quest());
+                    this.rewardList.update(this.menu.id(), this.quest());
                 });
 
             this.createModal.setVisible(true);
             this.createModal.update(
                 (type, id) -> creator.accept(id, QuestRewards.get(type)),
-                (type, id) -> !this.menu.quest().rewards().containsKey(id) && QuestRewards.types().containsKey(type),
+                (type, id) -> !this.quest().rewards().containsKey(id) && QuestRewards.types().containsKey(type),
                 Component.literal("Create Reward"),
                 QuestRewards.types().values()
                     .stream()
@@ -118,13 +122,16 @@ public class QuestEditScreen extends BaseQuestScreen {
             );
         }
         );
-        this.rewardList.update(this.menu.id(), this.menu.quest());
+        this.rewardList.update(this.menu.id(), this.quest());
 
         if (Minecraft.getInstance().player != null && Minecraft.getInstance().player.hasPermissions(2)) {
             addRenderableWidget(new ImageButton(this.width - 24, 1, 11, 11, 33, 15, 11, HEADING, 256, 256, (button) ->
                 NetworkHandler.CHANNEL.sendToServer(new OpenQuestPacket(this.menu.fromGroup(), this.menu.id(), false))
             )).setTooltip(Tooltip.create(Component.literal("Toggle Edit Mode")));
         }
+
+        this.descriptionBox = new MultiLineEditBox(this.font, contentX, contentY, contentWidth, contentHeight, CommonComponents.EMPTY, CommonComponents.EMPTY);
+        this.descriptionBox.setValue(String.join("\n", this.quest().display().description()));
     }
 
     private <T extends QuestTask<?, ?, T>> void taskPopup(QuestTaskType<T> type, String id, @Nullable T task, Consumer<T> consumer) {
@@ -182,6 +189,8 @@ public class QuestEditScreen extends BaseQuestScreen {
     @Override
     public void removed() {
         super.removed();
+        quest().display().setDescription(Arrays.asList(this.descriptionBox.getValue().split("\n")));
+        ClientQuests.setDirty(this.menu.id());
         ClientQuests.sendDirty();
     }
 
@@ -193,5 +202,15 @@ public class QuestEditScreen extends BaseQuestScreen {
     @Override
     public GuiEventListener getRewardList() {
         return this.rewardList;
+    }
+
+    @Override
+    public GuiEventListener getDescriptionWidget() {
+        return this.descriptionBox;
+    }
+
+    @Override
+    public String getDescriptionError() {
+        return null;
     }
 }

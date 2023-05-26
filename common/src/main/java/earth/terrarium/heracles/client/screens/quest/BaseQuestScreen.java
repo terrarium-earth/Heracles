@@ -2,6 +2,7 @@ package earth.terrarium.heracles.client.screens.quest;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
+import earth.terrarium.heracles.api.quests.Quest;
 import earth.terrarium.heracles.client.handlers.ClientQuests;
 import earth.terrarium.heracles.client.screens.AbstractQuestScreen;
 import earth.terrarium.heracles.client.widgets.SelectableTabButton;
@@ -10,9 +11,6 @@ import earth.terrarium.heracles.common.menus.quest.QuestMenu;
 import earth.terrarium.heracles.common.network.NetworkHandler;
 import earth.terrarium.heracles.common.network.packets.groups.OpenGroupPacket;
 import earth.terrarium.heracles.common.network.packets.rewards.ClaimRewardsPacket;
-import earth.terrarium.hermes.api.TagProvider;
-import earth.terrarium.hermes.api.themes.DefaultTheme;
-import earth.terrarium.hermes.client.DocumentWidget;
 import net.minecraft.Optionull;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Button;
@@ -34,11 +32,8 @@ public abstract class BaseQuestScreen extends AbstractQuestScreen<QuestMenu> {
     private SelectableTabButton rewards;
     private Button claimRewards;
 
-    private DocumentWidget description;
-    private String descriptionError;
-
     public BaseQuestScreen(QuestMenu menu, Inventory inventory, Component component) {
-        super(menu, inventory, Optionull.mapOrDefault(menu.quest(), quest -> quest.display().title(), component));
+        super(menu, inventory, Optionull.mapOrDefault(quest(menu), quest -> quest.display().title(), component));
         ClientQuests.updateProgress(Map.of(menu.id(), menu.progress()));
     }
 
@@ -67,23 +62,9 @@ public abstract class BaseQuestScreen extends AbstractQuestScreen<QuestMenu> {
             NetworkHandler.CHANNEL.sendToServer(new ClaimRewardsPacket(this.menu.id()));
             this.claimRewards.active = false;
         }).bounds(5, this.height - 25, buttonWidth, 20).build());
-        this.claimRewards.active = this.menu.progress().isComplete() && this.menu.progress().claimedRewards().size() < this.menu.quest().rewards().size();
+        this.claimRewards.active = this.menu.progress().isComplete() && this.menu.progress().claimedRewards().size() < this.quest().rewards().size();
 
         this.overview.setSelected(true);
-
-        int contentX = (int) (this.width * 0.31f);
-        int contentY = 30;
-        int contentWidth = (int) (this.width * 0.63f);
-        int contentHeight = this.height - 45;
-
-        try {
-            this.descriptionError = null;
-            TagProvider provider = new QuestTagProvider();
-            String desc = String.join("", this.menu.quest().display().description());
-            this.description = new DocumentWidget(contentX, contentY, contentWidth, contentHeight, new DefaultTheme(), provider.parse(desc));
-        } catch (Exception e) {
-            this.descriptionError = e.getMessage();
-        }
     }
 
     @Override
@@ -107,15 +88,15 @@ public abstract class BaseQuestScreen extends AbstractQuestScreen<QuestMenu> {
         if (this.rewards != null && this.rewards.isSelected() && getRewardList() instanceof Renderable renderable) {
             renderable.render(stack, mouseX, mouseY, partialTick);
         }
-        if (this.description != null && this.overview.isSelected()) {
-            this.description.render(stack, mouseX, mouseY, partialTick);
+        if (this.overview != null && this.overview.isSelected() && getDescriptionWidget() instanceof Renderable renderable) {
+            renderable.render(stack, mouseX, mouseY, partialTick);
         }
-        if (this.descriptionError != null && this.overview.isSelected()) {
+        if (getDescriptionError() != null && this.overview.isSelected()) {
             int contentX = (int) (this.width * 0.31f) + 20;
             int contentY = 30;
             int contentWidth = (int) (this.width * 0.63f) - 40;
             int contentHeight = this.height - 45;
-            for (FormattedCharSequence sequence : Minecraft.getInstance().font.split(Component.literal(this.descriptionError), contentWidth)) {
+            for (FormattedCharSequence sequence : Minecraft.getInstance().font.split(Component.literal(getDescriptionError()), contentWidth)) {
                 int textWidth = this.font.width(sequence);
                 this.font.draw(stack, sequence, contentX + (contentWidth - textWidth) / 2f, contentY + (contentHeight - this.font.lineHeight) / 2f, 0xFF0000);
                 contentY += this.font.lineHeight;
@@ -136,20 +117,32 @@ public abstract class BaseQuestScreen extends AbstractQuestScreen<QuestMenu> {
         }
 
         List<GuiEventListener> children = new ArrayList<>();
-        if (this.tasks != null && this.tasks.isSelected()) {
+        if (getTaskList() != null && this.tasks.isSelected()) {
             children.add(getTaskList());
         }
-        if (this.rewards != null && this.rewards.isSelected()) {
+        if (getRewardList() != null && this.rewards.isSelected()) {
             children.add(getRewardList());
         }
-        if (this.description != null && this.overview.isSelected()) {
-            children.add(this.description);
+        if (getDescriptionWidget() != null && this.overview.isSelected()) {
+            children.add(getDescriptionWidget());
         }
         children.addAll(super.children());
         return children;
     }
 
+    public Quest quest() {
+        return quest(this.menu);
+    }
+
+    public static Quest quest(QuestMenu menu) {
+        return ClientQuests.get(menu.id()).map(ClientQuests.QuestEntry::value).orElse(null);
+    }
+
     public abstract GuiEventListener getTaskList();
 
     public abstract GuiEventListener getRewardList();
+
+    public abstract GuiEventListener getDescriptionWidget();
+
+    public abstract String getDescriptionError();
 }

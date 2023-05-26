@@ -4,6 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.teamresourceful.resourcefullib.client.utils.RenderUtils;
 import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.client.widgets.base.BaseModal;
+import earth.terrarium.heracles.common.constants.ConstantComponents;
 import earth.terrarium.heracles.common.network.NetworkHandler;
 import earth.terrarium.heracles.common.network.packets.quests.QuestActionPacket;
 import net.minecraft.client.Minecraft;
@@ -11,6 +12,7 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
+import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
@@ -33,7 +35,7 @@ public class TextInputModal<T> extends BaseModal {
         this.title = title;
         this.callback = callback;
         var editBox = addChild(new EditBox(Minecraft.getInstance().font, this.x + 8, this.y + 19, 152, 14, Component.nullToEmpty("Group Name")));
-        var submitButton = addChild(createButton(Component.nullToEmpty("Submit"), this.x + WIDTH - 7, this.y + HEIGHT - 20, b -> {
+        var submitButton = addChild(createButton(ConstantComponents.SUBMIT, this.x + WIDTH - 7, this.y + HEIGHT - 20, b -> {
             if (editBox != null && !editBox.getValue().isBlank()) {
                 this.callback.accept(this.data, editBox.getValue());
                 editBox.setValue("");
@@ -41,7 +43,7 @@ public class TextInputModal<T> extends BaseModal {
             }
         }));
         submitButton.active = false;
-        addChild(createButton(Component.nullToEmpty("Cancel"), submitButton.getX() - 2, this.y + HEIGHT - 20, b ->
+        addChild(createButton(CommonComponents.GUI_CANCEL, submitButton.getX() - 2, this.y + HEIGHT - 20, b ->
             this.visible = false
         ));
         editBox.setMaxLength(32);

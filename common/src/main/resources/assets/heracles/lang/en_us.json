@@ -1,10 +1,9 @@
 {
     "rewards.heracles.toast": "Rewards Claimed",
-    "gui.heracles.tasks.title": "Quest Tasks",
-    "gui.heracles.tasks.description": "Complete all tasks",
 
     "quest.heracles.in_progress": "In progress",
     "quest.heracles.completed": "Completed",
+    "quest.heracles.dependencies": "Dependencies",
 
     "quest.heracles.toast": "Quest Complete!",
     "quest.heracles.toast.desc": "Press [%s] to open",
@@ -15,5 +14,35 @@
     "item.heracles.quest_book": "Quest Book",
 
     "key.heracles.open_quests": "Open Quests",
-    "key.categories.odyssey": "Odyssey"
+    "key.categories.odyssey": "Odyssey",
+
+    "gui.heracles.pinned_quests": "Pinned Quests",
+    "gui.heracles.pinned_quests.move": "Move Pinned Quests",
+    "gui.heracles.rewards.title": "Rewards",
+    "gui.heracles.rewards.create": "Create Reward",
+    "gui.heracles.rewards.edit": "Edit Reward",
+    "gui.heracles.rewards.select_claim": "Claim this Reward",
+    "gui.heracles.rewards.claim": "Claim Rewards",
+    "gui.heracles.rewards.claim_reward": "Claim",
+    "gui.heracles.tasks.title": "Tasks",
+    "gui.heracles.tasks.description": "Complete all tasks",
+    "gui.heracles.tasks.create": "Create Task",
+    "gui.heracles.tasks.edit": "Edit Task",
+    "gui.heracles.quests.create": "Create Quest",
+    "gui.heracles.quests.import": "Import Quests",
+    "gui.heracles.quests.view": "View Quests",
+    "gui.heracles.quests.overview": "Overview",
+    "gui.heracles.group.create": "Create Group",
+    "gui.heracles.group.delete": "You can't delete this while it has quests.",
+    "gui.heracles.tools.move": "Move/Select [V]",
+    "gui.heracles.tools.drag": "Hand/Drag Tool [H]",
+    "gui.heracles.tools.add_quest": "Add Quest [U]",
+    "gui.heracles.tools.link": "Link Tool [L]",
+    "gui.heracles.save": "Save",
+    "gui.heracles.close": "Close",
+    "gui.heracles.submit": "Submit",
+    "gui.heracles.search": "Search",
+    "gui.heracles.delete": "Delete",
+    "gui.heracles.id": "Identifier",
+    "gui.heracles.toggle_edit": "Toggle Edit Mode"
 }

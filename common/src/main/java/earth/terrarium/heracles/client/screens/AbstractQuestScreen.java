@@ -5,12 +5,14 @@ import com.teamresourceful.resourcefullib.client.screens.AbstractContainerCursor
 import com.teamresourceful.resourcefullib.client.utils.RenderUtils;
 import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.client.widgets.base.TemporyWidget;
+import earth.terrarium.heracles.common.constants.ConstantComponents;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.components.ImageButton;
 import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.components.events.GuiEventListener;
+import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
@@ -40,13 +42,13 @@ public abstract class AbstractQuestScreen<T extends AbstractContainerMenu> exten
         if (hasBackButton) {
             addRenderableWidget(new ImageButton(1, 1, 11, 11, 0, 15, 11, HEADING, 256, 256, (button) ->
                 goBack()
-            )).setTooltip(Tooltip.create(Component.literal("Back")));
+            )).setTooltip(Tooltip.create(CommonComponents.GUI_BACK));
         }
         addRenderableWidget(new ImageButton(this.width - 12, 1, 11, 11, 11, 15, 11, HEADING, 256, 256, (button) -> {
             if (this.minecraft != null && this.minecraft.player != null) {
                 this.minecraft.player.closeContainer();
             }
-        })).setTooltip(Tooltip.create(Component.literal("Close")));
+        })).setTooltip(Tooltip.create(ConstantComponents.CLOSE));
     }
 
     @Override

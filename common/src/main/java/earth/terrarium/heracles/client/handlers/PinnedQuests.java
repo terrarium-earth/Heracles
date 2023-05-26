@@ -5,6 +5,7 @@ import earth.terrarium.heracles.api.tasks.QuestTask;
 import earth.terrarium.heracles.api.tasks.QuestTaskDisplayFormatter;
 import earth.terrarium.heracles.api.tasks.client.display.TaskTitleFormatter;
 import earth.terrarium.heracles.client.screens.pinned.PinnedDisplay;
+import earth.terrarium.heracles.common.constants.ConstantComponents;
 import earth.terrarium.heracles.common.handlers.progress.QuestProgress;
 import earth.terrarium.heracles.common.utils.ModUtils;
 import net.minecraft.Optionull;
@@ -42,14 +43,14 @@ public final class PinnedQuests {
                     for (int i = 0; i < components.size(); i++) {
                         if (i == 0) {
                             tasks.add(FormattedCharSequence.composite(
-                                Component.literal(" • ").getVisualOrderText(),
+                                ConstantComponents.DOT.getVisualOrderText(),
                                 components.get(i),
-                                Component.literal(" - ").getVisualOrderText(),
+                                ConstantComponents.DASH.getVisualOrderText(),
                                 taskProgress.getVisualOrderText()
                             ));
                         } else {
                             tasks.add(FormattedCharSequence.composite(
-                                Component.literal(" — ").getVisualOrderText(),
+                                ConstantComponents.EM_DASH.getVisualOrderText(),
                                 components.get(i)
                             ));
                         }
@@ -61,7 +62,7 @@ public final class PinnedQuests {
                     completion,
                     Component.empty()
                         .append(quest.display().title())
-                        .append(Component.literal(" - "))
+                        .append(ConstantComponents.DASH)
                         .append(String.format("%.0f%%", completion * 100)),
                     tasks
                 ));

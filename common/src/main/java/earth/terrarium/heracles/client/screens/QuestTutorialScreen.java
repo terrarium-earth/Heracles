@@ -4,6 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.teamresourceful.resourcefullib.client.screens.BaseCursorScreen;
 import earth.terrarium.heracles.client.handlers.DisplayConfig;
 import earth.terrarium.heracles.client.handlers.QuestTutorial;
+import earth.terrarium.heracles.common.constants.ConstantComponents;
 import earth.terrarium.heracles.common.network.NetworkHandler;
 import earth.terrarium.heracles.common.network.packets.groups.OpenGroupPacket;
 import earth.terrarium.hermes.api.DefaultTagProvider;
@@ -14,7 +15,6 @@ import earth.terrarium.hermes.client.DocumentWidget;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.network.chat.CommonComponents;
-import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -46,7 +46,7 @@ public class QuestTutorialScreen extends BaseCursorScreen {
         }
         this.document = addRenderableOnly(new DocumentWidget(widgetWidth / 2, 20, widgetWidth, height - 60, new DefaultTheme(), elements));
         int buttonX = (this.width - 150) / 2;
-        addRenderableWidget(Button.builder(Component.literal("View Quests"), button -> {
+        addRenderableWidget(Button.builder(ConstantComponents.Quests.VIEW, button -> {
             DisplayConfig.save();
             saved = true;
             NetworkHandler.CHANNEL.sendToServer(new OpenGroupPacket("", false));

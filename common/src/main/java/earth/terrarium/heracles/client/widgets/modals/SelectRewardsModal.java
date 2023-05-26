@@ -9,10 +9,10 @@ import earth.terrarium.heracles.api.client.DisplayWidget;
 import earth.terrarium.heracles.api.rewards.QuestReward;
 import earth.terrarium.heracles.api.rewards.client.QuestRewardWidgets;
 import earth.terrarium.heracles.client.widgets.base.BaseModal;
+import earth.terrarium.heracles.common.constants.ConstantComponents;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.components.Button;
-import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 
 import java.util.*;
@@ -32,7 +32,7 @@ public class SelectRewardsModal extends BaseModal {
     public SelectRewardsModal(int screenWidth, int screenHeight) {
         super(screenWidth, screenHeight, (int) (screenWidth * 0.75f), (int) (screenHeight * 0.8f));
 
-        addChild(Button.builder(Component.literal("Claim"), b -> {
+        addChild(Button.builder(ConstantComponents.Rewards.CLAIM_REWARD, b -> {
             this.setVisible(false);
             if (callback != null) {
                 callback.accept(selected);

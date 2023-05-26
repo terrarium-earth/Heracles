@@ -6,6 +6,7 @@ import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.client.widgets.Dropdown;
 import earth.terrarium.heracles.client.widgets.base.BaseModal;
 import earth.terrarium.heracles.client.widgets.boxes.PlaceholerEditBox;
+import earth.terrarium.heracles.common.constants.ConstantComponents;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.Gui;
@@ -41,12 +42,12 @@ public class CreateObjectModal extends BaseModal {
             ResourceLocation::toString
         ));
 
-        Button submitButton = addChild(createButton(Component.nullToEmpty("Submit"), this.x + WIDTH - 7, this.y + HEIGHT - 20, b -> onSubmit()));
+        Button submitButton = addChild(createButton(ConstantComponents.SUBMIT, this.x + WIDTH - 7, this.y + HEIGHT - 20, b -> onSubmit()));
         submitButton.active = false;
-        addChild(createButton(Component.nullToEmpty("Cancel"), submitButton.getX() - 2, this.y + HEIGHT - 20, b ->
+        addChild(createButton(CommonComponents.GUI_CANCEL, submitButton.getX() - 2, this.y + HEIGHT - 20, b ->
             this.visible = false
         ));
-        this.nameBox = addChild(new PlaceholerEditBox(Minecraft.getInstance().font, this.x + 8, this.y + 46, 152, 14, Component.literal("Identifier")));
+        this.nameBox = addChild(new PlaceholerEditBox(Minecraft.getInstance().font, this.x + 8, this.y + 46, 152, 14, ConstantComponents.ID));
         BooleanSupplier valid = () -> !nameBox.getValue().trim().isEmpty() && this.typeBox.value() != null && validator.test(this.typeBox.value(), nameBox.getValue().trim());
         nameBox.setMaxLength(32);
         nameBox.setResponder(s -> submitButton.active = valid.getAsBoolean());

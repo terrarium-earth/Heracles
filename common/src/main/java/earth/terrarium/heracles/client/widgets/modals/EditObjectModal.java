@@ -5,12 +5,14 @@ import com.teamresourceful.resourcefullib.client.scissor.ScissorBoxStack;
 import com.teamresourceful.resourcefullib.client.utils.RenderUtils;
 import earth.terrarium.heracles.api.client.settings.SettingInitializer;
 import earth.terrarium.heracles.client.widgets.base.BaseModal;
+import earth.terrarium.heracles.common.constants.ConstantComponents;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.layouts.LayoutElement;
+import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
@@ -29,11 +31,12 @@ public class EditObjectModal extends BaseModal {
     private int lastFullHeight;
 
     private Consumer<SettingInitializer.Data> save;
+    private Component title = CommonComponents.EMPTY;
 
     public EditObjectModal(int screenWidth, int screenHeight) {
         super(screenWidth, screenHeight, (int) (screenWidth * 0.75f), (int) (screenHeight * 0.8f));
 
-        addChild(Button.builder(Component.literal("Save"), b -> {
+        addChild(Button.builder(ConstantComponents.SAVE, b -> {
             this.setVisible(false);
             if (save != null) {
                 SettingInitializer.Data data = new SettingInitializer.Data();
@@ -53,7 +56,7 @@ public class EditObjectModal extends BaseModal {
 
     @Override
     protected void renderForeground(PoseStack pose, int mouseX, int mouseY, float partialTick) {
-        font.draw(pose, Component.literal("Edit Task"), this.x + 10, this.y + 7, 0x404040);
+        font.draw(pose, this.title, this.x + 10, this.y + 7, 0x404040);
 
         int fullHeight = 0;
         int x = this.x + (int) (this.width * 0.55f);
@@ -111,5 +114,9 @@ public class EditObjectModal extends BaseModal {
             this.widgets.put(s, (GuiEventListener) data.get((int) (this.width * 0.4f), s));
         }
         this.save = save;
+    }
+
+    public void setTitle(Component title) {
+        this.title = title;
     }
 }

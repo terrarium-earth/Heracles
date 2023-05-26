@@ -14,6 +14,7 @@ import earth.terrarium.heracles.client.screens.quest.tasks.TaskListWidget;
 import earth.terrarium.heracles.client.widgets.base.TemporyWidget;
 import earth.terrarium.heracles.client.widgets.modals.CreateObjectModal;
 import earth.terrarium.heracles.client.widgets.modals.EditObjectModal;
+import earth.terrarium.heracles.common.constants.ConstantComponents;
 import earth.terrarium.heracles.common.menus.quest.QuestMenu;
 import earth.terrarium.heracles.common.network.NetworkHandler;
 import earth.terrarium.heracles.common.network.packets.quests.OpenQuestPacket;
@@ -78,7 +79,7 @@ public class QuestEditScreen extends BaseQuestScreen {
             this.createModal.update(
                 (type, id) -> creator.accept(id, QuestTasks.get(type)),
                 (type, id) -> !this.quest().tasks().containsKey(id) && QuestTasks.types().containsKey(type),
-                Component.literal("Create Task"),
+                ConstantComponents.Tasks.CREATE,
                 QuestTasks.types().values()
                     .stream()
                     .filter(questTaskType -> Settings.getFactory(questTaskType) != null)
@@ -113,7 +114,7 @@ public class QuestEditScreen extends BaseQuestScreen {
             this.createModal.update(
                 (type, id) -> creator.accept(id, QuestRewards.get(type)),
                 (type, id) -> !this.quest().rewards().containsKey(id) && QuestRewards.types().containsKey(type),
-                Component.literal("Create Reward"),
+                ConstantComponents.Rewards.CREATE,
                 QuestRewards.types().values()
                     .stream()
                     .filter(questRewardType -> Settings.getFactory(questRewardType) != null)
@@ -127,7 +128,7 @@ public class QuestEditScreen extends BaseQuestScreen {
         if (Minecraft.getInstance().player != null && Minecraft.getInstance().player.hasPermissions(2)) {
             addRenderableWidget(new ImageButton(this.width - 24, 1, 11, 11, 33, 15, 11, HEADING, 256, 256, (button) ->
                 NetworkHandler.CHANNEL.sendToServer(new OpenQuestPacket(this.menu.fromGroup(), this.menu.id(), false))
-            )).setTooltip(Tooltip.create(Component.literal("Toggle Edit Mode")));
+            )).setTooltip(Tooltip.create(ConstantComponents.TOGGLE_EDIT));
         }
 
         this.descriptionBox = new MultiLineEditBox(this.font, contentX, contentY, contentWidth, contentHeight, CommonComponents.EMPTY, CommonComponents.EMPTY);
@@ -155,6 +156,7 @@ public class QuestEditScreen extends BaseQuestScreen {
             if (newTask == null) return;
             consumer.accept(ModUtils.cast(newTask));
         });
+        widget.setTitle(ConstantComponents.Tasks.EDIT);
         if (!found) {
             this.addTemporary(widget);
         }
@@ -181,6 +183,7 @@ public class QuestEditScreen extends BaseQuestScreen {
             if (newReward == null) return;
             consumer.accept(ModUtils.cast(newReward));
         });
+        widget.setTitle(ConstantComponents.Rewards.EDIT);
         if (!found) {
             this.addTemporary(widget);
         }

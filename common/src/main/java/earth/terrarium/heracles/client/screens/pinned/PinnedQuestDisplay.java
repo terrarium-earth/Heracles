@@ -7,11 +7,11 @@ import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.client.handlers.DisplayConfig;
 import earth.terrarium.heracles.client.handlers.PinnedQuests;
 import earth.terrarium.heracles.client.utils.ClientUtils;
+import earth.terrarium.heracles.common.constants.ConstantComponents;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.screens.ChatScreen;
-import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
@@ -45,15 +45,15 @@ public class PinnedQuestDisplay {
             Gui.renderOutline(stack, x, y, PinnedQuests.width() + 10, PinnedQuests.height() + 2, 0xFFFFFFFF);
         }
 
-        int titleX = x + (PinnedQuests.width() + 10 - font.width("Pinned Quests")) / 2;
+        int titleX = x + (PinnedQuests.width() + 10 - font.width(ConstantComponents.PinnedQuests.TITLE)) / 2;
 
-        font.draw(stack, Component.literal("Pinned Quests"), titleX, y + 2, 0xFF808080);
+        font.draw(stack, ConstantComponents.PinnedQuests.TITLE, titleX, y + 2, 0xFF808080);
 
         if (hovered) {
             RenderUtils.bindTexture(MOVE_ICON);
             Gui.blit(stack, x + PinnedQuests.width(), y + 1, 0, 0, 9, 9, 9, 9);
             if (mouseX >= x + PinnedQuests.width() && mouseX <= x + PinnedQuests.width() + 9 && mouseY >= y + 1 && mouseY <= y + 10) {
-                ClientUtils.setTooltip(Component.translatable("heracles.tooltip.move_pinned"));
+                ClientUtils.setTooltip(ConstantComponents.PinnedQuests.MOVE);
             }
         }
 
@@ -61,7 +61,7 @@ public class PinnedQuestDisplay {
 
         for (PinnedDisplay display : pinnedQuests) {
             boolean collapsed = PinnedQuests.isCollapsed(display.quest().key());
-            MutableComponent title = collapsed ? Component.literal("▶ ") : Component.literal("▼ ");
+            MutableComponent title = collapsed ? ConstantComponents.ARROW_RIGHT.copy().append(" ") : ConstantComponents.ARROW_DOWN.copy().append(" ");
             title = title.append(display.title());
             font.draw(stack, title, x + 5, y, 0xFFFFFFFF);
             if (!PinnedQuests.isCollapsed(display.quest().key())) {

@@ -7,6 +7,7 @@ import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.api.quests.Quest;
 import earth.terrarium.heracles.client.widgets.base.BaseModal;
 import earth.terrarium.heracles.client.widgets.base.FileWidget;
+import earth.terrarium.heracles.common.constants.ConstantComponents;
 import earth.terrarium.heracles.common.network.NetworkHandler;
 import earth.terrarium.heracles.common.network.packets.quests.QuestActionPacket;
 import earth.terrarium.heracles.common.network.packets.quests.UploadQuestPacket;
@@ -14,6 +15,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
@@ -35,7 +37,7 @@ public class UploadModal extends BaseModal implements FileWidget {
 
     public UploadModal(int screenWidth, int screenHeight) {
         super(screenWidth, screenHeight, WIDTH, HEIGHT);
-        var submitButton = addChild(createButton(Component.nullToEmpty("Submit"), this.x + WIDTH - 7, this.y + HEIGHT - 20, b -> {
+        var submitButton = addChild(createButton(ConstantComponents.SUBMIT, this.x + WIDTH - 7, this.y + HEIGHT - 20, b -> {
             var iterator = items.iterator();
             while (iterator.hasNext()) {
                 var item = iterator.next();
@@ -50,7 +52,7 @@ public class UploadModal extends BaseModal implements FileWidget {
                 setVisible(false);
             }
         }));
-        addChild(createButton(Component.nullToEmpty("Cancel"), submitButton.getX() - 2, this.y + HEIGHT - 20, b -> {
+        addChild(createButton(CommonComponents.GUI_CANCEL, submitButton.getX() - 2, this.y + HEIGHT - 20, b -> {
             items.clear();
             visible = false;
         }));

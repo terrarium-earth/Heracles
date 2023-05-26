@@ -8,11 +8,11 @@ import com.teamresourceful.resourcefullib.client.screens.CursorScreen;
 import com.teamresourceful.resourcefullib.client.utils.CursorUtils;
 import earth.terrarium.heracles.client.handlers.ClientQuests;
 import earth.terrarium.heracles.client.utils.ClientUtils;
+import earth.terrarium.heracles.common.constants.ConstantComponents;
 import earth.terrarium.heracles.common.network.NetworkHandler;
 import earth.terrarium.heracles.common.network.packets.groups.DeleteGroupPacket;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
-import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -82,9 +82,7 @@ public class GroupsList extends SelectionList<GroupsList.Entry> {
                 if (mouseX - left >= width - 11 && mouseX - left <= width - 2 && mouseY - top >= 2 && mouseY - top <= 12 && hovered) {
                     boolean cant = !ClientQuests.byGroup(name).isEmpty() || this.list.children().size() == 1;
                     CursorUtils.setCursor(cant, CursorScreen.Cursor.DISABLED);
-                    ClientUtils.setTooltip(
-                        Component.literal(cant ? "Cannot delete group with quests in it" : "Click to delete this group")
-                    );
+                    ClientUtils.setTooltip(cant ? ConstantComponents.Groups.DELETE_WITH_QUESTS : ConstantComponents.DELETE);
                     Minecraft.getInstance().font.draw(stack, "x", left + width - 9, top + 2, 0xFFFFFF);
                 } else if (hovered) {
                     Minecraft.getInstance().font.draw(stack, "x", left + width - 9, top + 2, 0x808080);

@@ -38,7 +38,7 @@ public class TaskListWidget extends AbstractContainerEventHandler implements Ren
 
     private static final HeadingWidget IN_PROGRESS = new HeadingWidget(Component.translatable("quest.heracles.in_progress"), 0xFF5691FF);
     private static final HeadingWidget COMPLETED = new HeadingWidget(Component.translatable("quest.heracles.completed"), 0xFF04CB40);
-    private static final HeadingWidget DEPENDENCIES = new HeadingWidget(Component.literal("Dependencies"), 0xFF000080);
+    private static final HeadingWidget DEPENDENCIES = new HeadingWidget(Component.translatable("quest.heracles.dependencies"), 0xFF000080);
 
     private final List<MutablePair<QuestTask<?, ?, ?>, DisplayWidget>> widgets = new ArrayList<>();
 

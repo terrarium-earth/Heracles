@@ -7,6 +7,7 @@ import earth.terrarium.heracles.client.handlers.ClientQuests;
 import earth.terrarium.heracles.client.screens.AbstractQuestScreen;
 import earth.terrarium.heracles.client.widgets.SelectableTabButton;
 import earth.terrarium.heracles.client.widgets.base.TemporyWidget;
+import earth.terrarium.heracles.common.constants.ConstantComponents;
 import earth.terrarium.heracles.common.menus.quest.QuestMenu;
 import earth.terrarium.heracles.common.network.NetworkHandler;
 import earth.terrarium.heracles.common.network.packets.groups.OpenGroupPacket;
@@ -43,22 +44,22 @@ public abstract class BaseQuestScreen extends AbstractQuestScreen<QuestMenu> {
         int sidebarWidth = (int) (this.width * 0.25f) - 2;
         int buttonWidth = sidebarWidth - 10;
 
-        this.overview = addRenderableWidget(new SelectableTabButton(5, 20, buttonWidth, 20, Component.literal("Overview"), () -> {
+        this.overview = addRenderableWidget(new SelectableTabButton(5, 20, buttonWidth, 20, ConstantComponents.Quests.OVERVIEW, () -> {
             clearSelected();
             this.overview.setSelected(true);
         }));
 
-        this.tasks = addRenderableWidget(new SelectableTabButton(5, 45, buttonWidth, 20, Component.literal("Tasks"), () -> {
+        this.tasks = addRenderableWidget(new SelectableTabButton(5, 45, buttonWidth, 20, ConstantComponents.Tasks.TITLE, () -> {
             clearSelected();
             this.tasks.setSelected(true);
         }));
 
-        this.rewards = addRenderableWidget(new SelectableTabButton(5, 70, buttonWidth, 20, Component.literal("Rewards"), () -> {
+        this.rewards = addRenderableWidget(new SelectableTabButton(5, 70, buttonWidth, 20, ConstantComponents.Rewards.TITLE, () -> {
             clearSelected();
             this.rewards.setSelected(true);
         }));
 
-        this.claimRewards = addRenderableWidget(Button.builder(Component.literal("Claim Rewards"), button -> {
+        this.claimRewards = addRenderableWidget(Button.builder(ConstantComponents.Rewards.CLAIM, button -> {
             NetworkHandler.CHANNEL.sendToServer(new ClaimRewardsPacket(this.menu.id()));
             this.claimRewards.active = false;
         }).bounds(5, this.height - 25, buttonWidth, 20).build());

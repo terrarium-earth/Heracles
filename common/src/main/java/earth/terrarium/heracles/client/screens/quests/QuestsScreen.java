@@ -6,6 +6,7 @@ import earth.terrarium.heracles.client.handlers.ClientQuests;
 import earth.terrarium.heracles.client.screens.AbstractQuestScreen;
 import earth.terrarium.heracles.client.screens.MouseMode;
 import earth.terrarium.heracles.client.widgets.modals.ConfirmModal;
+import earth.terrarium.heracles.common.constants.ConstantComponents;
 import earth.terrarium.heracles.common.menus.quests.QuestsMenu;
 import earth.terrarium.heracles.common.network.NetworkHandler;
 import earth.terrarium.heracles.common.network.packets.groups.OpenGroupPacket;
@@ -39,7 +40,7 @@ public class QuestsScreen extends AbstractQuestScreen<QuestsMenu> {
         if (Minecraft.getInstance().player != null && Minecraft.getInstance().player.hasPermissions(2)) {
             addRenderableWidget(new ImageButton(this.width - 24, 1, 11, 11, 33, 15, 11, HEADING, 256, 256, (button) ->
                 NetworkHandler.CHANNEL.sendToServer(new OpenGroupPacket(this.menu.group(), this.getClass() == QuestsScreen.class))
-            )).setTooltip(Tooltip.create(Component.literal("Toggle Edit Mode")));
+            )).setTooltip(Tooltip.create(ConstantComponents.TOGGLE_EDIT));
         }
         List<Pair<ClientQuests.QuestEntry, ModUtils.QuestStatus>> quests = new ArrayList<>();
         menu.quests().forEach((id, status) ->

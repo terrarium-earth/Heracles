@@ -14,6 +14,7 @@ import earth.terrarium.heracles.client.screens.quest.BaseQuestScreen;
 import earth.terrarium.heracles.client.utils.ClientUtils;
 import earth.terrarium.heracles.client.widgets.base.TemporyWidget;
 import earth.terrarium.heracles.client.widgets.modals.SelectRewardsModal;
+import earth.terrarium.heracles.common.constants.ConstantComponents;
 import earth.terrarium.heracles.common.handlers.progress.QuestProgress;
 import earth.terrarium.heracles.common.network.NetworkHandler;
 import earth.terrarium.heracles.common.network.packets.rewards.ClaimSelectableRewardsPacket;
@@ -67,7 +68,7 @@ public record SelectableRewardWidget(SelectableReward reward, String quest,
 
         if (buttonHovered) {
             CursorUtils.setCursor(true, progress != null && progress.canClaim(reward.id()) ? CursorScreen.Cursor.POINTER : CursorScreen.Cursor.DISABLED);
-            ClientUtils.setTooltip(Component.literal("Claim this reward"));
+            ClientUtils.setTooltip(ConstantComponents.Rewards.SELECT_CLAIM);
         }
     }
 

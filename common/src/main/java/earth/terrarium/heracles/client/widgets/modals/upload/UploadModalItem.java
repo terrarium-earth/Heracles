@@ -10,6 +10,7 @@ import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.api.quests.Quest;
 import earth.terrarium.heracles.client.handlers.ClientQuests;
 import earth.terrarium.heracles.client.utils.ClientUtils;
+import earth.terrarium.heracles.common.constants.ConstantComponents;
 import earth.terrarium.heracles.common.utils.ModUtils;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
@@ -106,7 +107,7 @@ public record UploadModalItem(Path path, @Nullable Quest quest, String size, Lis
         font.draw(pose, this.size, x + 13, y + 6 + font.lineHeight, 0xFFFFFF);
         if (hovering) {
             if (hoveringRemove) {
-                ClientUtils.setTooltip(Component.literal("Remove"));
+                ClientUtils.setTooltip(ConstantComponents.DELETE);
             } else if (!this.error.isEmpty() && mouseX >= x && mouseX <= x + WIDTH && mouseY >= y && mouseY <= y + HEIGHT) {
                 ClientUtils.setTooltip(this.error);
             }

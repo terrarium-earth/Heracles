@@ -8,6 +8,7 @@ import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.client.utils.ClientUtils;
 import earth.terrarium.heracles.client.widgets.ToggleImageButton;
 import earth.terrarium.heracles.client.widgets.base.BaseModal;
+import earth.terrarium.heracles.common.constants.ConstantComponents;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.Gui;
@@ -57,7 +58,7 @@ public class IconModal extends BaseModal {
             }
         })).setTooltip(Tooltip.create(Component.literal("Switch Mode")));
 
-        this.search = addChild(new EditBox(Minecraft.getInstance().font, x + 8, y + 19, 152, 14, Component.nullToEmpty("Search")));
+        this.search = addChild(new EditBox(Minecraft.getInstance().font, x + 8, y + 19, 152, 14, ConstantComponents.SEARCH));
     }
 
     @Override

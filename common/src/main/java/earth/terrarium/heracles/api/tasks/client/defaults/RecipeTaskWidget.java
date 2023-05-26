@@ -10,6 +10,7 @@ import earth.terrarium.heracles.api.client.WidgetUtils;
 import earth.terrarium.heracles.api.tasks.QuestTaskDisplayFormatter;
 import earth.terrarium.heracles.api.tasks.client.display.TaskTitleFormatter;
 import earth.terrarium.heracles.api.tasks.defaults.RecipeTask;
+import earth.terrarium.heracles.common.constants.ConstantComponents;
 import earth.terrarium.heracles.common.handlers.progress.TaskProgress;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -81,7 +82,7 @@ public final class RecipeTaskWidget implements DisplayWidget {
 
         if (isOpened) {
             for (Component title : titles) {
-                font.draw(pose, Component.literal("• ").append(title), x + iconSize + 13, y, 0xFFa0a0a0);
+                font.draw(pose, ConstantComponents.DOT.copy().append(title), x + iconSize + 13, y, 0xFFa0a0a0);
                 y += font.lineHeight + 2;
             }
         }

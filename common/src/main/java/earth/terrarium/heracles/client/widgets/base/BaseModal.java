@@ -7,11 +7,11 @@ import com.teamresourceful.resourcefullib.client.utils.CursorUtils;
 import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.client.screens.AbstractQuestScreen;
 import earth.terrarium.heracles.client.utils.ClientUtils;
+import earth.terrarium.heracles.common.constants.ConstantComponents;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.components.ImageButton;
 import net.minecraft.client.gui.components.Tooltip;
-import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
 public abstract class BaseModal extends BaseWidget implements TemporyWidget {
@@ -39,7 +39,7 @@ public abstract class BaseModal extends BaseWidget implements TemporyWidget {
 
         addChild(new ImageButton(this.x + width - 18, this.y + 5, 11, 11, 11, 15, 11, AbstractQuestScreen.HEADING, 256, 256, b ->
             setVisible(false)
-        )).setTooltip(Tooltip.create(Component.literal("Close")));
+        )).setTooltip(Tooltip.create(ConstantComponents.CLOSE));
     }
 
     @Override

@@ -10,6 +10,7 @@ import earth.terrarium.heracles.client.screens.AbstractQuestScreen;
 import earth.terrarium.heracles.client.utils.ClientUtils;
 import earth.terrarium.heracles.client.widgets.base.BaseWidget;
 import earth.terrarium.heracles.client.widgets.boxes.IntEditBox;
+import earth.terrarium.heracles.common.constants.ConstantComponents;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.Gui;
@@ -54,7 +55,7 @@ public class SelectQuestWidget extends BaseWidget {
 
         int boxWidth = (this.width - 40) / 2;
 
-        this.xBox = this.addChild(new PositionBox(this.font, this.x + 16, this.y + 44, boxWidth, 10, Component.literal("x")));
+        this.xBox = this.addChild(new PositionBox(this.font, this.x + 16, this.y + 44, boxWidth, 10, ConstantComponents.X));
         this.yBox = this.addChild(new PositionBox(this.font, this.x + 33 + boxWidth, this.y + 44, boxWidth, 10, Component.literal("y")));
         this.xBox.setNumberResponder(value -> changeOption(quest -> quest.display().position(this.group).x = value));
         this.yBox.setNumberResponder(value -> changeOption(quest -> quest.display().position(this.group).y = value));
@@ -107,7 +108,7 @@ public class SelectQuestWidget extends BaseWidget {
                     });
                 }
             }).bounds(this.x + 60, this.y + 137, 16, 16)
-            .tooltip(Tooltip.create(Component.literal("Delete Quest")))
+            .tooltip(Tooltip.create(ConstantComponents.DELETE))
             .build());
     }
 

@@ -14,6 +14,7 @@ import earth.terrarium.heracles.client.widgets.modals.TextInputModal;
 import earth.terrarium.heracles.client.widgets.modals.icon.IconModal;
 import earth.terrarium.heracles.client.widgets.modals.icon.background.IconBackgroundModal;
 import earth.terrarium.heracles.client.widgets.modals.upload.UploadModal;
+import earth.terrarium.heracles.common.constants.ConstantComponents;
 import earth.terrarium.heracles.common.menus.quests.QuestsMenu;
 import earth.terrarium.heracles.common.network.NetworkHandler;
 import earth.terrarium.heracles.common.network.packets.groups.CreateGroupPacket;
@@ -53,7 +54,7 @@ public class QuestsEditScreen extends QuestsScreen {
             if (this.groupModal != null) {
                 this.groupModal.setVisible(true);
             }
-        })).setTooltip(Tooltip.create(Component.literal("Add Group")));
+        })).setTooltip(Tooltip.create(ConstantComponents.Groups.CREATE));
 
         selectQuestWidget = new SelectQuestWidget(
             (int) (this.width * 0.75f) + 2,
@@ -72,36 +73,36 @@ public class QuestsEditScreen extends QuestsScreen {
                 selectQuestWidget.setEntry(questsWidget.selectHandler().selectedQuest().entry());
             }
         }));
-        this.moveTool.setTooltip(Tooltip.create(Component.literal("Move/Select [V]")));
+        this.moveTool.setTooltip(Tooltip.create(ConstantComponents.Tools.MOVE));
 
         this.dragTool = addRenderableWidget(new SelectableImageButton(sidebarWidth + 15, 1, 11, 11, 11, 37, 11, HEADING, 256, 256, (button) -> {
             updateButtons();
             clearWidget();
         }));
-        this.dragTool.setTooltip(Tooltip.create(Component.literal("Hand/Drag Tool [H]")));
+        this.dragTool.setTooltip(Tooltip.create(ConstantComponents.Tools.DRAG));
 
         this.addTool = addRenderableWidget(new SelectableImageButton(sidebarWidth + 27, 1, 11, 11, 22, 37, 11, HEADING, 256, 256, (button) -> {
             updateButtons();
             clearWidget();
         }));
-        this.addTool.setTooltip(Tooltip.create(Component.literal("Add Quest Tool [U]")));
+        this.addTool.setTooltip(Tooltip.create(ConstantComponents.Tools.ADD_QUEST));
 
         this.linkTool = addRenderableWidget(new SelectableImageButton(sidebarWidth + 39, 1, 11, 11, 0, 59, 11, HEADING, 256, 256, (button) -> {
             updateButtons();
             clearWidget();
         }));
-        this.linkTool.setTooltip(Tooltip.create(Component.literal("Link Tool [L]")));
+        this.linkTool.setTooltip(Tooltip.create(ConstantComponents.Tools.LINK));
 
         addRenderableWidget(new ImageButton(this.width - 36, 1, 11, 11, 33, 37, 11, HEADING, 256, 256, (button) -> {
             if (this.uploadModal != null) {
                 this.uploadModal.setVisible(true);
             }
-        })).setTooltip(Tooltip.create(Component.literal("Import Quests")));
+        })).setTooltip(Tooltip.create(ConstantComponents.Quests.IMPORT));
 
         this.dragTool.setSelected(true);
 
         this.uploadModal = addTemporary(new UploadModal(this.width, this.height));
-        this.groupModal = addTemporary(new TextInputModal<>(this.width, this.height, Component.literal("Create Group"), (ignored, text) -> {
+        this.groupModal = addTemporary(new TextInputModal<>(this.width, this.height, ConstantComponents.Groups.CREATE, (ignored, text) -> {
             NetworkHandler.CHANNEL.sendToServer(new CreateGroupPacket(text));
             ClientQuests.groups().add(text);
             if (Minecraft.getInstance().screen instanceof QuestsScreen screen) {
@@ -111,7 +112,7 @@ public class QuestsEditScreen extends QuestsScreen {
         this.iconBackgroundModal = addTemporary(new IconBackgroundModal(this.width, this.height));
         this.iconModal = addTemporary(new IconModal(this.width, this.height));
         this.dependencyModal = addTemporary(new AddDependencyModal(this.width, this.height));
-        this.questModal = addTemporary(new TextInputModal<>(this.width, this.height, Component.literal("Create Quest"), (position, text) -> {
+        this.questModal = addTemporary(new TextInputModal<>(this.width, this.height, ConstantComponents.Quests.CREATE, (position, text) -> {
             MouseClick local = this.questsWidget.getLocal(position);
             QuestDisplay display = QuestDisplay.createDefault();
             display.position(this.menu.group()).set((int) local.x() - 12, (int) local.y() - 12);

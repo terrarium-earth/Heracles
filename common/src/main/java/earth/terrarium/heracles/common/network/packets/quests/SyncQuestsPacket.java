@@ -1,13 +1,13 @@
 package earth.terrarium.heracles.common.network.packets.quests;
 
 import com.mojang.serialization.Codec;
+import com.teamresourceful.resourcefullib.common.networking.PacketHelper;
 import com.teamresourceful.resourcefullib.common.networking.base.Packet;
 import com.teamresourceful.resourcefullib.common.networking.base.PacketContext;
 import com.teamresourceful.resourcefullib.common.networking.base.PacketHandler;
 import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.api.quests.Quest;
 import earth.terrarium.heracles.client.handlers.ClientQuests;
-import earth.terrarium.heracles.common.utils.PacketHelper;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 
@@ -33,14 +33,14 @@ public record SyncQuestsPacket(Map<String, Quest> quests, List<String> groups) i
 
         @Override
         public void encode(SyncQuestsPacket message, FriendlyByteBuf buffer) {
-            PacketHelper.writeWithYabn(Heracles.getRegistryAccess(), buffer, QUEST_MAP_CODEC, message.quests(), true);
+            PacketHelper.writeWithRegistryYabn(Heracles.getRegistryAccess(), buffer, QUEST_MAP_CODEC, message.quests(), true);
             buffer.writeCollection(message.groups(), FriendlyByteBuf::writeUtf);
         }
 
         @Override
         public SyncQuestsPacket decode(FriendlyByteBuf buffer) {
             return new SyncQuestsPacket(
-                PacketHelper.readWithYabn(Heracles.getRegistryAccess(), buffer, QUEST_MAP_CODEC, true).get().orThrow(),
+                PacketHelper.readWithRegistryYabn(Heracles.getRegistryAccess(), buffer, QUEST_MAP_CODEC, true).get().orThrow(),
                 buffer.readList(FriendlyByteBuf::readUtf)
             );
         }

@@ -1,13 +1,11 @@
 package earth.terrarium.heracles.client.screens;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.teamresourceful.resourcefullib.client.screens.AbstractContainerCursorScreen;
-import com.teamresourceful.resourcefullib.client.utils.RenderUtils;
 import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.client.widgets.base.TemporyWidget;
 import earth.terrarium.heracles.common.constants.ConstantComponents;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Gui;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.ImageButton;
 import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.gui.components.Tooltip;
@@ -72,19 +70,22 @@ public abstract class AbstractQuestScreen<T extends AbstractContainerMenu> exten
     }
 
     @Override
-    protected void renderBg(PoseStack stack, float partialTick, int mouseX, int mouseY) {
-        fill(stack, 0, 0, width, height, 0xD0000000);
-        RenderUtils.bindTexture(HEADING);
-        Gui.blitRepeating(stack, 0, 0, this.width, 15, 0, 0, 128, 15);
+    protected void renderBg(GuiGraphics graphics, float partialTick, int mouseX, int mouseY) {
+        graphics.fill(0, 0, width, height, 0xD0000000);
+        graphics.blitRepeating(HEADING, 0, 0, this.width, 15, 0, 0, 128, 15);
         int sidebarWidth = (int) (this.width * 0.25f) - 2;
-        Gui.blitRepeating(stack, sidebarWidth, 15, 2, this.height - 15, 128, 0, 2, 256);
-        Gui.fill(stack, sidebarWidth, 0, sidebarWidth + 2, 13, 0x80808080);
+        graphics.blitRepeating(HEADING, sidebarWidth, 15, 2, this.height - 15, 128, 0, 2, 256);
+        graphics.fill(sidebarWidth, 0, sidebarWidth + 2, 13, 0x80808080);
     }
 
     @Override
-    protected void renderLabels(PoseStack poseStack, int mouseX, int mouseY) {
+    protected void renderLabels(GuiGraphics graphics, int mouseX, int mouseY) {
         int center = (int) ((this.width * 0.25f) + ((this.width * 0.75f) / 2f));
-        this.font.draw(poseStack, this.title, center - (this.font.width(this.title) / 2f), 3, 0x404040);
+        graphics.drawString(
+            this.font,
+            this.title, (int) (center - (this.font.width(this.title) / 2f)), 3, 0x404040,
+            false
+        );
     }
 
     public boolean isTemporaryWidgetVisible() {

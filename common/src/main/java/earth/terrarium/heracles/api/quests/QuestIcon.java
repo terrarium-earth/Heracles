@@ -1,11 +1,11 @@
 package earth.terrarium.heracles.api.quests;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.teamresourceful.resourcefullib.client.scissor.ScissorBoxStack;
+import net.minecraft.client.gui.GuiGraphics;
 
 public interface QuestIcon<T extends QuestIcon<T>> {
 
-    void render(PoseStack pose, ScissorBoxStack scissor, int x, int y, int width, int height);
+    void render(GuiGraphics graphics, ScissorBoxStack scissor, int x, int y, int width, int height);
 
     QuestIconType<T> type();
 }

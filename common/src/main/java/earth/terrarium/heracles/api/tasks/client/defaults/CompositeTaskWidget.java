@@ -1,6 +1,5 @@
 package earth.terrarium.heracles.api.tasks.client.defaults;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.teamresourceful.resourcefullib.client.scissor.ScissorBoxStack;
 import earth.terrarium.heracles.api.client.DisplayWidget;
 import earth.terrarium.heracles.api.tasks.QuestTask;
@@ -12,7 +11,7 @@ import earth.terrarium.heracles.common.handlers.progress.TaskProgress;
 import earth.terrarium.heracles.common.utils.ModUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.Gui;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.nbt.CollectionTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
@@ -42,21 +41,33 @@ public final class CompositeTaskWidget implements DisplayWidget {
     }
 
     @Override
-    public void render(PoseStack pose, ScissorBoxStack scissor, int x, int y, int width, int mouseX, int mouseY, boolean hovered, float partialTicks) {
+    public void render(GuiGraphics graphics, ScissorBoxStack scissor, int x, int y, int width, int mouseX, int mouseY, boolean hovered, float partialTicks) {
         int height = getHeight(width);
-        Gui.fill(pose, x, y, x + width, y + height, 0x80808080);
-        Gui.renderOutline(pose, x, y, width, height, 0xFF909090);
+        graphics.fill(x, y, x + width, y + height, 0x80808080);
+        graphics.renderOutline(x, y, width, height, 0xFF909090);
 
         Font font = Minecraft.getInstance().font;
-        int start = font.draw(pose, isOpened ? "▼" : "▶", x + (int) (width * 0.1f) + 10, y + 5, 0xFFFFFFFF);
-        font.draw(pose, Component.translatable(TaskTitleFormatters.toTranslationKey(this.task, this.task.amount() == 1), this.task.amount()), start + 2, y + 5, 0xFFFFFFFF);
+        int start = graphics.drawString(
+            font,
+            isOpened ? "▼" : "▶", x + (int) (width * 0.1f) + 10, y + 5, 0xFFFFFFFF,
+            false
+        );
+        graphics.drawString(
+            font,
+            Component.translatable(TaskTitleFormatters.toTranslationKey(this.task, this.task.amount() == 1), this.task.amount()), start + 2, y + 5, 0xFFFFFFFF,
+            false
+        );
         String progress = QuestTaskDisplayFormatter.create(this.task, this.progress);
-        font.draw(pose, progress, x + width - 5 - font.width(progress), y + 5, 0xFFFFFFFF);
+        graphics.drawString(
+            font,
+            progress, x + width - 5 - font.width(progress), y + 5, 0xFFFFFFFF,
+            false
+        );
 
         if (isOpened) {
             int yOffset = 19;
             for (DisplayWidget widget : this.widgets) {
-                widget.render(pose, scissor, x + 10, y + yOffset, width - 20, mouseX, mouseY, hovered, partialTicks);
+                widget.render(graphics, scissor, x + 10, y + yOffset, width - 20, mouseX, mouseY, hovered, partialTicks);
                 yOffset += widget.getHeight(width - 20);
             }
         }

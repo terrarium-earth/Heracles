@@ -1,13 +1,13 @@
 package earth.terrarium.heracles.client.widgets;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
+import com.teamresourceful.resourcefullib.client.CloseablePoseStack;
 import com.teamresourceful.resourcefullib.client.utils.RenderUtils;
 import earth.terrarium.heracles.client.widgets.base.BaseModal;
 import net.minecraft.Optionull;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.Gui;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
@@ -43,7 +43,7 @@ public class Dropdown<T> extends AbstractWidget implements Renderable {
     }
 
     @Override
-    public void renderWidget(PoseStack pose, int i, int j, float f) {
+    public void renderWidget(GuiGraphics graphics, int i, int j, float f) {
         if (lostFocus) { // Is here because after the click logic of a widget is called, the focus is set if the widget is clicked
             lostFocus = false;
             setFocused(false);
@@ -54,29 +54,41 @@ public class Dropdown<T> extends AbstractWidget implements Renderable {
         int width = this.getWidth();
         int height = this.getHeight();
         Font font = Minecraft.getInstance().font;
-        font.draw(pose, ellipsize(Optionull.mapOrDefault(selectedOption, mapper, this.placeholder), width - 20, font), x + 3, y + 3, selectedOption == null ? 0x808080 : 0xFFFFFF);
-        font.draw(pose, isFocused() ? "▲" : "▼", x + width - 10, y + 3, 0xFFFFFF);
+        graphics.drawString(
+            font,
+            ellipsize(Optionull.mapOrDefault(selectedOption, mapper, this.placeholder), width - 20, font), x + 3, y + 3, selectedOption == null ? 0x808080 : 0xFFFFFF,
+            false
+        );
+        graphics.drawString(
+            font,
+            isFocused() ? "▲" : "▼", x + width - 10, y + 3, 0xFFFFFF,
+            false
+        );
 
         RenderSystem.disableDepthTest();
         RenderSystem.disableBlend();
         if (isFocused()) {
-            RenderUtils.bindTexture(BaseModal.TEXTURE);
-            Gui.blitNineSliced(pose, x - 1, y + height + 1, width + 2, (10 * Math.min(MAX_OPTIONS_SHOWN, options.size())) + 2, 2, 2, 2, 2, 128, 128, 128, 1);
-            pose.pushPose();
-            pose.translate(0, 0, 10); // This is because minecraft has a weird bug with shadowed text rendered behind other text
-            try (var ignored = RenderUtils.createScissorBox(Minecraft.getInstance(), pose, x, y + height, width, 10 * Math.min(MAX_OPTIONS_SHOWN, options.size()))) {
-                int i1 = 0;
-                for (T option : options) {
-                    int y1 = y + height + 1 + (i1 * 10) - (int) scrollAmount;
-                    boolean isHovered = i >= x && j >= y1 && i < x + width && j < y1 + 10;
-                    if (isHovered) {
-                        Gui.fill(pose, x, y1, x + width, y1 + 10, 0xFF808080);
+            graphics.blitNineSliced(BaseModal.TEXTURE, x - 1, y + height + 1, width + 2, (10 * Math.min(MAX_OPTIONS_SHOWN, options.size())) + 2, 2, 2, 2, 2, 128, 128, 128, 1);
+
+            try (var pose = new CloseablePoseStack(graphics)) {
+                pose.translate(0, 0, 10); // This is because minecraft has a weird bug with shadowed text rendered behind other text
+                try (var ignored = RenderUtils.createScissorBox(Minecraft.getInstance(), pose, x, y + height, width, 10 * Math.min(MAX_OPTIONS_SHOWN, options.size()))) {
+                    int i1 = 0;
+                    for (T option : options) {
+                        int y1 = y + height + 1 + (i1 * 10) - (int) scrollAmount;
+                        boolean isHovered = i >= x && j >= y1 && i < x + width && j < y1 + 10;
+                        if (isHovered) {
+                            graphics.fill(x, y1, x + width, y1 + 10, 0xFF808080);
+                        }
+                        graphics.drawString(
+                            font,
+                            ellipsize(Optionull.mapOrDefault(option, mapper, this.placeholder), width, font), x + 3, y1 + 1, 0xFFFFFF,
+                            false
+                        );
+                        i1++;
                     }
-                    font.draw(pose, ellipsize(Optionull.mapOrDefault(option, mapper, this.placeholder), width, font), x + 3, y1 + 1, 0xFFFFFF);
-                    i1++;
                 }
             }
-            pose.popPose();
         }
     }
 

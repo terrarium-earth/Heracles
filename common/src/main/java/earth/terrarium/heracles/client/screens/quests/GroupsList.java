@@ -1,6 +1,5 @@
 package earth.terrarium.heracles.client.screens.quests;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.teamresourceful.resourcefullib.client.components.selection.ListEntry;
 import com.teamresourceful.resourcefullib.client.components.selection.SelectionList;
 import com.teamresourceful.resourcefullib.client.scissor.ScissorBoxStack;
@@ -12,7 +11,7 @@ import earth.terrarium.heracles.common.constants.ConstantComponents;
 import earth.terrarium.heracles.common.network.NetworkHandler;
 import earth.terrarium.heracles.common.network.packets.groups.DeleteGroupPacket;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Gui;
+import net.minecraft.client.gui.GuiGraphics;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -71,21 +70,29 @@ public class GroupsList extends SelectionList<GroupsList.Entry> {
         }
 
         @Override
-        protected void render(@NotNull ScissorBoxStack scissorStack, @NotNull PoseStack stack, int id, int left, int top, int width, int height, int mouseX, int mouseY, boolean hovered, float partialTick, boolean selected) {
-            Gui.fill(stack, left, top, left + width, top + height, selected ? 0x22FFFFFF : 0x22808080);
+        protected void render(@NotNull GuiGraphics graphics, @NotNull ScissorBoxStack scissorStack, int id, int left, int top, int width, int height, int mouseX, int mouseY, boolean hovered, float partialTick, boolean selected) {
+            graphics.fill(left, top, left + width, top + height, selected ? 0x22FFFFFF : 0x22808080);
             if (hovered) {
-                Gui.renderOutline(stack, left, top, width, height, 0x44FFFFFF);
+                graphics.renderOutline(left, top, width, height, 0x44FFFFFF);
             }
-            Gui.drawCenteredString(stack, Minecraft.getInstance().font, name, left + width / 2, top + height / 2 - 4, 0xFFFFFF);
+            graphics.drawCenteredString(Minecraft.getInstance().font, name, left + width / 2, top + height / 2 - 4, 0xFFFFFF);
             CursorUtils.setCursor(hovered, CursorScreen.Cursor.POINTER);
             if (Minecraft.getInstance().screen instanceof QuestsEditScreen) {
                 if (mouseX - left >= width - 11 && mouseX - left <= width - 2 && mouseY - top >= 2 && mouseY - top <= 12 && hovered) {
                     boolean cant = !ClientQuests.byGroup(name).isEmpty() || this.list.children().size() == 1;
                     CursorUtils.setCursor(cant, CursorScreen.Cursor.DISABLED);
                     ClientUtils.setTooltip(cant ? ConstantComponents.Groups.DELETE_WITH_QUESTS : ConstantComponents.DELETE);
-                    Minecraft.getInstance().font.draw(stack, "x", left + width - 9, top + 2, 0xFFFFFF);
+                    graphics.drawString(
+                        Minecraft.getInstance().font,
+                        "x", left + width - 9, top + 2, 0xFFFFFF,
+                        false
+                    );
                 } else if (hovered) {
-                    Minecraft.getInstance().font.draw(stack, "x", left + width - 9, top + 2, 0x808080);
+                    graphics.drawString(
+                        Minecraft.getInstance().font,
+                        "x", left + width - 9, top + 2, 0x808080,
+                        false
+                    );
                 }
             }
         }

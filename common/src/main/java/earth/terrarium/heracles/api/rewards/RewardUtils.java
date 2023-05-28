@@ -10,7 +10,7 @@ public final class RewardUtils {
 
     public static void giveItem(ServerPlayer player, ItemStack stack) {
         if (player.addItem(stack)) {
-            player.level.playSound(
+            player.level().playSound(
                 null,
                 player.getX(),
                 player.getY(),

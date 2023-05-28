@@ -1,6 +1,5 @@
 package earth.terrarium.heracles.api.tasks.client.defaults;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.teamresourceful.resourcefullib.client.scissor.ScissorBoxStack;
 import com.teamresourceful.resourcefullib.client.screens.CursorScreen;
 import com.teamresourceful.resourcefullib.client.utils.CursorUtils;
@@ -16,7 +15,7 @@ import net.minecraft.advancements.AdvancementList;
 import net.minecraft.advancements.DisplayInfo;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.Gui;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.nbt.ByteTag;
 import net.minecraft.network.chat.Component;
@@ -58,22 +57,34 @@ public final class AdvancementTaskWidget implements DisplayWidget {
     }
 
     @Override
-    public void render(PoseStack pose, ScissorBoxStack scissor, int x, int y, int width, int mouseX, int mouseY, boolean hovered, float partialTicks) {
+    public void render(GuiGraphics graphics, ScissorBoxStack scissor, int x, int y, int width, int mouseX, int mouseY, boolean hovered, float partialTicks) {
         int height = getHeight(width);
         int actualY = y;
 
         Font font = Minecraft.getInstance().font;
-        Gui.fill(pose, x, y, x + width, y + height, 0x80808080);
-        Gui.renderOutline(pose, x, y, width, height, 0xFF909090);
+        graphics.fill(x, y, x + width, y + height, 0x80808080);
+        graphics.renderOutline(x, y, width, height, 0xFF909090);
 
         int iconSize = (int) (width * 0.1f);
-        Minecraft.getInstance().getItemRenderer().renderGuiItem(pose, getCurrentItem(), x + 5 + (int) (iconSize / 2f) - 8, y + 5 + (int) (iconSize / 2f) - 8);
+        graphics.renderFakeItem(getCurrentItem(), x + 5 + (int) (iconSize / 2f) - 8, y + 5 + (int) (iconSize / 2f) - 8);
         String desc = this.task.advancements().size() == 1 ? DESC_SINGULAR : DESC_PLURAL;
         Object text = this.task.advancements().size() == 1 ? this.titles.isEmpty() ? "" : this.titles.get(0) : isOpened ? "▼" : "▶";
-        font.draw(pose, this.title, x + iconSize + 10, y + 5, 0xFFFFFFFF);
-        font.draw(pose, Component.translatable(desc, text), x + iconSize + 10, y + 7 + font.lineHeight, 0xFF808080);
+        graphics.drawString(
+            font,
+            this.title, x + iconSize + 10, y + 5, 0xFFFFFFFF,
+            false
+        );
+        graphics.drawString(
+            font,
+            Component.translatable(desc, text), x + iconSize + 10, y + 7 + font.lineHeight, 0xFF808080,
+            false
+        );
         String progress = QuestTaskDisplayFormatter.create(this.task, this.progress);
-        font.draw(pose, progress, x + width - 5 - font.width(progress), y + 5, 0xFFFFFFFF);
+        graphics.drawString(
+            font,
+            progress, x + width - 5 - font.width(progress), y + 5, 0xFFFFFFFF,
+            false
+        );
 
         if (titles.size() > 1 && hovered && mouseY - y >= 7 + font.lineHeight && mouseY - y <= 7 + font.lineHeight * 2 && mouseX - x > (int) (width * 0.1f) && mouseX - x <= width) {
             CursorUtils.setCursor(true, CursorScreen.Cursor.POINTER);
@@ -83,12 +94,16 @@ public final class AdvancementTaskWidget implements DisplayWidget {
 
         if (isOpened) {
             for (Component title : titles) {
-                font.draw(pose, ConstantComponents.DOT.copy().append(title), x + iconSize + 13, y, 0xFFa0a0a0);
+                graphics.drawString(
+                    font,
+                    ConstantComponents.DOT.copy().append(title), x + iconSize + 13, y, 0xFFA0A0A0,
+                    false
+                );
                 y += font.lineHeight + 2;
             }
         }
 
-        WidgetUtils.drawProgressBar(pose, x + iconSize + 10, actualY + height - font.lineHeight + 2, x + width - 5, actualY + height - 2, this.task, this.progress);
+        WidgetUtils.drawProgressBar(graphics, x + iconSize + 10, actualY + height - font.lineHeight + 2, x + width - 5, actualY + height - 2, this.task, this.progress);
     }
 
     @Override

@@ -1,7 +1,6 @@
 package earth.terrarium.heracles.client.screens.quest;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import earth.terrarium.heracles.api.quests.Quest;
 import earth.terrarium.heracles.client.handlers.ClientQuests;
 import earth.terrarium.heracles.client.screens.AbstractQuestScreen;
@@ -14,6 +13,7 @@ import earth.terrarium.heracles.common.network.packets.groups.OpenGroupPacket;
 import earth.terrarium.heracles.common.network.packets.rewards.ClaimRewardsPacket;
 import net.minecraft.Optionull;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.gui.components.events.GuiEventListener;
@@ -80,17 +80,17 @@ public abstract class BaseQuestScreen extends AbstractQuestScreen<QuestMenu> {
     }
 
     @Override
-    protected void renderBg(PoseStack stack, float partialTick, int mouseX, int mouseY) {
-        super.renderBg(stack, partialTick, mouseX, mouseY);
+    protected void renderBg(GuiGraphics graphics, float partialTick, int mouseX, int mouseY) {
+        super.renderBg(graphics, partialTick, mouseX, mouseY);
         RenderSystem.disableDepthTest();
         if (this.tasks != null && this.tasks.isSelected() && getTaskList() instanceof Renderable renderable) {
-            renderable.render(stack, mouseX, mouseY, partialTick);
+            renderable.render(graphics, mouseX, mouseY, partialTick);
         }
         if (this.rewards != null && this.rewards.isSelected() && getRewardList() instanceof Renderable renderable) {
-            renderable.render(stack, mouseX, mouseY, partialTick);
+            renderable.render(graphics, mouseX, mouseY, partialTick);
         }
         if (this.overview != null && this.overview.isSelected() && getDescriptionWidget() instanceof Renderable renderable) {
-            renderable.render(stack, mouseX, mouseY, partialTick);
+            renderable.render(graphics, mouseX, mouseY, partialTick);
         }
         if (getDescriptionError() != null && this.overview.isSelected()) {
             int contentX = (int) (this.width * 0.31f) + 20;
@@ -99,7 +99,11 @@ public abstract class BaseQuestScreen extends AbstractQuestScreen<QuestMenu> {
             int contentHeight = this.height - 45;
             for (FormattedCharSequence sequence : Minecraft.getInstance().font.split(Component.literal(getDescriptionError()), contentWidth)) {
                 int textWidth = this.font.width(sequence);
-                this.font.draw(stack, sequence, contentX + (contentWidth - textWidth) / 2f, contentY + (contentHeight - this.font.lineHeight) / 2f, 0xFF0000);
+                graphics.drawString(
+                    this.font,
+                    sequence, (int) (contentX + (contentWidth - textWidth) / 2f), (int) (contentY + (contentHeight - this.font.lineHeight) / 2f), 0xFF0000,
+                    false
+                );
                 contentY += this.font.lineHeight;
             }
         }

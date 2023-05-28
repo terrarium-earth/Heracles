@@ -1,6 +1,5 @@
 package earth.terrarium.heracles.client.screens.quests;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.datafixers.util.Pair;
 import earth.terrarium.heracles.client.handlers.ClientQuests;
 import earth.terrarium.heracles.client.screens.AbstractQuestScreen;
@@ -12,6 +11,7 @@ import earth.terrarium.heracles.common.network.NetworkHandler;
 import earth.terrarium.heracles.common.network.packets.groups.OpenGroupPacket;
 import earth.terrarium.heracles.common.utils.ModUtils;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.ImageButton;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.network.chat.Component;
@@ -97,11 +97,15 @@ public class QuestsScreen extends AbstractQuestScreen<QuestsMenu> {
     }
 
     @Override
-    protected void renderLabels(PoseStack poseStack, int mouseX, int mouseY) {
-        super.renderLabels(poseStack, mouseX, mouseY);
+    protected void renderLabels(GuiGraphics graphics, int mouseX, int mouseY) {
+        super.renderLabels(graphics, mouseX, mouseY);
         int center = ((int) (this.width * 0.25f) - 2) / 2;
         int textX = center - font.width("Groups") / 2;
-        font.draw(poseStack, "Groups", textX, 3, 0x404040);
+        graphics.drawString(
+            font,
+            "Groups", textX, 3, 0x404040,
+            false
+        );
     }
 
     public GroupsList getGroupsList() {

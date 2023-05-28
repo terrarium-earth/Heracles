@@ -1,7 +1,5 @@
 package earth.terrarium.heracles.client.widgets.modals;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.teamresourceful.resourcefullib.client.utils.RenderUtils;
 import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.client.widgets.base.BaseModal;
 import earth.terrarium.heracles.common.constants.ConstantComponents;
@@ -9,7 +7,7 @@ import earth.terrarium.heracles.common.network.NetworkHandler;
 import earth.terrarium.heracles.common.network.packets.quests.QuestActionPacket;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.Gui;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.network.chat.CommonComponents;
@@ -51,19 +49,20 @@ public class TextInputModal<T> extends BaseModal {
     }
 
     @Override
-    protected void renderBackground(PoseStack pose, int mouseX, int mouseY, float partialTick) {
-        RenderUtils.bindTexture(TEXTURE);
-
-        Gui.blit(pose, this.x, this.y, 0, 0, this.width, this.height, 256, 256);
-
-        renderChildren(pose, mouseX, mouseY, partialTick);
+    protected void renderBackground(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+        graphics.blit(TEXTURE, this.x, this.y, 0, 0, this.width, this.height, 256, 256);
+        renderChildren(graphics, mouseX, mouseY, partialTick);
     }
 
     @Override
-    protected void renderForeground(PoseStack pose, int mouseX, int mouseY, float partialTick) {
+    protected void renderForeground(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
         Font font = Minecraft.getInstance().font;
 
-        font.draw(pose, this.title, x + 8, y + 6, 0x404040);
+        graphics.drawString(
+            font,
+            this.title, this.x + 8, this.y + 6, 0x404040,
+            false
+        );
     }
 
     private Button createButton(Component component, int x, int y, Button.OnPress onPress) {

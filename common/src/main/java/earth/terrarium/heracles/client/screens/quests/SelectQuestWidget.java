@@ -1,7 +1,5 @@
 package earth.terrarium.heracles.client.screens.quests;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.teamresourceful.resourcefullib.client.utils.RenderUtils;
 import earth.terrarium.heracles.api.quests.Quest;
 import earth.terrarium.heracles.api.quests.defaults.ItemQuestIcon;
 import earth.terrarium.heracles.client.handlers.ClientQuests;
@@ -13,7 +11,7 @@ import earth.terrarium.heracles.client.widgets.boxes.IntEditBox;
 import earth.terrarium.heracles.common.constants.ConstantComponents;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.Gui;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.MultiLineEditBox;
@@ -114,32 +112,47 @@ public class SelectQuestWidget extends BaseWidget {
 
 
     @Override
-    public void render(PoseStack stack, int mouseX, int mouseY, float partialTick) {
+    public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
         if (this.entry == null) return;
         updateWidgets();
 
-        RenderUtils.bindTexture(AbstractQuestScreen.HEADING);
-        Gui.blitRepeating(stack, this.x - 2, this.y, 2, this.height, 128, 0, 2, 256);
+        graphics.blitRepeating(AbstractQuestScreen.HEADING, this.x - 2, this.y, 2, this.height, 128, 0, 2, 256);
 
         //Title
-        font.draw(stack, Component.literal("Title"), this.x + 7, this.y + 4, 0x808080);
+        graphics.drawString(
+            font,
+            Component.literal("Title"), this.x + 7, this.y + 4, 0x808080,
+            false
+        );
 
-        Gui.fill(stack, this.x + 4, this.y + 29, this.x + this.width - 4, this.y + 30, 0xff808080);
+        graphics.fill(this.x + 4, this.y + 29, this.x + this.width - 4, this.y + 30, 0xff808080);
 
         //Position
-        font.draw(stack, Component.literal("Position"), this.x + 7, this.y + 33, 0x808080);
+        graphics.drawString(
+            font,
+            Component.literal("Position"), this.x + 7, this.y + 33, 0x808080,
+            false
+        );
 
-        Gui.fill(stack, this.x + 4, this.y + 60, this.x + this.width - 4, this.y + 61, 0xff808080);
+        graphics.fill(this.x + 4, this.y + 60, this.x + this.width - 4, this.y + 61, 0xff808080);
 
         //Subtitle
-        font.draw(stack, Component.literal("Subtitle"), this.x + 7, this.y + 65, 0x808080);
+        graphics.drawString(
+            font,
+            Component.literal("Subtitle"), this.x + 7, this.y + 65, 0x808080,
+            false
+        );
 
-        Gui.fill(stack, this.x + 4, this.y + 121, this.x + this.width - 4, this.y + 122, 0xff808080);
+        graphics.fill(this.x + 4, this.y + 121, this.x + this.width - 4, this.y + 122, 0xff808080);
 
         //Actions
-        font.draw(stack, Component.literal("Actions"), this.x + 7, this.y + 126, 0x808080);
+        graphics.drawString(
+            font,
+            Component.literal("Actions"), this.x + 7, this.y + 126, 0x808080,
+            false
+        );
 
-        renderChildren(stack, mouseX, mouseY, partialTick);
+        renderChildren(graphics, mouseX, mouseY, partialTick);
     }
 
     @Override
@@ -190,13 +203,17 @@ public class SelectQuestWidget extends BaseWidget {
         }
 
         @Override
-        public void renderWidget(PoseStack poseStack, int i, int j, float f) {
+        public void renderWidget(GuiGraphics graphics, int i, int j, float f) {
             Font font = Minecraft.getInstance().font;
             if (isVisible()) {
                 int textWidth = font.width(getMessage());
-                font.draw(poseStack, getMessage(), getX() - textWidth - 4, getY() + (this.height - font.lineHeight - 1) / 2f, isFocused() ? 0xffffff : 0x808080);
+                graphics.drawString(
+                    font,
+                    getMessage(), getX() - textWidth - 4, getY() + (this.height - font.lineHeight - 1) / 2, isFocused() ? 0xffffff : 0x808080,
+                    false
+                );
             }
-            super.renderWidget(poseStack, i, j, f);
+            super.renderWidget(graphics, i, j, f);
         }
 
         @Override

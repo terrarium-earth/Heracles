@@ -1,7 +1,5 @@
 package earth.terrarium.heracles.client.widgets.modals;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.teamresourceful.resourcefullib.client.scissor.ScissorBoxStack;
 import com.teamresourceful.resourcefullib.client.screens.CursorScreen;
 import com.teamresourceful.resourcefullib.client.utils.CursorUtils;
 import com.teamresourceful.resourcefullib.client.utils.RenderUtils;
@@ -11,8 +9,7 @@ import earth.terrarium.heracles.client.handlers.ClientQuests;
 import earth.terrarium.heracles.client.widgets.base.BaseModal;
 import earth.terrarium.heracles.client.widgets.boxes.AutocompleteEditBox;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.Gui;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.ArrayList;
@@ -56,28 +53,30 @@ public class AddDependencyModal extends BaseModal {
     }
 
     @Override
-    protected void renderBackground(PoseStack pose, int mouseX, int mouseY, float partialTick) {
-        RenderUtils.bindTexture(TEXTURE);
-        Gui.blit(pose, x, y, 0, 0, WIDTH, HEIGHT, 256, 256);
+    protected void renderBackground(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+        graphics.blit(TEXTURE, x, y, 0, 0, WIDTH, HEIGHT, 256, 256);
 
         int tempY = y + 43;
 
         if (dependencies != null) {
-            try (var scissor = RenderUtils.createScissorBoxStack(new ScissorBoxStack(), Minecraft.getInstance(), pose, x + 8, y + 43, 152, 120)) {
+            try (var scissor = RenderUtils.createScissor(Minecraft.getInstance(), graphics, x + 8, y + 43, 152, 120)) {
                 for (Quest dependency : dependencies) {
-                    RenderUtils.bindTexture(TEXTURE);
-                    Gui.blitNineSliced(pose, x + 8, tempY, 152, 24, 1, 1, 1, 1, 19, 19, 168, 0);
+                    graphics.blitNineSliced(TEXTURE, x + 8, tempY, 152, 24, 1, 1, 1, 1, 19, 19, 168, 0);
                     boolean removeHovered = mouseX >= x + 149 && mouseX <= x + 158 && mouseY >= tempY + 2 && mouseY <= tempY + 11;
-                    Gui.blit(pose, x + 149, tempY + 2, 187, removeHovered ? 9 : 0, 9, 9);
+                    graphics.blit(TEXTURE, x + 149, tempY + 2, 187, removeHovered ? 9 : 0, 9, 9);
                     CursorUtils.setCursor(removeHovered, CursorScreen.Cursor.POINTER);
-                    dependency.display().icon().render(pose, scissor.stack(), x + 9, tempY + 1, 22, 22);
-                    Minecraft.getInstance().font.draw(pose, dependency.display().title(), x + 36, tempY + 6, 0xffffff);
+                    dependency.display().icon().render(graphics, scissor.stack(), x + 9, tempY + 1, 22, 22);
+                    graphics.drawString(
+                        Minecraft.getInstance().font,
+                        dependency.display().title(), x + 36, tempY + 6, 0xffffff,
+                        false
+                    );
                     tempY += 24;
                 }
             }
         }
 
-        renderChildren(pose, mouseX, mouseY, partialTick);
+        renderChildren(graphics, mouseX, mouseY, partialTick);
     }
 
     @Override
@@ -106,10 +105,12 @@ public class AddDependencyModal extends BaseModal {
     }
 
     @Override
-    protected void renderForeground(PoseStack pose, int mouseX, int mouseY, float partialTick) {
-        Font font = Minecraft.getInstance().font;
-
-        font.draw(pose, "Dependencies", x + 8, y + 6, 0x404040);
+    protected void renderForeground(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+        graphics.drawString(
+            Minecraft.getInstance().font,
+            "Add Dependency", x + 8, y + 6, 0xffffff,
+            false
+        );
     }
 
     public void update(ClientQuests.QuestEntry entry, Runnable callback) {

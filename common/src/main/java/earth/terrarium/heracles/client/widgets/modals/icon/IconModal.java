@@ -1,9 +1,7 @@
 package earth.terrarium.heracles.client.widgets.modals.icon;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.teamresourceful.resourcefullib.client.screens.CursorScreen;
 import com.teamresourceful.resourcefullib.client.utils.CursorUtils;
-import com.teamresourceful.resourcefullib.client.utils.RenderUtils;
 import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.client.utils.ClientUtils;
 import earth.terrarium.heracles.client.widgets.ToggleImageButton;
@@ -11,7 +9,7 @@ import earth.terrarium.heracles.client.widgets.base.BaseModal;
 import earth.terrarium.heracles.common.constants.ConstantComponents;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.Gui;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -62,17 +60,20 @@ public class IconModal extends BaseModal {
     }
 
     @Override
-    protected void renderBackground(PoseStack pose, int mouseX, int mouseY, float partialTick) {
-        RenderUtils.bindTexture(TEXTURE);
-        Gui.blit(pose, x, y, 0, 0, WIDTH, HEIGHT, 256, 256);
-        renderChildren(pose, mouseX, mouseY, partialTick);
+    protected void renderBackground(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+        graphics.blit(TEXTURE, x, y, 0, 0, WIDTH, HEIGHT, 256, 256);
+        renderChildren(graphics, mouseX, mouseY, partialTick);
     }
 
     @Override
-    protected void renderForeground(PoseStack pose, int mouseX, int mouseY, float partialTick) {
+    protected void renderForeground(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
         Font font = Minecraft.getInstance().font;
         int textX = (WIDTH - font.width("Choose Icon")) / 2;
-        font.draw(pose, "Choose Icon", x + textX, y + 6, 0x404040);
+        graphics.drawString(
+            font,
+            "Choose Icon", x + textX, y + 6, 0x404040,
+            false
+        );
 
         int y = this.y + 43;
         int x = this.x + 8;
@@ -89,14 +90,13 @@ public class IconModal extends BaseModal {
 
             Item item = items.get(i);
 
-            RenderUtils.bindTexture(TEXTURE);
-            Gui.blit(pose, itemX, itemY, 168, 22, ITEM_SIZE, ITEM_SIZE, 256, 256);
+            graphics.blit(TEXTURE, itemX, itemY, 168, 22, ITEM_SIZE, ITEM_SIZE, 256, 256);
             if (mouseX >= itemX && mouseX < itemX + ITEM_SIZE && mouseY >= itemY && mouseY < itemY + ITEM_SIZE) {
-                Gui.fill(pose, itemX + 1, itemY + 1, itemX + ITEM_SIZE - 1, itemY + ITEM_SIZE - 1, 0x80A0A0A0);
+                graphics.fill(itemX + 1, itemY + 1, itemX + ITEM_SIZE - 1, itemY + ITEM_SIZE - 1, 0x80A0A0A0);
                 CursorUtils.setCursor(true, CursorScreen.Cursor.POINTER);
                 ClientUtils.setTooltip(item.getDescription());
             }
-            Minecraft.getInstance().getItemRenderer().renderAndDecorateItem(pose, item.getDefaultInstance(), itemX + 2, itemY + 1);
+            graphics.renderFakeItem(item.getDefaultInstance(), itemX + 2, itemY + 1);
         }
     }
 

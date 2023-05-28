@@ -1,11 +1,11 @@
 package earth.terrarium.heracles.api.client;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.teamresourceful.resourcefullib.client.scissor.ScissorBoxStack;
+import net.minecraft.client.gui.GuiGraphics;
 
 public interface DisplayWidget {
 
-    void render(PoseStack pose, ScissorBoxStack scissor, int x, int y, int width, int mouseX, int mouseY, boolean hovered, float partialTicks);
+    void render(GuiGraphics graphics, ScissorBoxStack scissor, int x, int y, int width, int mouseX, int mouseY, boolean hovered, float partialTicks);
 
     int getHeight(int width);
 

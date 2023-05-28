@@ -1,8 +1,8 @@
 package earth.terrarium.heracles.client.widgets;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import it.unimi.dsi.fastutil.booleans.BooleanConsumer;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.ImageButton;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.resources.ResourceLocation;
@@ -27,8 +27,7 @@ public class ToggleImageButton extends ImageButton {
     }
 
     @Override
-    public void renderWidget(PoseStack poseStack, int i, int j, float f) {
-        RenderSystem.setShaderTexture(0, resourceLocation);
+    public void renderWidget(GuiGraphics graphics, int i, int j, float f) {
         int u = xTexStart;
         int v = yTexStart;
         if (this.isHovered()) {
@@ -39,7 +38,7 @@ public class ToggleImageButton extends ImageButton {
         }
 
         RenderSystem.enableDepthTest();
-        blit(poseStack, getX(), getY(), u, v, width, height, textureWidth, textureHeight);
+        graphics.blit(resourceLocation, getX(), getY(), u, v, width, height, textureWidth, textureHeight);
     }
 
     @Override

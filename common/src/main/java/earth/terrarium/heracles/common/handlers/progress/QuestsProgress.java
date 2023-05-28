@@ -74,7 +74,7 @@ public record QuestsProgress(Map<String, QuestProgress> progress, CompletableQue
     }
 
     private void sendOutQuestComplete(ServerPlayer player, Quest quest) {
-        player.level.playSound(null,
+        player.level().playSound(null,
             player.blockPosition(),
             SoundEvents.UI_TOAST_CHALLENGE_COMPLETE,
             SoundSource.MASTER, 0.25f, 2f);

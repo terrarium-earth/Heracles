@@ -1,11 +1,9 @@
 package earth.terrarium.heracles.client.toasts;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.datafixers.util.Pair;
-import com.teamresourceful.resourcefullib.client.utils.RenderUtils;
 import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.api.quests.Quest;
-import net.minecraft.client.gui.GuiComponent;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.toasts.Toast;
 import net.minecraft.client.gui.components.toasts.ToastComponent;
 import net.minecraft.network.chat.Component;
@@ -28,7 +26,7 @@ public class QuestClaimedToast implements Toast {
 
     @Override
     @NotNull
-    public Toast.Visibility render(PoseStack poseStack, ToastComponent toastComponent, long timeSinceLastVisible) {
+    public Toast.Visibility render(GuiGraphics graphics, ToastComponent toastComponent, long timeSinceLastVisible) {
         if (renderItems == null) {
             lastChanged = timeSinceLastVisible;
 
@@ -60,12 +58,14 @@ public class QuestClaimedToast implements Toast {
         } else {
             Pair<Quest, ItemStack> entry = renderItems.get((int) (timeSinceLastVisible / Math.max(1L, (DISPLAY_TIME * questItems.size()) / renderItems.size()) % renderItems.size()));
 
-            RenderUtils.bindTexture(TEXTURE);
+            graphics.blit(TEXTURE, 0, 0, 0, 0, width(), height());
+            graphics.drawString(
+                toastComponent.getMinecraft().font,
+                TITLE_TEXT, 30, 7, 0xFF800080,
+                false
+            );
 
-            GuiComponent.blit(poseStack, 0, 0, 0, 0, width(), height());
-            toastComponent.getMinecraft().font.draw(poseStack, TITLE_TEXT, 30.0F, 7.0F, 0xFF800080);
-
-            toastComponent.getMinecraft().getItemRenderer().renderAndDecorateFakeItem(poseStack, entry.getSecond(), 8, 8);
+            graphics.renderFakeItem(entry.getSecond(), 8, 8);
 
             return timeSinceLastVisible - lastChanged >= DISPLAY_TIME * questItems.size() * toastComponent.getNotificationDisplayTimeMultiplier() ? Toast.Visibility.HIDE : Toast.Visibility.SHOW;
         }

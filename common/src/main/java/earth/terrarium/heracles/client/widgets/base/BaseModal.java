@@ -1,7 +1,7 @@
 package earth.terrarium.heracles.client.widgets.base;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
+import com.teamresourceful.resourcefullib.client.CloseablePoseStack;
 import com.teamresourceful.resourcefullib.client.screens.CursorScreen;
 import com.teamresourceful.resourcefullib.client.utils.CursorUtils;
 import earth.terrarium.heracles.Heracles;
@@ -9,7 +9,7 @@ import earth.terrarium.heracles.client.screens.AbstractQuestScreen;
 import earth.terrarium.heracles.client.utils.ClientUtils;
 import earth.terrarium.heracles.common.constants.ConstantComponents;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Gui;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.ImageButton;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.resources.ResourceLocation;
@@ -55,7 +55,7 @@ public abstract class BaseModal extends BaseWidget implements TemporyWidget {
     }
 
     @Override
-    public final void render(PoseStack pose, int mouseX, int mouseY, float partialTick) {
+    public final void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
         if (!visible) return;
         if (mouseY > 15) {
             ClientUtils.clearTooltip();
@@ -64,13 +64,14 @@ public abstract class BaseModal extends BaseWidget implements TemporyWidget {
         CursorUtils.setCursor(true, CursorScreen.Cursor.DEFAULT);
 
         RenderSystem.disableDepthTest();
-        pose.pushPose();
-        pose.translate(0, 0, 150);
-        Gui.fill(pose, 0, 15, this.screenWidth, this.screenHeight, 0x80000000);
-        renderBackground(pose, mouseX, mouseY, partialTick);
+        try (var pose = new CloseablePoseStack(graphics)) {
+            pose.translate(0, 0, 150);
+            graphics.fill(0, 15, this.screenWidth, this.screenHeight, 0x80000000);
+            renderBackground(graphics, mouseX, mouseY, partialTick);
 
-        renderForeground(pose, mouseX, mouseY, partialTick);
-        pose.popPose();
+            renderForeground(graphics, mouseX, mouseY, partialTick);
+            pose.popPose();
+        }
         RenderSystem.enableDepthTest();
 
         if (Minecraft.getInstance().screen instanceof CursorScreen cursorScreen) {
@@ -80,7 +81,7 @@ public abstract class BaseModal extends BaseWidget implements TemporyWidget {
         CursorUtils.setCursor(mouseY <= 15, CursorScreen.Cursor.DISABLED);
     }
 
-    protected abstract void renderBackground(PoseStack pose, int mouseX, int mouseY, float partialTick);
+    protected abstract void renderBackground(GuiGraphics graphics, int mouseX, int mouseY, float partialTick);
 
-    protected abstract void renderForeground(PoseStack pose, int mouseX, int mouseY, float partialTick);
+    protected abstract void renderForeground(GuiGraphics graphics, int mouseX, int mouseY, float partialTick);
 }

@@ -1,7 +1,5 @@
 package earth.terrarium.heracles.client.widgets.modals;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.teamresourceful.resourcefullib.client.utils.RenderUtils;
 import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.client.widgets.Dropdown;
 import earth.terrarium.heracles.client.widgets.base.BaseModal;
@@ -9,7 +7,7 @@ import earth.terrarium.heracles.client.widgets.boxes.PlaceholerEditBox;
 import earth.terrarium.heracles.common.constants.ConstantComponents;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.Gui;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.network.chat.CommonComponents;
@@ -67,19 +65,21 @@ public class CreateObjectModal extends BaseModal {
     }
 
     @Override
-    protected void renderBackground(PoseStack pose, int mouseX, int mouseY, float partialTick) {
-        RenderUtils.bindTexture(TEXTURE);
+    protected void renderBackground(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+        graphics.blit(TEXTURE, this.x, this.y, 0, 0, this.width, this.height, 256, 256);
 
-        Gui.blit(pose, this.x, this.y, 0, 0, this.width, this.height, 256, 256);
-
-        renderChildren(pose, mouseX, mouseY, partialTick);
+        renderChildren(graphics, mouseX, mouseY, partialTick);
     }
 
     @Override
-    protected void renderForeground(PoseStack pose, int mouseX, int mouseY, float partialTick) {
+    protected void renderForeground(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
         Font font = Minecraft.getInstance().font;
 
-        font.draw(pose, this.title, x + 8, y + 6, 0x404040);
+        graphics.drawString(
+            font,
+            this.title, x + 8, y + 6, 0x404040,
+            false
+        );
     }
 
     private Button createButton(Component component, int x, int y, Button.OnPress onPress) {

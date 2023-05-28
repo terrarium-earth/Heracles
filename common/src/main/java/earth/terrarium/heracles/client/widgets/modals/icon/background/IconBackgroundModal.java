@@ -1,14 +1,12 @@
 package earth.terrarium.heracles.client.widgets.modals.icon.background;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.teamresourceful.resourcefullib.client.scissor.ScissorBoxStack;
 import com.teamresourceful.resourcefullib.client.utils.RenderUtils;
 import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.client.widgets.base.BaseModal;
 import earth.terrarium.heracles.client.widgets.modals.upload.UploadModalItem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.Gui;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 
@@ -33,27 +31,30 @@ public class IconBackgroundModal extends BaseModal {
     }
 
     @Override
-    protected void renderBackground(PoseStack pose, int mouseX, int mouseY, float partialTick) {
-        RenderUtils.bindTexture(TEXTURE);
-        Gui.blit(pose, x, y, 0, 0, WIDTH, HEIGHT, 256, 256);
-        renderChildren(pose, mouseX, mouseY, partialTick);
+    protected void renderBackground(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+        graphics.blit(TEXTURE, x, y, 0, 0, WIDTH, HEIGHT, 256, 256);
+        renderChildren(graphics, mouseX, mouseY, partialTick);
     }
 
     @Override
-    protected void renderForeground(PoseStack pose, int mouseX, int mouseY, float partialTick) {
+    protected void renderForeground(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
         Font font = Minecraft.getInstance().font;
         int textX = (WIDTH - font.width("Choose Background")) / 2;
-        font.draw(pose, "Choose Background", x + textX, y + 6, 0x404040);
+        graphics.drawString(
+            font,
+            "Choose Background", x + textX, y + 6, 0x404040,
+            false
+        );
 
         int y = this.y + 19;
         int x = this.x + 8;
         int tempY = y;
         tempY -= scrollAmount;
 
-        try (var scissor = RenderUtils.createScissorBoxStack(new ScissorBoxStack(), Minecraft.getInstance(), pose, x, y, 152, 130)) {
+        try (var scissor = RenderUtils.createScissor(Minecraft.getInstance(), graphics, x, y, 152, 130)) {
             for (BackgroundModalItem item : items) {
                 boolean hovering = mouseY >= y && mouseY <= y + 148;
-                item.render(pose, scissor.stack(), x, tempY, mouseX, mouseY, hovering);
+                item.render(graphics, scissor.stack(), x, tempY, mouseX, mouseY, hovering);
                 tempY += 28;
             }
         }

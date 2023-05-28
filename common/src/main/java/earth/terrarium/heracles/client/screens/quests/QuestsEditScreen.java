@@ -1,7 +1,6 @@
 package earth.terrarium.heracles.client.screens.quests;
 
 import com.mojang.blaze3d.platform.InputConstants;
-import com.mojang.blaze3d.vertex.PoseStack;
 import earth.terrarium.heracles.api.quests.Quest;
 import earth.terrarium.heracles.api.quests.QuestDisplay;
 import earth.terrarium.heracles.api.quests.QuestSettings;
@@ -19,6 +18,7 @@ import earth.terrarium.heracles.common.menus.quests.QuestsMenu;
 import earth.terrarium.heracles.common.network.NetworkHandler;
 import earth.terrarium.heracles.common.network.packets.groups.CreateGroupPacket;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.ImageButton;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.network.chat.Component;
@@ -128,8 +128,8 @@ public class QuestsEditScreen extends QuestsScreen {
     }
 
     @Override
-    protected void renderBg(PoseStack stack, float partialTick, int mouseX, int mouseY) {
-        super.renderBg(stack, partialTick, mouseX, mouseY);
+    protected void renderBg(GuiGraphics graphics, float partialTick, int mouseX, int mouseY) {
+        super.renderBg(graphics, partialTick, mouseX, mouseY);
         if (dragTool.isSelected()) {
             setCursor(Cursor.RESIZE_ALL);
         }

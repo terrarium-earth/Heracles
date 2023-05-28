@@ -1,10 +1,13 @@
 package earth.terrarium.heracles.client.screens.quests;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.*;
+import com.mojang.blaze3d.vertex.BufferBuilder;
+import com.mojang.blaze3d.vertex.DefaultVertexFormat;
+import com.mojang.blaze3d.vertex.Tesselator;
+import com.mojang.blaze3d.vertex.VertexFormat;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.math.Axis;
-import com.teamresourceful.resourcefullib.client.scissor.ScissorBoxStack;
+import com.teamresourceful.resourcefullib.client.CloseablePoseStack;
 import com.teamresourceful.resourcefullib.client.utils.RenderUtils;
 import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.client.handlers.ClientQuests;
@@ -16,8 +19,9 @@ import earth.terrarium.heracles.common.network.NetworkHandler;
 import earth.terrarium.heracles.common.network.packets.quests.OpenQuestPacket;
 import earth.terrarium.heracles.common.utils.ModUtils;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Gui;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import org.joml.Vector2i;
@@ -100,15 +104,17 @@ public class QuestsWidget extends BaseWidget {
     }
 
     @Override
-    public void render(PoseStack pose, int mouseX, int mouseY, float partialTick) {
+    public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
         int x = this.x;
         int y = this.y;
         this.width = inspectorOpened.getAsBoolean() ? this.selectedWidth : this.fullWidth;
 
-        try (var scissor = RenderUtils.createScissorBoxStack(new ScissorBoxStack(), Minecraft.getInstance(), pose, x, y, width, height)) {
+        try (var scissor = RenderUtils.createScissor(Minecraft.getInstance(), graphics, x, y, width, height)) {
             x += this.fullWidth / 2;
             y += this.height / 2;
-            RenderUtils.bindTexture(ARROW);
+            RenderSystem.setShaderTexture(0, ARROW);
+            RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+            RenderSystem.setShader(GameRenderer::getPositionTexShader);
             RenderSystem.enableBlend();
 
             Tesselator tesselator = Tesselator.getInstance();
@@ -134,18 +140,17 @@ public class QuestsWidget extends BaseWidget {
 
                     float length = Mth.sqrt(Mth.square(cx - px) + Mth.square(cy - py));
 
-                    pose.pushPose();
-                    pose.translate(px, py, 0);
-                    pose.mulPose(Axis.ZP.rotation((float) Mth.atan2(cy - py, cx - px)));
+                    try (var pose = new CloseablePoseStack(graphics)) {
+                        pose.translate(px, py, 0);
+                        pose.mulPose(Axis.ZP.rotation((float) Mth.atan2(cy - py, cx - px)));
 
-                    buffer.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
-                    buffer.vertex(pose.last().pose(), 0, 0, 0).uv(0, 0).endVertex();
-                    buffer.vertex(pose.last().pose(), 0, 5, 0).uv(0, 1).endVertex();
-                    buffer.vertex(pose.last().pose(), length, 5, 0).uv(length / 3f, 1).endVertex();
-                    buffer.vertex(pose.last().pose(), length, 0, 0).uv(length / 3f, 0).endVertex();
-                    tesselator.end();
-
-                    pose.popPose();
+                        buffer.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
+                        buffer.vertex(pose.last().pose(), 0, 0, 0).uv(0, 0).endVertex();
+                        buffer.vertex(pose.last().pose(), 0, 5, 0).uv(0, 1).endVertex();
+                        buffer.vertex(pose.last().pose(), length, 5, 0).uv(length / 3f, 1).endVertex();
+                        buffer.vertex(pose.last().pose(), length, 0, 0).uv(length / 3f, 0).endVertex();
+                        tesselator.end();
+                    }
                 }
             }
 
@@ -153,9 +158,9 @@ public class QuestsWidget extends BaseWidget {
             RenderSystem.disableBlend();
 
             for (QuestWidget widget : this.widgets) {
-                widget.render(pose, scissor.stack(), x + offset.x(), y + offset.y(), mouseX, mouseY, isMouseOver(mouseX, mouseY), partialTick);
+                widget.render(graphics, scissor.stack(), x + offset.x(), y + offset.y(), mouseX, mouseY, isMouseOver(mouseX, mouseY), partialTick);
                 if (mouseMode.get().canSelect() && widget == this.selectHandler.selectedQuest()) {
-                    Gui.renderOutline(pose, x + offset.x() + widget.x() - 2, y + offset.y() + widget.y() - 2, 28, 28, 0xFFA8EFF0);
+                    graphics.renderOutline(x + offset.x() + widget.x() - 2, y + offset.y() + widget.y() - 2, 28, 28, 0xFFA8EFF0);
                 }
             }
         }
@@ -164,15 +169,15 @@ public class QuestsWidget extends BaseWidget {
         int height = (int) ((this.height - 10) * (offset.y / 500f));
 
         if (offset.x > this.width / 4) {
-            Gui.fill(pose, this.x + 1 + width, this.y + this.height - 4, this.x - 6 + this.width, this.y + this.height - 2, 0xFFFFFFFF);
+            graphics.fill(this.x + 1 + width, this.y + this.height - 4, this.x - 6 + this.width, this.y + this.height - 2, 0xFFFFFFFF);
         } else if (offset.x < -this.width / 4) {
-            Gui.fill(pose, this.x + 1, this.y + this.height - 4, this.x - 6 + this.width + width, this.y + this.height - 2, 0xFFFFFFFF);
+            graphics.fill(this.x + 1, this.y + this.height - 4, this.x - 6 + this.width + width, this.y + this.height - 2, 0xFFFFFFFF);
         }
 
         if (offset.y > this.height / 4) {
-            Gui.fill(pose, this.x + this.width - 4, this.y + 1 + height, this.x + this.width - 2, this.y - 6 + this.height, 0xFFFFFFFF);
+            graphics.fill(this.x + this.width - 4, this.y + 1 + height, this.x + this.width - 2, this.y - 6 + this.height, 0xFFFFFFFF);
         } else if (offset.y < -this.height / 4) {
-            Gui.fill(pose, this.x + this.width - 4, this.y + 1, this.x + this.width - 2, this.y - 6 + this.height + height, 0xFFFFFFFF);
+            graphics.fill(this.x + this.width - 4, this.y + 1, this.x + this.width - 2, this.y - 6 + this.height + height, 0xFFFFFFFF);
         }
     }
 

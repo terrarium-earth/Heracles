@@ -2,7 +2,6 @@ package earth.terrarium.heracles.client.widgets.modals.upload;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.serialization.JsonOps;
 import com.teamresourceful.resourcefullib.client.scissor.ScissorBoxStack;
 import com.teamresourceful.resourcefullib.client.utils.RenderUtils;
@@ -15,7 +14,7 @@ import earth.terrarium.heracles.common.utils.ModUtils;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.Gui;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.RegistryOps;
@@ -80,18 +79,17 @@ public record UploadModalItem(Path path, @Nullable Quest quest, String size, Lis
         }
     }
 
-    public void render(PoseStack pose, ScissorBoxStack scissor, int x, int y, int mouseX, int mouseY, boolean hovering, boolean hoveringRemove) {
+    public void render(GuiGraphics graphics, ScissorBoxStack scissor, int x, int y, int mouseX, int mouseY, boolean hovering, boolean hoveringRemove) {
         Font font = Minecraft.getInstance().font;
 
-        RenderUtils.bindTexture(UploadModal.TEXTURE);
-        Gui.blit(pose, x, y, 0, 173, WIDTH, HEIGHT, 256, 256);
-        Gui.blit(pose, x + 4, y + 6 + font.lineHeight, 168 + icon.x, 28, 9, 9, 256, 256);
+        graphics.blit(UploadModal.TEXTURE, x, y, 0, 173, WIDTH, HEIGHT, 256, 256);
+        graphics.blit(UploadModal.TEXTURE, x + 4, y + 6 + font.lineHeight, 168 + icon.x, 28, 9, 9, 256, 256);
 
-        Gui.blit(pose, x + WIDTH - 11, y + 2, 168, hovering && hoveringRemove ? 46 : 37, 9, 9, 256, 256);
+        graphics.blit(UploadModal.TEXTURE, x + WIDTH - 11, y + 2, 168, hovering && hoveringRemove ? 46 : 37, 9, 9, 256, 256);
 
         String fileName = path.getFileName().toString();
 
-        try (var ignored = RenderUtils.createScissorBoxStack(scissor, Minecraft.getInstance(), pose, x + 4, y + 2, WIDTH - 21, font.lineHeight)) {
+        try (var ignored = RenderUtils.createScissorBoxStack(scissor, Minecraft.getInstance(), graphics.pose(), x + 4, y + 2, WIDTH - 21, font.lineHeight)) {
             int textWidth = font.width(fileName);
             if (textWidth > WIDTH - 21) {
                 int overflow = textWidth - (WIDTH - 21);
@@ -99,12 +97,24 @@ public record UploadModalItem(Path path, @Nullable Quest quest, String size, Lis
                 double e = Math.max((double) overflow * 0.5, 3);
                 double f = Math.sin((Math.PI / 2) * Math.cos((Math.PI * 2) * seconds / e)) / 2 + 0.5;
                 int startX = (int) Mth.lerp(f, 0.0, overflow);
-                font.draw(pose, fileName, x + 4 - startX, y + 3, 0xFFFFFF);
+                graphics.drawString(
+                    font,
+                    fileName, x + 4 - startX, y + 3, 0xFFFFFF,
+                    false
+                );
             } else {
-                font.draw(pose, fileName, x + 4, y + 3, 0xFFFFFF);
+                graphics.drawString(
+                    font,
+                    fileName, x + 4, y + 3, 0xFFFFFF,
+                    false
+                );
             }
         }
-        font.draw(pose, this.size, x + 13, y + 6 + font.lineHeight, 0xFFFFFF);
+        graphics.drawString(
+            font,
+            this.size, x + 13, y + 6 + font.lineHeight, 0xFFFFFF,
+            false
+        );
         if (hovering) {
             if (hoveringRemove) {
                 ClientUtils.setTooltip(ConstantComponents.DELETE);

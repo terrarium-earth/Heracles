@@ -1,15 +1,13 @@
 package earth.terrarium.heracles.client.screens.quests;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.teamresourceful.resourcefullib.client.scissor.ScissorBoxStack;
 import com.teamresourceful.resourcefullib.client.screens.CursorScreen;
 import com.teamresourceful.resourcefullib.client.utils.CursorUtils;
-import com.teamresourceful.resourcefullib.client.utils.RenderUtils;
 import earth.terrarium.heracles.api.quests.Quest;
 import earth.terrarium.heracles.client.handlers.ClientQuests;
 import earth.terrarium.heracles.client.utils.ClientUtils;
 import earth.terrarium.heracles.common.utils.ModUtils;
-import net.minecraft.client.gui.Gui;
+import net.minecraft.client.gui.GuiGraphics;
 import org.joml.Vector2i;
 
 import java.util.List;
@@ -28,19 +26,18 @@ public class QuestWidget {
         this.id = entry.key();
     }
 
-    public void render(PoseStack pose, ScissorBoxStack scissor, int x, int y, int mouseX, int mouseY, boolean hovered, float partialTicks) {
-        RenderUtils.bindTexture(quest.display().iconBackground());
+    public void render(GuiGraphics graphics, ScissorBoxStack scissor, int x, int y, int mouseX, int mouseY, boolean hovered, float partialTicks) {
         int offset = switch (status) {
             case COMPLETED -> 24;
             case LOCKED -> 48;
             default -> 0;
         };
         hovered = hovered && isMouseOver(mouseX - x, mouseY - y);
-        Gui.blit(pose, x + x(), y + y(), offset, 0, 24, 24, 72, 24);
+        graphics.blit(quest.display().iconBackground(), x + x(), y + y(), offset, 0, 24, 24, 72, 24);
         if (hovered) {
-            Gui.fill(pose, x + x(), y + y(), x + x() + 24, y + y() + 24, 0x50FFFFFF);
+            graphics.fill(x + x(), y + y(), x + x() + 24, y + y() + 24, 0x50FFFFFF);
         }
-        quest.display().icon().render(pose, scissor, x + x(), y + y(), 24, 24);
+        quest.display().icon().render(graphics, scissor, x + x(), y + y(), 24, 24);
         CursorUtils.setCursor(hovered, CursorScreen.Cursor.POINTER);
         if (hovered && (!(ClientUtils.screen() instanceof QuestsScreen screen) || !screen.isTemporaryWidgetVisible())) {
             String subtitleText = quest.display().subtitle().getString().trim();

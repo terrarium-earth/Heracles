@@ -5,10 +5,9 @@ import com.mojang.blaze3d.vertex.*;
 import com.teamresourceful.resourcefullib.client.scissor.ScissorBoxStack;
 import com.teamresourceful.resourcefullib.client.screens.CursorScreen;
 import com.teamresourceful.resourcefullib.client.utils.CursorUtils;
-import com.teamresourceful.resourcefullib.client.utils.RenderUtils;
 import earth.terrarium.heracles.client.utils.ClientUtils;
 import earth.terrarium.heracles.client.widgets.modals.upload.UploadModal;
-import net.minecraft.client.gui.Gui;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -19,13 +18,12 @@ public record BackgroundModalItem(ResourceLocation texture) {
     public static final int WIDTH = 152;
     public static final int HEIGHT = 28;
 
-    public void render(PoseStack pose, ScissorBoxStack ignored, int x, int y, int mouseX, int mouseY, boolean hovering) {
-        RenderUtils.bindTexture(UploadModal.TEXTURE);
-        Gui.blit(pose, x, y, 0, 173, WIDTH, HEIGHT, 256, 256);
+    public void render(GuiGraphics graphics, ScissorBoxStack ignored, int x, int y, int mouseX, int mouseY, boolean hovering) {
+        graphics.blit(UploadModal.TEXTURE, x, y, 0, 173, WIDTH, HEIGHT, 256, 256);
 
-        RenderUtils.bindTexture(texture);
+        RenderSystem.setShaderTexture(0, texture);
 
-        Matrix4f matrix = pose.last().pose();
+        Matrix4f matrix = graphics.pose().last().pose();
 
         int xStart = (WIDTH - 72) / 2;
 

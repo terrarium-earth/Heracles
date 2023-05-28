@@ -1,9 +1,9 @@
 package earth.terrarium.heracles.client.widgets;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import earth.terrarium.heracles.Heracles;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractButton;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.network.chat.Component;
@@ -23,17 +23,16 @@ public class SelectableTabButton extends AbstractButton {
     }
 
     @Override
-    public void renderWidget(PoseStack poseStack, int i, int j, float f) {
+    public void renderWidget(GuiGraphics graphics, int i, int j, float f) {
         int v = (selected ? 40 : 0) + (this.isHovered() ? 20 : 0);
         Minecraft minecraft = Minecraft.getInstance();
-        RenderSystem.setShaderTexture(0, TEXTURE);
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, this.alpha);
         RenderSystem.enableBlend();
         RenderSystem.enableDepthTest();
-        blitNineSliced(poseStack, this.getX(), this.getY(), this.getWidth(), this.getHeight(), 1, 144, 20, 0, v);
+        graphics.blitNineSliced(TEXTURE, this.getX(), this.getY(), this.getWidth(), this.getHeight(), 1, 144, 20, 0, v);
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         int k = this.active ? 16777215 : 10526880;
-        this.renderString(poseStack, minecraft.font, k | Mth.ceil(this.alpha * 255.0F) << 24);
+        this.renderString(graphics, minecraft.font, k | Mth.ceil(this.alpha * 255.0F) << 24);
     }
 
     public void setSelected(boolean selected) {

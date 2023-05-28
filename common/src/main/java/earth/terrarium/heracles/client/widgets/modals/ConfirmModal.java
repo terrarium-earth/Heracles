@@ -1,9 +1,7 @@
 package earth.terrarium.heracles.client.widgets.modals;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.teamresourceful.resourcefullib.client.utils.RenderUtils;
 import earth.terrarium.heracles.client.widgets.base.BaseModal;
-import net.minecraft.client.gui.Gui;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.network.chat.CommonComponents;
@@ -35,19 +33,18 @@ public class ConfirmModal extends BaseModal {
     }
 
     @Override
-    protected void renderBackground(PoseStack pose, int mouseX, int mouseY, float partialTick) {
-        RenderUtils.bindTexture(TEXTURE);
-
-        pose.pushPose();
-        pose.translate(0, 0, 150);
-        Gui.blitNineSliced(pose, x, y, width, height, 4, 4, 4, 4, 128, 128, 0, 0);
-        renderChildren(pose, mouseX, mouseY, partialTick);
+    protected void renderBackground(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+        graphics.blitNineSliced(TEXTURE, x, y, width, height, 4, 4, 4, 4, 128, 128, 0, 0);
+        renderChildren(graphics, mouseX, mouseY, partialTick);
     }
 
     @Override
-    protected void renderForeground(PoseStack pose, int mouseX, int mouseY, float partialTick) {
-        font.draw(pose, "Confirm", x + 10, y + 6, 0x404040);
-        pose.popPose();
+    protected void renderForeground(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+        graphics.drawString(
+            font,
+            "Confirm", x + 10, y + 6, 0x404040,
+            false
+        );
     }
 
     public void setCallback(Runnable runnable) {

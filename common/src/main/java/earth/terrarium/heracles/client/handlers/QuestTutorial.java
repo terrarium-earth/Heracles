@@ -1,11 +1,9 @@
 package earth.terrarium.heracles.client.handlers;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.teamresourceful.resourcefullib.client.utils.RenderUtils;
 import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.common.regisitries.ModItems;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiComponent;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.toasts.Toast;
 import net.minecraft.client.gui.components.toasts.ToastComponent;
 import net.minecraft.network.chat.Component;
@@ -78,18 +76,22 @@ public class QuestTutorial {
 
         @Override
         @NotNull
-        public Toast.Visibility render(PoseStack poseStack, ToastComponent toastComponent, long timeSinceLastVisible) {
-            RenderUtils.bindTexture(TEXTURE);
+        public Toast.Visibility render(GuiGraphics graphics, ToastComponent toastComponent, long timeSinceLastVisible) {
+            graphics.blit(TEXTURE, 0, 0, 0, 96, this.width(), this.height());
+            graphics.drawString(
+                toastComponent.getMinecraft().font,
+                TITLE_TEXT, 32, 7, 0xFF404040,
+                false
+            );
+            graphics.drawString(
+                toastComponent.getMinecraft().font,
+                Component.translatable(
+                    "quest.heracles.tutorial.desc", Component.keybind("key.heracles.open_quests").withStyle(style -> style.withBold(true).withColor(0xFFA0A0A0))
+                ), 32, 18, 0xFF808080,
+                false
+            );
 
-            GuiComponent.blit(poseStack, 0, 0, 0, 96, this.width(), this.height());
-            toastComponent.getMinecraft().font.draw(poseStack, TITLE_TEXT, 32.0F, 7.0F, 0xFF404040);
-            toastComponent.getMinecraft().font.draw(poseStack,
-                Component.translatable("quest.heracles.tutorial.desc",
-                    Component.keybind("key.heracles.open_quests")
-                        .withStyle(style -> style.withBold(true).withColor(0xFFA0A0A0))),
-                32.0F, 18.0F, 0xFF808080);
-
-            toastComponent.getMinecraft().getItemRenderer().renderAndDecorateFakeItem(poseStack, ModItems.QUEST_BOOK.get().getDefaultInstance(), 8, 8);
+            graphics.renderFakeItem(ModItems.QUEST_BOOK.get().getDefaultInstance(), 8, 8);
 
             return DisplayConfig.showTutorial ? Visibility.SHOW : Visibility.HIDE;
         }

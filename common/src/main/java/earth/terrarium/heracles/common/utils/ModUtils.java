@@ -105,7 +105,7 @@ public class ModUtils {
         }
         BasicContentMenuProvider.open(
             new QuestsContent(group, getQuests(player), true),
-            CommonComponents.GUI_TO_TITLE,
+            CommonComponents.EMPTY,
             QuestsMenu::of,
             player
         );

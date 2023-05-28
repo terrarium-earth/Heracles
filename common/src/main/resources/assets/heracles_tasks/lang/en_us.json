@@ -3,6 +3,7 @@
   "task.heracles.require_quest.title": "Complete %s",
   "task.heracles.require_quest.desc": "Complete the quest",
 
+  "task.heracles.kill_entity": "Kill Entity",
   "task.heracles.kill_entity.title.singular": "Kill a %s",
   "task.heracles.kill_entity.title.plural": "Kill %ss",
   "task.heracles.kill_entity.desc.singular": "Kill %s %s",
@@ -10,12 +11,14 @@
   "setting.heracles.kill_entity.entity": "Entity to Kill:",
   "setting.heracles.kill_entity.amount": "Amount to Kill:",
 
+  "task.heracles.item": "Gather Item",
   "task.heracles.item.title.singular": "Gather a %s",
   "task.heracles.item.title.plural": "Gather %ss",
   "task.heracles.item.desc.singular": "Gather %s %s",
   "task.heracles.item.desc.plural": "Gather %s %ss",
   "setting.heracles.item.amount": "Amount:",
 
+  "task.heracles.advancement": "Advancement",
   "task.heracles.advancement.title.singular": "Complete the advancement:",
   "task.heracles.advancement.title.plural": "Complete one of the advancements",
   "task.heracles.advancement.desc.singular": "%s",

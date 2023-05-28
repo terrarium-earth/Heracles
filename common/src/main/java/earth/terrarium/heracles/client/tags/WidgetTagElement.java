@@ -1,6 +1,5 @@
 package earth.terrarium.heracles.client.tags;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.teamresourceful.resourcefullib.client.scissor.ScissorBoxStack;
 import earth.terrarium.heracles.api.client.DisplayWidget;
 import earth.terrarium.heracles.api.quests.Quest;
@@ -11,6 +10,7 @@ import earth.terrarium.heracles.common.handlers.progress.QuestProgress;
 import earth.terrarium.heracles.common.utils.ModUtils;
 import earth.terrarium.hermes.api.TagElement;
 import earth.terrarium.hermes.api.themes.Theme;
+import net.minecraft.client.gui.GuiGraphics;
 
 import java.util.Map;
 
@@ -36,9 +36,9 @@ public record WidgetTagElement(DisplayWidget widget) implements TagElement {
     }
 
     @Override
-    public void render(Theme theme, PoseStack pose, ScissorBoxStack scissor, int x, int y, int width, int mouseX, int mouseY, boolean hovered, float partialTicks) {
+    public void render(Theme theme, GuiGraphics graphics, int x, int y, int width, int mouseX, int mouseY, boolean hovered, float partialTicks) {
         if (widget == null) return;
-        widget.render(pose, scissor, x, y, width, mouseX, mouseY, hovered, partialTicks);
+        widget.render(graphics, new ScissorBoxStack(), x, y, width, mouseX, mouseY, hovered, partialTicks);
     }
 
     @Override

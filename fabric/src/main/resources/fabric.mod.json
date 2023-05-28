@@ -25,8 +25,7 @@
   "depends": {
     "fabric": ">=0.14.19",
     "fabric-api": "*",
-    "cardinal-components-entity": ">=5.0.0",
-    "minecraft": "~1.19.4",
+    "minecraft": ">=1.20-",
     "java": ">=17"
   }
 }

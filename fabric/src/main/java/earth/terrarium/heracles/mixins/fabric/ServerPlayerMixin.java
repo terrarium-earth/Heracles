@@ -44,9 +44,9 @@ public abstract class ServerPlayerMixin extends Player {
             ServerPlayer player = (ServerPlayer) (Object) this;
 
             QuestsProgress progress = QuestProgressHandler.getProgress(player.server, player.getUUID());
-            Map<Structure, LongSet> structures = player.getLevel().structureManager().getAllStructuresAt(player.getOnPos());
+            Map<Structure, LongSet> structures = player.serverLevel().structureManager().getAllStructuresAt(player.getOnPos());
 
-            progress.testAndProgressTaskType(player, player.level.getBiome(player.getOnPos()), BiomeTask.TYPE);
+            progress.testAndProgressTaskType(player, player.level().getBiome(player.getOnPos()), BiomeTask.TYPE);
 
             if (!structures.isEmpty()) {
                 progress.testAndProgressTaskType(player, structures.keySet(), StructureTask.TYPE);

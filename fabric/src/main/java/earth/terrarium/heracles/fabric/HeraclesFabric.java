@@ -66,7 +66,7 @@ public class HeraclesFabric {
             if (!(player instanceof ServerPlayer serverPlayer)) return InteractionResult.PASS;
 
             QuestProgressHandler.getProgress(serverPlayer.server, serverPlayer.getUUID())
-                .testAndProgressTaskType(serverPlayer, new BlockSourceImpl(serverPlayer.getLevel(), hitResult.getBlockPos()), BlockInteractTask.TYPE);
+                .testAndProgressTaskType(serverPlayer, new BlockSourceImpl(serverPlayer.serverLevel(), hitResult.getBlockPos()), BlockInteractTask.TYPE);
 
             return InteractionResult.PASS;
         });

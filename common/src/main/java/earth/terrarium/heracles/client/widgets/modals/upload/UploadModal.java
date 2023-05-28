@@ -1,7 +1,5 @@
 package earth.terrarium.heracles.client.widgets.modals.upload;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.teamresourceful.resourcefullib.client.scissor.ScissorBoxStack;
 import com.teamresourceful.resourcefullib.client.utils.RenderUtils;
 import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.api.quests.Quest;
@@ -12,8 +10,7 @@ import earth.terrarium.heracles.common.network.NetworkHandler;
 import earth.terrarium.heracles.common.network.packets.quests.QuestActionPacket;
 import earth.terrarium.heracles.common.network.packets.quests.UploadQuestPacket;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.Gui;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
@@ -59,27 +56,29 @@ public class UploadModal extends BaseModal implements FileWidget {
     }
 
     @Override
-    protected void renderBackground(PoseStack pose, int mouseX, int mouseY, float partialTick) {
-        RenderUtils.bindTexture(TEXTURE);
-        Gui.blit(pose, x, y, 0, 0, WIDTH, HEIGHT, 256, 256);
-        renderChildren(pose, mouseX, mouseY, partialTick);
+    protected void renderBackground(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+        graphics.blit(TEXTURE, x, y, 0, 0, WIDTH, HEIGHT, 256, 256);
+        renderChildren(graphics, mouseX, mouseY, partialTick);
     }
 
     @Override
-    protected void renderForeground(PoseStack pose, int mouseX, int mouseY, float partialTick) {
-        Font font = Minecraft.getInstance().font;
-        font.draw(pose, "Import Quests", x + 8, y + 6, 0x404040);
+    protected void renderForeground(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+        graphics.drawString(
+            Minecraft.getInstance().font,
+            "Import Quests", x + 8, y + 6, 0x404040,
+            false
+        );
 
         int y = this.y + 19;
         int x = this.x + 8;
         int tempY = y;
         tempY -= scrollAmount;
 
-        try (var scissor = RenderUtils.createScissorBoxStack(new ScissorBoxStack(), Minecraft.getInstance(), pose, x, y, 152, 130)) {
+        try (var scissor = RenderUtils.createScissor(Minecraft.getInstance(), graphics, x, y, 152, 130)) {
             for (UploadModalItem item : items) {
                 boolean hovering = mouseY >= y && mouseY <= y + 148;
                 boolean hoveringRemove = mouseX >= x + UploadModalItem.WIDTH - 11 && mouseX <= x + UploadModalItem.WIDTH - 2 && mouseY >= tempY + 2 && mouseY <= tempY + 11;
-                item.render(pose, scissor.stack(), x, tempY, mouseX, mouseY, hovering, hoveringRemove);
+                item.render(graphics, scissor.stack(), x, tempY, mouseX, mouseY, hovering, hoveringRemove);
                 tempY += 28;
             }
         }

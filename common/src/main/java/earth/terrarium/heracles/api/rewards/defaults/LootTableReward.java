@@ -12,7 +12,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.storage.loot.LootContext;
+import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
@@ -29,20 +29,20 @@ public record LootTableReward(
 
     @Override
     public Stream<ItemStack> reward(ServerPlayer player) {
-        LootContext context = new LootContext.Builder(player.getLevel())
-            .withOptionalParameter(LootContextParams.THIS_ENTITY, player)
+        LootParams lootParams = new LootParams.Builder(player.serverLevel())
             .withParameter(LootContextParams.ORIGIN, player.position())
+            .withOptionalParameter(LootContextParams.THIS_ENTITY, player)
             .create(LootContextParamSets.CHEST);
-        LootTable table = player.server.getLootTables().get(lootTable);
+        LootTable table = player.server.getLootData().getLootTable(lootTable);
         if (table == LootTable.EMPTY) {
             player.sendSystemMessage(Component.literal("Loot table " + lootTable + " does not exist!"));
             return Stream.empty();
         }
         List<ItemStack> rewards = new ArrayList<>();
-        table.getRandomItems(context, item -> mergeItemStacks(rewards, item.copy()));
+        table.getRandomItems(lootParams, item -> mergeItemStacks(rewards, item.copy()));
         for (ItemStack reward : rewards) {
             if (player.addItem(reward.copy())) {
-                player.level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.ITEM_PICKUP, SoundSource.PLAYERS, 0.2F, ((player.getRandom().nextFloat() - player.getRandom().nextFloat()) * 0.7F + 1.0F) * 2.0F);
+                player.level().playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.ITEM_PICKUP, SoundSource.PLAYERS, 0.2F, ((player.getRandom().nextFloat() - player.getRandom().nextFloat()) * 0.7F + 1.0F) * 2.0F);
             } else {
                 ItemEntity itemEntity = player.drop(reward.copy(), false);
                 if (itemEntity != null) {

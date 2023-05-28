@@ -1,9 +1,9 @@
 package earth.terrarium.heracles.client.widgets.boxes;
 
 import com.mojang.blaze3d.platform.InputConstants;
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.network.chat.CommonComponents;
 import org.jetbrains.annotations.Nullable;
@@ -47,19 +47,23 @@ public class AutocompleteEditBox<T> extends EditBox {
     }
 
     @Override
-    public void renderWidget(PoseStack pose, int i, int j, float f) {
-        super.renderWidget(pose, i, j, f);
+    public void renderWidget(GuiGraphics graphics, int i, int j, float f) {
+        super.renderWidget(graphics, i, j, f);
         if (!isFocused()) return;
         int x = this.getX();
         int y = this.getY() + this.getHeight() + 1;
         int width = this.getWidth();
         if (!filteredSuggestions.isEmpty()) {
             int height = 10 * filteredSuggestions.size();
-            fill(pose, x, y, x + width, y + height, 0x80000000);
-            renderOutline(pose, x - 1, y - 1, width + 2, height + 2, this.isFocused() ? 0xffffffff : 0xffa0a0a0);
+            graphics.fill(x, y, x + width, y + height, 0x80000000);
+            graphics.renderOutline(x - 1, y - 1, width + 2, height + 2, this.isFocused() ? 0xffffffff : 0xffa0a0a0);
             for (int k = 0; k < filteredSuggestions.size(); k++) {
                 String suggestion = filteredSuggestions.get(k);
-                Minecraft.getInstance().font.draw(pose, suggestion, x + 4, y + 1 + (k * 10), 0xFFFFFFFF);
+                graphics.drawString(
+                    Minecraft.getInstance().font,
+                    suggestion, x + 4, y + 1 + (k * 10), 0xFFFFFFFF,
+                    false
+                );
             }
         }
     }

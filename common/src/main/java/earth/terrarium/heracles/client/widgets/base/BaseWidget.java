@@ -1,9 +1,9 @@
 package earth.terrarium.heracles.client.widgets.base;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.teamresourceful.resourcefullib.client.screens.CursorScreen;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.gui.components.events.AbstractContainerEventHandler;
 import net.minecraft.client.gui.components.events.GuiEventListener;
@@ -25,12 +25,12 @@ public abstract class BaseWidget extends AbstractContainerEventHandler implement
         return child;
     }
 
-    public void renderChildren(PoseStack pose, int mouseX, int mouseY, float partialTicks) {
+    public void renderChildren(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
         List<GuiEventListener> children = new ArrayList<>(this.children());
         Collections.reverse(children);
         for (GuiEventListener child : children) {
             if (child instanceof Renderable renderable) {
-                renderable.render(pose, mouseX, mouseY, partialTicks);
+                renderable.render(graphics, mouseX, mouseY, partialTicks);
             }
         }
         if (Minecraft.getInstance().screen instanceof CursorScreen cursorScreen) {

@@ -1,6 +1,5 @@
 package earth.terrarium.heracles.client.screens;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.teamresourceful.resourcefullib.client.screens.BaseCursorScreen;
 import earth.terrarium.heracles.client.handlers.DisplayConfig;
 import earth.terrarium.heracles.client.handlers.QuestTutorial;
@@ -12,6 +11,7 @@ import earth.terrarium.hermes.api.TagElement;
 import earth.terrarium.hermes.api.defaults.ParagraphTagElement;
 import earth.terrarium.hermes.api.themes.DefaultTheme;
 import earth.terrarium.hermes.client.DocumentWidget;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.network.chat.CommonComponents;
@@ -54,9 +54,9 @@ public class QuestTutorialScreen extends BaseCursorScreen {
     }
 
     @Override
-    public void render(@NotNull PoseStack stack, int i, int j, float f) {
-        this.renderDirtBackground(stack);
-        super.render(stack, i, j, f);
+    public void render(@NotNull GuiGraphics graphics, int i, int j, float f) {
+        this.renderDirtBackground(graphics);
+        super.render(graphics, i, j, f);
     }
 
     @Override

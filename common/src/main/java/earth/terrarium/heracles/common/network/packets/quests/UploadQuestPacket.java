@@ -1,12 +1,12 @@
 package earth.terrarium.heracles.common.network.packets.quests;
 
+import com.teamresourceful.resourcefullib.common.networking.PacketHelper;
 import com.teamresourceful.resourcefullib.common.networking.base.Packet;
 import com.teamresourceful.resourcefullib.common.networking.base.PacketContext;
 import com.teamresourceful.resourcefullib.common.networking.base.PacketHandler;
 import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.api.quests.Quest;
 import earth.terrarium.heracles.common.handlers.quests.QuestHandler;
-import earth.terrarium.heracles.common.utils.PacketHelper;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 
@@ -30,14 +30,14 @@ public record UploadQuestPacket(String id, Quest quest) implements Packet<Upload
         @Override
         public void encode(UploadQuestPacket message, FriendlyByteBuf buffer) {
             buffer.writeUtf(message.id());
-            PacketHelper.writeWithYabn(Heracles.getRegistryAccess(), buffer, Quest.CODEC, message.quest(), true);
+            PacketHelper.writeWithRegistryYabn(Heracles.getRegistryAccess(), buffer, Quest.CODEC, message.quest(), true);
         }
 
         @Override
         public UploadQuestPacket decode(FriendlyByteBuf buffer) {
             return new UploadQuestPacket(
                 buffer.readUtf(),
-                PacketHelper.readWithYabn(Heracles.getRegistryAccess(), buffer, Quest.CODEC, true).get().orThrow()
+                PacketHelper.readWithRegistryYabn(Heracles.getRegistryAccess(), buffer, Quest.CODEC, true).get().orThrow()
             );
         }
 

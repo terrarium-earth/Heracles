@@ -1,13 +1,11 @@
 package earth.terrarium.heracles.client.widgets.modals;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.teamresourceful.resourcefullib.client.scissor.ScissorBoxStack;
 import com.teamresourceful.resourcefullib.client.utils.RenderUtils;
 import earth.terrarium.heracles.api.client.settings.SettingInitializer;
 import earth.terrarium.heracles.client.widgets.base.BaseModal;
 import earth.terrarium.heracles.common.constants.ConstantComponents;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Gui;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.gui.components.events.GuiEventListener;
@@ -47,16 +45,18 @@ public class EditObjectModal extends BaseModal {
     }
 
     @Override
-    protected void renderBackground(PoseStack pose, int mouseX, int mouseY, float partialTick) {
-        RenderUtils.bindTexture(TEXTURE);
-
-        Gui.blitNineSliced(pose, x, y, width, height, 4, 4, 4, 4, 128, 128, 0, 0);
-        Gui.blitNineSliced(pose, x + 7, y + 18, width - 14, height - 40, 1, 1, 1, 1, 128, 128, 128, 0);
+    protected void renderBackground(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+        graphics.blitNineSliced(TEXTURE, x, y, width, height, 4, 4, 4, 4, 128, 128, 0, 0);
+        graphics.blitNineSliced(TEXTURE, x + 7, y + 18, width - 14, height - 40, 1, 1, 1, 1, 128, 128, 128, 0);
     }
 
     @Override
-    protected void renderForeground(PoseStack pose, int mouseX, int mouseY, float partialTick) {
-        font.draw(pose, this.title, this.x + 10, this.y + 7, 0x404040);
+    protected void renderForeground(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+        graphics.drawString(
+            font,
+            this.title, this.x + 10, this.y + 7, 0x404040,
+            false
+        );
 
         int fullHeight = 0;
         int x = this.x + (int) (this.width * 0.55f);
@@ -64,7 +64,7 @@ public class EditObjectModal extends BaseModal {
         int width = this.width - 20;
         int height = this.height - 46;
 
-        try (var ignored = RenderUtils.createScissorBoxStack(new ScissorBoxStack(), Minecraft.getInstance(), pose, this.x + 10, y, width + 4, height)) {
+        try (var ignored = RenderUtils.createScissor(Minecraft.getInstance(), graphics, this.x + 10, y, width + 4, height)) {
             for (var entry : this.widgets.entrySet()) {
                 y += 2;
                 LayoutElement element = (LayoutElement) entry.getValue();
@@ -82,12 +82,16 @@ public class EditObjectModal extends BaseModal {
                 if (child.getValue() instanceof Renderable renderable) {
                     Component title = Component.translatable(this.id.toLanguageKey("setting", child.getKey()));
                     int renderY = ((LayoutElement) renderable).getY();
-                    font.draw(pose, title, this.x + 15, renderY + 2, 0xFFFFFF);
-                    renderable.render(pose, mouseX, mouseY, partialTick);
+                    graphics.drawString(
+                        font,
+                        title, this.x + 15, renderY + 2, 0xFFFFFF,
+                        false
+                    );
+                    renderable.render(graphics, mouseX, mouseY, partialTick);
                 }
             }
         }
-        renderChildren(pose, mouseX, mouseY, partialTick);
+        renderChildren(graphics, mouseX, mouseY, partialTick);
         this.scrollAmount = Mth.clamp(this.scrollAmount, 0.0D, Math.max(0, this.lastFullHeight - height));
     }
 

@@ -1,7 +1,5 @@
 package earth.terrarium.heracles.client.widgets.modals;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.teamresourceful.resourcefullib.client.scissor.ScissorBoxStack;
 import com.teamresourceful.resourcefullib.client.screens.CursorScreen;
 import com.teamresourceful.resourcefullib.client.utils.CursorUtils;
 import com.teamresourceful.resourcefullib.client.utils.RenderUtils;
@@ -11,7 +9,7 @@ import earth.terrarium.heracles.api.rewards.client.QuestRewardWidgets;
 import earth.terrarium.heracles.client.widgets.base.BaseModal;
 import earth.terrarium.heracles.common.constants.ConstantComponents;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Gui;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.util.Mth;
 
@@ -43,22 +41,25 @@ public class SelectRewardsModal extends BaseModal {
     }
 
     @Override
-    protected void renderBackground(PoseStack pose, int mouseX, int mouseY, float partialTick) {
-        RenderUtils.bindTexture(TEXTURE);
+    protected void renderBackground(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+        graphics.blitNineSliced(TEXTURE, x, y, width, height, 4, 4, 4, 4, 128, 128, 0, 0);
+        graphics.blitNineSliced(TEXTURE, x + 7, y + 18, width - 14, height - 40, 1, 1, 1, 1, 128, 128, 128, 0);
 
-        pose.pushPose();
-        pose.translate(0, 0, 150);
-
-        Gui.blitNineSliced(pose, x, y, width, height, 4, 4, 4, 4, 128, 128, 0, 0);
-        Gui.blitNineSliced(pose, x + 7, y + 18, width - 14, height - 40, 1, 1, 1, 1, 128, 128, 128, 0);
-
-        renderChildren(pose, mouseX, mouseY, partialTick);
+        renderChildren(graphics, mouseX, mouseY, partialTick);
     }
 
     @Override
-    protected void renderForeground(PoseStack pose, int mouseX, int mouseY, float partialTick) {
-        font.draw(pose, "Select " + maxSelectable + " Reward" + (maxSelectable > 1 ? "s" : ""), x + 10, y + 6, 0x404040);
-        font.draw(pose, selected.size() + "/" + maxSelectable, x + 10, y + height - 15, 0x404040);
+    protected void renderForeground(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+        graphics.drawString(
+            font,
+            "Select " + maxSelectable + " Reward" + (maxSelectable > 1 ? "s" : ""), x + 10, y + 6, 0x404040,
+            false
+        );
+        graphics.drawString(
+            font,
+            selected.size() + "/" + maxSelectable, x + 10, y + height - 15, 0x404040,
+            false
+        );
 
         int fullHeight = 0;
         int x = this.x + 10;
@@ -67,7 +68,7 @@ public class SelectRewardsModal extends BaseModal {
         int height = this.height - 46;
 
 
-        try (var scissor = RenderUtils.createScissorBoxStack(new ScissorBoxStack(), Minecraft.getInstance(), pose, x - 2, y, width + 4, height)) {
+        try (var scissor = RenderUtils.createScissor(Minecraft.getInstance(), graphics, x - 2, y, width + 4, height)) {
             for (var entry : this.widgets.entrySet()) {
                 DisplayWidget widget = entry.getValue();
                 String id = entry.getKey();
@@ -76,17 +77,15 @@ public class SelectRewardsModal extends BaseModal {
                     CursorUtils.setCursor(true, CursorScreen.Cursor.POINTER);
                 }
                 if (this.selected.contains(id)) {
-                    Gui.renderOutline(pose, x - 1, y + 1 - (int) this.scrollAmount, width + 2, itemheight - 2, 0xFFA8EFF0);
+                    graphics.renderOutline(x - 1, y + 1 - (int) this.scrollAmount, width + 2, itemheight - 2, 0xFFA8EFF0);
                 }
-                widget.render(pose, scissor.stack(), x, y + 2 - (int) this.scrollAmount, width, mouseX, mouseY, this.isMouseOver(mouseX, mouseY), partialTick);
+                widget.render(graphics, scissor.stack(), x, y + 2 - (int) this.scrollAmount, width, mouseX, mouseY, this.isMouseOver(mouseX, mouseY), partialTick);
                 y += itemheight;
                 fullHeight += itemheight;
             }
             this.lastFullHeight = fullHeight;
         }
         this.scrollAmount = Mth.clamp(this.scrollAmount, 0.0D, Math.max(0, this.lastFullHeight - height));
-
-        pose.popPose();
     }
 
     @Override

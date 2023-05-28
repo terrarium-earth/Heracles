@@ -7,24 +7,19 @@ import earth.terrarium.heracles.api.tasks.defaults.ItemInteractTask;
 import earth.terrarium.heracles.api.tasks.defaults.KillEntityQuestTask;
 import earth.terrarium.heracles.common.handlers.pinned.PinnedQuestHandler;
 import earth.terrarium.heracles.common.handlers.progress.QuestProgressHandler;
-import earth.terrarium.heracles.common.team.TeamProvider;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.entity.event.v1.ServerEntityCombatEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.fabricmc.fabric.api.event.player.UseItemCallback;
-import net.fabricmc.fabric.api.event.registry.FabricRegistryBuilder;
 import net.minecraft.commands.Commands;
 import net.minecraft.core.BlockSourceImpl;
-import net.minecraft.core.Registry;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.item.ItemStack;
 
 public class HeraclesFabric {
-    public static final Registry<TeamProvider> TEAM_PROVIDER_REGISTRY = FabricRegistryBuilder.createSimple(Heracles.TEAM_PROVIDER_REGISTRY_KEY).buildAndRegister();
-
     public static void init() {
         Heracles.init();
 
@@ -71,6 +66,9 @@ public class HeraclesFabric {
             return InteractionResult.PASS;
         });
 
-        ServerLifecycleEvents.SERVER_STARTED.register(server -> Heracles.setRegistryAccess(server::registryAccess));
+        ServerLifecycleEvents.SERVER_STARTED.register(server -> {
+            Heracles.setRegistryAccess(server::registryAccess);
+            QuestProgressHandler.setupChanger();
+        });
     }
 }

@@ -29,17 +29,10 @@ import java.util.function.Supplier;
 
 @Mod(Heracles.MOD_ID)
 public class HeraclesForge {
-    private static final DeferredRegister<TeamProvider> TEAM_PROVIDER_REGISTRAR = DeferredRegister.create(Heracles.TEAM_PROVIDER_REGISTRY_KEY, Heracles.MOD_ID);
-
-    public static final Supplier<IForgeRegistry<TeamProvider>> TEAM_PROVIDER_REGISTRY = TEAM_PROVIDER_REGISTRAR.makeRegistry(() ->
-        new RegistryBuilder<TeamProvider>()
-            .setName(Heracles.TEAM_PROVIDER_REGISTRY_KEY.location())
-    );
 
     public HeraclesForge() {
         Heracles.init();
 
-        TEAM_PROVIDER_REGISTRAR.register(ScoreboardTeamProvider.KEY, ScoreboardTeamProvider::new);
         MinecraftForge.EVENT_BUS.addListener(HeraclesForge::onResourcesLoad);
         MinecraftForge.EVENT_BUS.addListener(HeraclesForge::onServerStarting);
         MinecraftForge.EVENT_BUS.addListener(HeraclesForge::onAdvancementEarn);
@@ -55,6 +48,7 @@ public class HeraclesForge {
 
     private static void onServerStarting(ServerAboutToStartEvent event) {
         Heracles.setRegistryAccess(event.getServer()::registryAccess);
+        QuestProgressHandler.setupChanger();
     }
 
     private static void onAdvancementEarn(AdvancementEvent.AdvancementEarnEvent event) {

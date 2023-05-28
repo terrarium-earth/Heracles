@@ -5,12 +5,12 @@ import com.mojang.datafixers.util.Pair;
 import earth.terrarium.heracles.api.quests.Quest;
 import earth.terrarium.heracles.api.tasks.QuestTask;
 import earth.terrarium.heracles.api.tasks.QuestTaskType;
+import earth.terrarium.heracles.api.teams.TeamProviders;
 import earth.terrarium.heracles.common.handlers.pinned.PinnedQuestHandler;
 import earth.terrarium.heracles.common.handlers.quests.CompletableQuests;
 import earth.terrarium.heracles.common.handlers.quests.QuestHandler;
 import earth.terrarium.heracles.common.network.NetworkHandler;
 import earth.terrarium.heracles.common.network.packets.QuestCompletedPacket;
-import earth.terrarium.heracles.common.team.TeamProvider;
 import earth.terrarium.heracles.common.utils.ModUtils;
 import net.minecraft.Optionull;
 import net.minecraft.server.level.ServerPlayer;
@@ -52,9 +52,7 @@ public record QuestsProgress(Map<String, QuestProgress> progress, CompletableQue
 
         this.completableQuests.updateCompleteQuests(this);
 
-        TeamProvider.getAllTeams(player)
-            .flatMap(List::stream)
-            .distinct()
+        TeamProviders.getMembers(player)
             .forEach(member -> {
                 QuestsProgress memberProgress = QuestProgressHandler.getProgress(player.server, member);
                 for (var quest : editedQuests) {

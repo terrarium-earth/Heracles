@@ -1,6 +1,7 @@
 package earth.terrarium.heracles.common.handlers.progress;
 
 import earth.terrarium.heracles.api.quests.Quest;
+import earth.terrarium.heracles.api.teams.TeamProviders;
 import earth.terrarium.heracles.common.handlers.quests.QuestHandler;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.MinecraftServer;
@@ -23,6 +24,38 @@ public class QuestProgressHandler extends SavedData {
     public static QuestsProgress getProgress(MinecraftServer server, UUID uuid) {
         QuestProgressHandler handler = read(server);
         return handler.getProgress(uuid);
+    }
+
+    public static void setupChanger() {
+        TeamProviders.init((level, uuid) -> {
+            List<UUID> members = TeamProviders.getMembers(level, uuid);
+            if (members.isEmpty()) return;
+            QuestsProgress progress = findFirstPerson(level.getServer(), members);
+            if (progress == null) return;
+            copyProgress(progress, getProgress(level.getServer(), uuid));
+        });
+    }
+
+    private static QuestsProgress findFirstPerson(MinecraftServer server, List<UUID> members) {
+        for (UUID member : members) {
+            QuestsProgress progress = getProgress(server, member);
+            if (progress != null) return progress;
+        }
+        return null;
+    }
+
+    private static void copyProgress(QuestsProgress from, QuestsProgress to) {
+        from.progress().forEach((id, progress) -> {
+            Quest quest = QuestHandler.get(id);
+            if (quest == null) return;
+            if (quest.settings().individualProgress()) return;
+            try {
+                to.progress().put(id, new QuestProgress(quest, progress.save()));
+            } catch (Exception e) {
+                System.err.println("Failed to copy quest progress for player " + id);
+                e.printStackTrace();
+            }
+        });
     }
 
     @Override

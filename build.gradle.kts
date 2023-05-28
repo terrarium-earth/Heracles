@@ -1,16 +1,15 @@
+import dev.architectury.plugin.ArchitectPluginExtension
 import net.fabricmc.loom.api.LoomGradleExtensionAPI
 import net.fabricmc.loom.task.RemapJarTask
 
 plugins {
     java
-    id("jvm-class-extensions") version "1.3" apply false
     id("dev.architectury.loom") version "1.2-SNAPSHOT" apply false
     id("architectury-plugin") version "3.4-SNAPSHOT" apply false
     id("io.github.juuxel.loom-quiltflower") version "1.8.0" apply false
 }
 
 subprojects {
-    apply(plugin = "jvm-class-extensions")
     apply(plugin = "dev.architectury.loom")
     apply(plugin = "architectury-plugin")
     apply(plugin = "io.github.juuxel.loom-quiltflower")
@@ -67,6 +66,10 @@ subprojects {
     }
 
     if (!isCommon) {
+        configure<ArchitectPluginExtension> {
+            platformSetupLoomIde()
+        }
+
         sourceSets.main {
             val main = this
 

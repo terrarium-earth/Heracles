@@ -1,11 +1,3 @@
-architectury {
-    platformSetupLoomIde()
-}
-
-classExtensions {
-    registerForSourceSet(sourceSets.main.get(), "earth.terrarium.heracles.fabric.extensions")
-}
-
 dependencies {
     val fabricLoaderVersion: String by project
     val fabricApiVersion: String by project

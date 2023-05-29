@@ -60,7 +60,9 @@ public class PinnedQuestDisplay {
 
         y += 12;
 
-        for (PinnedDisplay display : pinnedQuests) {
+        var iterator = pinnedQuests.iterator();
+        while (iterator.hasNext()) {
+            PinnedDisplay display = iterator.next();
             boolean collapsed = PinnedQuests.isCollapsed(display.quest().key());
             MutableComponent title = collapsed ? ConstantComponents.ARROW_RIGHT.copy().append(" ") : ConstantComponents.ARROW_DOWN.copy().append(" ");
             title = title.append(display.title());
@@ -79,6 +81,8 @@ public class PinnedQuestDisplay {
                     );
                     y += 9;
                 }
+            } else if (iterator.hasNext()) {
+                y += 9;
             }
         }
     }

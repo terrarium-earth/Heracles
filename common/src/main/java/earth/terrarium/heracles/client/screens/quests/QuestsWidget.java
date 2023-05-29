@@ -26,9 +26,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import org.joml.Vector2i;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
@@ -120,6 +118,8 @@ public class QuestsWidget extends BaseWidget {
             Tesselator tesselator = Tesselator.getInstance();
             BufferBuilder buffer = tesselator.getBuilder();
 
+            final Set<Pair<Vector2i, Vector2i>> lines = new HashSet<>();
+
             for (ClientQuests.QuestEntry entry : this.entries) {
                 var position = entry.value().display().position(this.group);
 
@@ -132,8 +132,10 @@ public class QuestsWidget extends BaseWidget {
 
                 for (ClientQuests.QuestEntry child : entry.children()) {
                     if (!child.value().display().groups().containsKey(this.group)) continue;
-
                     var childPosition = child.value().display().position(this.group);
+
+                    if (lines.contains(new Pair<>(position, childPosition))) continue;
+                    lines.add(new Pair<>(position, childPosition));
 
                     int cx = x + offset.x() + childPosition.x() + 10;
                     int cy = y + offset.y() + childPosition.y() + 10;

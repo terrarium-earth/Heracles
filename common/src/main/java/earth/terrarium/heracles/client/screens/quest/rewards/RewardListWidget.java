@@ -66,11 +66,13 @@ public class RewardListWidget extends AbstractContainerEventHandler implements R
 
     public void update(String id, Quest quest) {
         this.widgets.clear();
-        this.widgets.add(new MutablePair<>(null, new HeadingWidget(Component.nullToEmpty("Rewards"), 0xFF00DD00)));
-        for (QuestReward<?> reward : quest.rewards().values()) {
-            DisplayWidget widget = QuestRewardWidgets.create(reward);
-            if (widget == null) continue;
-            this.widgets.add(new MutablePair<>(reward, widget));
+        if (!quest.rewards().isEmpty()) {
+            this.widgets.add(new MutablePair<>(null, new HeadingWidget(Component.nullToEmpty("Rewards"), 0xFF00DD00)));
+            for (QuestReward<?> reward : quest.rewards().values()) {
+                DisplayWidget widget = QuestRewardWidgets.create(reward);
+                if (widget == null) continue;
+                this.widgets.add(new MutablePair<>(reward, widget));
+            }
         }
         ClientQuests.get(id).ifPresent(entry -> {
             if (entry.children().isEmpty()) return;

@@ -26,6 +26,7 @@ public record RegistryKeySetting<T>(
     public AutocompleteEditBox<String> createWidget(int width, ResourceKey<T> value) {
         AutocompleteEditBox<String> box = new AutocompleteEditBox<>(Minecraft.getInstance().font, 0, 0, width, 11,
             (text, item) -> item.contains(text) && !item.equals(text), Function.identity(), s -> {});
+        box.setMaxLength(Short.MAX_VALUE);
         List<String> suggestions = new ArrayList<>();
         var registry = Heracles.getRegistryAccess().registry(key).orElse(null);
         if (registry == null) {

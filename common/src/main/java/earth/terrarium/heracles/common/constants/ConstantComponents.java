@@ -127,7 +127,7 @@ public final class ConstantComponents {
     }
 
     static {
-        printTranslations(ConstantComponents.class);
+        //printTranslations(ConstantComponents.class);
     }
 
     private static void printTranslations(Class<?> clazz) {

@@ -65,12 +65,11 @@ public abstract class BaseModal extends BaseWidget implements TemporyWidget {
 
         RenderSystem.disableDepthTest();
         try (var pose = new CloseablePoseStack(graphics)) {
-            pose.translate(0, 0, 150);
+            pose.translate(0, 0, 300);
             graphics.fill(0, 15, this.screenWidth, this.screenHeight, 0x80000000);
             renderBackground(graphics, mouseX, mouseY, partialTick);
 
             renderForeground(graphics, mouseX, mouseY, partialTick);
-            pose.popPose();
         }
         RenderSystem.enableDepthTest();
 

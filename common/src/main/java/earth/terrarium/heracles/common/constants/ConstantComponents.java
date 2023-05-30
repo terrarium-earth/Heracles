@@ -94,6 +94,9 @@ public final class ConstantComponents {
 
         @Translate("Edit Task")
         public static final Component EDIT = Component.translatable("gui.heracles.tasks.edit");
+
+        @Translate("Check Task")
+        public static final Component CHECK = Component.translatable("gui.heracles.tasks.check");
     }
 
     public static final class Rewards {

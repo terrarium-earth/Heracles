@@ -32,8 +32,12 @@ public class TaskProgress<S extends Tag> {
     public void updateComplete(QuestTask<?, S, ?> task) {
         if (complete) return;
         if (task.getProgress(progress) >= 1f) {
-            complete = true;
+            setComplete(true);
         }
+    }
+
+    public void setComplete(boolean complete) {
+        this.complete = complete;
     }
 
     public S progress() {

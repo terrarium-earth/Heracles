@@ -28,6 +28,7 @@ public interface TeamProvider {
     /**
      * Set the team changer for this provider
      * This is used to notify the system when a player changes teams.
+     *
      * @param teamChanger The team changer to set
      */
     void setupTeamChanger(BiConsumer<ServerLevel, UUID> teamChanger);

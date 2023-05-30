@@ -49,5 +49,6 @@ public final class QuestTasks {
         register(ItemInteractTask.TYPE);
         register(ItemUseTask.TYPE);
         register(BlockInteractTask.TYPE);
+        register(CheckTask.TYPE);
     }
 }

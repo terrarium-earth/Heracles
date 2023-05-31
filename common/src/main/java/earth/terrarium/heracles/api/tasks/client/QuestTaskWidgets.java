@@ -46,5 +46,6 @@ public final class QuestTaskWidgets {
         register(ChangedDimensionTask.TYPE, DimensionTaskWidget::new);
         register(CompositeTask.TYPE, CompositeTaskWidget::new);
         register(CheckTask.TYPE, CheckTaskWidget::new);
+        register(DummyTask.TYPE, DummyTaskWidget::new);
     }
 }

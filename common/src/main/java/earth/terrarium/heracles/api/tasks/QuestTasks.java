@@ -50,5 +50,6 @@ public final class QuestTasks {
         register(ItemUseTask.TYPE);
         register(BlockInteractTask.TYPE);
         register(CheckTask.TYPE);
+        register(DummyTask.TYPE);
     }
 }

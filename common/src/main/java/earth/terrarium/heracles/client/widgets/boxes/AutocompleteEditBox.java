@@ -1,6 +1,7 @@
 package earth.terrarium.heracles.client.widgets.boxes;
 
 import com.mojang.blaze3d.platform.InputConstants;
+import com.teamresourceful.resourcefullib.client.CloseablePoseStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
@@ -55,15 +56,18 @@ public class AutocompleteEditBox<T> extends EditBox {
         int width = this.getWidth();
         if (!filteredSuggestions.isEmpty()) {
             int height = 10 * filteredSuggestions.size();
-            graphics.fill(x, y, x + width, y + height, 0x80000000);
-            graphics.renderOutline(x - 1, y - 1, width + 2, height + 2, this.isFocused() ? 0xffffffff : 0xffa0a0a0);
-            for (int k = 0; k < filteredSuggestions.size(); k++) {
-                String suggestion = filteredSuggestions.get(k);
-                graphics.drawString(
-                    Minecraft.getInstance().font,
-                    suggestion, x + 4, y + 1 + (k * 10), 0xFFFFFFFF,
-                    false
-                );
+            try (var pose = new CloseablePoseStack(graphics)) {
+                pose.translate(0, 0, 100);
+                graphics.fill(x, y, x + width, y + height, 0x80000000);
+                graphics.renderOutline(x - 1, y - 1, width + 2, height + 2, this.isFocused() ? 0xffffffff : 0xffa0a0a0);
+                for (int k = 0; k < filteredSuggestions.size(); k++) {
+                    String suggestion = filteredSuggestions.get(k);
+                    graphics.drawString(
+                        Minecraft.getInstance().font,
+                        suggestion, x + 4, y + 1 + (k * 10), 0xFFFFFFFF,
+                        false
+                    );
+                }
             }
         }
     }

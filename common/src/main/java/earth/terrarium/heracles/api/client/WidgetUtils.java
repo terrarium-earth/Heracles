@@ -1,7 +1,10 @@
 package earth.terrarium.heracles.api.client;
 
 import earth.terrarium.heracles.api.tasks.QuestTask;
+import earth.terrarium.heracles.api.tasks.QuestTaskDisplayFormatter;
 import earth.terrarium.heracles.common.handlers.progress.TaskProgress;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.nbt.Tag;
 
@@ -18,5 +21,15 @@ public final class WidgetUtils {
         float fill = task.getProgress(progress.progress());
         int progressWidth = (int) (((maxX - 1) - (minX + 1)) * fill);
         graphics.fill(minX + 1, minY + 1, minX + 1 + progressWidth, maxY - 1, progress.isComplete() ? 0xFF04CB40 : 0xFF5691FF);
+    }
+
+    public static <T extends Tag> void drawProgressText(GuiGraphics graphics, int x, int y, int width, QuestTask<?, T, ?> task, TaskProgress<T> progress) {
+        Font font = Minecraft.getInstance().font;
+        String text = QuestTaskDisplayFormatter.create(task, progress);
+        graphics.drawString(
+            font,
+            text, x + width - 5 - font.width(text), y + 5, 0xFFFFFFFF,
+            false
+        );
     }
 }

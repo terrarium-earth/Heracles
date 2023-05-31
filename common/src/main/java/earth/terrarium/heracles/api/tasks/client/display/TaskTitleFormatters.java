@@ -26,6 +26,7 @@ public class TaskTitleFormatters {
         TaskTitleFormatter.register(BlockInteractTask.TYPE, (task) -> Component.translatable(toTranslationKey(task, true), task.block().getDisplayName(Block::getName)));
         TaskTitleFormatter.register(ItemInteractTask.TYPE, (task) -> Component.translatable(toTranslationKey(task, true), task.item().getDisplayName(Item::getDescription)));
         TaskTitleFormatter.register(CheckTask.TYPE, (task) -> Component.translatable(toTranslationKey(task, true)));
+        TaskTitleFormatter.register(DummyTask.TYPE, DummyTask::title);
         TaskTitleFormatter.register(CompositeTask.TYPE, (task) -> {
             List<Component> titles = new ArrayList<>();
             titles.add(Component.translatable(toTranslationKey(task, task.amount() == 1), task.amount()));

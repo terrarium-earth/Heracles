@@ -3,7 +3,6 @@ package earth.terrarium.heracles.api.tasks.client.defaults;
 import com.teamresourceful.resourcefullib.client.scissor.ScissorBoxStack;
 import earth.terrarium.heracles.api.client.DisplayWidget;
 import earth.terrarium.heracles.api.client.WidgetUtils;
-import earth.terrarium.heracles.api.tasks.QuestTaskDisplayFormatter;
 import earth.terrarium.heracles.api.tasks.client.display.TaskTitleFormatter;
 import earth.terrarium.heracles.api.tasks.defaults.GatherItemTask;
 import earth.terrarium.heracles.common.handlers.progress.TaskProgress;
@@ -55,13 +54,7 @@ public record ItemTaskWidget(
             Component.translatable(desc, this.task.target(), task.item().getDisplayName(Item::getDescription)), x + iconSize + 10, y + 7 + font.lineHeight, 0xFF808080,
             false
         );
-        String progress = QuestTaskDisplayFormatter.create(this.task, this.progress);
-        graphics.drawString(
-            font,
-            progress, x + width - 5 - font.width(progress), y + 5, 0xFFFFFFFF,
-            false
-        );
-
+        WidgetUtils.drawProgressText(graphics, x, y, width, this.task, this.progress);
         int height = getHeight(width);
         WidgetUtils.drawProgressBar(graphics, x + iconSize + 10, y + height - font.lineHeight + 2, x + width - 5, y + height - 2, this.task, this.progress);
     }

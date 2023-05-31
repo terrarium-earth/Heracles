@@ -1,18 +1,16 @@
 package earth.terrarium.heracles.fabric;
 
-import com.mojang.brigadier.arguments.StringArgumentType;
 import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.api.tasks.defaults.BlockInteractTask;
 import earth.terrarium.heracles.api.tasks.defaults.ItemInteractTask;
 import earth.terrarium.heracles.api.tasks.defaults.KillEntityQuestTask;
-import earth.terrarium.heracles.common.handlers.pinned.PinnedQuestHandler;
+import earth.terrarium.heracles.common.commands.ModCommands;
 import earth.terrarium.heracles.common.handlers.progress.QuestProgressHandler;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.entity.event.v1.ServerEntityCombatEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.fabricmc.fabric.api.event.player.UseItemCallback;
-import net.minecraft.commands.Commands;
 import net.minecraft.core.BlockSourceImpl;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionResult;
@@ -23,21 +21,7 @@ public class HeraclesFabric {
     public static void init() {
         Heracles.init();
 
-        CommandRegistrationCallback.EVENT.register((dispatcher, context, env) ->
-            dispatcher.register(Commands.literal(Heracles.MOD_ID)
-                .then(Commands.literal("pin").then(Commands.argument("quest", StringArgumentType.string()).executes(context1 -> {
-                    String quest = StringArgumentType.getString(context1, "quest");
-                    var pinned = PinnedQuestHandler.getPinned(context1.getSource().getPlayerOrException());
-                    if (pinned.contains(quest)) {
-                        pinned.remove(quest);
-                    } else {
-                        pinned.add(quest);
-                    }
-                    PinnedQuestHandler.sync(context1.getSource().getPlayerOrException());
-                    return 1;
-                })))
-            )
-        );
+        CommandRegistrationCallback.EVENT.register((dispatcher, context, env) -> ModCommands.init(dispatcher));
 
         ServerEntityCombatEvents.AFTER_KILLED_OTHER_ENTITY.register((level, killer, entity) -> {
             if (killer instanceof ServerPlayer player) {

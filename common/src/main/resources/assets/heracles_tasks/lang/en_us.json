@@ -58,5 +58,11 @@
   "task.heracles.check": "Check",
   "task.heracles.check.title.singular": "Checkbox",
   "task.heracles.check.desc.singular": "Check the box to complete",
-  "setting.heracles.check.id": "Check ID (Can be shared): "
+  "setting.heracles.check.id": "Check ID (Can be shared): ",
+
+  "task.heracles.dummy": "Dummy",
+  "setting.heracles.dummy.id": "Dummy ID (Can be shared): ",
+  "setting.heracles.dummy.title": "Title: ",
+  "setting.heracles.dummy.description": "Description: ",
+  "setting.heracles.dummy.icon": "Icon: "
 }

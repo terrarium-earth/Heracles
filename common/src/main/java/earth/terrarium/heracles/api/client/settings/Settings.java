@@ -56,6 +56,7 @@ public final class Settings {
         register(BlockInteractTask.TYPE, BlockInteractTaskSettings.INSTANCE);
         register(ItemInteractTask.TYPE, ItemInteractTaskSettings.INSTANCE);
         register(CheckTask.TYPE, CheckTaskSettings.INSTANCE);
+        register(DummyTask.TYPE, DummyTaskSettings.INSTANCE);
 
         register(LootTableReward.TYPE, LootRewardSettings.INSTANCE);
         register(ItemReward.TYPE, ItemRewardSettings.INSTANCE);

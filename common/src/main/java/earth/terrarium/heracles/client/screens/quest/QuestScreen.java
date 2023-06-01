@@ -36,6 +36,10 @@ public class QuestScreen extends BaseQuestScreen {
         int contentWidth = (int) (this.width * 0.63f);
         int contentHeight = this.height - 45;
 
+        if (this.overview == null) {
+            contentX = (int) ((this.width - contentWidth) / 2f);
+        }
+
         this.taskList = new TaskListWidget(contentX, contentY, contentWidth, contentHeight, this.menu.id(), this.quest(), this.menu.progress(), this.menu.quests(), null, null);
         this.taskList.update(this.quest().tasks().values());
 

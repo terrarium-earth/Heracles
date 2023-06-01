@@ -21,6 +21,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.entity.player.Inventory;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,9 +29,13 @@ import java.util.Map;
 
 public abstract class BaseQuestScreen extends AbstractQuestScreen<QuestMenu> {
 
-    private SelectableTabButton overview;
+    @Nullable
+    protected SelectableTabButton overview;
+    @Nullable
     private SelectableTabButton tasks;
+    @Nullable
     private SelectableTabButton rewards;
+    @Nullable
     private Button claimRewards;
 
     public BaseQuestScreen(QuestMenu menu, Inventory inventory, Component component) {
@@ -44,28 +49,57 @@ public abstract class BaseQuestScreen extends AbstractQuestScreen<QuestMenu> {
         int sidebarWidth = (int) (this.width * 0.25f) - 2;
         int buttonWidth = sidebarWidth - 10;
 
-        this.overview = addRenderableWidget(new SelectableTabButton(5, 20, buttonWidth, 20, ConstantComponents.Quests.OVERVIEW, () -> {
-            clearSelected();
+        boolean showRewards = isEditing() || ClientQuests.get(this.menu.id())
+            .map(ClientQuests.QuestEntry::value)
+            .map(Quest::rewards)
+            .map(rewards -> !rewards.isEmpty())
+            .orElse(false);
+
+        boolean showTasks = isEditing() || ClientQuests.get(this.menu.id())
+            .map(ClientQuests.QuestEntry::value)
+            .map(Quest::tasks)
+            .map(tasks -> !tasks.isEmpty())
+            .orElse(false);
+
+        if (showRewards || showTasks) {
+            this.overview = addRenderableWidget(new SelectableTabButton(5, 20, buttonWidth, 20, ConstantComponents.Quests.OVERVIEW, () -> {
+                clearSelected();
+                if (this.overview != null) {
+                    this.overview.setSelected(true);
+                }
+            }));
             this.overview.setSelected(true);
-        }));
+        }
 
-        this.tasks = addRenderableWidget(new SelectableTabButton(5, 45, buttonWidth, 20, ConstantComponents.Tasks.TITLE, () -> {
-            clearSelected();
-            this.tasks.setSelected(true);
-        }));
+        int buttonY = 45;
 
-        this.rewards = addRenderableWidget(new SelectableTabButton(5, 70, buttonWidth, 20, ConstantComponents.Rewards.TITLE, () -> {
-            clearSelected();
-            this.rewards.setSelected(true);
-        }));
+        if (showTasks) {
+            this.tasks = addRenderableWidget(new SelectableTabButton(5, buttonY, buttonWidth, 20, ConstantComponents.Tasks.TITLE, () -> {
+                clearSelected();
+                if (this.tasks != null) {
+                    this.tasks.setSelected(true);
+                }
+            }));
+            buttonY += 25;
+        }
 
-        this.claimRewards = addRenderableWidget(Button.builder(ConstantComponents.Rewards.CLAIM, button -> {
-            NetworkHandler.CHANNEL.sendToServer(new ClaimRewardsPacket(this.menu.id()));
-            this.claimRewards.active = false;
-        }).bounds(5, this.height - 25, buttonWidth, 20).build());
-        this.claimRewards.active = this.menu.progress().isComplete() && this.menu.progress().claimedRewards().size() < this.quest().rewards().size();
+        if (showRewards) {
+            this.rewards = addRenderableWidget(new SelectableTabButton(5, buttonY, buttonWidth, 20, ConstantComponents.Rewards.TITLE, () -> {
+                clearSelected();
+                if (this.rewards != null) {
+                    this.rewards.setSelected(true);
+                }
+            }));
 
-        this.overview.setSelected(true);
+            this.claimRewards = addRenderableWidget(Button.builder(ConstantComponents.Rewards.CLAIM, button -> {
+                NetworkHandler.CHANNEL.sendToServer(new ClaimRewardsPacket(this.menu.id()));
+                if (this.claimRewards != null) {
+                    this.claimRewards.active = false;
+                }
+            }).bounds(5, this.height - 25, buttonWidth, 20).build());
+            this.claimRewards.active = this.menu.progress().isComplete() && this.menu.progress().claimedRewards().size() < this.quest().rewards().size();
+            this.claimRewards.active |= !showTasks;
+        }
     }
 
     @Override
@@ -74,9 +108,15 @@ public abstract class BaseQuestScreen extends AbstractQuestScreen<QuestMenu> {
     }
 
     private void clearSelected() {
-        this.overview.setSelected(false);
-        this.tasks.setSelected(false);
-        this.rewards.setSelected(false);
+        if (this.overview != null) {
+            this.overview.setSelected(false);
+        }
+        if (this.tasks != null) {
+            this.tasks.setSelected(false);
+        }
+        if (this.rewards != null) {
+            this.rewards.setSelected(false);
+        }
     }
 
     @Override
@@ -89,10 +129,10 @@ public abstract class BaseQuestScreen extends AbstractQuestScreen<QuestMenu> {
         if (this.rewards != null && this.rewards.isSelected() && getRewardList() instanceof Renderable renderable) {
             renderable.render(graphics, mouseX, mouseY, partialTick);
         }
-        if (this.overview != null && this.overview.isSelected() && getDescriptionWidget() instanceof Renderable renderable) {
+        if ((this.overview == null || this.overview.isSelected()) && getDescriptionWidget() instanceof Renderable renderable) {
             renderable.render(graphics, mouseX, mouseY, partialTick);
         }
-        if (getDescriptionError() != null && this.overview.isSelected()) {
+        if (getDescriptionError() != null && (this.overview == null || this.overview.isSelected())) {
             int contentX = (int) (this.width * 0.31f) + 20;
             int contentY = 30;
             int contentWidth = (int) (this.width * 0.63f) - 40;
@@ -122,13 +162,13 @@ public abstract class BaseQuestScreen extends AbstractQuestScreen<QuestMenu> {
         }
 
         List<GuiEventListener> children = new ArrayList<>();
-        if (getTaskList() != null && this.tasks.isSelected()) {
+        if (getTaskList() != null && this.tasks != null && this.tasks.isSelected()) {
             children.add(getTaskList());
         }
-        if (getRewardList() != null && this.rewards.isSelected()) {
+        if (getRewardList() != null && this.rewards != null && this.rewards.isSelected()) {
             children.add(getRewardList());
         }
-        if (getDescriptionWidget() != null && this.overview.isSelected()) {
+        if (getDescriptionWidget() != null && (this.overview == null || this.overview.isSelected())) {
             children.add(getDescriptionWidget());
         }
         children.addAll(super.children());
@@ -150,4 +190,13 @@ public abstract class BaseQuestScreen extends AbstractQuestScreen<QuestMenu> {
     public abstract GuiEventListener getDescriptionWidget();
 
     public abstract String getDescriptionError();
+
+    public boolean isEditing() {
+        return this instanceof QuestEditScreen;
+    }
+
+    @Override
+    public boolean drawSidebar() {
+        return this.overview != null;
+    }
 }

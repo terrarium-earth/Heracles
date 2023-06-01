@@ -76,14 +76,18 @@ public abstract class AbstractQuestScreen<T extends AbstractContainerMenu> exten
     protected void renderBg(GuiGraphics graphics, float partialTick, int mouseX, int mouseY) {
         graphics.fill(0, 0, width, height, 0xD0000000);
         graphics.blitRepeating(HEADING, 0, 0, this.width, 15, 0, 0, 128, 15);
-        int sidebarWidth = (int) (this.width * 0.25f) - 2;
-        graphics.blitRepeating(HEADING, sidebarWidth, 15, 2, this.height - 15, 128, 0, 2, 256);
-        graphics.fill(sidebarWidth, 0, sidebarWidth + 2, 13, 0x80808080);
+        if (drawSidebar()) {
+            int sidebarWidth = (int) (this.width * 0.25f) - 2;
+            graphics.blitRepeating(HEADING, sidebarWidth, 15, 2, this.height - 15, 128, 0, 2, 256);
+            graphics.fill(sidebarWidth, 0, sidebarWidth + 2, 13, 0x80808080);
+        }
     }
 
     @Override
     protected void renderLabels(GuiGraphics graphics, int mouseX, int mouseY) {
-        int center = (int) ((this.width * 0.25f) + ((this.width * 0.75f) / 2f));
+        int center = drawSidebar() ?
+            (int) ((this.width * 0.25f) + ((this.width * 0.75f) / 2f))
+            : (int) (this.width / 2f);
         graphics.drawString(
             this.font,
             this.title, (int) (center - (this.font.width(this.title) / 2f)), 3, 0x404040,
@@ -166,5 +170,9 @@ public abstract class AbstractQuestScreen<T extends AbstractContainerMenu> exten
             this.addTemporary(widget);
         }
         return widget;
+    }
+
+    public boolean drawSidebar() {
+        return true;
     }
 }

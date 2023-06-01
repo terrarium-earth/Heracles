@@ -50,7 +50,7 @@ public record Quest(
     public void claimAllowedRewards(ServerPlayer player) {
         QuestsProgress progress = QuestProgressHandler.getProgress(player.server, player.getUUID());
         String id = QuestHandler.getKey(this);
-        if (!progress.isComplete(id)) return;
+        if (!progress.isComplete(id) && !this.tasks.isEmpty()) return;
         if (progress.isClaimed(id, this)) return;
 
         var questProgress = progress.getProgress(id);

@@ -1,5 +1,6 @@
 package earth.terrarium.heracles.client.widgets.modals.icon;
 
+import com.teamresourceful.resourcefullib.client.CloseablePoseStack;
 import com.teamresourceful.resourcefullib.client.screens.CursorScreen;
 import com.teamresourceful.resourcefullib.client.utils.CursorUtils;
 import earth.terrarium.heracles.Heracles;
@@ -96,7 +97,10 @@ public class IconModal extends BaseModal {
                 CursorUtils.setCursor(true, CursorScreen.Cursor.POINTER);
                 ClientUtils.setTooltip(item.getDescription());
             }
-            graphics.renderFakeItem(item.getDefaultInstance(), itemX + 2, itemY + 1);
+            try (var pose = new CloseablePoseStack(graphics)) {
+                pose.translate(0, 0, -100);
+                graphics.renderFakeItem(item.getDefaultInstance(), itemX + 2, itemY + 1);
+            }
         }
     }
 

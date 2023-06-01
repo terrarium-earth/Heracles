@@ -6,6 +6,7 @@ import earth.terrarium.heracles.api.quests.Quest;
 import earth.terrarium.heracles.client.handlers.ClientQuests;
 import earth.terrarium.heracles.common.handlers.progress.QuestProgress;
 import earth.terrarium.heracles.common.utils.ModUtils;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import org.jetbrains.annotations.Nullable;
 
@@ -29,8 +30,9 @@ public record QuestContent(
         public @Nullable QuestContent from(FriendlyByteBuf buffer) {
             String id = buffer.readUtf();
             String fromGroup = buffer.readUtf();
-            Quest quest = ClientQuests.get(id).map(ClientQuests.QuestEntry::value).orElseThrow();
-            QuestProgress progress = new QuestProgress(quest, buffer.readNbt());
+            Quest quest = ClientQuests.get(id).map(ClientQuests.QuestEntry::value).orElse(null);
+            CompoundTag tag = buffer.readNbt();
+            QuestProgress progress = new QuestProgress(quest, quest == null ? null : tag);
             Map<String, ModUtils.QuestStatus> quests = new HashMap<>();
             int size = buffer.readVarInt();
             for (int i = 0; i < size; i++) {

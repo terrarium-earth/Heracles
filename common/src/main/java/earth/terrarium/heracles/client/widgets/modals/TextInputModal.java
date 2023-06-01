@@ -1,10 +1,9 @@
 package earth.terrarium.heracles.client.widgets.modals;
 
 import earth.terrarium.heracles.Heracles;
+import earth.terrarium.heracles.client.handlers.ClientQuests;
 import earth.terrarium.heracles.client.widgets.base.BaseModal;
 import earth.terrarium.heracles.common.constants.ConstantComponents;
-import earth.terrarium.heracles.common.network.NetworkHandler;
-import earth.terrarium.heracles.common.network.packets.quests.QuestActionPacket;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
@@ -96,7 +95,7 @@ public class TextInputModal<T> extends BaseModal {
     public void setVisible(boolean visible) {
         super.setVisible(visible);
         if (!visible) {
-            NetworkHandler.CHANNEL.sendToServer(new QuestActionPacket(QuestActionPacket.Action.SAVE));
+            ClientQuests.sendDirty();
         }
     }
 

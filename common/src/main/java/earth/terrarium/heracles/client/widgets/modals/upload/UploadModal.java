@@ -3,12 +3,10 @@ package earth.terrarium.heracles.client.widgets.modals.upload;
 import com.teamresourceful.resourcefullib.client.utils.RenderUtils;
 import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.api.quests.Quest;
+import earth.terrarium.heracles.client.handlers.ClientQuests;
 import earth.terrarium.heracles.client.widgets.base.BaseModal;
 import earth.terrarium.heracles.client.widgets.base.FileWidget;
 import earth.terrarium.heracles.common.constants.ConstantComponents;
-import earth.terrarium.heracles.common.network.NetworkHandler;
-import earth.terrarium.heracles.common.network.packets.quests.QuestActionPacket;
-import earth.terrarium.heracles.common.network.packets.quests.UploadQuestPacket;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
@@ -41,7 +39,7 @@ public class UploadModal extends BaseModal implements FileWidget {
                 if (!item.isErrored()) {
                     Quest quest = item.quest();
                     String filename = item.path().getFileName().toString();
-                    NetworkHandler.CHANNEL.sendToServer(new UploadQuestPacket(filename.substring(0, filename.lastIndexOf(".")), quest));
+                    ClientQuests.addQuest(filename.substring(0, filename.lastIndexOf(".")), quest);
                     iterator.remove();
                 }
             }
@@ -150,7 +148,7 @@ public class UploadModal extends BaseModal implements FileWidget {
     public void setVisible(boolean visible) {
         super.setVisible(visible);
         if (!visible) {
-            NetworkHandler.CHANNEL.sendToServer(new QuestActionPacket(QuestActionPacket.Action.SAVE));
+            ClientQuests.sendDirty();
         }
     }
 }

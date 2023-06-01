@@ -19,10 +19,6 @@ subprojects {
     val minecraftVersion: String by project
     val isCommon = name == rootProject.projects.common.name
 
-    base {
-        archivesName.set(rootProject.name)
-    }
-
     configure<LoomGradleExtensionAPI> {
         silentMojangMappingsLicense()
     }
@@ -60,11 +56,12 @@ subprojects {
     }
 
     tasks.jar {
-        archiveClassifier.set("dev-${project.name}-$minecraftVersion")
+        archiveClassifier.set("dev")
+        archiveBaseName.set("${rootProject.name}-${project.name}-$minecraftVersion")
     }
 
     tasks.named<RemapJarTask>("remapJar") {
-        archiveClassifier.set("${project.name}-$minecraftVersion")
+        archiveClassifier.set(null as String?)
     }
 
     if (!isCommon) {
@@ -89,11 +86,11 @@ subprojects {
     publishing {
         publications {
             create<MavenPublication>("maven") {
-                artifactId = "${rootProject.name}-$name-$minecraftVersion"
+                artifactId = "${rootProject.name}-${project.name}-${minecraftVersion}"
                 from(components["java"])
 
                 pom {
-                    name.set("Heracles $name")
+                    name.set("Heracles ${project.name}")
                     url.set("https://github.com/terrarium-earth/${rootProject.name}")
 
                     scm {

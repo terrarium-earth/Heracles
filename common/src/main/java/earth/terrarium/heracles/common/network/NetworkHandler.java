@@ -14,6 +14,7 @@ import earth.terrarium.heracles.common.network.packets.quests.*;
 import earth.terrarium.heracles.common.network.packets.rewards.ClaimRewardsPacket;
 import earth.terrarium.heracles.common.network.packets.rewards.ClaimSelectableRewardsPacket;
 import earth.terrarium.heracles.common.network.packets.tasks.CheckTaskPacket;
+import earth.terrarium.heracles.common.network.packets.tasks.ManualItemTaskPacket;
 
 public class NetworkHandler {
 
@@ -37,5 +38,6 @@ public class NetworkHandler {
         CHANNEL.registerPacket(NetworkDirection.CLIENT_TO_SERVER, DeleteQuestPacket.ID, DeleteQuestPacket.HANDLER, DeleteQuestPacket.class);
         CHANNEL.registerPacket(NetworkDirection.CLIENT_TO_SERVER, DeleteGroupPacket.ID, DeleteGroupPacket.HANDLER, DeleteGroupPacket.class);
         CHANNEL.registerPacket(NetworkDirection.CLIENT_TO_SERVER, CheckTaskPacket.ID, CheckTaskPacket.HANDLER, CheckTaskPacket.class);
+        CHANNEL.registerPacket(NetworkDirection.CLIENT_TO_SERVER, ManualItemTaskPacket.ID, ManualItemTaskPacket.HANDLER, ManualItemTaskPacket.class);
     }
 }

@@ -25,7 +25,11 @@ public final class IntegerTaskStorage implements TaskStorage<Integer, NumericTag
         return tag.getAsInt();
     }
 
-    public IntTag of(NumericTag progress, int amount) {
+    public IntTag add(NumericTag progress, int amount) {
         return IntTag.valueOf(readInt(progress) + amount);
+    }
+
+    public IntTag set(int amount) {
+        return IntTag.valueOf(amount);
     }
 }

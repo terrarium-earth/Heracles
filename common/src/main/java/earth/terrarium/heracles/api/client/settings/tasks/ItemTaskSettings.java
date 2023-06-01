@@ -3,6 +3,7 @@ package earth.terrarium.heracles.api.client.settings.tasks;
 import com.mojang.datafixers.util.Either;
 import com.teamresourceful.resourcefullib.common.codecs.predicates.NbtPredicate;
 import earth.terrarium.heracles.api.client.settings.SettingInitializer;
+import earth.terrarium.heracles.api.client.settings.base.BooleanSetting;
 import earth.terrarium.heracles.api.client.settings.base.IntSetting;
 import earth.terrarium.heracles.api.client.settings.base.RegistryValueSetting;
 import earth.terrarium.heracles.api.tasks.defaults.GatherItemTask;
@@ -21,6 +22,7 @@ public class ItemTaskSettings implements SettingInitializer<GatherItemTask> {
         CreationData settings = new CreationData();
         settings.put("item", RegistryValueSetting.ITEM, getDefaultItem(object));
         settings.put("amount", IntSetting.ONE, getDefaultCount(object));
+        settings.put("manual", BooleanSetting.FALSE, Optionull.mapOrDefault(object, GatherItemTask::manual, false));
         return settings;
     }
 
@@ -28,7 +30,11 @@ public class ItemTaskSettings implements SettingInitializer<GatherItemTask> {
     public GatherItemTask create(String id, GatherItemTask object, Data data) {
         RegistryValue<Item> item = data.get("item", RegistryValueSetting.ITEM).orElse(getDefaultItem(object));
         NbtPredicate old = Optionull.mapOrDefault(object, GatherItemTask::nbt, NbtPredicate.ANY);
-        return new GatherItemTask(id, item, old, data.get("amount", IntSetting.ONE).orElse(getDefaultCount(object)));
+        return new GatherItemTask(
+            id, item, old,
+            data.get("amount", IntSetting.ONE).orElse(getDefaultCount(object)),
+            data.get("manual", BooleanSetting.FALSE).orElse(Optionull.mapOrDefault(object, GatherItemTask::manual, false))
+        );
     }
 
     private static RegistryValue<Item> getDefaultItem(GatherItemTask object) {

@@ -1,12 +1,19 @@
 package earth.terrarium.heracles.api.tasks.client.defaults;
 
+import com.mojang.datafixers.util.Pair;
 import com.teamresourceful.resourcefullib.client.scissor.ScissorBoxStack;
+import com.teamresourceful.resourcefullib.client.screens.CursorScreen;
+import com.teamresourceful.resourcefullib.client.utils.CursorUtils;
 import earth.terrarium.heracles.api.client.DisplayWidget;
 import earth.terrarium.heracles.api.client.WidgetUtils;
 import earth.terrarium.heracles.api.tasks.client.display.TaskTitleFormatter;
 import earth.terrarium.heracles.api.tasks.defaults.GatherItemTask;
+import earth.terrarium.heracles.common.constants.ConstantComponents;
 import earth.terrarium.heracles.common.handlers.progress.TaskProgress;
+import earth.terrarium.heracles.common.network.NetworkHandler;
+import earth.terrarium.heracles.common.network.packets.tasks.ManualItemTaskPacket;
 import earth.terrarium.heracles.common.utils.ModUtils;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
@@ -18,21 +25,21 @@ import net.minecraft.world.item.ItemStack;
 
 import java.util.List;
 
-public record ItemTaskWidget(
-    GatherItemTask task, TaskProgress<NumericTag> progress, List<ItemStack> stacks
-) implements DisplayWidget {
+public final class ItemTaskWidget implements DisplayWidget {
 
     private static final String DESC_SINGULAR = "task.heracles.item.desc.singular";
     private static final String DESC_PLURAL = "task.heracles.item.desc.plural";
 
+    private final GatherItemTask task;
+    private final TaskProgress<NumericTag> progress;
+    private final List<ItemStack> stacks;
+
     public ItemTaskWidget(GatherItemTask task, TaskProgress<NumericTag> progress) {
-        this(
-            task,
-            progress,
-            task.item().getValue().map(
-                item -> List.of(item.getDefaultInstance()),
-                tag -> ModUtils.getValue(Registries.ITEM, tag).stream().map(ItemStack::new).toList()
-            )
+        this.task = task;
+        this.progress = progress;
+        this.stacks = task.item().getValue().map(
+            item -> List.of(item.getDefaultInstance()),
+            tag -> ModUtils.getValue(Registries.ITEM, tag).stream().map(ItemStack::new).toList()
         );
     }
 
@@ -57,6 +64,34 @@ public record ItemTaskWidget(
         WidgetUtils.drawProgressText(graphics, x, y, width, this.task, this.progress);
         int height = getHeight(width);
         WidgetUtils.drawProgressBar(graphics, x + iconSize + 10, y + height - font.lineHeight + 2, x + width - 5, y + height - 2, this.task, this.progress);
+
+        if (task.manual()) {
+            int buttonY = y + height - font.lineHeight - 10;
+            int buttonWidth = font.width(ConstantComponents.Tasks.CHECK);
+            boolean buttonHovered = mouseX > x + width - 2 - buttonWidth && mouseX < x + width - 2 && mouseY > buttonY && mouseY < buttonY + font.lineHeight;
+
+            Component text = buttonHovered ? ConstantComponents.Tasks.CHECK.copy().withStyle(ChatFormatting.UNDERLINE) : ConstantComponents.Tasks.CHECK;
+            graphics.drawString(font, text, x + width - 2 - buttonWidth, buttonY, progress.isComplete() ? 0xFF707070 : 0xFFD0D0D0, false);
+            CursorUtils.setCursor(buttonHovered, progress.isComplete() ? CursorScreen.Cursor.DISABLED : CursorScreen.Cursor.POINTER);
+        }
+    }
+
+    @Override
+    public boolean mouseClicked(double mouseX, double mouseY, int mouseButton, int width) {
+        if (task.manual() && !progress.isComplete()) {
+            Font font = Minecraft.getInstance().font;
+            int buttonY = getHeight(width) - 19;
+            boolean buttonHovered = mouseX > width - 2 - font.width(ConstantComponents.Tasks.CHECK) && mouseX < width - 2 && mouseY > buttonY && mouseY < buttonY + font.lineHeight;
+            if (buttonHovered) {
+                NetworkHandler.CHANNEL.sendToServer(new ManualItemTaskPacket());
+
+                if (Minecraft.getInstance().player != null) {
+                    progress.addProgress(GatherItemTask.TYPE, task, Pair.of(ItemStack.EMPTY, Minecraft.getInstance().player.getInventory()));
+                }
+                return true;
+            }
+        }
+        return false;
     }
 
     private ItemStack getCurrentItem() {

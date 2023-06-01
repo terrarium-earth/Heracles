@@ -16,7 +16,8 @@
   "task.heracles.item.title.plural": "Gather %ss",
   "task.heracles.item.desc.singular": "Gather %s %s",
   "task.heracles.item.desc.plural": "Gather %s %ss",
-  "setting.heracles.item.amount": "Amount:",
+  "setting.heracles.item.amount": "Amount: ",
+  "setting.heracles.item.manual": "Manual Check: ",
 
   "task.heracles.advancement": "Advancement",
   "task.heracles.advancement.title.singular": "Complete the advancement:",

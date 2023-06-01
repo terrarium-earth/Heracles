@@ -18,6 +18,8 @@ import earth.terrarium.heracles.client.widgets.base.BaseWidget;
 import earth.terrarium.heracles.common.network.NetworkHandler;
 import earth.terrarium.heracles.common.network.packets.quests.OpenQuestPacket;
 import earth.terrarium.heracles.common.utils.ModUtils;
+import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
+import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
@@ -40,6 +42,7 @@ public class QuestsWidget extends BaseWidget {
 
     private static final ResourceLocation ARROW = new ResourceLocation(Heracles.MOD_ID, "textures/gui/arrow.png");
 
+    private final Set<String> visibleQuests = new HashSet<>();
     private final List<QuestWidget> widgets = new ArrayList<>();
     private final List<ClientQuests.QuestEntry> entries = new ArrayList<>();
 
@@ -76,10 +79,44 @@ public class QuestsWidget extends BaseWidget {
     public void update(List<Pair<ClientQuests.QuestEntry, ModUtils.QuestStatus>> quests) {
         this.widgets.clear();
         this.entries.clear();
+        this.visibleQuests.clear();
+
+        Object2BooleanMap<String> statuses = new Object2BooleanOpenHashMap<>();
+        statuses.defaultReturnValue(true);
+        quests.forEach(quest -> statuses.put(quest.getFirst().key(), quest.getSecond() == ModUtils.QuestStatus.COMPLETED));
+
+        List<Pair<ClientQuests.QuestEntry, ModUtils.QuestStatus>> visibleQuests = new ArrayList<>();
+
+        boolean isEditing = isEditing();
+
         for (Pair<ClientQuests.QuestEntry, ModUtils.QuestStatus> quest : quests) {
+            if (isEditing || !shouldHide(this.group, statuses, quest.getFirst())) {
+                visibleQuests.add(quest);
+            }
+        }
+
+        for (Pair<ClientQuests.QuestEntry, ModUtils.QuestStatus> quest : visibleQuests) {
             this.widgets.add(new QuestWidget(quest.getFirst(), quest.getSecond()));
             this.entries.add(quest.getFirst());
+            this.visibleQuests.add(quest.getFirst().key());
         }
+    }
+
+    private static boolean shouldHide(String group, Object2BooleanMap<String> statuses, ClientQuests.QuestEntry quest) {
+        var value = quest.value();
+        boolean inGroup = value.display().groups().containsKey(group);
+        if (inGroup && !statuses.getBoolean(quest.key()) && value.settings().hidden()) {
+            return true;
+        }
+        if (!inGroup) {
+            return false;
+        }
+        for (var dependency : quest.dependencies()) {
+            if (shouldHide(group, statuses, dependency)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public void addQuest(ClientQuests.QuestEntry quest) {
@@ -94,7 +131,7 @@ public class QuestsWidget extends BaseWidget {
 
     public void removeQuest(ClientQuests.QuestEntry quest) {
         this.widgets.removeIf(widget -> widget.id().equals(quest.key()));
-        this.entries.remove(quest);
+        this.entries.removeIf(entry -> entry.key().equals(quest.key()));
         QuestWidget questWidget = this.selectHandler.selectedQuest();
         if (questWidget != null && Objects.equals(this.selectHandler.selectedQuest().id(), quest.key())) {
             this.selectHandler.release();
@@ -132,6 +169,7 @@ public class QuestsWidget extends BaseWidget {
 
                 for (ClientQuests.QuestEntry child : entry.children()) {
                     if (!child.value().display().groups().containsKey(this.group)) continue;
+                    if (!this.visibleQuests.contains(child.key())) continue;
                     var childPosition = child.value().display().position(this.group);
 
                     if (lines.contains(new Pair<>(position, childPosition))) continue;
@@ -255,5 +293,9 @@ public class QuestsWidget extends BaseWidget {
 
     public String group() {
         return this.group;
+    }
+
+    public boolean isEditing() {
+        return ClientUtils.screen() instanceof QuestsEditScreen;
     }
 }

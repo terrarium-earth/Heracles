@@ -13,13 +13,15 @@ public class QuestSettingsInitalizer implements SettingInitializer<QuestSettings
     public CreationData create(@Nullable QuestSettings object) {
         CreationData settings = new CreationData();
         settings.put("individual_progress", BooleanSetting.FALSE, object != null && object.individualProgress());
+        settings.put("hidden", BooleanSetting.FALSE, object != null && object.hidden());
         return settings;
     }
 
     @Override
     public QuestSettings create(String id, QuestSettings object, Data data) {
         return new QuestSettings(
-            data.get("individual_progress", BooleanSetting.FALSE).orElse(object != null && object.individualProgress())
+            data.get("individual_progress", BooleanSetting.FALSE).orElse(object != null && object.individualProgress()),
+            data.get("hidden", BooleanSetting.FALSE).orElse(object != null && object.hidden())
         );
     }
 }

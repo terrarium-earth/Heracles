@@ -47,5 +47,6 @@
     "gui.heracles.id": "Identifier",
     "gui.heracles.toggle_edit": "Toggle Edit Mode",
 
-    "setting.heracles.quest.individual_progress": "Individual Progress"
+    "setting.heracles.quest.individual_progress": "Individual Progress",
+    "setting.heracles.quest.hidden": "Prerequisite Hidden"
 }

@@ -181,5 +181,10 @@ public class ClientQuests {
         public String toString() {
             return "QuestEntry{ key='" + key + "', value=" + value + " }";
         }
+
+        @Override
+        public int hashCode() {
+            return key.hashCode();
+        }
     }
 }

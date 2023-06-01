@@ -4,12 +4,14 @@ import net.fabricmc.loom.task.RemapJarTask
 
 plugins {
     java
+    id("maven-publish")
     id("dev.architectury.loom") version "1.2-SNAPSHOT" apply false
     id("architectury-plugin") version "3.4-SNAPSHOT" apply false
     id("io.github.juuxel.loom-quiltflower") version "1.8.0" apply false
 }
 
 subprojects {
+    apply(plugin = "maven-publish")
     apply(plugin = "dev.architectury.loom")
     apply(plugin = "architectury-plugin")
     apply(plugin = "io.github.juuxel.loom-quiltflower")
@@ -81,6 +83,41 @@ subprojects {
 
         dependencies {
             compileOnly(rootProject.projects.common)
+        }
+    }
+
+    publishing {
+        publications {
+            create<MavenPublication>("maven") {
+                artifactId = "${rootProject.name}-$name-$minecraftVersion"
+                from(components["java"])
+
+                pom {
+                    name.set("Heracles $name")
+                    url.set("https://github.com/terrarium-earth/${rootProject.name}")
+
+                    scm {
+                        connection.set("git:https://github.com/terrarium-earth/${rootProject.name}.git")
+                        developerConnection.set("git:https://github.com/terrarium-earth/${rootProject.name}.git")
+                        url.set("https://github.com/terrarium-earth/${rootProject.name}")
+                    }
+
+                    licenses {
+                        license {
+                            name.set("MIT")
+                        }
+                    }
+                }
+            }
+        }
+        repositories {
+            maven {
+                setUrl("https://maven.resourcefulbees.com/repository/terrarium/")
+                credentials {
+                    username = System.getenv("MAVEN_USER")
+                    password = System.getenv("MAVEN_PASS")
+                }
+            }
         }
     }
 }

@@ -1,6 +1,7 @@
 import dev.architectury.plugin.ArchitectPluginExtension
 import net.fabricmc.loom.api.LoomGradleExtensionAPI
 import net.fabricmc.loom.task.RemapJarTask
+import net.fabricmc.loom.task.RemapSourcesJarTask
 
 plugins {
     java
@@ -55,6 +56,10 @@ subprojects {
         }
     }
 
+    java {
+        withSourcesJar()
+    }
+
     tasks.jar {
         archiveClassifier.set("dev")
         archiveBaseName.set("${rootProject.name}-${project.name}-$minecraftVersion")
@@ -87,7 +92,10 @@ subprojects {
         publications {
             create<MavenPublication>("maven") {
                 artifactId = "${rootProject.name}-${project.name}-${minecraftVersion}"
-                from(components["java"])
+                artifact(tasks.named<RemapJarTask>("remapJar"))
+                artifact(tasks.named<Jar>("sourcesJar")) {
+                    builtBy(tasks.named<RemapSourcesJarTask>("remapSourcesJar"))
+                }
 
                 pom {
                     name.set("Heracles ${project.name}")

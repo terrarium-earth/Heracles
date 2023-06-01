@@ -11,7 +11,6 @@ import earth.terrarium.heracles.api.tasks.QuestTasks;
 import earth.terrarium.heracles.client.handlers.ClientQuests;
 import earth.terrarium.heracles.client.screens.quest.rewards.RewardListWidget;
 import earth.terrarium.heracles.client.screens.quest.tasks.TaskListWidget;
-import earth.terrarium.heracles.client.widgets.base.TemporyWidget;
 import earth.terrarium.heracles.client.widgets.modals.CreateObjectModal;
 import earth.terrarium.heracles.client.widgets.modals.EditObjectModal;
 import earth.terrarium.heracles.common.constants.ConstantComponents;
@@ -138,17 +137,7 @@ public class QuestEditScreen extends BaseQuestScreen {
     private <T extends QuestTask<?, ?, T>> void taskPopup(QuestTaskType<T> type, String id, @Nullable T task, Consumer<T> consumer) {
         SettingInitializer<?> setting = Settings.getFactory(type);
         if (setting == null) return;
-
-        boolean found = false;
-        EditObjectModal widget = new EditObjectModal(this.width, this.height);
-        for (TemporyWidget temporaryWidget : this.temporaryWidgets()) {
-            if (temporaryWidget instanceof EditObjectModal modal) {
-                found = true;
-                widget = modal;
-                break;
-            }
-        }
-        widget.setVisible(true);
+        EditObjectModal widget = findOrCreateEditWidget();
 
         SettingInitializer.CreationData data = setting.create(ModUtils.cast(task));
         widget.init(type.id(), data, savedData -> {
@@ -157,26 +146,12 @@ public class QuestEditScreen extends BaseQuestScreen {
             consumer.accept(ModUtils.cast(newTask));
         });
         widget.setTitle(ConstantComponents.Tasks.EDIT);
-        if (!found) {
-            this.addTemporary(widget);
-        }
     }
 
     private <T extends QuestReward<T>> void rewardPopup(QuestRewardType<T> type, String id, @Nullable T reward, Consumer<T> consumer) {
         SettingInitializer<?> setting = Settings.getFactory(type);
         if (setting == null) return;
-
-        boolean found = false;
-        EditObjectModal widget = new EditObjectModal(this.width, this.height);
-        for (TemporyWidget temporaryWidget : this.temporaryWidgets()) {
-            if (temporaryWidget instanceof EditObjectModal modal) {
-                found = true;
-                widget = modal;
-                break;
-            }
-        }
-        widget.setVisible(true);
-
+        EditObjectModal widget = findOrCreateEditWidget();
         SettingInitializer.CreationData data = setting.create(ModUtils.cast(reward));
         widget.init(type.id(), data, savedData -> {
             var newReward = setting.create(id, ModUtils.cast(reward), savedData);
@@ -184,9 +159,6 @@ public class QuestEditScreen extends BaseQuestScreen {
             consumer.accept(ModUtils.cast(newReward));
         });
         widget.setTitle(ConstantComponents.Rewards.EDIT);
-        if (!found) {
-            this.addTemporary(widget);
-        }
     }
 
     @Override

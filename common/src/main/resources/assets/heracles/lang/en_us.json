@@ -45,5 +45,7 @@
     "gui.heracles.search": "Search",
     "gui.heracles.delete": "Delete",
     "gui.heracles.id": "Identifier",
-    "gui.heracles.toggle_edit": "Toggle Edit Mode"
+    "gui.heracles.toggle_edit": "Toggle Edit Mode",
+
+    "setting.heracles.quest.individual_progress": "Individual Progress"
 }

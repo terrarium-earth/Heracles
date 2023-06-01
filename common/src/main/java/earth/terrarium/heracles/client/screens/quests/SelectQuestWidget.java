@@ -1,5 +1,6 @@
 package earth.terrarium.heracles.client.screens.quests;
 
+import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.api.quests.Quest;
 import earth.terrarium.heracles.api.quests.defaults.ItemQuestIcon;
 import earth.terrarium.heracles.client.handlers.ClientQuests;
@@ -8,6 +9,7 @@ import earth.terrarium.heracles.client.screens.AbstractQuestScreen;
 import earth.terrarium.heracles.client.utils.ClientUtils;
 import earth.terrarium.heracles.client.widgets.base.BaseWidget;
 import earth.terrarium.heracles.client.widgets.boxes.IntEditBox;
+import earth.terrarium.heracles.client.widgets.modals.EditObjectModal;
 import earth.terrarium.heracles.common.constants.ConstantComponents;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -18,6 +20,7 @@ import net.minecraft.client.gui.components.MultiLineEditBox;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 
 import java.util.function.Consumer;
 
@@ -107,6 +110,24 @@ public class SelectQuestWidget extends BaseWidget {
                 }
             }).bounds(this.x + 60, this.y + 137, 16, 16)
             .tooltip(Tooltip.create(ConstantComponents.DELETE))
+            .build());
+
+        addChild(Button.builder(Component.literal("\uD83D\uDD89"), b -> {
+                if (Minecraft.getInstance().screen instanceof QuestsEditScreen screen) {
+                    EditObjectModal edit = screen.findOrCreateEditWidget();
+                    ResourceLocation id = new ResourceLocation(Heracles.MOD_ID, "quest");
+                    var settings = this.entry.value().settings();
+                    edit.init(
+                        id,
+                        QuestSettingsInitalizer.INSTANCE.create(settings),
+                        data -> changeOption(quest ->
+                            quest.settings().update(QuestSettingsInitalizer.INSTANCE.create("quest", settings, data))
+                        )
+                    );
+                    edit.setTitle(Component.literal("Edit Quest Settings"));
+                }
+            }).bounds(this.x + 78, this.y + 137, 16, 16)
+            .tooltip(Tooltip.create(Component.literal("Edit Quest Settings")))
             .build());
     }
 

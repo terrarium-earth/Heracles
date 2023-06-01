@@ -3,6 +3,7 @@ package earth.terrarium.heracles.client.screens;
 import com.teamresourceful.resourcefullib.client.screens.AbstractContainerCursorScreen;
 import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.client.widgets.base.TemporyWidget;
+import earth.terrarium.heracles.client.widgets.modals.EditObjectModal;
 import earth.terrarium.heracles.common.constants.ConstantComponents;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -140,5 +141,22 @@ public abstract class AbstractQuestScreen<T extends AbstractContainerMenu> exten
             return hook.heracles$internalKeyPressed(keyCode, scanCode, modifiers);
         }
         return super.keyPressed(keyCode, scanCode, modifiers);
+    }
+
+    public EditObjectModal findOrCreateEditWidget() {
+        boolean found = false;
+        EditObjectModal widget = new EditObjectModal(this.width, this.height);
+        for (TemporyWidget temporaryWidget : this.temporaryWidgets()) {
+            if (temporaryWidget instanceof EditObjectModal modal) {
+                found = true;
+                widget = modal;
+                break;
+            }
+        }
+        widget.setVisible(true);
+        if (!found) {
+            this.addTemporary(widget);
+        }
+        return widget;
     }
 }

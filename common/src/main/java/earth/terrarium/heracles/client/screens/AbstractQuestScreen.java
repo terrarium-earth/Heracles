@@ -1,6 +1,7 @@
 package earth.terrarium.heracles.client.screens;
 
 import com.teamresourceful.resourcefullib.client.screens.AbstractContainerCursorScreen;
+import com.teamresourceful.resourcefullib.client.utils.MouseLocationFix;
 import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.client.widgets.base.TemporyWidget;
 import earth.terrarium.heracles.client.widgets.modals.EditObjectModal;
@@ -35,6 +36,7 @@ public abstract class AbstractQuestScreen<T extends AbstractContainerMenu> exten
 
     @Override
     protected void init() {
+        MouseLocationFix.fix(AbstractQuestScreen.class);
         this.imageWidth = this.width;
         this.imageHeight = this.height;
         super.init();
@@ -141,6 +143,12 @@ public abstract class AbstractQuestScreen<T extends AbstractContainerMenu> exten
             return hook.heracles$internalKeyPressed(keyCode, scanCode, modifiers);
         }
         return super.keyPressed(keyCode, scanCode, modifiers);
+    }
+
+    @Override
+    public void removed() {
+        super.removed();
+        MouseLocationFix.setFix(clazz -> clazz == AbstractQuestScreen.class);
     }
 
     public EditObjectModal findOrCreateEditWidget() {

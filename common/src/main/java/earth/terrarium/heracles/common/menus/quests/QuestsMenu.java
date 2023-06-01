@@ -62,6 +62,10 @@ public class QuestsMenu extends AbstractContainerMenu {
         return this.content != null ? this.content.group() : null;
     }
 
+    public QuestsContent content() {
+        return this.content;
+    }
+
     @Override
     public @NotNull ItemStack quickMoveStack(Player player, int index) {
         return ItemStack.EMPTY;

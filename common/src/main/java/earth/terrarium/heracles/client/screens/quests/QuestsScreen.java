@@ -66,7 +66,7 @@ public class QuestsScreen extends AbstractQuestScreen<QuestsMenu> {
                 }
             }
         ));
-        questsWidget.update(quests);
+        questsWidget.update(this.menu.content(), quests);
 
         this.groupsList = addRenderableWidget(new GroupsList(
             0,

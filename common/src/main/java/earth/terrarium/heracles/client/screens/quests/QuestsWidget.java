@@ -15,6 +15,7 @@ import earth.terrarium.heracles.client.screens.MouseMode;
 import earth.terrarium.heracles.client.utils.ClientUtils;
 import earth.terrarium.heracles.client.utils.MouseClick;
 import earth.terrarium.heracles.client.widgets.base.BaseWidget;
+import earth.terrarium.heracles.common.menus.quests.QuestsContent;
 import earth.terrarium.heracles.common.network.NetworkHandler;
 import earth.terrarium.heracles.common.network.packets.quests.OpenQuestPacket;
 import earth.terrarium.heracles.common.utils.ModUtils;
@@ -42,6 +43,7 @@ public class QuestsWidget extends BaseWidget {
 
     private static final ResourceLocation ARROW = new ResourceLocation(Heracles.MOD_ID, "textures/gui/arrow.png");
 
+
     private final Set<String> visibleQuests = new HashSet<>();
     private final List<QuestWidget> widgets = new ArrayList<>();
     private final List<ClientQuests.QuestEntry> entries = new ArrayList<>();
@@ -63,6 +65,8 @@ public class QuestsWidget extends BaseWidget {
 
     private final String group;
 
+    private QuestsContent content;
+
     public QuestsWidget(int x, int y, int width, int selectedWidth, int height, BooleanSupplier inspectorOpened, Supplier<MouseMode> mouseMode, Consumer<ClientQuests.QuestEntry> onSelection) {
         this.x = x;
         this.y = y;
@@ -76,7 +80,8 @@ public class QuestsWidget extends BaseWidget {
         this.selectHandler = new SelectQuestHandler(this.group, onSelection);
     }
 
-    public void update(List<Pair<ClientQuests.QuestEntry, ModUtils.QuestStatus>> quests) {
+    public void update(QuestsContent content, List<Pair<ClientQuests.QuestEntry, ModUtils.QuestStatus>> quests) {
+        this.content = content;
         this.widgets.clear();
         this.entries.clear();
         this.visibleQuests.clear();
@@ -127,6 +132,9 @@ public class QuestsWidget extends BaseWidget {
         }
         this.widgets.add(new QuestWidget(quest, ModUtils.QuestStatus.IN_PROGRESS));
         this.entries.add(quest);
+        if (this.content != null) {
+            this.content.quests().put(quest.key(), ModUtils.QuestStatus.IN_PROGRESS);
+        }
     }
 
     public void removeQuest(ClientQuests.QuestEntry quest) {
@@ -135,6 +143,9 @@ public class QuestsWidget extends BaseWidget {
         QuestWidget questWidget = this.selectHandler.selectedQuest();
         if (questWidget != null && Objects.equals(this.selectHandler.selectedQuest().id(), quest.key())) {
             this.selectHandler.release();
+        }
+        if (this.content != null) {
+            this.content.quests().remove(quest.key());
         }
     }
 

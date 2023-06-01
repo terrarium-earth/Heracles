@@ -1,7 +1,6 @@
 import dev.architectury.plugin.ArchitectPluginExtension
 import net.fabricmc.loom.api.LoomGradleExtensionAPI
 import net.fabricmc.loom.task.RemapJarTask
-import net.fabricmc.loom.task.RemapSourcesJarTask
 
 plugins {
     java
@@ -9,6 +8,7 @@ plugins {
     id("dev.architectury.loom") version "1.2-SNAPSHOT" apply false
     id("architectury-plugin") version "3.4-SNAPSHOT" apply false
     id("io.github.juuxel.loom-quiltflower") version "1.8.0" apply false
+    id("com.teamresourceful.resourcefulgradle") version "0.0.+" apply false
 }
 
 subprojects {
@@ -18,7 +18,9 @@ subprojects {
     apply(plugin = "io.github.juuxel.loom-quiltflower")
 
     val minecraftVersion: String by project
-    val isCommon = name == rootProject.projects.common.name
+    val modLoader = project.name
+    val modId = rootProject.name
+    val isCommon = modLoader == rootProject.projects.common.name
 
     configure<LoomGradleExtensionAPI> {
         silentMojangMappingsLicense()
@@ -47,8 +49,8 @@ subprojects {
         })
 
         compileOnly(group = "com.teamresourceful", name = "yabn", version = "1.0.3")
-        "modApi"(group = "com.teamresourceful.resourcefullib", name = "resourcefullib-$name-$minecraftVersion", version = resourcefulLibVersion)
-        val hermes = "modImplementation"(group = "earth.terrarium.hermes", name = "hermes-$name-$minecraftVersion", version = hermesLibVersion) {
+        "modApi"(group = "com.teamresourceful.resourcefullib", name = "resourcefullib-$modLoader-$minecraftVersion", version = resourcefulLibVersion)
+        val hermes = "modImplementation"(group = "earth.terrarium.hermes", name = "hermes-$modLoader-$minecraftVersion", version = hermesLibVersion) {
             isTransitive = false
         }
         if (!isCommon) {
@@ -62,7 +64,7 @@ subprojects {
 
     tasks.jar {
         archiveClassifier.set("dev")
-        archiveBaseName.set("${rootProject.name}-${project.name}-$minecraftVersion")
+        archiveBaseName.set("${rootProject.name}-$modLoader-$minecraftVersion")
     }
 
     tasks.named<RemapJarTask>("remapJar") {
@@ -91,20 +93,17 @@ subprojects {
     publishing {
         publications {
             create<MavenPublication>("maven") {
-                artifactId = "${rootProject.name}-${project.name}-${minecraftVersion}"
-                artifact(tasks.named<RemapJarTask>("remapJar"))
-                artifact(tasks.named<Jar>("sourcesJar")) {
-                    builtBy(tasks.named<RemapSourcesJarTask>("remapSourcesJar"))
-                }
+                artifactId = "$modId-$modLoader-$minecraftVersion"
+                from(components["java"])
 
                 pom {
-                    name.set("Heracles ${project.name}")
-                    url.set("https://github.com/terrarium-earth/${rootProject.name}")
+                    name.set("Heracles $modLoader")
+                    url.set("https://github.com/terrarium-earth/$modId")
 
                     scm {
-                        connection.set("git:https://github.com/terrarium-earth/${rootProject.name}.git")
-                        developerConnection.set("git:https://github.com/terrarium-earth/${rootProject.name}.git")
-                        url.set("https://github.com/terrarium-earth/${rootProject.name}")
+                        connection.set("git:https://github.com/terrarium-earth/$modId.git")
+                        developerConnection.set("git:https://github.com/terrarium-earth/$modId.git")
+                        url.set("https://github.com/terrarium-earth/$modId")
                     }
 
                     licenses {

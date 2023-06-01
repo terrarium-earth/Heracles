@@ -1,3 +1,7 @@
+architectury {
+    forge()
+}
+
 loom {
     forge {
         mixinConfig("heracles-common.mixins.json")

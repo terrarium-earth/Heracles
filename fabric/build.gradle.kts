@@ -1,3 +1,7 @@
+architectury {
+    fabric()
+}
+
 dependencies {
     val fabricLoaderVersion: String by project
     val fabricApiVersion: String by project

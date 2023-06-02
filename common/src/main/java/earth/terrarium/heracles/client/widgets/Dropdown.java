@@ -149,13 +149,14 @@ public class Dropdown<T> extends AbstractWidget implements Renderable {
 
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-        if (options.size() > MAX_OPTIONS_SHOWN) {
+        if (options.size() > MAX_OPTIONS_SHOWN && isFocused()) {
             if (keyCode == InputConstants.KEY_DOWN) {
                 move(-10);
+                return true;
             } else if (keyCode == InputConstants.KEY_UP) {
                 move(10);
+                return true;
             }
-            return true;
         }
         return super.keyPressed(keyCode, scanCode, modifiers);
     }

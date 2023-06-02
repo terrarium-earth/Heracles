@@ -28,6 +28,7 @@ public class CreateObjectModal extends BaseModal {
     private final Dropdown<ResourceLocation> typeBox;
     private final EditBox nameBox;
 
+    private String type = "unknown";
     private Component title = CommonComponents.EMPTY;
     private BiConsumer<ResourceLocation, String> callback = (r, s) -> {};
     private BiPredicate<ResourceLocation, String> validator = (r, s) -> true;
@@ -36,8 +37,8 @@ public class CreateObjectModal extends BaseModal {
         super(screenWidth, screenHeight, WIDTH, HEIGHT);
         this.typeBox = addChild(new Dropdown<>(
             this.x + 8, this.y + 19, 152, 14,
-            "Type",
-            ResourceLocation::toString
+            Component.literal("Type"),
+            id -> Component.translatable(id.toLanguageKey(type))
         ));
 
         Button submitButton = addChild(createButton(ConstantComponents.SUBMIT, this.x + WIDTH - 7, this.y + HEIGHT - 20, b -> onSubmit()));
@@ -110,11 +111,13 @@ public class CreateObjectModal extends BaseModal {
     }
 
     public void update(
+        String type,
         BiConsumer<ResourceLocation, String> callback,
         BiPredicate<ResourceLocation, String> validator,
         Component title,
         Collection<ResourceLocation> suggestions
     ) {
+        this.type = type;
         this.callback = callback;
         this.validator = validator;
         this.title = title;

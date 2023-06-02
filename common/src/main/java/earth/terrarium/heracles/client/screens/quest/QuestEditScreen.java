@@ -76,6 +76,7 @@ public class QuestEditScreen extends BaseQuestScreen {
 
             this.createModal.setVisible(true);
             this.createModal.update(
+                "task",
                 (type, id) -> creator.accept(id, QuestTasks.get(type)),
                 (type, id) -> !this.quest().tasks().containsKey(id) && QuestTasks.types().containsKey(type),
                 ConstantComponents.Tasks.CREATE,
@@ -111,6 +112,7 @@ public class QuestEditScreen extends BaseQuestScreen {
 
             this.createModal.setVisible(true);
             this.createModal.update(
+                "reward",
                 (type, id) -> creator.accept(id, QuestRewards.get(type)),
                 (type, id) -> !this.quest().rewards().containsKey(id) && QuestRewards.types().containsKey(type),
                 ConstantComponents.Rewards.CREATE,

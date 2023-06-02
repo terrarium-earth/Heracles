@@ -12,7 +12,9 @@ import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.network.chat.CommonComponents;
-import net.minecraft.network.chat.FormattedText;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.Style;
+import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.util.Mth;
 import org.jetbrains.annotations.Nullable;
 
@@ -27,16 +29,16 @@ public class Dropdown<T> extends AbstractWidget implements Renderable {
     private static final int MAX_OPTIONS_SHOWN = 10;
 
     private final List<T> options = new ArrayList<>();
-    private final Function<T, String> mapper;
-    private final String placeholder;
+    private final Function<T, Component> mapper;
+    private final Component placeholder;
 
     private double scrollAmount = 0;
     private T selectedOption = null;
-    private Consumer<String> onSelect;
+    private Consumer<T> onSelect;
 
     private boolean lostFocus = false;
 
-    public Dropdown(int x, int y, int width, int height, String placeholder, Function<T, String> mapper) {
+    public Dropdown(int x, int y, int width, int height, Component placeholder, Function<T, Component> mapper) {
         super(x, y, width, height, CommonComponents.EMPTY);
         this.placeholder = placeholder;
         this.mapper = mapper;
@@ -72,7 +74,7 @@ public class Dropdown<T> extends AbstractWidget implements Renderable {
 
             try (var pose = new CloseablePoseStack(graphics)) {
                 pose.translate(0, 0, 10); // This is because minecraft has a weird bug with shadowed text rendered behind other text
-                try (var ignored = RenderUtils.createScissorBox(Minecraft.getInstance(), pose, x, y + height, width, 10 * Math.min(MAX_OPTIONS_SHOWN, options.size()))) {
+                try (var ignored = RenderUtils.createScissor(Minecraft.getInstance(), graphics, x, y + height, width, 10 * Math.min(MAX_OPTIONS_SHOWN, options.size()))) {
                     int i1 = 0;
                     for (T option : options) {
                         int y1 = y + height + 1 + (i1 * 10) - (int) scrollAmount;
@@ -92,11 +94,12 @@ public class Dropdown<T> extends AbstractWidget implements Renderable {
         }
     }
 
-    private static String ellipsize(String text, int width, Font font) {
+    private static FormattedCharSequence ellipsize(Component text, int width, Font font) {
         if (font.width(text) <= width) {
-            return text;
+            return text.getVisualOrderText();
         }
-        return font.substrByWidth(FormattedText.of(text), width - font.width("...")).getString() + "...";
+        var formattedText = font.split(text, width - font.width("..."));
+        return FormattedCharSequence.composite(formattedText.get(0), FormattedCharSequence.forward("...", Style.EMPTY));
     }
 
     @Override
@@ -119,7 +122,7 @@ public class Dropdown<T> extends AbstractWidget implements Renderable {
                 if (mouseY >= y && mouseY < y + 10) {
                     selectedOption = option;
                     if (onSelect != null) {
-                        onSelect.accept(Optionull.mapOrDefault(option, mapper, this.placeholder));
+                        onSelect.accept(option);
                     }
                     lostFocus = true;
                     return true;
@@ -152,12 +155,13 @@ public class Dropdown<T> extends AbstractWidget implements Renderable {
     }
 
     public void setOptions(Collection<T> options) {
+        this.scrollAmount = 0;
         this.selectedOption = null;
         this.options.clear();
         this.options.addAll(options);
     }
 
-    public void setResponder(Consumer<String> onSelect) {
+    public void setResponder(Consumer<T> onSelect) {
         this.onSelect = onSelect;
     }
 

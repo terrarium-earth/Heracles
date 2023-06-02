@@ -1,5 +1,6 @@
 package earth.terrarium.heracles.client.widgets;
 
+import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.teamresourceful.resourcefullib.client.CloseablePoseStack;
 import com.teamresourceful.resourcefullib.client.utils.RenderUtils;
@@ -106,7 +107,7 @@ public class Dropdown<T> extends AbstractWidget implements Renderable {
     public boolean mouseScrolled(double mouseX, double mouseY, double delta) {
         if (!isFocused()) return false;
         if (options.size() > MAX_OPTIONS_SHOWN) {
-            this.scrollAmount = Mth.clamp(this.scrollAmount + (int) delta * 10, 0.0D, Math.max(0, (options.size() * 10) - this.height));
+            move(delta * 10);
         }
         return true;
     }
@@ -144,6 +145,23 @@ public class Dropdown<T> extends AbstractWidget implements Renderable {
             && mouseX < (double) (this.getX() + this.width)
             && mouseY >= (double) this.getY() + this.height + 1
             && mouseY < (double) (this.getY() + this.height + 1 + (10 * Math.min(MAX_OPTIONS_SHOWN, options.size())));
+    }
+
+    @Override
+    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+        if (options.size() > MAX_OPTIONS_SHOWN) {
+            if (keyCode == InputConstants.KEY_DOWN) {
+                move(-10);
+            } else if (keyCode == InputConstants.KEY_UP) {
+                move(10);
+            }
+            return true;
+        }
+        return super.keyPressed(keyCode, scanCode, modifiers);
+    }
+
+    private void move(double amount) {
+        this.scrollAmount = Mth.clamp(this.scrollAmount + amount, 0.0D, Math.max(0, (options.size() * 10) - (MAX_OPTIONS_SHOWN * 10)));
     }
 
     @Override

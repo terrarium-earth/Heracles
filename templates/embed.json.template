@@ -1,0 +1,32 @@
+{
+    "embeds": [
+        {
+            "title": "Heracles",
+            "description": "**Changelog:**\\n${changelog}",
+            "color": 5814783,
+            "fields": [
+                {
+                    "name": "Minecraft Version",
+                    "value": "${minecraft}"
+                },
+                {
+                    "name": "Mod Version",
+                    "value": "${version}"
+                },
+                {
+                    "name": "Download",
+                    "value": "<:modrinth:1083795635414773760> [Modrinth](https://modrinth.com/mod/heracles)\\n<:curseforge:978684543026462790> [Curseforge](https://www.curseforge.com/minecraft/mc-mods/heracles)"
+                }
+            ],
+            "footer": {
+                "text": "Want to support us? Check out our Ko-fi! http://kofi.terrarium.earth",
+                "icon_url": "https://media.discordapp.net/attachments/881367981463072809/1044025688719626250/61e1116779fc0a9bd5bdbcc7_Frame_6.png"
+            },
+            "thumbnail": {
+                "url": "https://media.discordapp.net/attachments/1094731881590833203/1106096454407311420/Heracles_image.png"
+            }
+        }
+    ],
+    "username": "Terrarium Releases",
+    "avatar_url": "https://cdn.discordapp.com/avatars/955572264823300096/3c226580b871a57b6da095fea1cccf1e.webp"
+}

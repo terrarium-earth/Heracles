@@ -1,3 +1,4 @@
 architectury {
-    common(rootProject.subprojects.map { it.name }.contains("forge"))
+    val enabledPlatforms: String by rootProject
+    common(enabledPlatforms.split(","))
 }

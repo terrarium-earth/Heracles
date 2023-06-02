@@ -1,14 +1,15 @@
 import dev.architectury.plugin.ArchitectPluginExtension
+import groovy.json.StringEscapeUtils
 import net.fabricmc.loom.api.LoomGradleExtensionAPI
 import net.fabricmc.loom.task.RemapJarTask
 
 plugins {
     java
     id("maven-publish")
+    id("com.teamresourceful.resourcefulgradle") version "0.0.+"
     id("dev.architectury.loom") version "1.2-SNAPSHOT" apply false
     id("architectury-plugin") version "3.4-SNAPSHOT" apply false
     id("io.github.juuxel.loom-quiltflower") version "1.8.0" apply false
-    id("com.teamresourceful.resourcefulgradle") version "0.0.+" apply false
 }
 
 subprojects {
@@ -122,6 +123,23 @@ subprojects {
                     password = System.getenv("MAVEN_PASS")
                 }
             }
+        }
+    }
+}
+
+resourcefulGradle {
+    templates {
+        register("embed") {
+            val minecraftVersion: String by project
+            val version: String by project
+            val changelog: String = file("changelog.md").readText(Charsets.UTF_8)
+
+            source.set(file("templates/embed.json.template"))
+            injectedValues.set(mapOf(
+                    "minecraft" to minecraftVersion,
+                    "version" to version,
+                    "changelog" to StringEscapeUtils.escapeJava(changelog),
+            ))
         }
     }
 }

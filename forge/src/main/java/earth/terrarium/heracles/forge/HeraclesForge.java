@@ -5,8 +5,6 @@ import earth.terrarium.heracles.api.tasks.defaults.*;
 import earth.terrarium.heracles.common.handlers.progress.QuestProgressHandler;
 import earth.terrarium.heracles.common.handlers.progress.QuestsProgress;
 import earth.terrarium.heracles.common.handlers.quests.QuestHandler;
-import earth.terrarium.heracles.common.team.ScoreboardTeamProvider;
-import earth.terrarium.heracles.common.team.TeamProvider;
 import it.unimi.dsi.fastutil.longs.LongSet;
 import net.minecraft.core.BlockSourceImpl;
 import net.minecraft.server.level.ServerPlayer;
@@ -20,12 +18,8 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.server.ServerAboutToStartEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.loading.FMLPaths;
-import net.minecraftforge.registries.DeferredRegister;
-import net.minecraftforge.registries.IForgeRegistry;
-import net.minecraftforge.registries.RegistryBuilder;
 
 import java.util.Map;
-import java.util.function.Supplier;
 
 @Mod(Heracles.MOD_ID)
 public class HeraclesForge {
@@ -63,9 +57,9 @@ public class HeraclesForge {
         if (!(event.player instanceof ServerPlayer player)) return;
 
         QuestsProgress progress = QuestProgressHandler.getProgress(player.server, player.getUUID());
-        Map<Structure, LongSet> structures = player.getLevel().structureManager().getAllStructuresAt(player.getOnPos());
+        Map<Structure, LongSet> structures = player.serverLevel().structureManager().getAllStructuresAt(player.getOnPos());
 
-        progress.testAndProgressTaskType(player, player.level.getBiome(player.getOnPos()), BiomeTask.TYPE);
+        progress.testAndProgressTaskType(player, player.serverLevel().getBiome(player.getOnPos()), BiomeTask.TYPE);
 
         if (!structures.isEmpty()) {
             progress.testAndProgressTaskType(player, structures.keySet(), StructureTask.TYPE);
@@ -90,6 +84,6 @@ public class HeraclesForge {
         if (!(event.getEntity() instanceof ServerPlayer player)) return;
 
         QuestProgressHandler.getProgress(player.server, player.getUUID())
-            .testAndProgressTaskType(player, new BlockSourceImpl(player.getLevel(), event.getPos()), BlockInteractTask.TYPE);
+            .testAndProgressTaskType(player, new BlockSourceImpl(player.serverLevel(), event.getPos()), BlockInteractTask.TYPE);
     }
 }

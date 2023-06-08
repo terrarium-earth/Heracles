@@ -1,5 +1,5 @@
 modLoader="javafml"
-loaderVersion="[45,)"
+loaderVersion="[46,)"
 license="Terrarium License"
 
 [[mods]]
@@ -13,13 +13,13 @@ description='''
 [[dependencies.heracles]]
 modId="forge"
 mandatory=true
-versionRange="[45,)"
+versionRange="[46,)"
 ordering="NONE"
 side="BOTH"
 
 [[dependencies.heracles]]
 modId="minecraft"
 mandatory=true
-versionRange="[1.19.4,1.20)"
+versionRange="[1.20,)"
 ordering="NONE"
 side="BOTH"

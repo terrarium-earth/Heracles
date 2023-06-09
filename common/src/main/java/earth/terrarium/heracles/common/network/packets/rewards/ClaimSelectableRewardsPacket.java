@@ -68,6 +68,7 @@ public record ClaimSelectableRewardsPacket(
                         if (reward instanceof SelectableReward selectableReward) {
                             if (message.rewards().size() <= selectableReward.amount()) {
                                 quest.claimRewards(
+                                    message.quest,
                                     serverPlayer,
                                     message.rewards().stream()
                                         .map(selectableReward.rewards()::get)

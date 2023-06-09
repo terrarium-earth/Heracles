@@ -2,6 +2,7 @@ package earth.terrarium.heracles.client.toasts;
 
 import com.teamresourceful.resourcefullib.client.scissor.ScissorBoxStack;
 import earth.terrarium.heracles.api.quests.Quest;
+import earth.terrarium.heracles.client.handlers.ClientQuests;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.toasts.Toast;
 import net.minecraft.client.gui.components.toasts.ToastComponent;
@@ -39,7 +40,9 @@ public record QuestCompletedToast(Quest quest) implements Toast {
         return timeSinceLastVisible >= DISPLAY_TIME * toastComponent.getNotificationDisplayTimeMultiplier() ? Toast.Visibility.HIDE : Toast.Visibility.SHOW;
     }
 
-    public static void add(ToastComponent toastComponent, Quest quest) {
-        toastComponent.addToast(new QuestCompletedToast(quest));
+    public static void add(ToastComponent toastComponent, String quest) {
+        ClientQuests.get(quest).ifPresent(entry ->
+            toastComponent.addToast(new QuestCompletedToast(entry.value()))
+        );
     }
 }

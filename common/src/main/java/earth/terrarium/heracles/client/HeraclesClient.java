@@ -2,7 +2,6 @@ package earth.terrarium.heracles.client;
 
 import com.mojang.blaze3d.platform.InputConstants;
 import earth.terrarium.heracles.Heracles;
-import earth.terrarium.heracles.api.quests.Quest;
 import earth.terrarium.heracles.client.handlers.DisplayConfig;
 import earth.terrarium.heracles.client.handlers.QuestTutorial;
 import earth.terrarium.heracles.client.screens.QuestTutorialScreen;
@@ -64,12 +63,12 @@ public class HeraclesClient {
         QuestTutorial.tick();
     }
 
-    public static void displayItemsRewardedToast(Quest quest, List<Item> items) {
-        QuestClaimedToast.addOrUpdate(Minecraft.getInstance().getToasts(), quest, items);
+    public static void displayItemsRewardedToast(String id, List<Item> items) {
+        QuestClaimedToast.addOrUpdate(Minecraft.getInstance().getToasts(), id, items);
     }
 
-    public static void displayQuestCompleteToast(Quest quest) {
-        QuestCompletedToast.add(Minecraft.getInstance().getToasts(), quest);
+    public static void displayQuestCompleteToast(String id) {
+        QuestCompletedToast.add(Minecraft.getInstance().getToasts(), id);
     }
 
     public interface ScreenConstructionEvent {

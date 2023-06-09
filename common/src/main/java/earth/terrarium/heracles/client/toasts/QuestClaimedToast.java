@@ -3,6 +3,7 @@ package earth.terrarium.heracles.client.toasts;
 import com.mojang.datafixers.util.Pair;
 import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.api.quests.Quest;
+import earth.terrarium.heracles.client.handlers.ClientQuests;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.toasts.Toast;
 import net.minecraft.client.gui.components.toasts.ToastComponent;
@@ -71,19 +72,22 @@ public class QuestClaimedToast implements Toast {
         }
     }
 
-    public static void addOrUpdate(ToastComponent toastComponent, Quest quest, List<Item> items) {
-        QuestClaimedToast questClaimedToast = toastComponent.getToast(QuestClaimedToast.class, NO_TOKEN);
-        if (questClaimedToast == null) {
-            toastComponent.addToast(new QuestClaimedToast(quest, items));
-        } else {
-            Set<Item> itemSet = questClaimedToast.questItems.get(quest);
-            if (itemSet == null) {
-                questClaimedToast.questItems.put(quest, new LinkedHashSet<>(items));
+    public static void addOrUpdate(ToastComponent toastComponent, String id, List<Item> items) {
+        ClientQuests.get(id).ifPresent(entry -> {
+            Quest quest = entry.value();
+            QuestClaimedToast questClaimedToast = toastComponent.getToast(QuestClaimedToast.class, NO_TOKEN);
+            if (questClaimedToast == null) {
+                toastComponent.addToast(new QuestClaimedToast(quest, items));
             } else {
-                itemSet.addAll(items);
-            }
+                Set<Item> itemSet = questClaimedToast.questItems.get(quest);
+                if (itemSet == null) {
+                    questClaimedToast.questItems.put(quest, new LinkedHashSet<>(items));
+                } else {
+                    itemSet.addAll(items);
+                }
 
-            questClaimedToast.renderItems = null;
-        }
+                questClaimedToast.renderItems = null;
+            }
+        });
     }
 }

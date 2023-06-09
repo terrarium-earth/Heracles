@@ -1,6 +1,5 @@
 package earth.terrarium.heracles.common.handlers.quests;
 
-import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import com.google.gson.JsonObject;
 import com.mojang.logging.LogUtils;
@@ -24,7 +23,7 @@ import java.util.Map;
 
 public class QuestHandler {
 
-    private static final BiMap<String, Quest> QUESTS = HashBiMap.create();
+    private static final Map<String, Quest> QUESTS = HashBiMap.create();
     private static final List<String> GROUPS = new ArrayList<>();
     private static final Logger LOGGER = LogUtils.getLogger();
     private static Path lastPath;
@@ -115,10 +114,6 @@ public class QuestHandler {
     public static void delete(String id) {
         QUESTS.remove(id);
         dirty = true;
-    }
-
-    public static String getKey(Quest quest) {
-        return QUESTS.inverse().get(quest);
     }
 
     public static Map<String, Quest> quests() {

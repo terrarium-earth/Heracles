@@ -9,7 +9,6 @@ import earth.terrarium.heracles.api.tasks.QuestTask;
 import earth.terrarium.heracles.api.tasks.QuestTasks;
 import earth.terrarium.heracles.common.handlers.progress.QuestProgressHandler;
 import earth.terrarium.heracles.common.handlers.progress.QuestsProgress;
-import earth.terrarium.heracles.common.handlers.quests.QuestHandler;
 import earth.terrarium.heracles.common.network.NetworkHandler;
 import earth.terrarium.heracles.common.network.packets.QuestRewardClaimedPacket;
 import net.minecraft.server.level.ServerPlayer;
@@ -47,15 +46,15 @@ public record Quest(
         return new Quest(display, settings, dependencies, new HashMap<>(tasks), new HashMap<>(rewards));
     }
 
-    public void claimAllowedRewards(ServerPlayer player) {
+    public void claimAllowedRewards(ServerPlayer player, String id) {
         QuestsProgress progress = QuestProgressHandler.getProgress(player.server, player.getUUID());
-        String id = QuestHandler.getKey(this);
         if (!progress.isComplete(id) && !this.tasks.isEmpty()) return;
         if (progress.isClaimed(id, this)) return;
 
         var questProgress = progress.getProgress(id);
 
         claimRewards(
+            id,
             player,
             rewards().values().stream().
                 filter(QuestReward::canBeMassClaimed)
@@ -64,7 +63,7 @@ public record Quest(
         );
     }
 
-    public void claimRewards(ServerPlayer player, Stream<? extends QuestReward<?>> rewards) {
+    public void claimRewards(String questId, ServerPlayer player, Stream<? extends QuestReward<?>> rewards) {
         List<Item> items = rewards
             .flatMap(reward -> reward.reward(player))
             .filter(stack -> !stack.is(Items.AIR))
@@ -73,7 +72,7 @@ public record Quest(
             .toList();
         if (!items.isEmpty()) {
             NetworkHandler.CHANNEL.sendToPlayer(
-                new QuestRewardClaimedPacket(this, items),
+                new QuestRewardClaimedPacket(questId, items),
                 player
             );
         }

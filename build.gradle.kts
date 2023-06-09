@@ -23,6 +23,10 @@ subprojects {
     val modId = rootProject.name
     val isCommon = modLoader == rootProject.projects.common.name
 
+    base {
+        archivesName.set("${rootProject.name}-$modLoader-$minecraftVersion")
+    }
+
     configure<LoomGradleExtensionAPI> {
         silentMojangMappingsLicense()
     }
@@ -65,7 +69,6 @@ subprojects {
 
     tasks.jar {
         archiveClassifier.set("dev")
-        archiveBaseName.set("${rootProject.name}-$modLoader-$minecraftVersion")
     }
 
     tasks.named<RemapJarTask>("remapJar") {

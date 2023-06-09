@@ -41,7 +41,7 @@ public record QuestsProgress(Map<String, QuestProgress> progress, CompletableQue
             questProgress.update(quest);
             this.progress.put(id, questProgress);
             if (questProgress.isComplete()) {
-                sendOutQuestComplete(player, quest);
+                sendOutQuestComplete(player, id);
             }
         }
         if (editedQuests.isEmpty()) return;
@@ -63,15 +63,14 @@ public record QuestsProgress(Map<String, QuestProgress> progress, CompletableQue
                     memberProgress.progress.put(quest.getFirst(), new QuestProgress(questProgress.isComplete(), Set.copyOf(Optionull.mapOrDefault(currentProgress, QuestProgress::claimedRewards, new HashSet<>())), newTasks));
                     ServerPlayer serverPlayer = player.server.getPlayerList().getPlayer(member);
                     if (serverPlayer != null && questProgress.isComplete()) {
-                        Quest questObj = QuestHandler.get(quest.getFirst());
-                        sendOutQuestComplete(serverPlayer, questObj);
+                        sendOutQuestComplete(serverPlayer, quest.getFirst());
                     }
                 }
                 memberProgress.completableQuests.updateCompleteQuests(memberProgress);
             });
     }
 
-    private void sendOutQuestComplete(ServerPlayer player, Quest quest) {
+    private void sendOutQuestComplete(ServerPlayer player, String quest) {
         player.level().playSound(null,
             player.blockPosition(),
             SoundEvents.UI_TOAST_CHALLENGE_COMPLETE,

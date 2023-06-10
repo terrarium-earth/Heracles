@@ -2,6 +2,7 @@ package earth.terrarium.heracles.mixins;
 
 import earth.terrarium.heracles.common.handlers.syncing.QuestSyncer;
 import net.minecraft.network.Connection;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.players.PlayerList;
 import org.spongepowered.asm.mixin.Final;
@@ -20,6 +21,8 @@ public class PlayerListMixin {
     @Final
     private List<ServerPlayer> players;
 
+    @Shadow @Final private MinecraftServer server;
+
     @Inject(
         method = "placeNewPlayer",
         at = @At(
@@ -36,6 +39,6 @@ public class PlayerListMixin {
         at = @At("TAIL")
     )
     private void heracles$afterSyncDataToAll(CallbackInfo ci) {
-        QuestSyncer.syncToAll(this.players);
+        QuestSyncer.syncToAll(this.server, this.players);
     }
 }

@@ -58,6 +58,10 @@ public class QuestProgressHandler extends SavedData {
         });
     }
 
+    public void updatePossibleQuests() {
+        progress.values().forEach(progress -> progress.completableQuests().updateCompleteQuests(progress));
+    }
+
     @Override
     public boolean isDirty() {
         return true;

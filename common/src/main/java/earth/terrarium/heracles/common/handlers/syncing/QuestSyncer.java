@@ -4,19 +4,22 @@ import com.google.common.collect.Maps;
 import earth.terrarium.heracles.api.quests.Quest;
 import earth.terrarium.heracles.api.quests.QuestDisplay;
 import earth.terrarium.heracles.common.handlers.pinned.PinnedQuestHandler;
+import earth.terrarium.heracles.common.handlers.progress.QuestProgressHandler;
 import earth.terrarium.heracles.common.handlers.quests.QuestHandler;
 import earth.terrarium.heracles.common.network.NetworkHandler;
 import earth.terrarium.heracles.common.network.packets.quests.SyncDescriptionsPacket;
 import earth.terrarium.heracles.common.network.packets.quests.SyncQuestsPacket;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 
 import java.util.*;
 
 public final class QuestSyncer {
 
-    public static void syncToAll(List<ServerPlayer> players) {
+    public static void syncToAll(MinecraftServer server, List<ServerPlayer> players) {
         NetworkHandler.CHANNEL.sendToPlayers(createPacket(), players);
         syncDescriptions(players);
+        QuestProgressHandler.read(server).updatePossibleQuests();
     }
 
     public static void sync(ServerPlayer player) {

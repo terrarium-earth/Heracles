@@ -49,7 +49,7 @@ public record QuestActionPacket(Action action) implements Packet<QuestActionPack
                             if (player.hasPermissions(2)) {
                                 QuestHandler.save();
                                 if (player.getServer() != null) {
-                                    QuestSyncer.syncToAll(player.getServer().getPlayerList().getPlayers());
+                                    QuestSyncer.syncToAll(player.getServer(), player.getServer().getPlayerList().getPlayers());
                                 }
                             }
                         }

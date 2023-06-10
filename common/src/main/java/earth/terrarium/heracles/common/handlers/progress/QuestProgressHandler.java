@@ -34,7 +34,7 @@ public class QuestProgressHandler extends SavedData {
             if (progress == null) return;
             var currentProgress = getProgress(level.getServer(), uuid);
             copyProgress(progress, currentProgress);
-            progress.completableQuests().updateCompleteQuests(currentProgress);
+            currentProgress.completableQuests().updateCompleteQuests(currentProgress);
         });
     }
 

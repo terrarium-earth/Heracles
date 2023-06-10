@@ -32,8 +32,9 @@ public class QuestProgressHandler extends SavedData {
             if (members.isEmpty()) return;
             QuestsProgress progress = findFirstPerson(level.getServer(), members);
             if (progress == null) return;
-            copyProgress(progress, getProgress(level.getServer(), uuid));
-            progress.completableQuests().updateCompleteQuests(progress);
+            var currentProgress = getProgress(level.getServer(), uuid);
+            copyProgress(progress, currentProgress);
+            progress.completableQuests().updateCompleteQuests(currentProgress);
         });
     }
 

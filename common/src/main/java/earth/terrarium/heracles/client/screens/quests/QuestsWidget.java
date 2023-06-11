@@ -268,12 +268,6 @@ public class QuestsWidget extends BaseWidget {
     }
 
     @Override
-    public boolean mouseReleased(double mouseX, double mouseY, int button) {
-        this.selectHandler.release();
-        return super.mouseReleased(mouseX, mouseY, button);
-    }
-
-    @Override
     public boolean mouseDragged(double mouseX, double mouseY, int button, double dragX, double dragY) {
         if (button != 0) return false;
         MouseMode mode = this.mouseMode.get();

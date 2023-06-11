@@ -4,6 +4,11 @@ import earth.terrarium.heracles.client.HeraclesClient;
 import earth.terrarium.heracles.client.handlers.DisplayConfig;
 import earth.terrarium.heracles.client.handlers.QuestTutorial;
 import earth.terrarium.heracles.client.screens.pinned.PinnedQuestDisplay;
+import net.minecraft.client.gui.screens.MenuScreens;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.gui.screens.inventory.MenuAccess;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.MenuType;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
 import net.minecraftforge.client.event.ScreenEvent;
@@ -27,6 +32,14 @@ public class HeraclesForgeClient {
         MinecraftForge.EVENT_BUS.addListener(HeraclesForgeClient::onMouseClickedPreScreen);
 
         FMLJavaModLoadingContext.get().getModEventBus().addListener(HeraclesForgeClient::onRegisterKeyBindings);
+        event.enqueueWork(() ->
+            HeraclesClient.onScreenConstruction(new HeraclesClient.ScreenConstructionEvent() {
+                @Override
+                public <M extends AbstractContainerMenu, U extends Screen & MenuAccess<M>> void registerScreen(MenuType<? extends M> type, HeraclesClient.ScreenConstructor<M, U> factory) {
+                    MenuScreens.register(type, factory::create);
+                }
+            })
+        );
     }
 
     public static void onRegisterKeyBindings(RegisterKeyMappingsEvent event) {

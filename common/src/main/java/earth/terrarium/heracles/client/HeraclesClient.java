@@ -18,6 +18,7 @@ import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.MenuAccess;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -25,7 +26,6 @@ import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.Item;
 
 import java.util.List;
-import java.util.Objects;
 
 public class HeraclesClient {
 
@@ -36,7 +36,11 @@ public class HeraclesClient {
     );
 
     public static void init() {
-        Heracles.setRegistryAccess(() -> Objects.requireNonNull(Minecraft.getInstance().getConnection()).registryAccess());
+        Heracles.setRegistryAccess(() -> {
+            var connection = Minecraft.getInstance().getConnection();
+            if (connection == null) return RegistryAccess.EMPTY;
+            return connection.registryAccess();
+        });
     }
 
     public static void onScreenConstruction(ScreenConstructionEvent event) {

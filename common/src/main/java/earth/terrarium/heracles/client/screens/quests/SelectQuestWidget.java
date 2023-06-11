@@ -90,7 +90,7 @@ public class SelectQuestWidget extends BaseWidget {
             .build());
 
         addChild(Button.builder(Component.literal("⬈"), b -> {
-                if (Minecraft.getInstance().screen instanceof QuestsEditScreen screen) {
+                if (Minecraft.getInstance().screen instanceof QuestsEditScreen screen && this.entry != null) {
                     screen.dependencyModal().setVisible(true);
                     screen.dependencyModal().update(this.entry, () -> changeOption(quest -> {}));
                 }
@@ -99,7 +99,7 @@ public class SelectQuestWidget extends BaseWidget {
             .build());
 
         addChild(Button.builder(Component.literal("x"), b -> {
-                if (Minecraft.getInstance().screen instanceof QuestsEditScreen screen) {
+                if (Minecraft.getInstance().screen instanceof QuestsEditScreen screen && this.entry != null) {
                     screen.confirmModal().setVisible(true);
                     screen.confirmModal().setCallback(() -> {
                         if (this.entry.value().display().groups().size() == 1) {
@@ -114,7 +114,7 @@ public class SelectQuestWidget extends BaseWidget {
             .build());
 
         addChild(Button.builder(Component.literal("\uD83D\uDD89"), b -> {
-                if (Minecraft.getInstance().screen instanceof QuestsEditScreen screen) {
+                if (Minecraft.getInstance().screen instanceof QuestsEditScreen screen && this.entry != null) {
                     EditObjectModal edit = screen.findOrCreateEditWidget();
                     ResourceLocation id = new ResourceLocation(Heracles.MOD_ID, "quest");
                     var settings = this.entry.value().settings();

@@ -20,6 +20,7 @@ import net.minecraft.client.gui.components.MultiLineEditBox;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.contents.TranslatableContents;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.function.Consumer;
@@ -52,7 +53,7 @@ public class SelectQuestWidget extends BaseWidget {
         this.group = ClientUtils.screen() instanceof QuestsScreen screen ? screen.getMenu().group() : "";
 
         this.titleBox = this.addChild(new EditBox(this.font, this.x + 6, this.y + 14, this.width - 12, 10, CommonComponents.EMPTY));
-        this.titleBox.setResponder(s -> changeOption(quest -> quest.display().setTitle(s.isEmpty() ? null : Component.literal(s))));
+        this.titleBox.setResponder(s -> changeOption(quest -> quest.display().setTitle(s.isEmpty() ? null : Component.translatable(s))));
 
         int boxWidth = (this.width - 40) / 2;
 
@@ -62,7 +63,7 @@ public class SelectQuestWidget extends BaseWidget {
         this.yBox.setNumberResponder(value -> changeOption(quest -> quest.display().position(this.group).y = value));
 
         this.subtitleBox = this.addChild(new MultiLineEditBox(this.font, this.x + 6, this.y + 76, this.width - 12, 40, CommonComponents.EMPTY, CommonComponents.EMPTY));
-        this.subtitleBox.setValueListener(s -> changeOption(quest -> quest.display().setSubtitle(s.isEmpty() ? null : Component.literal(s))));
+        this.subtitleBox.setValueListener(s -> changeOption(quest -> quest.display().setSubtitle(s.isEmpty() ? null : Component.translatable(s))));
 
         addChild(Button.builder(Component.literal("ℹ"), b -> {
                 if (Minecraft.getInstance().screen instanceof QuestsEditScreen screen) {
@@ -188,13 +189,21 @@ public class SelectQuestWidget extends BaseWidget {
         var position = this.entry.value().display().position(this.group);
         this.xBox.setIfNotFocused(position.x());
         this.yBox.setIfNotFocused(position.y());
-        String subtitle = this.entry.value().display().subtitle().getString();
+        String subtitle = getTranslationKey(this.entry.value().display().subtitle());
         if (!this.subtitleBox.getValue().equals(subtitle)) {
             this.subtitleBox.setValue(subtitle);
         }
-        String title = this.entry.value().display().title().getString();
+        String title = getTranslationKey(this.entry.value().display().title());
         if (!this.titleBox.getValue().equals(title)) {
             this.titleBox.setValue(title);
+        }
+    }
+
+    private static String getTranslationKey(Component component) {
+        if (component.getContents() instanceof TranslatableContents t) {
+            return t.getKey();
+        } else {
+            return component.getString();
         }
     }
 

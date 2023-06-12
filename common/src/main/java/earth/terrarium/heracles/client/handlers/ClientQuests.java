@@ -186,5 +186,13 @@ public class ClientQuests {
         public int hashCode() {
             return key.hashCode();
         }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (obj instanceof QuestEntry) {
+                return key.equals(((QuestEntry) obj).key);
+            }
+            return false;
+        }
     }
 }

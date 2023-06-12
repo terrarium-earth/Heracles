@@ -247,16 +247,18 @@ public class QuestsWidget extends BaseWidget {
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         MouseMode mode = this.mouseMode.get();
         if (isMouseOver(mouseX, mouseY)) {
-            for (QuestWidget widget : this.widgets) {
-                if (widget.isMouseOver(mouseX - (this.x + (this.fullWidth / 2f) + offset.x()), mouseY - (this.y + (this.height / 2f) + offset.y()))) {
-                    if (mode.canSelect()) {
-                        this.selectHandler.clickQuest(mode, (int) mouseX, (int) mouseY, widget);
-                    } else if (mode.canOpen()) {
-                        NetworkHandler.CHANNEL.sendToServer(new OpenQuestPacket(
-                            this.group, widget.id(), Minecraft.getInstance().screen instanceof QuestsEditScreen
-                        ));
+            if (mode.canSelect() && mode.canOpen()) {
+                for (QuestWidget widget : this.widgets) {
+                    if (widget.isMouseOver(mouseX - (this.x + (this.fullWidth / 2f) + offset.x()), mouseY - (this.y + (this.height / 2f) + offset.y()))) {
+                        if (mode.canSelect()) {
+                            this.selectHandler.clickQuest(mode, (int) mouseX, (int) mouseY, widget);
+                        } else if (mode.canOpen()) {
+                            NetworkHandler.CHANNEL.sendToServer(new OpenQuestPacket(
+                                this.group, widget.id(), Minecraft.getInstance().screen instanceof QuestsEditScreen
+                            ));
+                        }
+                        return true;
                     }
-                    return true;
                 }
             }
             this.selectHandler.release();

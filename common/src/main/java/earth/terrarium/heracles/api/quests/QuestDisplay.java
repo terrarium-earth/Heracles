@@ -118,14 +118,14 @@ public final class QuestDisplay {
         return Objects.hash(icon, iconBackground, title, subtitle, description, groups);
     }
 
-    public static QuestDisplay createDefault() {
+    public static QuestDisplay createDefault(GroupDisplay display) {
         return new QuestDisplay(
             new ItemQuestIcon(Items.MAP),
             DEFAULT_BACKGROUND,
             Component.literal("New Quest"),
             CommonComponents.EMPTY,
             List.of(),
-            Map.of("Main", GroupDisplay.createDefault())
+            Map.of(display.id(), display)
         );
     }
 }

@@ -31,7 +31,7 @@ public record Quest(
 ) {
 
     public static Codec<Quest> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-        QuestDisplay.CODEC.fieldOf("display").orElseGet(QuestDisplay::createDefault).forGetter(Quest::display),
+        QuestDisplay.CODEC.fieldOf("display").orElseGet(() -> QuestDisplay.createDefault(GroupDisplay.createDefault())).forGetter(Quest::display),
         QuestSettings.CODEC.fieldOf("settings").orElseGet(QuestSettings::createDefault).forGetter(Quest::settings),
         CodecExtras.set(Codec.STRING).fieldOf("dependencies").orElse(new HashSet<>()).forGetter(Quest::dependencies),
         QuestTasks.CODEC.fieldOf("tasks").orElse(new HashMap<>()).forGetter(Quest::tasks),

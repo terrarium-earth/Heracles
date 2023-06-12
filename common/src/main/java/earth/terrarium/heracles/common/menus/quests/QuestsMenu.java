@@ -45,15 +45,8 @@ public class QuestsMenu extends AbstractContainerMenu {
     public Map<String, ModUtils.QuestStatus> quests() {
         Map<String, ModUtils.QuestStatus> quests = new HashMap<>();
         if (this.content != null) {
-            for (var entry : this.content.quests().entrySet()) {
-                ClientQuests.get(entry.getKey())
-                    .map(ClientQuests.QuestEntry::value)
-                    .map(Quest::display)
-                    .map(QuestDisplay::groups)
-                    .map(Map::keySet)
-                    .filter(group -> group.contains(this.content.group()))
-                    .ifPresent(group -> quests.put(entry.getKey(), entry.getValue()));
-            }
+            ClientQuests.byGroup(this.group())
+                .forEach(entry -> quests.put(entry.key(), this.content.quests().getOrDefault(entry.key(), ModUtils.QuestStatus.IN_PROGRESS)));
         }
         return quests;
     }

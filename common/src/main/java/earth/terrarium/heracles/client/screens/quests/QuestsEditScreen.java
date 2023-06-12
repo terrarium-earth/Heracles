@@ -1,6 +1,7 @@
 package earth.terrarium.heracles.client.screens.quests;
 
 import com.mojang.blaze3d.platform.InputConstants;
+import earth.terrarium.heracles.api.quests.GroupDisplay;
 import earth.terrarium.heracles.api.quests.Quest;
 import earth.terrarium.heracles.api.quests.QuestDisplay;
 import earth.terrarium.heracles.api.quests.QuestSettings;
@@ -24,6 +25,7 @@ import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Unit;
 import net.minecraft.world.entity.player.Inventory;
+import org.joml.Vector2i;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -114,8 +116,10 @@ public class QuestsEditScreen extends QuestsScreen {
         this.dependencyModal = addTemporary(new AddDependencyModal(this.width, this.height));
         this.questModal = addTemporary(new TextInputModal<>(this.width, this.height, ConstantComponents.Quests.CREATE, (position, text) -> {
             MouseClick local = this.questsWidget.getLocal(position);
-            QuestDisplay display = QuestDisplay.createDefault();
-            display.position(this.menu.group()).set((int) local.x() - 12, (int) local.y() - 12);
+            QuestDisplay display = QuestDisplay.createDefault(new GroupDisplay(
+                this.menu.group(),
+                new Vector2i((int) local.x() - 12, (int) local.y() - 12)
+            ));
             Quest quest = new Quest(
                 display,
                 QuestSettings.createDefault(),

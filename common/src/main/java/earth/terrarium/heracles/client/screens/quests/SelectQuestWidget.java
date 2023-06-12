@@ -18,6 +18,7 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.MultiLineEditBox;
 import net.minecraft.client.gui.components.Tooltip;
+import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.contents.TranslatableContents;
@@ -43,6 +44,8 @@ public class SelectQuestWidget extends BaseWidget {
     private final QuestsWidget widget;
 
     private final String group;
+
+    private GuiEventListener loseFocusListener;
 
     public SelectQuestWidget(int x, int y, int width, int height, QuestsWidget widget) {
         this.x = x;
@@ -73,6 +76,7 @@ public class SelectQuestWidget extends BaseWidget {
                         screen.iconModal().setVisible(false);
                     });
                 }
+                loseFocusListener = b;
             }).bounds(this.x + 6, this.y + 137, 16, 16)
             .tooltip(Tooltip.create(Component.literal("Change Icon")))
             .build());
@@ -85,6 +89,7 @@ public class SelectQuestWidget extends BaseWidget {
                         screen.iconBackgroundModal().setVisible(false);
                     });
                 }
+                loseFocusListener = b;
             }).bounds(this.x + 24, this.y + 137, 16, 16)
             .tooltip(Tooltip.create(Component.literal("Change Icon Background")))
             .build());
@@ -94,6 +99,7 @@ public class SelectQuestWidget extends BaseWidget {
                     screen.dependencyModal().setVisible(true);
                     screen.dependencyModal().update(this.entry, () -> changeOption(quest -> {}));
                 }
+                loseFocusListener = b;
             }).bounds(this.x + 42, this.y + 137, 16, 16)
             .tooltip(Tooltip.create(Component.literal("Change Dependencies")))
             .build());
@@ -109,6 +115,7 @@ public class SelectQuestWidget extends BaseWidget {
                         screen.questsWidget.removeQuest(this.entry);
                     });
                 }
+                loseFocusListener = b;
             }).bounds(this.x + 60, this.y + 137, 16, 16)
             .tooltip(Tooltip.create(ConstantComponents.DELETE))
             .build());
@@ -127,6 +134,7 @@ public class SelectQuestWidget extends BaseWidget {
                     );
                     edit.setTitle(Component.literal("Edit Quest Settings"));
                 }
+                loseFocusListener = b;
             }).bounds(this.x + 78, this.y + 137, 16, 16)
             .tooltip(Tooltip.create(Component.literal("Edit Quest Settings")))
             .build());
@@ -175,6 +183,12 @@ public class SelectQuestWidget extends BaseWidget {
         );
 
         renderChildren(graphics, mouseX, mouseY, partialTick);
+
+        if (loseFocusListener != null) {
+            setFocused(null);
+            loseFocusListener.setFocused(false);
+            loseFocusListener = null;
+        }
     }
 
     @Override

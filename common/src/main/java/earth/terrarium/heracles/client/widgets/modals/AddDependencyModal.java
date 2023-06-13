@@ -10,6 +10,9 @@ import earth.terrarium.heracles.client.widgets.base.BaseModal;
 import earth.terrarium.heracles.client.widgets.boxes.AutocompleteEditBox;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.Tooltip;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.ArrayList;
@@ -23,6 +26,7 @@ public class AddDependencyModal extends BaseModal {
     private static final int HEIGHT = 179;
 
     private final AutocompleteEditBox<ClientQuests.QuestEntry> dependencyBox;
+    private final Button addButton;
 
     private ClientQuests.QuestEntry entry;
     private List<Quest> dependencies;
@@ -32,24 +36,34 @@ public class AddDependencyModal extends BaseModal {
         super(screenWidth, screenHeight, WIDTH, HEIGHT);
 
         // dependencies
-        this.dependencyBox = addChild(new AutocompleteEditBox<>(Minecraft.getInstance().font, x + 8, y + 19, 152, 16, (text, item) -> {
+        this.dependencyBox = addChild(new AutocompleteEditBox<>(Minecraft.getInstance().font, x + 8, y + 19, 130, 16, (text, item) -> {
             text = text.toLowerCase(Locale.ROOT).trim();
             Quest quest = item.value();
             String title = quest.display().title().getString().toLowerCase(Locale.ROOT).trim();
             String id = item.key().toLowerCase(Locale.ROOT).trim();
             return (title.contains(text) || id.contains(text)) && !id.equals(text);
-        }, ClientQuests.QuestEntry::key, value -> {
-            if (value != null && entry != null) {
-                ClientQuests.QuestEntry entry = ClientQuests.get(value).orElse(null);
-                if (entry != null) {
-                    entry.children().add(this.entry);
-                    this.entry.dependencies().add(entry);
-                    this.dependencies.add(entry.value());
-                    this.entry.value().dependencies().add(value);
-                    this.callback.run();
-                }
+        }, ClientQuests.QuestEntry::key, value -> addDependency()));
+
+        this.addButton = addChild(
+            new Button.Builder(Component.literal("+"), b -> addDependency())
+            .bounds(x + 142, y + 19, 16, 16)
+            .tooltip(Tooltip.create(Component.literal("Add Dependency")))
+            .build()
+        );
+    }
+
+    private void addDependency() {
+        String value = this.dependencyBox.getValue();
+        if (entry != null) {
+            ClientQuests.QuestEntry entry = ClientQuests.get(value).orElse(null);
+            if (entry != null) {
+                entry.children().add(this.entry);
+                this.entry.dependencies().add(entry);
+                this.dependencies.add(entry.value());
+                this.entry.value().dependencies().add(value);
+                this.callback.run();
             }
-        }));
+        }
     }
 
     @Override
@@ -77,6 +91,10 @@ public class AddDependencyModal extends BaseModal {
         }
 
         renderChildren(graphics, mouseX, mouseY, partialTick);
+
+        if (getFocused() == addButton) {
+            setFocused(null);
+        }
     }
 
     @Override

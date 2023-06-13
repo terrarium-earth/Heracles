@@ -58,6 +58,8 @@ public class QuestsWidget extends BaseWidget {
     private final Vector2i start = new Vector2i();
     private final Vector2i startOffset = new Vector2i();
 
+    private Vector2i lastClick = null;
+
     private final SelectQuestHandler selectHandler;
 
     private final Supplier<MouseMode> mouseMode;
@@ -216,19 +218,22 @@ public class QuestsWidget extends BaseWidget {
             }
         }
 
-        int width = (int) ((this.width - 10) * (offset.x / 500f));
-        int height = (int) ((this.height - 10) * (offset.y / 500f));
+        try (var pose = new CloseablePoseStack(graphics)) {
+            pose.translate(0, 0, 300);
+            int width = (int) ((this.width - 10) * (offset.x / 500f));
+            int height = (int) ((this.height - 10) * (offset.y / 500f));
 
-        if (offset.x > this.width / 4) {
-            graphics.fill(this.x + 1 + width, this.y + this.height - 4, this.x - 6 + this.width, this.y + this.height - 2, 0xFFFFFFFF);
-        } else if (offset.x < -this.width / 4) {
-            graphics.fill(this.x + 1, this.y + this.height - 4, this.x - 6 + this.width + width, this.y + this.height - 2, 0xFFFFFFFF);
-        }
+            if (offset.x > this.width / 4) {
+                graphics.fill(this.x + 1 + width, this.y + this.height - 4, this.x - 6 + this.width, this.y + this.height - 2, 0xFFFFFFFF);
+            } else if (offset.x < -this.width / 4) {
+                graphics.fill(this.x + 1, this.y + this.height - 4, this.x - 6 + this.width + width, this.y + this.height - 2, 0xFFFFFFFF);
+            }
 
-        if (offset.y > this.height / 4) {
-            graphics.fill(this.x + this.width - 4, this.y + 1 + height, this.x + this.width - 2, this.y - 6 + this.height, 0xFFFFFFFF);
-        } else if (offset.y < -this.height / 4) {
-            graphics.fill(this.x + this.width - 4, this.y + 1, this.x + this.width - 2, this.y - 6 + this.height + height, 0xFFFFFFFF);
+            if (offset.y > this.height / 4) {
+                graphics.fill(this.x + this.width - 4, this.y + 1 + height, this.x + this.width - 2, this.y - 6 + this.height, 0xFFFFFFFF);
+            } else if (offset.y < -this.height / 4) {
+                graphics.fill(this.x + this.width - 4, this.y + 1, this.x + this.width - 2, this.y - 6 + this.height + height, 0xFFFFFFFF);
+            }
         }
     }
 
@@ -246,6 +251,7 @@ public class QuestsWidget extends BaseWidget {
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         MouseMode mode = this.mouseMode.get();
+        lastClick = new Vector2i((int) mouseX, (int) mouseY);
         if (isMouseOver(mouseX, mouseY)) {
             if (mode.canSelect() || mode.canOpen()) {
                 for (QuestWidget widget : this.widgets) {
@@ -272,6 +278,8 @@ public class QuestsWidget extends BaseWidget {
     @Override
     public boolean mouseDragged(double mouseX, double mouseY, int button, double dragX, double dragY) {
         if (button != 0) return false;
+        if (!isMouseOver(mouseX, mouseY)) return false;
+        if (lastClick == null || !isMouseOver(lastClick.x(), lastClick.y())) return false;
         MouseMode mode = this.mouseMode.get();
         if (mode.canDrag()) {
             int newX = (int) (mouseX - start.x() + startOffset.x());

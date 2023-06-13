@@ -3,12 +3,12 @@ package earth.terrarium.heracles.client.widgets.modals;
 import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.client.handlers.ClientQuests;
 import earth.terrarium.heracles.client.widgets.base.BaseModal;
+import earth.terrarium.heracles.client.widgets.boxes.EnterableEditBox;
 import earth.terrarium.heracles.common.constants.ConstantComponents;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -31,9 +31,17 @@ public class TextInputModal<T> extends BaseModal {
         super(screenWidth, screenHeight, WIDTH, HEIGHT);
         this.title = title;
         this.callback = callback;
-        var editBox = addChild(new EditBox(Minecraft.getInstance().font, this.x + 8, this.y + 19, 152, 14, Component.nullToEmpty("Group Name")));
+        var editBox = addChild(new EnterableEditBox(Minecraft.getInstance().font, this.x + 8, this.y + 19, 152, 14, Component.nullToEmpty("Group Name")));
+        editBox.setEnter(value -> {
+            if (!value.isBlank()) {
+                this.callback.accept(this.data, value);
+                editBox.setValue("");
+                visible = false;
+            }
+        });
+
         var submitButton = addChild(createButton(ConstantComponents.SUBMIT, this.x + WIDTH - 7, this.y + HEIGHT - 20, b -> {
-            if (editBox != null && !editBox.getValue().isBlank()) {
+            if (!editBox.getValue().isBlank()) {
                 this.callback.accept(this.data, editBox.getValue());
                 editBox.setValue("");
                 visible = false;

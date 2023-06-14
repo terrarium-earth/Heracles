@@ -223,6 +223,7 @@ public class SelectQuestWidget extends BaseWidget {
 
     public void setEntry(ClientQuests.QuestEntry entry) {
         this.entry = entry;
+        this.setFocused(null);
     }
 
     public ClientQuests.QuestEntry entry() {

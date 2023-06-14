@@ -1,5 +1,6 @@
 package earth.terrarium.heracles.client.screens.quests;
 
+import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
@@ -173,10 +174,7 @@ public class QuestsWidget extends BaseWidget {
             for (ClientQuests.QuestEntry entry : this.entries) {
                 var position = entry.value().display().position(this.group);
 
-                int px = x + offset.x() + position.x() + 10;
-                int py = y + offset.y() + position.y() + 10;
-
-                boolean isHovered = isMouseOver(mouseX, mouseY) && mouseX >= px - 10 && mouseX <= px - 10 + 24 && mouseY >= py - 10 && mouseY <= py - 10 + 24;
+                boolean isHovered = isMouseOver(mouseX, mouseY) && mouseX >= x + offset.x() + position.x() && mouseX <= x + offset.x() + position.x() && mouseY >= y + offset.y() + position.y() && mouseY <= y + offset.y() + position.y();
 
                 RenderSystem.setShaderColor(0.9F, 0.9F, 0.9F, isHovered ? 0.45f : 0.25F);
 
@@ -188,20 +186,23 @@ public class QuestsWidget extends BaseWidget {
                     if (lines.contains(new Pair<>(position, childPosition))) continue;
                     lines.add(new Pair<>(position, childPosition));
 
-                    int cx = x + offset.x() + childPosition.x() + 10;
-                    int cy = y + offset.y() + childPosition.y() + 10;
+                    float px = position.x() + 9f;
+                    float py = position.y() + 9f;
+                    float cx = childPosition.x() + 9f;
+                    float cy = childPosition.y() + 9f;
 
                     float length = Mth.sqrt(Mth.square(cx - px) + Mth.square(cy - py));
 
                     try (var pose = new CloseablePoseStack(graphics)) {
-                        pose.translate(px, py, 0);
+                        pose.translate(px + 2, py + 2, 0);
+                        pose.translate(x + offset.x(), y + offset.y(), 0);
                         pose.mulPose(Axis.ZP.rotation((float) Mth.atan2(cy - py, cx - px)));
 
                         buffer.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
-                        buffer.vertex(pose.last().pose(), 0, 0, 0).uv(0, 0).endVertex();
-                        buffer.vertex(pose.last().pose(), 0, 5, 0).uv(0, 1).endVertex();
-                        buffer.vertex(pose.last().pose(), length, 5, 0).uv(length / 3f, 1).endVertex();
-                        buffer.vertex(pose.last().pose(), length, 0, 0).uv(length / 3f, 0).endVertex();
+                        buffer.vertex(pose.last().pose(), 0, -2, 0).uv(0, 0).endVertex();
+                        buffer.vertex(pose.last().pose(), 0, 2, 0).uv(0, 1).endVertex();
+                        buffer.vertex(pose.last().pose(), length, 2, 0).uv(length / 3f, 1).endVertex();
+                        buffer.vertex(pose.last().pose(), length, -2, 0).uv(length / 3f, 0).endVertex();
                         tesselator.end();
                     }
                 }
@@ -277,11 +278,11 @@ public class QuestsWidget extends BaseWidget {
 
     @Override
     public boolean mouseDragged(double mouseX, double mouseY, int button, double dragX, double dragY) {
-        if (button != 0) return false;
+        if (button == 1) return false;
         if (!isMouseOver(mouseX, mouseY)) return false;
         if (lastClick == null || !isMouseOver(lastClick.x(), lastClick.y())) return false;
         MouseMode mode = this.mouseMode.get();
-        if (mode.canDrag()) {
+        if (mode.canDrag() || button == InputConstants.MOUSE_BUTTON_MIDDLE) {
             int newX = (int) (mouseX - start.x() + startOffset.x());
             int newY = (int) (mouseY - start.y() + startOffset.y());
             offset.set(Mth.clamp(newX, MIN.x(), MAX.x()), Mth.clamp(newY, MIN.y(), MAX.y()));

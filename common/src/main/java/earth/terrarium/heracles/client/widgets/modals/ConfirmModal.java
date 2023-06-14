@@ -17,7 +17,7 @@ public class ConfirmModal extends BaseModal {
         super(screenWidth, screenHeight, WIDTH, HEIGHT);
 
         addChild(Button.builder(CommonComponents.GUI_CANCEL,
-                b -> this.visible = false).bounds(this.x + 7, this.y + 24, 65, 20)
+                b -> this.hide()).bounds(this.x + 7, this.y + 24, 65, 20)
             .tooltip(Tooltip.create(CommonComponents.GUI_CANCEL))
             .build());
 
@@ -26,7 +26,7 @@ public class ConfirmModal extends BaseModal {
                     if (this.onConfirm != null) {
                         this.onConfirm.run();
                     }
-                    this.visible = false;
+                    this.hide();
                 }).bounds(this.x + 96, this.y + 24, 65, 20)
             .tooltip(Tooltip.create(CommonComponents.GUI_CONTINUE))
             .build());

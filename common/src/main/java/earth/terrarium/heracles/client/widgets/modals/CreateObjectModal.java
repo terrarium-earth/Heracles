@@ -44,7 +44,7 @@ public class CreateObjectModal extends BaseModal {
         Button submitButton = addChild(createButton(ConstantComponents.SUBMIT, this.x + WIDTH - 7, this.y + HEIGHT - 20, b -> onSubmit()));
         submitButton.active = false;
         addChild(createButton(CommonComponents.GUI_CANCEL, submitButton.getX() - 2, this.y + HEIGHT - 20, b ->
-            this.visible = false
+            this.hide()
         ));
         this.nameBox = addChild(new PlaceholerEditBox(Minecraft.getInstance().font, this.x + 8, this.y + 46, 152, 14, ConstantComponents.ID));
         BooleanSupplier valid = () -> !nameBox.getValue().trim().isEmpty() && this.typeBox.value() != null && validator.test(this.typeBox.value(), nameBox.getValue().trim());
@@ -61,7 +61,7 @@ public class CreateObjectModal extends BaseModal {
             this.callback.accept(this.typeBox.value(), nameBox.getValue());
             nameBox.setValue("");
             this.typeBox.setSelectedOption(null);
-            visible = false;
+            this.hide();
         }
     }
 
@@ -92,7 +92,7 @@ public class CreateObjectModal extends BaseModal {
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        if (!visible) return false;
+        if (!isVisible()) return false;
         if (super.mouseClicked(mouseX, mouseY, button)) return true;
         int x = screenWidth / 2 - (WIDTH / 2);
         int y = screenHeight / 2 - (HEIGHT / 2);
@@ -105,7 +105,7 @@ public class CreateObjectModal extends BaseModal {
 
     @Override
     public boolean isMouseOver(double mouseX, double mouseY) {
-        return visible &&
+        return isVisible() &&
             mouseX >= (screenWidth / 2f) - (WIDTH / 2f) && mouseX <= (screenWidth / 2f) + (WIDTH / 2f) &&
             mouseY >= (screenHeight / 2f) - (HEIGHT / 2f) && mouseY <= (screenHeight / 2f) + (HEIGHT / 2f);
     }

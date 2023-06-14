@@ -106,7 +106,7 @@ public class IconModal extends BaseModal {
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        if (!visible) return false;
+        if (!isVisible()) return false;
         if (super.mouseClicked(mouseX, mouseY, button)) return true;
 
         if (mouseX < x || mouseX > x + WIDTH || mouseY < y || mouseY > y + HEIGHT) {
@@ -140,7 +140,7 @@ public class IconModal extends BaseModal {
 
     @Override
     public boolean isMouseOver(double mouseX, double mouseY) {
-        return visible &&
+        return isVisible() &&
             mouseX >= (screenWidth / 2f) - (WIDTH / 2f) && mouseX <= (screenWidth / 2f) + (WIDTH / 2f) &&
             mouseY >= (screenHeight / 2f) - (HEIGHT / 2f) && mouseY <= (screenHeight / 2f) + (HEIGHT / 2f);
     }

@@ -54,9 +54,15 @@ public abstract class BaseModal extends BaseWidget implements TemporyWidget {
         }
     }
 
+    public final void hide() {
+        this.visible = false;
+        setFocused(null);
+        children().forEach(child -> child.setFocused(false));
+    }
+
     @Override
     public final void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
-        if (!visible) return;
+        if (!isVisible()) return;
         if (mouseY > 15) {
             ClientUtils.clearTooltip();
         }

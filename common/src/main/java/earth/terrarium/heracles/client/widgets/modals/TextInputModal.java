@@ -36,7 +36,7 @@ public class TextInputModal<T> extends BaseModal {
             if (!value.isBlank()) {
                 this.callback.accept(this.data, value);
                 editBox.setValue("");
-                visible = false;
+                this.hide();
             }
         });
 
@@ -44,12 +44,12 @@ public class TextInputModal<T> extends BaseModal {
             if (!editBox.getValue().isBlank()) {
                 this.callback.accept(this.data, editBox.getValue());
                 editBox.setValue("");
-                visible = false;
+                this.hide();
             }
         }));
         submitButton.active = false;
         addChild(createButton(CommonComponents.GUI_CANCEL, submitButton.getX() - 2, this.y + HEIGHT - 20, b ->
-            this.visible = false
+            this.hide()
         ));
         editBox.setMaxLength(32);
         editBox.setResponder(s -> submitButton.active = !s.trim().isEmpty() && validator.test(s.trim()));
@@ -81,7 +81,7 @@ public class TextInputModal<T> extends BaseModal {
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        if (!visible) return false;
+        if (!isVisible()) return false;
         if (super.mouseClicked(mouseX, mouseY, button)) return true;
         int x = screenWidth / 2 - (WIDTH / 2);
         int y = screenHeight / 2 - (HEIGHT / 2);
@@ -94,7 +94,7 @@ public class TextInputModal<T> extends BaseModal {
 
     @Override
     public boolean isMouseOver(double mouseX, double mouseY) {
-        return visible &&
+        return isVisible() &&
             mouseX >= (screenWidth / 2f) - (WIDTH / 2f) && mouseX <= (screenWidth / 2f) + (WIDTH / 2f) &&
             mouseY >= (screenHeight / 2f) - (HEIGHT / 2f) && mouseY <= (screenHeight / 2f) + (HEIGHT / 2f);
     }

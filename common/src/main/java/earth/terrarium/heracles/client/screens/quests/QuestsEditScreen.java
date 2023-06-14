@@ -172,6 +172,7 @@ public class QuestsEditScreen extends QuestsScreen {
         if (selectQuestWidget.keyPressed(keyCode, scanCode, modifiers)) {
             return true;
         }
+        if (isTemporaryWidgetVisible()) return false;
         return switch (keyCode) {
             case InputConstants.KEY_V -> {
                 updateButtons();

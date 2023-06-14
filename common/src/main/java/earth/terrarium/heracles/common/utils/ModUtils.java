@@ -7,17 +7,16 @@ import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.common.handlers.progress.QuestProgressHandler;
 import earth.terrarium.heracles.common.handlers.progress.QuestsProgress;
 import earth.terrarium.heracles.common.handlers.quests.QuestHandler;
-import earth.terrarium.heracles.common.menus.BasicContentMenuProvider;
 import earth.terrarium.heracles.common.menus.quest.QuestContent;
-import earth.terrarium.heracles.common.menus.quest.QuestMenu;
 import earth.terrarium.heracles.common.menus.quests.QuestsContent;
-import earth.terrarium.heracles.common.menus.quests.QuestsMenu;
+import earth.terrarium.heracles.common.network.NetworkHandler;
+import earth.terrarium.heracles.common.network.packets.screens.OpenQuestScreenPacket;
+import earth.terrarium.heracles.common.network.packets.screens.OpenQuestsScreenPacket;
 import net.minecraft.Util;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
-import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerPlayer;
@@ -70,45 +69,38 @@ public class ModUtils {
     }
 
     public static void openQuest(ServerPlayer player, String group, String id) {
-        BasicContentMenuProvider.open(
+        NetworkHandler.CHANNEL.sendToPlayer(new OpenQuestScreenPacket(
+            false,
             new QuestContent(
                 id,
                 group,
                 QuestProgressHandler.getProgress(player.server, player.getUUID()).getProgress(id),
                 getQuests(player)
-            ),
-            CommonComponents.EMPTY,
-            QuestMenu::of,
-            player
-        );
+            )
+        ), player);
     }
 
     public static void openEditQuest(ServerPlayer player, String group, String id) {
-        BasicContentMenuProvider.open(
+        NetworkHandler.CHANNEL.sendToPlayer(new OpenQuestScreenPacket(
+            true,
             new QuestContent(
                 id,
                 group,
                 QuestProgressHandler.getProgress(player.server, player.getUUID()).getProgress(id),
                 getQuests(player)
-            ),
-            CommonComponents.EMPTY,
-            QuestMenu::ofEditing,
-            player
-        );
+            )
+        ), player);
     }
 
     public static void openGroup(ServerPlayer player, String group) {
         if (!QuestHandler.groups().contains(group)) {
             player.sendSystemMessage(Component.literal("Not a group " + group));
-            player.closeContainer();
             return;
         }
-        BasicContentMenuProvider.open(
-            new QuestsContent(group, getQuests(player), true),
-            CommonComponents.EMPTY,
-            QuestsMenu::of,
-            player
-        );
+        NetworkHandler.CHANNEL.sendToPlayer(new OpenQuestsScreenPacket(
+            false,
+            new QuestsContent(group, getQuests(player), player.hasPermissions(2))
+        ), player);
     }
 
     public static void editGroup(ServerPlayer player, String group) {
@@ -117,12 +109,10 @@ public class ModUtils {
             player.closeContainer();
             return;
         }
-        BasicContentMenuProvider.open(
-            new QuestsContent(group, getQuests(player), true),
-            CommonComponents.EMPTY,
-            QuestsMenu::ofEditing,
-            player
-        );
+        NetworkHandler.CHANNEL.sendToPlayer(new OpenQuestsScreenPacket(
+            true,
+            new QuestsContent(group, getQuests(player), player.hasPermissions(2))
+        ), player);
     }
 
     private static Map<String, QuestStatus> getQuests(ServerPlayer player) {

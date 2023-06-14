@@ -5,24 +5,13 @@ import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.client.handlers.DisplayConfig;
 import earth.terrarium.heracles.client.handlers.QuestTutorial;
 import earth.terrarium.heracles.client.screens.QuestTutorialScreen;
-import earth.terrarium.heracles.client.screens.quest.QuestEditScreen;
-import earth.terrarium.heracles.client.screens.quest.QuestScreen;
-import earth.terrarium.heracles.client.screens.quests.QuestsEditScreen;
-import earth.terrarium.heracles.client.screens.quests.QuestsScreen;
 import earth.terrarium.heracles.client.toasts.QuestClaimedToast;
 import earth.terrarium.heracles.client.toasts.QuestCompletedToast;
 import earth.terrarium.heracles.common.network.NetworkHandler;
 import earth.terrarium.heracles.common.network.packets.groups.OpenGroupPacket;
-import earth.terrarium.heracles.common.regisitries.ModMenus;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.gui.screens.inventory.MenuAccess;
 import net.minecraft.core.RegistryAccess;
-import net.minecraft.network.chat.Component;
-import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.Item;
 
 import java.util.List;
@@ -41,13 +30,6 @@ public class HeraclesClient {
             if (connection == null) return RegistryAccess.EMPTY;
             return connection.registryAccess();
         });
-    }
-
-    public static void onScreenConstruction(ScreenConstructionEvent event) {
-        event.registerScreen(ModMenus.QUEST.get(), QuestScreen::new);
-        event.registerScreen(ModMenus.EDIT_QUEST.get(), QuestEditScreen::new);
-        event.registerScreen(ModMenus.QUESTS.get(), QuestsScreen::new);
-        event.registerScreen(ModMenus.EDIT_QUESTS.get(), QuestsEditScreen::new);
     }
 
     public static void clientTick() {
@@ -73,14 +55,5 @@ public class HeraclesClient {
 
     public static void displayQuestCompleteToast(String id) {
         QuestCompletedToast.add(Minecraft.getInstance().getToasts(), id);
-    }
-
-    public interface ScreenConstructionEvent {
-
-        <M extends AbstractContainerMenu, U extends Screen & MenuAccess<M>> void registerScreen(MenuType<? extends M> type, ScreenConstructor<M, U> factory);
-    }
-
-    public interface ScreenConstructor<T extends AbstractContainerMenu, U extends Screen & MenuAccess<T>> {
-        U create(T menu, Inventory inventory, Component component);
     }
 }

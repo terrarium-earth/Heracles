@@ -2,7 +2,6 @@ package earth.terrarium.heracles;
 
 import earth.terrarium.heracles.common.network.NetworkHandler;
 import earth.terrarium.heracles.common.regisitries.ModItems;
-import earth.terrarium.heracles.common.regisitries.ModMenus;
 import net.minecraft.core.RegistryAccess;
 
 import java.util.function.Supplier;
@@ -13,7 +12,6 @@ public class Heracles {
     private static Supplier<RegistryAccess> registryAccessSupplier;
 
     public static void init() {
-        ModMenus.MENUS.init();
         ModItems.ITEMS.init();
         NetworkHandler.init();
     }

@@ -1,7 +1,6 @@
 package earth.terrarium.heracles.client.screens;
 
-import com.teamresourceful.resourcefullib.client.screens.AbstractContainerCursorScreen;
-import com.teamresourceful.resourcefullib.client.utils.MouseLocationFix;
+import com.teamresourceful.resourcefullib.client.screens.BaseCursorScreen;
 import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.client.widgets.base.TemporyWidget;
 import earth.terrarium.heracles.client.widgets.modals.EditObjectModal;
@@ -15,30 +14,28 @@ import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.inventory.AbstractContainerMenu;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class AbstractQuestScreen<T extends AbstractContainerMenu> extends AbstractContainerCursorScreen<T> {
+public abstract class AbstractQuestScreen<T> extends BaseCursorScreen {
 
     public static final ResourceLocation HEADING = new ResourceLocation(Heracles.MOD_ID, "textures/gui/heading.png");
 
     protected final List<TemporyWidget> temporaryWidgets = new ArrayList<>();
     protected boolean hasBackButton = true;
 
-    public AbstractQuestScreen(T menu, Inventory inventory, Component component) {
-        super(menu, inventory, component);
+    protected final T content;
+
+    public AbstractQuestScreen(T content, Component component) {
+        super(component);
+        this.content = content;
     }
 
     @Override
     protected void init() {
-        MouseLocationFix.fix(AbstractQuestScreen.class);
-        this.imageWidth = this.width;
-        this.imageHeight = this.height;
         super.init();
         if (hasBackButton) {
             addRenderableWidget(new ImageButton(1, 1, 11, 11, 0, 15, 11, HEADING, 256, 256, (button) ->
@@ -73,6 +70,12 @@ public abstract class AbstractQuestScreen<T extends AbstractContainerMenu> exten
     }
 
     @Override
+    public void render(@NotNull GuiGraphics graphics, int i, int j, float f) {
+        this.renderBg(graphics, f, i, j);
+        super.render(graphics, i, j, f);
+        this.renderLabels(graphics, i, j);
+    }
+
     protected void renderBg(GuiGraphics graphics, float partialTick, int mouseX, int mouseY) {
         graphics.fill(0, 0, width, height, 0xD0000000);
         graphics.blitRepeating(HEADING, 0, 0, this.width, 15, 0, 0, 128, 15);
@@ -83,7 +86,6 @@ public abstract class AbstractQuestScreen<T extends AbstractContainerMenu> exten
         }
     }
 
-    @Override
     protected void renderLabels(GuiGraphics graphics, int mouseX, int mouseY) {
         int center = drawSidebar() ?
             (int) ((this.width * 0.25f) + ((this.width * 0.75f) / 2f))
@@ -152,7 +154,6 @@ public abstract class AbstractQuestScreen<T extends AbstractContainerMenu> exten
     @Override
     public void removed() {
         super.removed();
-        MouseLocationFix.setFix(clazz -> clazz == AbstractQuestScreen.class);
     }
 
     public EditObjectModal findOrCreateEditWidget() {

@@ -66,7 +66,7 @@ public class QuestWidget {
 
     public Vector2i position() {
         if (ClientUtils.screen() instanceof QuestsScreen screen) {
-            return this.quest.display().position(screen.getMenu().group());
+            return this.quest.display().position(screen.getGroup());
         }
         return new Vector2i();
     }

@@ -36,7 +36,7 @@ public record SelectableRewardWidget(SelectableReward reward, String quest,
 
     public static SelectableRewardWidget of(SelectableReward reward) {
         if (Minecraft.getInstance().screen instanceof BaseQuestScreen screen) {
-            return new SelectableRewardWidget(reward, screen.getMenu().id(), ClientQuests.getProgress(screen.getMenu().id()));
+            return new SelectableRewardWidget(reward, screen.getQuestId(), ClientQuests.getProgress(screen.getQuestId()));
         }
         return new SelectableRewardWidget(reward, "", null);
     }

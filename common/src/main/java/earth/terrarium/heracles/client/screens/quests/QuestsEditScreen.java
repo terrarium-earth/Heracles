@@ -15,16 +15,14 @@ import earth.terrarium.heracles.client.widgets.modals.icon.IconModal;
 import earth.terrarium.heracles.client.widgets.modals.icon.background.IconBackgroundModal;
 import earth.terrarium.heracles.client.widgets.modals.upload.UploadModal;
 import earth.terrarium.heracles.common.constants.ConstantComponents;
-import earth.terrarium.heracles.common.menus.quests.QuestsMenu;
+import earth.terrarium.heracles.common.menus.quests.QuestsContent;
 import earth.terrarium.heracles.common.network.NetworkHandler;
 import earth.terrarium.heracles.common.network.packets.groups.CreateGroupPacket;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.ImageButton;
 import net.minecraft.client.gui.components.Tooltip;
-import net.minecraft.network.chat.Component;
 import net.minecraft.util.Unit;
-import net.minecraft.world.entity.player.Inventory;
 import org.joml.Vector2i;
 
 import java.util.HashMap;
@@ -44,8 +42,8 @@ public class QuestsEditScreen extends QuestsScreen {
     private AddDependencyModal dependencyModal;
     private TextInputModal<MouseClick> questModal;
 
-    public QuestsEditScreen(QuestsMenu menu, Inventory inventory, Component component) {
-        super(menu, inventory, component);
+    public QuestsEditScreen(QuestsContent content) {
+        super(content);
     }
 
     @Override
@@ -117,7 +115,7 @@ public class QuestsEditScreen extends QuestsScreen {
         this.questModal = addTemporary(new TextInputModal<>(this.width, this.height, ConstantComponents.Quests.CREATE, (position, text) -> {
             MouseClick local = this.questsWidget.getLocal(position);
             QuestDisplay display = QuestDisplay.createDefault(new GroupDisplay(
-                this.menu.group(),
+                this.content.group(),
                 new Vector2i((int) local.x() - 12, (int) local.y() - 12)
             ));
             Quest quest = new Quest(

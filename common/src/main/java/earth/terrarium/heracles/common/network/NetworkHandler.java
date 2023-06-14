@@ -13,6 +13,8 @@ import earth.terrarium.heracles.common.network.packets.pinned.SyncPinnedQuestsPa
 import earth.terrarium.heracles.common.network.packets.quests.*;
 import earth.terrarium.heracles.common.network.packets.rewards.ClaimRewardsPacket;
 import earth.terrarium.heracles.common.network.packets.rewards.ClaimSelectableRewardsPacket;
+import earth.terrarium.heracles.common.network.packets.screens.OpenQuestScreenPacket;
+import earth.terrarium.heracles.common.network.packets.screens.OpenQuestsScreenPacket;
 import earth.terrarium.heracles.common.network.packets.tasks.CheckTaskPacket;
 import earth.terrarium.heracles.common.network.packets.tasks.ManualItemTaskPacket;
 
@@ -26,6 +28,8 @@ public class NetworkHandler {
         CHANNEL.registerPacket(NetworkDirection.SERVER_TO_CLIENT, QuestCompletedPacket.ID, QuestCompletedPacket.HANDLER, QuestCompletedPacket.class);
         CHANNEL.registerPacket(NetworkDirection.SERVER_TO_CLIENT, SyncPinnedQuestsPacket.ID, SyncPinnedQuestsPacket.HANDLER, SyncPinnedQuestsPacket.class);
         CHANNEL.registerPacket(NetworkDirection.SERVER_TO_CLIENT, SyncDescriptionsPacket.ID, SyncDescriptionsPacket.HANDLER, SyncDescriptionsPacket.class);
+        CHANNEL.registerPacket(NetworkDirection.SERVER_TO_CLIENT, OpenQuestScreenPacket.ID, OpenQuestScreenPacket.HANDLER, OpenQuestScreenPacket.class);
+        CHANNEL.registerPacket(NetworkDirection.SERVER_TO_CLIENT, OpenQuestsScreenPacket.ID, OpenQuestsScreenPacket.HANDLER, OpenQuestsScreenPacket.class);
 
         CHANNEL.registerPacket(NetworkDirection.CLIENT_TO_SERVER, QuestActionPacket.ID, QuestActionPacket.HANDLER, QuestActionPacket.class);
         CHANNEL.registerPacket(NetworkDirection.CLIENT_TO_SERVER, UploadQuestPacket.ID, UploadQuestPacket.HANDLER, UploadQuestPacket.class);

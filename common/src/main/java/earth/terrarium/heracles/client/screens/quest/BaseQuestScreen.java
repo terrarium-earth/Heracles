@@ -7,7 +7,7 @@ import earth.terrarium.heracles.client.screens.AbstractQuestScreen;
 import earth.terrarium.heracles.client.widgets.SelectableTabButton;
 import earth.terrarium.heracles.client.widgets.base.TemporyWidget;
 import earth.terrarium.heracles.common.constants.ConstantComponents;
-import earth.terrarium.heracles.common.menus.quest.QuestMenu;
+import earth.terrarium.heracles.common.menus.quest.QuestContent;
 import earth.terrarium.heracles.common.network.NetworkHandler;
 import earth.terrarium.heracles.common.network.packets.groups.OpenGroupPacket;
 import earth.terrarium.heracles.common.network.packets.rewards.ClaimRewardsPacket;
@@ -17,9 +17,9 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.gui.components.events.GuiEventListener;
+import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.FormattedCharSequence;
-import net.minecraft.world.entity.player.Inventory;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -27,7 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public abstract class BaseQuestScreen extends AbstractQuestScreen<QuestMenu> {
+public abstract class BaseQuestScreen extends AbstractQuestScreen<QuestContent> {
 
     @Nullable
     protected SelectableTabButton overview;
@@ -38,9 +38,9 @@ public abstract class BaseQuestScreen extends AbstractQuestScreen<QuestMenu> {
     @Nullable
     private Button claimRewards;
 
-    public BaseQuestScreen(QuestMenu menu, Inventory inventory, Component component) {
-        super(menu, inventory, Optionull.mapOrDefault(quest(menu), quest -> quest.display().title(), component));
-        ClientQuests.updateProgress(Map.of(menu.id(), menu.progress()));
+    public BaseQuestScreen(QuestContent content) {
+        super(content, Optionull.mapOrDefault(quest(content), quest -> quest.display().title(), CommonComponents.EMPTY));
+        ClientQuests.updateProgress(Map.of(content.id(), content.progress()));
     }
 
     @Override
@@ -49,13 +49,13 @@ public abstract class BaseQuestScreen extends AbstractQuestScreen<QuestMenu> {
         int sidebarWidth = (int) (this.width * 0.25f) - 2;
         int buttonWidth = sidebarWidth - 10;
 
-        boolean showRewards = isEditing() || ClientQuests.get(this.menu.id())
+        boolean showRewards = isEditing() || ClientQuests.get(this.content.id())
             .map(ClientQuests.QuestEntry::value)
             .map(Quest::rewards)
             .map(rewards -> !rewards.isEmpty())
             .orElse(false);
 
-        boolean showTasks = isEditing() || ClientQuests.get(this.menu.id())
+        boolean showTasks = isEditing() || ClientQuests.get(this.content.id())
             .map(ClientQuests.QuestEntry::value)
             .map(Quest::tasks)
             .map(tasks -> !tasks.isEmpty())
@@ -92,12 +92,12 @@ public abstract class BaseQuestScreen extends AbstractQuestScreen<QuestMenu> {
             }));
 
             this.claimRewards = addRenderableWidget(Button.builder(ConstantComponents.Rewards.CLAIM, button -> {
-                NetworkHandler.CHANNEL.sendToServer(new ClaimRewardsPacket(this.menu.id()));
+                NetworkHandler.CHANNEL.sendToServer(new ClaimRewardsPacket(this.content.id()));
                 if (this.claimRewards != null) {
                     this.claimRewards.active = false;
                 }
             }).bounds(5, this.height - 25, buttonWidth, 20).build());
-            this.claimRewards.active = this.menu.progress().isComplete() && this.menu.progress().claimedRewards().size() < this.quest().rewards().size();
+            this.claimRewards.active = this.content.progress().isComplete() && this.content.progress().claimedRewards().size() < this.quest().rewards().size();
             this.claimRewards.active |= !showTasks;
         }
     }
@@ -105,7 +105,7 @@ public abstract class BaseQuestScreen extends AbstractQuestScreen<QuestMenu> {
     @Override
     protected void goBack() {
         ClientQuests.sendDirty();
-        NetworkHandler.CHANNEL.sendToServer(new OpenGroupPacket(this.menu.fromGroup(), this instanceof QuestEditScreen));
+        NetworkHandler.CHANNEL.sendToServer(new OpenGroupPacket(this.content.fromGroup(), this instanceof QuestEditScreen));
     }
 
     private void clearSelected() {
@@ -177,11 +177,11 @@ public abstract class BaseQuestScreen extends AbstractQuestScreen<QuestMenu> {
     }
 
     public Quest quest() {
-        return quest(this.menu);
+        return quest(this.content);
     }
 
-    public static Quest quest(QuestMenu menu) {
-        return ClientQuests.get(menu.id()).map(ClientQuests.QuestEntry::value).orElse(null);
+    public static Quest quest(QuestContent content) {
+        return ClientQuests.get(content.id()).map(ClientQuests.QuestEntry::value).orElse(null);
     }
 
     public abstract GuiEventListener getTaskList();
@@ -199,5 +199,9 @@ public abstract class BaseQuestScreen extends AbstractQuestScreen<QuestMenu> {
     @Override
     public boolean drawSidebar() {
         return this.overview != null;
+    }
+
+    public String getQuestId() {
+        return this.content.id();
     }
 }

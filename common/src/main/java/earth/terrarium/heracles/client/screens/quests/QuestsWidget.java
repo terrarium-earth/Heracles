@@ -79,7 +79,7 @@ public class QuestsWidget extends BaseWidget {
         this.height = height;
         this.inspectorOpened = inspectorOpened;
         this.mouseMode = mouseMode;
-        this.group = ClientUtils.screen() instanceof QuestsScreen screen ? screen.getMenu().group() : "";
+        this.group = ClientUtils.screen() instanceof QuestsScreen screen ? screen.getGroup() : "";
         this.selectHandler = new SelectQuestHandler(this.group, onSelection);
     }
 

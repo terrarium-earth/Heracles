@@ -53,7 +53,7 @@ public class SelectQuestWidget extends BaseWidget {
         this.width = width;
         this.height = height;
         this.widget = widget;
-        this.group = ClientUtils.screen() instanceof QuestsScreen screen ? screen.getMenu().group() : "";
+        this.group = ClientUtils.screen() instanceof QuestsScreen screen ? screen.getGroup() : "";
 
         this.titleBox = this.addChild(new EditBox(this.font, this.x + 6, this.y + 14, this.width - 12, 10, CommonComponents.EMPTY));
         this.titleBox.setResponder(s -> changeOption(quest -> quest.display().setTitle(s.isEmpty() ? null : Component.translatable(s))));

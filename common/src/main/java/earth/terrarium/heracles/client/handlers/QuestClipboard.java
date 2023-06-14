@@ -41,7 +41,7 @@ public class QuestClipboard {
         } else if (isSpecialPaste(keyCode)) {
             if (Minecraft.getInstance().screen instanceof QuestsEditScreen screen) {
                 MouseClick pos = widget.widget().getLocal(ClientUtils.getMousePos());
-                String group = screen.getMenu().group();
+                String group = screen.getGroup();
                 ClientQuests.get(this.key).ifPresent(entry -> {
                     if (entry.value().display().groups().containsKey(group)) return;
                     entry.value().display().groups().put(group, new GroupDisplay(group, new Vector2i((int) pos.x() - 12, (int) pos.y() - 12)));
@@ -103,7 +103,7 @@ public class QuestClipboard {
     private void create(String id, QuestsWidget widget, MouseClick mouse, Consumer<ClientQuests.QuestEntry> callback) {
         if (Minecraft.getInstance().screen instanceof QuestsEditScreen screen) {
             MouseClick local = widget.getLocal(mouse);
-            String group = screen.getMenu().group();
+            String group = screen.getGroup();
             Quest newQuest = new Quest(
                 new QuestDisplay(
                     quest.display().icon(),

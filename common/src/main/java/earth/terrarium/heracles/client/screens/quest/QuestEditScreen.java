@@ -14,7 +14,7 @@ import earth.terrarium.heracles.client.screens.quest.tasks.TaskListWidget;
 import earth.terrarium.heracles.client.widgets.modals.CreateObjectModal;
 import earth.terrarium.heracles.client.widgets.modals.EditObjectModal;
 import earth.terrarium.heracles.common.constants.ConstantComponents;
-import earth.terrarium.heracles.common.menus.quest.QuestMenu;
+import earth.terrarium.heracles.common.menus.quest.QuestContent;
 import earth.terrarium.heracles.common.network.NetworkHandler;
 import earth.terrarium.heracles.common.network.packets.quests.OpenQuestPacket;
 import earth.terrarium.heracles.common.utils.ModUtils;
@@ -24,8 +24,6 @@ import net.minecraft.client.gui.components.MultiLineEditBox;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.network.chat.CommonComponents;
-import net.minecraft.network.chat.Component;
-import net.minecraft.world.entity.player.Inventory;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
@@ -40,8 +38,8 @@ public class QuestEditScreen extends BaseQuestScreen {
 
     private CreateObjectModal createModal;
 
-    public QuestEditScreen(QuestMenu menu, Inventory inventory, Component component) {
-        super(menu, inventory, component);
+    public QuestEditScreen(QuestContent content) {
+        super(content);
     }
 
     @Override
@@ -56,11 +54,11 @@ public class QuestEditScreen extends BaseQuestScreen {
         int contentHeight = this.height - 45;
 
         this.taskList = new TaskListWidget(contentX, contentY, contentWidth, contentHeight,
-            this.menu.id(), this.quest(), this.menu.progress(), this.menu.quests(), (task, isRemoving) -> {
+            this.content.id(), this.quest(), this.content.progress(), this.content.quests(), (task, isRemoving) -> {
             if (isRemoving) {
                 this.quest().tasks().remove(task.id());
-                ClientQuests.setDirty(this.menu.id());
-                ClientQuests.get(this.menu.id()).ifPresent(entry -> entry.value().tasks().remove(task.id()));
+                ClientQuests.setDirty(this.content.id());
+                ClientQuests.get(this.content.id()).ifPresent(entry -> entry.value().tasks().remove(task.id()));
                 this.taskList.update(this.quest().tasks().values());
                 return;
             }
@@ -69,8 +67,8 @@ public class QuestEditScreen extends BaseQuestScreen {
             BiConsumer<String, QuestTaskType<?>> creator = (id, type) ->
                 taskPopup(ModUtils.cast(type), id, null, newTask -> {
                     this.quest().tasks().put(id, newTask);
-                    ClientQuests.setDirty(this.menu.id());
-                    ClientQuests.get(this.menu.id()).ifPresent(entry -> entry.value().tasks().put(id, newTask));
+                    ClientQuests.setDirty(this.content.id());
+                    ClientQuests.get(this.content.id()).ifPresent(entry -> entry.value().tasks().put(id, newTask));
                     this.taskList.update(this.quest().tasks().values());
                 });
 
@@ -91,13 +89,13 @@ public class QuestEditScreen extends BaseQuestScreen {
 
         this.rewardList = new RewardListWidget(
             contentX, contentY, contentWidth, contentHeight,
-            this.menu.id(), this.quest(),
+            this.content.id(), this.quest(),
             (reward, isRemoving) -> {
                 if (isRemoving) {
                     this.quest().rewards().remove(reward.id());
-                    ClientQuests.setDirty(this.menu.id());
-                    ClientQuests.get(this.menu.id()).ifPresent(entry -> entry.value().rewards().remove(reward.id()));
-                    this.rewardList.update(this.menu.id(), this.quest());
+                    ClientQuests.setDirty(this.content.id());
+                    ClientQuests.get(this.content.id()).ifPresent(entry -> entry.value().rewards().remove(reward.id()));
+                    this.rewardList.update(this.content.id(), this.quest());
                     return;
                 }
                 rewardPopup(ModUtils.cast(reward.type()), reward.id(), ModUtils.cast(reward), this.rewardList::updateReward);
@@ -105,9 +103,9 @@ public class QuestEditScreen extends BaseQuestScreen {
             BiConsumer<String, QuestRewardType<?>> creator = (id, type) ->
                 rewardPopup(ModUtils.cast(type), id, null, newReward -> {
                     this.quest().rewards().put(id, newReward);
-                    ClientQuests.setDirty(this.menu.id());
-                    ClientQuests.get(this.menu.id()).ifPresent(entry -> entry.value().rewards().put(id, newReward));
-                    this.rewardList.update(this.menu.id(), this.quest());
+                    ClientQuests.setDirty(this.content.id());
+                    ClientQuests.get(this.content.id()).ifPresent(entry -> entry.value().rewards().put(id, newReward));
+                    this.rewardList.update(this.content.id(), this.quest());
                 });
 
             this.createModal.setVisible(true);
@@ -124,12 +122,12 @@ public class QuestEditScreen extends BaseQuestScreen {
             );
         }
         );
-        this.rewardList.update(this.menu.id(), this.quest());
+        this.rewardList.update(this.content.id(), this.quest());
 
         if (Minecraft.getInstance().player != null && Minecraft.getInstance().player.hasPermissions(2)) {
             addRenderableWidget(new ImageButton(this.width - 24, 1, 11, 11, 33, 15, 11, HEADING, 256, 256, (button) -> {
                 ClientQuests.sendDirty();
-                NetworkHandler.CHANNEL.sendToServer(new OpenQuestPacket(this.menu.fromGroup(), this.menu.id(), false));
+                NetworkHandler.CHANNEL.sendToServer(new OpenQuestPacket(this.content.fromGroup(), this.content.id(), false));
             })).setTooltip(Tooltip.create(ConstantComponents.TOGGLE_EDIT));
         }
 
@@ -168,7 +166,7 @@ public class QuestEditScreen extends BaseQuestScreen {
     public void removed() {
         super.removed();
         quest().display().setDescription(Arrays.asList(this.descriptionBox.getValue().split("\n")));
-        ClientQuests.setDirty(this.menu.id());
+        ClientQuests.setDirty(this.content.id());
         ClientQuests.sendDirty();
     }
 

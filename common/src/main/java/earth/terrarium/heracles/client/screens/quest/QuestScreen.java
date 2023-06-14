@@ -4,7 +4,7 @@ import earth.terrarium.heracles.client.handlers.ClientQuests;
 import earth.terrarium.heracles.client.screens.quest.rewards.RewardListWidget;
 import earth.terrarium.heracles.client.screens.quest.tasks.TaskListWidget;
 import earth.terrarium.heracles.common.constants.ConstantComponents;
-import earth.terrarium.heracles.common.menus.quest.QuestMenu;
+import earth.terrarium.heracles.common.menus.quest.QuestContent;
 import earth.terrarium.heracles.common.network.NetworkHandler;
 import earth.terrarium.heracles.common.network.packets.quests.OpenQuestPacket;
 import earth.terrarium.hermes.api.TagProvider;
@@ -14,8 +14,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.ImageButton;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.components.events.GuiEventListener;
-import net.minecraft.network.chat.Component;
-import net.minecraft.world.entity.player.Inventory;
 
 public class QuestScreen extends BaseQuestScreen {
 
@@ -25,8 +23,8 @@ public class QuestScreen extends BaseQuestScreen {
 
     private String descriptionError;
 
-    public QuestScreen(QuestMenu menu, Inventory inventory, Component component) {
-        super(menu, inventory, component);
+    public QuestScreen(QuestContent content) {
+        super(content);
     }
 
     @Override
@@ -41,16 +39,16 @@ public class QuestScreen extends BaseQuestScreen {
             contentX = (int) ((this.width - contentWidth) / 2f);
         }
 
-        this.taskList = new TaskListWidget(contentX, contentY, contentWidth, contentHeight, this.menu.id(), this.quest(), this.menu.progress(), this.menu.quests(), null, null);
+        this.taskList = new TaskListWidget(contentX, contentY, contentWidth, contentHeight, this.content.id(), this.quest(), this.content.progress(), this.content.quests(), null, null);
         this.taskList.update(this.quest().tasks().values());
 
-        this.rewardList = new RewardListWidget(contentX, contentY, contentWidth, contentHeight, this.menu.id(), this.quest(), null, null);
-        this.rewardList.update(this.menu.id(), this.quest());
+        this.rewardList = new RewardListWidget(contentX, contentY, contentWidth, contentHeight, this.content.id(), this.quest(), null, null);
+        this.rewardList.update(this.content.id(), this.quest());
 
         if (Minecraft.getInstance().player != null && Minecraft.getInstance().player.hasPermissions(2)) {
             addRenderableWidget(new ImageButton(this.width - 24, 1, 11, 11, 33, 15, 11, HEADING, 256, 256, (button) -> {
                 ClientQuests.sendDirty();
-                NetworkHandler.CHANNEL.sendToServer(new OpenQuestPacket(this.menu.fromGroup(), this.menu.id(), true));
+                NetworkHandler.CHANNEL.sendToServer(new OpenQuestPacket(this.content.fromGroup(), this.content.id(), true));
             })).setTooltip(Tooltip.create(ConstantComponents.TOGGLE_EDIT));
         }
 

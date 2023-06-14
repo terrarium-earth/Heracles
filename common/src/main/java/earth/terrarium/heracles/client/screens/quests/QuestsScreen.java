@@ -6,7 +6,7 @@ import earth.terrarium.heracles.client.screens.AbstractQuestScreen;
 import earth.terrarium.heracles.client.screens.MouseMode;
 import earth.terrarium.heracles.client.widgets.modals.ConfirmModal;
 import earth.terrarium.heracles.common.constants.ConstantComponents;
-import earth.terrarium.heracles.common.menus.quests.QuestsMenu;
+import earth.terrarium.heracles.common.menus.quests.QuestsContent;
 import earth.terrarium.heracles.common.network.NetworkHandler;
 import earth.terrarium.heracles.common.network.packets.groups.OpenGroupPacket;
 import earth.terrarium.heracles.common.utils.ModUtils;
@@ -14,13 +14,12 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.ImageButton;
 import net.minecraft.client.gui.components.Tooltip;
-import net.minecraft.network.chat.Component;
-import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.network.chat.CommonComponents;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class QuestsScreen extends AbstractQuestScreen<QuestsMenu> {
+public class QuestsScreen extends AbstractQuestScreen<QuestsContent> {
 
     protected SelectQuestWidget selectQuestWidget;
     protected QuestsWidget questsWidget;
@@ -28,8 +27,8 @@ public class QuestsScreen extends AbstractQuestScreen<QuestsMenu> {
 
     protected ConfirmModal confirmModal;
 
-    public QuestsScreen(QuestsMenu menu, Inventory inventory, Component component) {
-        super(menu, inventory, component);
+    public QuestsScreen(QuestsContent content) {
+        super(content, CommonComponents.EMPTY);
         this.hasBackButton = false;
     }
 
@@ -40,11 +39,11 @@ public class QuestsScreen extends AbstractQuestScreen<QuestsMenu> {
         if (Minecraft.getInstance().player != null && Minecraft.getInstance().player.hasPermissions(2)) {
             addRenderableWidget(new ImageButton(this.width - 24, 1, 11, 11, 33, 15, 11, HEADING, 256, 256, (button) -> {
                 ClientQuests.sendDirty();
-                NetworkHandler.CHANNEL.sendToServer(new OpenGroupPacket(this.menu.group(), this.getClass() == QuestsScreen.class));
+                NetworkHandler.CHANNEL.sendToServer(new OpenGroupPacket(this.content.group(), this.getClass() == QuestsScreen.class));
         })).setTooltip(Tooltip.create(ConstantComponents.TOGGLE_EDIT));
         }
         List<Pair<ClientQuests.QuestEntry, ModUtils.QuestStatus>> quests = new ArrayList<>();
-        menu.quests().forEach((id, status) ->
+        content.quests().forEach((id, status) ->
             ClientQuests.get(id).ifPresent(quest -> quests.add(Pair.of(quest, status)))
         );
 
@@ -67,7 +66,7 @@ public class QuestsScreen extends AbstractQuestScreen<QuestsMenu> {
                 }
             }
         ));
-        questsWidget.update(this.menu.content(), quests);
+        questsWidget.update(this.content, quests);
 
         this.groupsList = addRenderableWidget(new GroupsList(
             0,
@@ -75,12 +74,12 @@ public class QuestsScreen extends AbstractQuestScreen<QuestsMenu> {
             sidebarWidth,
             this.height - 15,
             entry -> {
-                if (entry == null || this.menu.group().equals(entry.name())) return;
+                if (entry == null || this.content.group().equals(entry.name())) return;
                 ClientQuests.sendDirty();
                 NetworkHandler.CHANNEL.sendToServer(new OpenGroupPacket(entry.name(), this.getClass() != QuestsScreen.class));
             }
         ));
-        this.groupsList.update(ClientQuests.groups(), this.menu.group());
+        this.groupsList.update(ClientQuests.groups(), this.content.group());
 
         this.confirmModal = addTemporary(new ConfirmModal(this.width, this.height));
     }
@@ -116,5 +115,9 @@ public class QuestsScreen extends AbstractQuestScreen<QuestsMenu> {
 
     public ConfirmModal confirmModal() {
         return confirmModal;
+    }
+
+    public String getGroup() {
+        return content.group();
     }
 }

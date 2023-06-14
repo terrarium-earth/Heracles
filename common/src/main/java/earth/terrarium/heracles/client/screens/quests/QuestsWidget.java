@@ -260,6 +260,7 @@ public class QuestsWidget extends BaseWidget {
                         if (mode.canSelect()) {
                             this.selectHandler.clickQuest(mode, (int) mouseX, (int) mouseY, widget);
                         } else if (mode.canOpen()) {
+                            ClientQuests.sendDirty();
                             NetworkHandler.CHANNEL.sendToServer(new OpenQuestPacket(
                                 this.group, widget.id(), Minecraft.getInstance().screen instanceof QuestsEditScreen
                             ));

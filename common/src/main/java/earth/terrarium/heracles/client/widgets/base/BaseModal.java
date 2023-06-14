@@ -12,6 +12,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.ImageButton;
 import net.minecraft.client.gui.components.Tooltip;
+import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.resources.ResourceLocation;
 
 public abstract class BaseModal extends BaseWidget implements TemporyWidget {
@@ -89,4 +90,15 @@ public abstract class BaseModal extends BaseWidget implements TemporyWidget {
     protected abstract void renderBackground(GuiGraphics graphics, int mouseX, int mouseY, float partialTick);
 
     protected abstract void renderForeground(GuiGraphics graphics, int mouseX, int mouseY, float partialTick);
+
+    @Override
+    public boolean isMouseOver(double mouseX, double mouseY) {
+        if (!isVisible()) return false;
+        for (GuiEventListener child : children()) {
+            if (child.isMouseOver(mouseX, mouseY)) {
+                return true;
+            }
+        }
+        return mouseX >= this.x && mouseX < this.x + this.width && mouseY >= this.y && mouseY < this.y + this.height;
+    }
 }

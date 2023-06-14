@@ -114,6 +114,9 @@ public class Dropdown<T> extends AbstractWidget implements Renderable {
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        if (isFocused() && isMouseOver(mouseX, mouseY)) {
+            lostFocus = true;
+        }
         boolean mouseOver = isMouseOver(mouseX, mouseY);
         setFocused(mouseOver);
         if (isFocused() && button == 0 && isMouseOver(mouseX, mouseY) && mouseY > (this.getY() + this.getHeight() + 1)) {

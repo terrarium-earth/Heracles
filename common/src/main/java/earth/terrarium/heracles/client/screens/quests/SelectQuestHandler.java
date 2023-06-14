@@ -33,6 +33,7 @@ public class SelectQuestHandler {
                 return;
             } else if (System.currentTimeMillis() - lastClickTime < 500) {
                 selectedQuest = null;
+                ClientQuests.sendDirty();
                 NetworkHandler.CHANNEL.sendToServer(new OpenQuestPacket(
                     this.group, quest.id(), Minecraft.getInstance().screen instanceof QuestsEditScreen
                 ));

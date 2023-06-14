@@ -139,13 +139,6 @@ public class IconModal extends BaseModal {
     }
 
     @Override
-    public boolean isMouseOver(double mouseX, double mouseY) {
-        return isVisible() &&
-            mouseX >= (screenWidth / 2f) - (WIDTH / 2f) && mouseX <= (screenWidth / 2f) + (WIDTH / 2f) &&
-            mouseY >= (screenHeight / 2f) - (HEIGHT / 2f) && mouseY <= (screenHeight / 2f) + (HEIGHT / 2f);
-    }
-
-    @Override
     public void setVisible(boolean visible) {
         super.setVisible(visible);
         if (visible) {

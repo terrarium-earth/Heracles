@@ -97,13 +97,6 @@ public class IconBackgroundModal extends BaseModal {
         return true;
     }
 
-    @Override
-    public boolean isMouseOver(double mouseX, double mouseY) {
-        return isVisible() &&
-            mouseX >= (screenWidth / 2f) - (WIDTH / 2f) && mouseX <= (screenWidth / 2f) + (WIDTH / 2f) &&
-            mouseY >= (screenHeight / 2f) - (HEIGHT / 2f) && mouseY <= (screenHeight / 2f) + (HEIGHT / 2f);
-    }
-
     public void update(Collection<ResourceLocation> textures, Consumer<ResourceLocation> callback) {
         this.items.clear();
         textures.forEach(texture -> this.items.add(new BackgroundModalItem(texture)));

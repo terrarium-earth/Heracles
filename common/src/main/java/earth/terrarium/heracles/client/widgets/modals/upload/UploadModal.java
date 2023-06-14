@@ -129,13 +129,6 @@ public class UploadModal extends BaseModal implements FileWidget {
     }
 
     @Override
-    public boolean isMouseOver(double mouseX, double mouseY) {
-        return isVisible() &&
-            mouseX >= (screenWidth / 2f) - (WIDTH / 2f) && mouseX <= (screenWidth / 2f) + (WIDTH / 2f) &&
-            mouseY >= (screenHeight / 2f) - (HEIGHT / 2f) && mouseY <= (screenHeight / 2f) + (HEIGHT / 2f);
-    }
-
-    @Override
     public void onFilesDrop(List<Path> paths) {
         for (Path path : paths) {
             items.add(UploadModalItem.of(path));

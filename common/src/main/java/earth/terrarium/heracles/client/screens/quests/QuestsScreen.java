@@ -38,9 +38,10 @@ public class QuestsScreen extends AbstractQuestScreen<QuestsMenu> {
         super.init();
         int sidebarWidth = (int) (this.width * 0.25f) - 2;
         if (Minecraft.getInstance().player != null && Minecraft.getInstance().player.hasPermissions(2)) {
-            addRenderableWidget(new ImageButton(this.width - 24, 1, 11, 11, 33, 15, 11, HEADING, 256, 256, (button) ->
-                NetworkHandler.CHANNEL.sendToServer(new OpenGroupPacket(this.menu.group(), this.getClass() == QuestsScreen.class))
-            )).setTooltip(Tooltip.create(ConstantComponents.TOGGLE_EDIT));
+            addRenderableWidget(new ImageButton(this.width - 24, 1, 11, 11, 33, 15, 11, HEADING, 256, 256, (button) -> {
+                ClientQuests.sendDirty();
+                NetworkHandler.CHANNEL.sendToServer(new OpenGroupPacket(this.menu.group(), this.getClass() == QuestsScreen.class));
+        })).setTooltip(Tooltip.create(ConstantComponents.TOGGLE_EDIT));
         }
         List<Pair<ClientQuests.QuestEntry, ModUtils.QuestStatus>> quests = new ArrayList<>();
         menu.quests().forEach((id, status) ->
@@ -75,6 +76,7 @@ public class QuestsScreen extends AbstractQuestScreen<QuestsMenu> {
             this.height - 15,
             entry -> {
                 if (entry == null || this.menu.group().equals(entry.name())) return;
+                ClientQuests.sendDirty();
                 NetworkHandler.CHANNEL.sendToServer(new OpenGroupPacket(entry.name(), this.getClass() != QuestsScreen.class));
             }
         ));

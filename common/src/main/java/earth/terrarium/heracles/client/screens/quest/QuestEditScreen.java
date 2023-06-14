@@ -127,9 +127,10 @@ public class QuestEditScreen extends BaseQuestScreen {
         this.rewardList.update(this.menu.id(), this.quest());
 
         if (Minecraft.getInstance().player != null && Minecraft.getInstance().player.hasPermissions(2)) {
-            addRenderableWidget(new ImageButton(this.width - 24, 1, 11, 11, 33, 15, 11, HEADING, 256, 256, (button) ->
-                NetworkHandler.CHANNEL.sendToServer(new OpenQuestPacket(this.menu.fromGroup(), this.menu.id(), false))
-            )).setTooltip(Tooltip.create(ConstantComponents.TOGGLE_EDIT));
+            addRenderableWidget(new ImageButton(this.width - 24, 1, 11, 11, 33, 15, 11, HEADING, 256, 256, (button) -> {
+                ClientQuests.sendDirty();
+                NetworkHandler.CHANNEL.sendToServer(new OpenQuestPacket(this.menu.fromGroup(), this.menu.id(), false));
+            })).setTooltip(Tooltip.create(ConstantComponents.TOGGLE_EDIT));
         }
 
         this.descriptionBox = new MultiLineEditBox(this.font, contentX, contentY, contentWidth, contentHeight, CommonComponents.EMPTY, CommonComponents.EMPTY);

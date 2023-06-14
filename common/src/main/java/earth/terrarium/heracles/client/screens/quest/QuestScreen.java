@@ -1,5 +1,6 @@
 package earth.terrarium.heracles.client.screens.quest;
 
+import earth.terrarium.heracles.client.handlers.ClientQuests;
 import earth.terrarium.heracles.client.screens.quest.rewards.RewardListWidget;
 import earth.terrarium.heracles.client.screens.quest.tasks.TaskListWidget;
 import earth.terrarium.heracles.common.constants.ConstantComponents;
@@ -47,9 +48,10 @@ public class QuestScreen extends BaseQuestScreen {
         this.rewardList.update(this.menu.id(), this.quest());
 
         if (Minecraft.getInstance().player != null && Minecraft.getInstance().player.hasPermissions(2)) {
-            addRenderableWidget(new ImageButton(this.width - 24, 1, 11, 11, 33, 15, 11, HEADING, 256, 256, (button) ->
-                NetworkHandler.CHANNEL.sendToServer(new OpenQuestPacket(this.menu.fromGroup(), this.menu.id(), true))
-            )).setTooltip(Tooltip.create(ConstantComponents.TOGGLE_EDIT));
+            addRenderableWidget(new ImageButton(this.width - 24, 1, 11, 11, 33, 15, 11, HEADING, 256, 256, (button) -> {
+                ClientQuests.sendDirty();
+                NetworkHandler.CHANNEL.sendToServer(new OpenQuestPacket(this.menu.fromGroup(), this.menu.id(), true));
+            })).setTooltip(Tooltip.create(ConstantComponents.TOGGLE_EDIT));
         }
 
         try {

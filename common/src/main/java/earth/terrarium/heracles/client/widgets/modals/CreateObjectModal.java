@@ -103,13 +103,6 @@ public class CreateObjectModal extends BaseModal {
         return true;
     }
 
-    @Override
-    public boolean isMouseOver(double mouseX, double mouseY) {
-        return isVisible() &&
-            mouseX >= (screenWidth / 2f) - (WIDTH / 2f) && mouseX <= (screenWidth / 2f) + (WIDTH / 2f) &&
-            mouseY >= (screenHeight / 2f) - (HEIGHT / 2f) && mouseY <= (screenHeight / 2f) + (HEIGHT / 2f);
-    }
-
     public void update(
         String type,
         BiConsumer<ResourceLocation, String> callback,

@@ -118,11 +118,6 @@ public class SelectRewardsModal extends BaseModal {
         return false;
     }
 
-    @Override
-    public boolean isMouseOver(double mouseX, double mouseY) {
-        return mouseX >= this.x && mouseX <= this.x + this.width && mouseY >= this.y && mouseY <= this.y + this.height;
-    }
-
     public void updateRewards(Collection<QuestReward<?>> rewards, int maxSelectable, Consumer<Set<String>> callback) {
         this.widgets.clear();
         this.selected.clear();

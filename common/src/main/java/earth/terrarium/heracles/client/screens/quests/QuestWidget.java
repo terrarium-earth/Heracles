@@ -42,9 +42,11 @@ public class QuestWidget {
         if (hovered && (!(ClientUtils.screen() instanceof QuestsScreen screen) || !screen.isTemporaryWidgetVisible())) {
             String subtitleText = quest.display().subtitle().getString().trim();
             if (subtitleText.isBlank()) {
-                ClientUtils.setTooltip(quest.display().title().copy().withStyle(style -> style.withBold(true)));
+                ClientUtils.setTooltipNoReplace(List.of(
+                    quest.display().title().copy().withStyle(style -> style.withBold(true))
+                ));
             } else {
-                ClientUtils.setTooltip(List.of(
+                ClientUtils.setTooltipNoReplace(List.of(
                     quest.display().title().copy().withStyle(style -> style.withBold(true)),
                     quest.display().subtitle()
                 ));

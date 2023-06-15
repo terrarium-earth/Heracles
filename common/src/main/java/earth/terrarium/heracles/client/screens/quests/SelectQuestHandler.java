@@ -1,7 +1,7 @@
 package earth.terrarium.heracles.client.screens.quests;
 
 import earth.terrarium.heracles.client.handlers.ClientQuests;
-import earth.terrarium.heracles.client.screens.MouseMode;
+import earth.terrarium.heracles.client.screens.mousemode.MouseMode;
 import earth.terrarium.heracles.common.network.NetworkHandler;
 import earth.terrarium.heracles.common.network.packets.quests.OpenQuestPacket;
 import net.minecraft.client.Minecraft;

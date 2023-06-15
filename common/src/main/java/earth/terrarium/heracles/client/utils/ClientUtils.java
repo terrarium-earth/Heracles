@@ -4,6 +4,7 @@ import com.mojang.blaze3d.platform.Window;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.MouseHandler;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.gui.screens.inventory.tooltip.DefaultTooltipPositioner;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FormattedCharSequence;
@@ -17,6 +18,17 @@ public class ClientUtils {
         var textures = Minecraft.getInstance().getResourceManager()
             .listResources("textures/" + path, location -> location.getPath().endsWith(".png"));
         return textures.keySet();
+    }
+
+    public static void setTooltipNoReplace(List<Component> component) {
+        Screen screen = screen();
+        if (screen != null) {
+            List<FormattedCharSequence> formattedCharSequences = component.stream()
+                .map(c -> Minecraft.getInstance().font.split(c, 10000))
+                .flatMap(List::stream)
+                .toList();
+            screen.setTooltipForNextRenderPass(formattedCharSequences, DefaultTooltipPositioner.INSTANCE, false);
+        }
     }
 
     public static void setTooltip(Component component) {

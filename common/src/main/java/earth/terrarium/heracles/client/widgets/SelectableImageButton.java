@@ -26,7 +26,7 @@ public class SelectableImageButton extends ImageButton {
     @Override
     public void renderWidget(GuiGraphics graphics, int i, int j, float f) {
         int r = yTexStart;
-        if (selected || this.isHovered()) {
+        if (isSelected() || this.isHovered()) {
             r += yDiffTex;
         }
 
@@ -36,10 +36,10 @@ public class SelectableImageButton extends ImageButton {
 
     @Override
     public void onPress() {
-        if (!this.selected) {
+        if (!isSelected()) {
             super.onPress();
         }
-        this.selected = true;
+        setSelected(true);
     }
 
     public void setSelected(boolean selected) {

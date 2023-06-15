@@ -6,7 +6,9 @@ import earth.terrarium.heracles.api.quests.Quest;
 import earth.terrarium.heracles.api.quests.QuestDisplay;
 import earth.terrarium.heracles.api.quests.QuestSettings;
 import earth.terrarium.heracles.client.handlers.ClientQuests;
-import earth.terrarium.heracles.client.screens.MouseMode;
+import earth.terrarium.heracles.client.screens.mousemode.MouseButtonType;
+import earth.terrarium.heracles.client.screens.mousemode.MouseMode;
+import earth.terrarium.heracles.client.screens.mousemode.MouseModeButton;
 import earth.terrarium.heracles.client.utils.MouseClick;
 import earth.terrarium.heracles.client.widgets.SelectableImageButton;
 import earth.terrarium.heracles.client.widgets.modals.AddDependencyModal;
@@ -64,8 +66,7 @@ public class QuestsEditScreen extends QuestsScreen {
             this.questsWidget
         );
 
-        this.moveTool = addRenderableWidget(new SelectableImageButton(sidebarWidth + 3, 1, 11, 11, 0, 37, 11, HEADING, 256, 256, (button) -> {
-            updateButtons();
+        this.moveTool = addRenderableWidget(new MouseModeButton(sidebarWidth + 3, 1, MouseButtonType.MOVE, () -> {
             if (questsWidget.selectHandler().selectedQuest() != null) {
                 if (!actualChildren().contains(selectQuestWidget)) {
                     addRenderableWidget(selectQuestWidget);
@@ -75,22 +76,13 @@ public class QuestsEditScreen extends QuestsScreen {
         }));
         this.moveTool.setTooltip(Tooltip.create(ConstantComponents.Tools.MOVE));
 
-        this.dragTool = addRenderableWidget(new SelectableImageButton(sidebarWidth + 15, 1, 11, 11, 11, 37, 11, HEADING, 256, 256, (button) -> {
-            updateButtons();
-            clearWidget();
-        }));
+        this.dragTool = addRenderableWidget(new MouseModeButton(sidebarWidth + 15, 1, MouseButtonType.DRAG, this::clearWidget));
         this.dragTool.setTooltip(Tooltip.create(ConstantComponents.Tools.DRAG));
 
-        this.addTool = addRenderableWidget(new SelectableImageButton(sidebarWidth + 27, 1, 11, 11, 22, 37, 11, HEADING, 256, 256, (button) -> {
-            updateButtons();
-            clearWidget();
-        }));
+        this.addTool = addRenderableWidget(new MouseModeButton(sidebarWidth + 27, 1, MouseButtonType.ADD, this::clearWidget));
         this.addTool.setTooltip(Tooltip.create(ConstantComponents.Tools.ADD_QUEST));
 
-        this.linkTool = addRenderableWidget(new SelectableImageButton(sidebarWidth + 39, 1, 11, 11, 0, 59, 11, HEADING, 256, 256, (button) -> {
-            updateButtons();
-            clearWidget();
-        }));
+        this.linkTool = addRenderableWidget(new MouseModeButton(sidebarWidth + 39, 1, MouseButtonType.LINK, this::clearWidget));
         this.linkTool.setTooltip(Tooltip.create(ConstantComponents.Tools.LINK));
 
         addRenderableWidget(new ImageButton(this.width - 36, 1, 11, 11, 33, 37, 11, HEADING, 256, 256, (button) -> {
@@ -98,8 +90,6 @@ public class QuestsEditScreen extends QuestsScreen {
                 this.uploadModal.setVisible(true);
             }
         })).setTooltip(Tooltip.create(ConstantComponents.Quests.IMPORT));
-
-        this.dragTool.setSelected(true);
 
         this.uploadModal = addTemporary(new UploadModal(this.width, this.height));
         this.groupModal = addTemporary(new TextInputModal<>(this.width, this.height, ConstantComponents.Groups.CREATE, (ignored, text) -> {
@@ -130,14 +120,14 @@ public class QuestsEditScreen extends QuestsScreen {
     }
 
     @Override
-    protected void renderBg(GuiGraphics graphics, float partialTick, int mouseX, int mouseY) {
-        super.renderBg(graphics, partialTick, mouseX, mouseY);
+    protected void renderLabels(GuiGraphics graphics, int mouseX, int mouseY) {
         if (dragTool.isSelected()) {
             setCursor(Cursor.RESIZE_ALL);
         }
         if (addTool.isSelected()) {
             setCursor(Cursor.CROSSHAIR);
         }
+        super.renderLabels(graphics, mouseX, mouseY);
     }
 
     @Override
@@ -154,7 +144,7 @@ public class QuestsEditScreen extends QuestsScreen {
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        if (!isTemporaryWidgetVisible() && getMouseMode() == MouseMode.ADD && this.questsWidget.isMouseOver(mouseX, mouseY)) {
+        if (!isTemporaryWidgetVisible() && getMouseMode() == MouseMode.ADD && this.questsWidget.isMouseOver(mouseX, mouseY) && button == 0) {
             this.questModal.setVisible(true);
             this.questModal.setData(new MouseClick(mouseX, mouseY, button));
             return true;
@@ -173,22 +163,18 @@ public class QuestsEditScreen extends QuestsScreen {
         if (isTemporaryWidgetVisible()) return false;
         return switch (keyCode) {
             case InputConstants.KEY_V -> {
-                updateButtons();
                 moveTool.setSelected(true);
                 yield true;
             }
             case InputConstants.KEY_H -> {
-                updateButtons();
                 dragTool.setSelected(true);
                 yield true;
             }
             case InputConstants.KEY_U -> {
-                updateButtons();
                 addTool.setSelected(true);
                 yield true;
             }
             case InputConstants.KEY_L -> {
-                updateButtons();
                 linkTool.setSelected(true);
                 yield true;
             }
@@ -208,13 +194,6 @@ public class QuestsEditScreen extends QuestsScreen {
             selectQuestWidget.setEntry(null);
             removeWidget(selectQuestWidget);
         }
-    }
-
-    private void updateButtons() {
-        moveTool.setSelected(false);
-        dragTool.setSelected(false);
-        addTool.setSelected(false);
-        linkTool.setSelected(false);
     }
 
     public IconBackgroundModal iconBackgroundModal() {

@@ -95,7 +95,7 @@ public class QuestEditScreen extends BaseQuestScreen {
                     this.quest().rewards().remove(reward.id());
                     ClientQuests.setDirty(this.content.id());
                     ClientQuests.get(this.content.id()).ifPresent(entry -> entry.value().rewards().remove(reward.id()));
-                    this.rewardList.update(this.content.id(), this.quest());
+                    this.rewardList.update(this.content.fromGroup(), this.content.id(), this.quest());
                     return;
                 }
                 rewardPopup(ModUtils.cast(reward.type()), reward.id(), ModUtils.cast(reward), this.rewardList::updateReward);
@@ -105,7 +105,7 @@ public class QuestEditScreen extends BaseQuestScreen {
                     this.quest().rewards().put(id, newReward);
                     ClientQuests.setDirty(this.content.id());
                     ClientQuests.get(this.content.id()).ifPresent(entry -> entry.value().rewards().put(id, newReward));
-                    this.rewardList.update(this.content.id(), this.quest());
+                    this.rewardList.update(this.content.fromGroup(), this.content.id(), this.quest());
                 });
 
             this.createModal.setVisible(true);
@@ -122,7 +122,7 @@ public class QuestEditScreen extends BaseQuestScreen {
             );
         }
         );
-        this.rewardList.update(this.content.id(), this.quest());
+        this.rewardList.update(this.content.fromGroup(), this.content.id(), this.quest());
 
         if (Minecraft.getInstance().player != null && Minecraft.getInstance().player.hasPermissions(2)) {
             addRenderableWidget(new ImageButton(this.width - 24, 1, 11, 11, 33, 15, 11, HEADING, 256, 256, (button) -> {

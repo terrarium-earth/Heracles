@@ -43,7 +43,7 @@ public class QuestScreen extends BaseQuestScreen {
         this.taskList.update(this.quest().tasks().values());
 
         this.rewardList = new RewardListWidget(contentX, contentY, contentWidth, contentHeight, this.content.id(), this.quest(), null, null);
-        this.rewardList.update(this.content.id(), this.quest());
+        this.rewardList.update(this.content.fromGroup(), this.content.id(), this.quest());
 
         if (Minecraft.getInstance().player != null && Minecraft.getInstance().player.hasPermissions(2)) {
             addRenderableWidget(new ImageButton(this.width - 24, 1, 11, 11, 33, 15, 11, HEADING, 256, 256, (button) -> {
@@ -59,6 +59,7 @@ public class QuestScreen extends BaseQuestScreen {
             this.description = new DocumentWidget(contentX, contentY, contentWidth, contentHeight, new DefaultTheme(), provider.parse(desc));
         } catch (Throwable e) {
             this.descriptionError = e.getMessage();
+            e.printStackTrace();
         }
     }
 

@@ -64,7 +64,7 @@ public class RewardListWidget extends AbstractContainerEventHandler implements R
         this.onCreate = onCreate;
     }
 
-    public void update(String id, Quest quest) {
+    public void update(String group, String id, Quest quest) {
         this.widgets.clear();
         if (!quest.rewards().isEmpty()) {
             this.widgets.add(new MutablePair<>(null, new HeadingWidget(Component.nullToEmpty("Rewards"), 0xFF00DD00)));
@@ -75,9 +75,15 @@ public class RewardListWidget extends AbstractContainerEventHandler implements R
             }
         }
         ClientQuests.get(id).ifPresent(entry -> {
-            if (entry.children().isEmpty()) return;
+            List<ClientQuests.QuestEntry> children = new ArrayList<>();
+            for (ClientQuests.QuestEntry child : entry.children()) {
+                if (!child.value().display().groups().containsKey(group)) {
+                    children.add(child);
+                }
+            }
+            if (children.isEmpty()) return;
             this.widgets.add(new MutablePair<>(null, new HeadingWidget(Component.nullToEmpty("Dependents"), 0xFF000080)));
-            for (ClientQuests.QuestEntry dependent : entry.children()) {
+            for (ClientQuests.QuestEntry dependent : children) {
                 this.widgets.add(new MutablePair<>(null, new QuestDependentWidget(dependent.value())));
             }
         });

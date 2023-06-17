@@ -1,4 +1,4 @@
-package earth.terrarium.heracles.client.screens;
+package earth.terrarium.heracles.client.screens.mousemode;
 
 public enum MouseMode {
     SELECT_MOVE,

@@ -142,7 +142,9 @@ public class ClientQuests {
                 NetworkHandler.CHANNEL.sendToServer(new UploadQuestPacket(id, entry.value));
             }
         }
-        NetworkHandler.CHANNEL.sendToServer(new QuestActionPacket(QuestActionPacket.Action.SAVE));
+        if (!DIRTY.isEmpty()) {
+            NetworkHandler.CHANNEL.sendToServer(new QuestActionPacket(QuestActionPacket.Action.SAVE));
+        }
         DIRTY.clear();
     }
 

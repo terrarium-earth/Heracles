@@ -3,7 +3,7 @@ package earth.terrarium.heracles.client.screens.quests;
 import com.mojang.datafixers.util.Pair;
 import earth.terrarium.heracles.client.handlers.ClientQuests;
 import earth.terrarium.heracles.client.screens.AbstractQuestScreen;
-import earth.terrarium.heracles.client.screens.MouseMode;
+import earth.terrarium.heracles.client.screens.mousemode.MouseMode;
 import earth.terrarium.heracles.client.widgets.modals.ConfirmModal;
 import earth.terrarium.heracles.common.constants.ConstantComponents;
 import earth.terrarium.heracles.common.menus.quests.QuestsContent;
@@ -44,7 +44,9 @@ public class QuestsScreen extends AbstractQuestScreen<QuestsContent> {
         }
         List<Pair<ClientQuests.QuestEntry, ModUtils.QuestStatus>> quests = new ArrayList<>();
         content.quests().forEach((id, status) ->
-            ClientQuests.get(id).ifPresent(quest -> quests.add(Pair.of(quest, status)))
+            ClientQuests.get(id)
+                .filter(quest -> quest.value().display().groups().containsKey(content.group()))
+                .ifPresent(quest -> quests.add(Pair.of(quest, status)))
         );
 
         questsWidget = addRenderableWidget(new QuestsWidget(

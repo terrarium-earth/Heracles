@@ -11,6 +11,7 @@ import net.fabricmc.fabric.api.entity.event.v1.ServerEntityCombatEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.fabricmc.fabric.api.event.player.UseItemCallback;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.core.BlockSourceImpl;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionResult;
@@ -19,6 +20,7 @@ import net.minecraft.world.item.ItemStack;
 
 public class HeraclesFabric {
     public static void init() {
+        Heracles.setConfigPath(FabricLoader.getInstance().getConfigDir());
         Heracles.init();
 
         CommandRegistrationCallback.EVENT.register((dispatcher, context, env) -> ModCommands.init(dispatcher));

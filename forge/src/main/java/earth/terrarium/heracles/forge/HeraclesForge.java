@@ -4,13 +4,11 @@ import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.api.tasks.defaults.*;
 import earth.terrarium.heracles.common.handlers.progress.QuestProgressHandler;
 import earth.terrarium.heracles.common.handlers.progress.QuestsProgress;
-import earth.terrarium.heracles.common.handlers.quests.QuestHandler;
 import it.unimi.dsi.fastutil.longs.LongSet;
 import net.minecraft.core.BlockSourceImpl;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.levelgen.structure.Structure;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.AddReloadListenerEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.living.LivingEntityUseItemEvent;
 import net.minecraftforge.event.entity.player.AdvancementEvent;
@@ -25,19 +23,15 @@ import java.util.Map;
 public class HeraclesForge {
 
     public HeraclesForge() {
+        Heracles.setConfigPath(FMLPaths.CONFIGDIR.get());
         Heracles.init();
 
-        MinecraftForge.EVENT_BUS.addListener(HeraclesForge::onResourcesLoad);
         MinecraftForge.EVENT_BUS.addListener(HeraclesForge::onServerStarting);
         MinecraftForge.EVENT_BUS.addListener(HeraclesForge::onAdvancementEarn);
         MinecraftForge.EVENT_BUS.addListener(HeraclesForge::onTick);
         MinecraftForge.EVENT_BUS.addListener(HeraclesForge::onItemUse);
         MinecraftForge.EVENT_BUS.addListener(HeraclesForge::onItemInteract);
         MinecraftForge.EVENT_BUS.addListener(HeraclesForge::onBlockInteract);
-    }
-
-    private static void onResourcesLoad(AddReloadListenerEvent event) {
-        QuestHandler.load(Heracles.getRegistryAccess(), FMLPaths.CONFIGDIR.get());
     }
 
     private static void onServerStarting(ServerAboutToStartEvent event) {

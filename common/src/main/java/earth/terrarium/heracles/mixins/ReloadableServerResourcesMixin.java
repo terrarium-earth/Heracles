@@ -1,7 +1,7 @@
-package earth.terrarium.heracles.mixins.fabric;
+package earth.terrarium.heracles.mixins;
 
+import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.common.handlers.quests.QuestHandler;
-import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.commands.Commands;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.server.ReloadableServerResources;
@@ -27,6 +27,6 @@ public class ReloadableServerResourcesMixin {
         )
     )
     private static void heracles$loadResources(ResourceManager resourceManager, RegistryAccess.Frozen frozen, FeatureFlagSet featureFlagSet, Commands.CommandSelection commandSelection, int i, Executor executor, Executor executor2, CallbackInfoReturnable<CompletableFuture<ReloadableServerResources>> cir) {
-        QuestHandler.load(frozen, FabricLoader.getInstance().getConfigDir());
+        QuestHandler.load(frozen, Heracles.getConfigPath());
     }
 }

@@ -3,10 +3,7 @@ package earth.terrarium.heracles.api.rewards;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.teamresourceful.resourcefullib.common.codecs.maps.DispatchMapCodec;
-import earth.terrarium.heracles.api.rewards.defaults.ItemReward;
-import earth.terrarium.heracles.api.rewards.defaults.LootTableReward;
-import earth.terrarium.heracles.api.rewards.defaults.SelectableReward;
-import earth.terrarium.heracles.api.rewards.defaults.XpQuestReward;
+import earth.terrarium.heracles.api.rewards.defaults.*;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.HashMap;
@@ -45,5 +42,6 @@ public class QuestRewards {
         register(ItemReward.TYPE);
         register(LootTableReward.TYPE);
         register(SelectableReward.TYPE);
+        register(CommandReward.TYPE);
     }
 }

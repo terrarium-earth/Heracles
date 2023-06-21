@@ -46,9 +46,9 @@ public class AddDependencyModal extends BaseModal {
 
         this.addButton = addChild(
             new Button.Builder(Component.literal("+"), b -> addDependency())
-            .bounds(x + 142, y + 19, 16, 16)
-            .tooltip(Tooltip.create(Component.literal("Add Dependency")))
-            .build()
+                .bounds(x + 142, y + 19, 16, 16)
+                .tooltip(Tooltip.create(Component.literal("Add Dependency")))
+                .build()
         );
     }
 

@@ -30,5 +30,10 @@
     "reward.heracles.select.title.singular": "Select a reward",
     "reward.heracles.select.title.plural": "Select rewards",
     "reward.heracles.select.desc.singular": "Click the button to select %s reward",
-    "reward.heracles.select.desc.plural": "Click the button to select %s rewards"
+    "reward.heracles.select.desc.plural": "Click the button to select %s rewards",
+
+    "reward.heracles.command": "/ Command",
+    "reward.heracles.command.title.singular": "Executes a command",
+    "reward.heracles.command.desc.singular": "Executes %s",
+    "setting.heracles.command.command": "Command:"
 }

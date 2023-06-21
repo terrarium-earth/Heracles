@@ -1,11 +1,13 @@
 package earth.terrarium.heracles.api.client.settings;
 
+import earth.terrarium.heracles.api.client.settings.rewards.CommandRewardSettings;
 import earth.terrarium.heracles.api.client.settings.rewards.ItemRewardSettings;
 import earth.terrarium.heracles.api.client.settings.rewards.LootRewardSettings;
 import earth.terrarium.heracles.api.client.settings.rewards.XpRewardSettings;
 import earth.terrarium.heracles.api.client.settings.tasks.*;
 import earth.terrarium.heracles.api.rewards.QuestReward;
 import earth.terrarium.heracles.api.rewards.QuestRewardType;
+import earth.terrarium.heracles.api.rewards.defaults.CommandReward;
 import earth.terrarium.heracles.api.rewards.defaults.ItemReward;
 import earth.terrarium.heracles.api.rewards.defaults.LootTableReward;
 import earth.terrarium.heracles.api.rewards.defaults.XpQuestReward;
@@ -61,5 +63,6 @@ public final class Settings {
         register(LootTableReward.TYPE, LootRewardSettings.INSTANCE);
         register(ItemReward.TYPE, ItemRewardSettings.INSTANCE);
         register(XpQuestReward.TYPE, XpRewardSettings.INSTANCE);
+        register(CommandReward.TYPE, CommandRewardSettings.INSTANCE);
     }
 }

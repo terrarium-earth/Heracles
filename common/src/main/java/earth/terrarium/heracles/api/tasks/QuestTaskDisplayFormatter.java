@@ -41,6 +41,8 @@ public final class QuestTaskDisplayFormatter {
         register(CheckTask.TYPE, (progress, task) -> String.format("%d/%d", task.storage().read(progress.progress()) ? 1 : 0, 1));
         register(DummyTask.TYPE, (progress, task) -> String.format("%d/%d", task.storage().read(progress.progress()) ? 1 : 0, 1));
         register(CompositeTask.TYPE, (progress, task) -> String.format("%d/%d", Mth.floor(task.getCompletedTasks(progress.progress())), task.amount()));
+        register(XpTask.TYPE, (progress, task) -> String.format("%d/%d", task.storage().read(progress.progress()), task.target()));
+        register(EntityInteractTask.TYPE, (progress, task) -> String.format("%d/%d", task.storage().read(progress.progress()) ? 1 : 0, 1));
     }
 
     @FunctionalInterface

@@ -3,6 +3,7 @@ package earth.terrarium.heracles.mixins;
 import com.mojang.datafixers.util.Pair;
 import earth.terrarium.heracles.api.tasks.defaults.GatherItemTask;
 import earth.terrarium.heracles.api.tasks.defaults.RecipeTask;
+import earth.terrarium.heracles.api.tasks.defaults.XpTask;
 import earth.terrarium.heracles.common.handlers.progress.QuestProgressHandler;
 import earth.terrarium.heracles.common.handlers.progress.QuestsProgress;
 import net.minecraft.server.MinecraftServer;
@@ -44,5 +45,19 @@ public abstract class ServerPlayerMixin {
         ServerPlayer player = (ServerPlayer) (Object) this;
         QuestsProgress progress = QuestProgressHandler.getProgress(server, player.getUUID());
         progress.testAndProgressTaskType(player, Pair.of(itemEntity.getItem(), player.getInventory()), GatherItemTask.TYPE);
+    }
+
+    @Inject(
+        method = "doTick",
+        at = @At(
+            target = "Lnet/minecraft/server/network/ServerGamePacketListenerImpl;send(Lnet/minecraft/network/protocol/Packet;)V",
+            value = "INVOKE",
+            ordinal = 2
+        )
+    )
+    public void heracles$doTick(CallbackInfo ci) {
+        ServerPlayer player = (ServerPlayer) (Object) this;
+        QuestsProgress progress = QuestProgressHandler.getProgress(server, player.getUUID());
+        progress.testAndProgressTaskType(player, player, XpTask.TYPE);
     }
 }

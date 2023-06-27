@@ -21,7 +21,9 @@ public class PlayerListMixin {
     @Final
     private List<ServerPlayer> players;
 
-    @Shadow @Final private MinecraftServer server;
+    @Shadow
+    @Final
+    private MinecraftServer server;
 
     @Inject(
         method = "placeNewPlayer",

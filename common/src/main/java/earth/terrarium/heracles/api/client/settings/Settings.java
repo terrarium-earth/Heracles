@@ -57,8 +57,10 @@ public final class Settings {
         register(BiomeTask.TYPE, BiomeTaskSettings.INSTANCE);
         register(BlockInteractTask.TYPE, BlockInteractTaskSettings.INSTANCE);
         register(ItemInteractTask.TYPE, ItemInteractTaskSettings.INSTANCE);
+        register(EntityInteractTask.TYPE, EntityInteractTaskSettings.INSTANCE);
         register(CheckTask.TYPE, CheckTaskSettings.INSTANCE);
         register(DummyTask.TYPE, DummyTaskSettings.INSTANCE);
+        register(XpTask.TYPE, XpTaskSettings.INSTANCE);
 
         register(LootTableReward.TYPE, LootRewardSettings.INSTANCE);
         register(ItemReward.TYPE, ItemRewardSettings.INSTANCE);

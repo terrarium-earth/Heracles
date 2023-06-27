@@ -32,6 +32,7 @@ public class HeraclesForge {
         MinecraftForge.EVENT_BUS.addListener(HeraclesForge::onItemUse);
         MinecraftForge.EVENT_BUS.addListener(HeraclesForge::onItemInteract);
         MinecraftForge.EVENT_BUS.addListener(HeraclesForge::onBlockInteract);
+        MinecraftForge.EVENT_BUS.addListener(HeraclesForge::onEntityInteract);
     }
 
     private static void onServerStarting(ServerAboutToStartEvent event) {
@@ -79,5 +80,12 @@ public class HeraclesForge {
 
         QuestProgressHandler.getProgress(player.server, player.getUUID())
             .testAndProgressTaskType(player, new BlockSourceImpl(player.serverLevel(), event.getPos()), BlockInteractTask.TYPE);
+    }
+
+    private static void onEntityInteract(PlayerInteractEvent.EntityInteract event) {
+        if (!(event.getEntity() instanceof ServerPlayer player)) return;
+
+        QuestProgressHandler.getProgress(player.server, player.getUUID())
+            .testAndProgressTaskType(player, event.getTarget(), EntityInteractTask.TYPE);
     }
 }

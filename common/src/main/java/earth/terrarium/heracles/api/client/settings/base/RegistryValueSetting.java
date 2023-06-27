@@ -12,6 +12,7 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.Block;
@@ -29,6 +30,7 @@ public record RegistryValueSetting<T>(
     public static final RegistryValueSetting<Block> BLOCK = new RegistryValueSetting<>(Registries.BLOCK);
     public static final RegistryValueSetting<Structure> STRUCTURE = new RegistryValueSetting<>(Registries.STRUCTURE);
     public static final RegistryValueSetting<Biome> BIOME = new RegistryValueSetting<>(Registries.BIOME);
+    public static final RegistryValueSetting<EntityType<?>> ENTITY = new RegistryValueSetting<>(Registries.ENTITY_TYPE);
 
     @Override
     public AutocompleteEditBox<String> createWidget(int width, RegistryValue<T> value) {

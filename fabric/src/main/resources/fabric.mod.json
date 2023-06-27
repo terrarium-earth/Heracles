@@ -7,7 +7,7 @@
   "authors": [
     ""
   ],
-  "license": "Terrarium Licence",
+  "license": "MIT",
   "environment": "*",
   "entrypoints": {
     "main": [

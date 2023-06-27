@@ -1,6 +1,6 @@
 modLoader="javafml"
 loaderVersion="[46,)"
-license="Terrarium License"
+license="MIT"
 
 [[mods]]
 modId="heracles"

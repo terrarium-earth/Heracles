@@ -7,6 +7,7 @@ import net.minecraft.Util;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 
@@ -25,8 +26,10 @@ public class TaskTitleFormatters {
         TaskTitleFormatter.register(BiomeTask.TYPE, (task) -> Component.translatable(toTranslationKey(task, true), task.biomes().getDisplayName((id, structure) -> Component.translatableWithFallback(Util.makeDescriptionId("biome", id), id.toString()))));
         TaskTitleFormatter.register(BlockInteractTask.TYPE, (task) -> Component.translatable(toTranslationKey(task, true), task.block().getDisplayName(Block::getName)));
         TaskTitleFormatter.register(ItemInteractTask.TYPE, (task) -> Component.translatable(toTranslationKey(task, true), task.item().getDisplayName(Item::getDescription)));
+        TaskTitleFormatter.register(EntityInteractTask.TYPE, (task) -> Component.translatable(toTranslationKey(task, true), task.entity().getDisplayName(EntityType::getDescription)));
         TaskTitleFormatter.register(CheckTask.TYPE, (task) -> Component.translatable(toTranslationKey(task, true)));
         TaskTitleFormatter.register(DummyTask.TYPE, (task) -> task == null ? CommonComponents.EMPTY : task.title());
+        TaskTitleFormatter.register(XpTask.TYPE, (task) -> Component.translatable(toTranslationKey(task, true)));
         TaskTitleFormatter.register(CompositeTask.TYPE, (task) -> {
             List<Component> titles = new ArrayList<>();
             titles.add(Component.translatable(toTranslationKey(task, task.amount() == 1), task.amount()));

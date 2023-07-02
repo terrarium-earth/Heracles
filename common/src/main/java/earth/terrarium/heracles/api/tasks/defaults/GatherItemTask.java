@@ -50,7 +50,7 @@ public record GatherItemTask(
             }
         }
         if (amount >= target()) {
-            if (this.collectionType == CollectionType.AUTOMATIC) {
+            if (this.collectionType == CollectionType.CONSUME) {
                 int shrink = target() - storage().readInt(progress);
                 for (ItemStack itemStack : list) {
                     if (shrink <= 0) break;
@@ -133,7 +133,7 @@ public record GatherItemTask(
                 NbtPredicate.CODEC.fieldOf("nbt").orElse(NbtPredicate.ANY).forGetter(GatherItemTask::nbt),
                 Codec.INT.fieldOf("amount").orElse(1).forGetter(GatherItemTask::target),
                 Codec.BOOL.fieldOf("manual").orElse(false).forGetter(task -> task.collectionType == CollectionType.MANUAL)
-            ).apply(instance, (i, item, nbt, amount, manual) -> new GatherItemTask(i, item, nbt, amount, manual ? CollectionType.MANUAL : CollectionType.AUTOMATIC)));
+            ).apply(instance, (i, item, nbt, amount, manual) -> new GatherItemTask(i, item, nbt, amount, manual ? CollectionType.MANUAL : CollectionType.CONSUME)));
         }
     }
 

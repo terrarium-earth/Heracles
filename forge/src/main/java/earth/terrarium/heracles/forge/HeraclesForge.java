@@ -55,6 +55,7 @@ public class HeraclesForge {
         Map<Structure, LongSet> structures = player.serverLevel().structureManager().getAllStructuresAt(player.getOnPos());
 
         progress.testAndProgressTaskType(player, player.serverLevel().getBiome(player.getOnPos()), BiomeTask.TYPE);
+        progress.testAndProgressTaskType(player, player, LocationTask.TYPE);
 
         if (!structures.isEmpty()) {
             progress.testAndProgressTaskType(player, structures.keySet(), StructureTask.TYPE);

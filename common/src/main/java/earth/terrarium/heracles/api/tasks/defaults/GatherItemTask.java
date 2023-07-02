@@ -1,35 +1,36 @@
 package earth.terrarium.heracles.api.tasks.defaults;
 
-import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import com.teamresourceful.resourcefullib.common.codecs.CodecExtras;
+import com.teamresourceful.resourcefullib.common.codecs.EnumCodec;
 import com.teamresourceful.resourcefullib.common.codecs.predicates.NbtPredicate;
 import earth.terrarium.heracles.Heracles;
-import earth.terrarium.heracles.api.tasks.QuestTask;
+import earth.terrarium.heracles.api.tasks.PairQuestTask;
 import earth.terrarium.heracles.api.tasks.QuestTaskType;
 import earth.terrarium.heracles.api.tasks.storage.defaults.IntegerTaskStorage;
 import earth.terrarium.heracles.common.utils.RegistryValue;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.NumericTag;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public record GatherItemTask(
-    String id, RegistryValue<Item> item, NbtPredicate nbt, int target, boolean manual
-) implements QuestTask<Pair<ItemStack, Container>, NumericTag, GatherItemTask> {
+    String id, RegistryValue<Item> item, NbtPredicate nbt, int target, CollectionType collectionType
+) implements PairQuestTask<ItemStack, Container, NumericTag, GatherItemTask> {
 
     public static final QuestTaskType<GatherItemTask> TYPE = new Type();
 
     @Override
-    public NumericTag test(QuestTaskType<?> type, NumericTag progress, Pair<ItemStack, Container> input) {
-        ItemStack stack = input.getFirst();
-        Container container = input.getSecond();
-        if (manual) {
+    public NumericTag test(QuestTaskType<?> type, NumericTag progress, ItemStack stack, Container container) {
+        if (this.collectionType == CollectionType.MANUAL) {
             return manual(progress, container);
         }
         if (this.item.is(stack.getItemHolder()) && nbt.matches(stack)) {
@@ -49,12 +50,14 @@ public record GatherItemTask(
             }
         }
         if (amount >= target()) {
-            int shrink = target() - storage().readInt(progress);
-            for (ItemStack itemStack : list) {
-                if (shrink <= 0) break;
-                int amountShrank = Math.min(itemStack.getCount(), shrink);
-                itemStack.shrink(amountShrank);
-                shrink -= amountShrank;
+            if (this.collectionType == CollectionType.AUTOMATIC) {
+                int shrink = target() - storage().readInt(progress);
+                for (ItemStack itemStack : list) {
+                    if (shrink <= 0) break;
+                    int amountShrank = Math.min(itemStack.getCount(), shrink);
+                    itemStack.shrink(amountShrank);
+                    shrink -= amountShrank;
+                }
             }
             return storage().set(target());
         }
@@ -112,13 +115,36 @@ public record GatherItemTask(
 
         @Override
         public Codec<GatherItemTask> codec(String id) {
+            Codec<GatherItemTask> newCodec = RecordCodecBuilder.create(instance -> instance.group(
+                RecordCodecBuilder.point(id),
+                RegistryValue.codec(Registries.ITEM).fieldOf("item").forGetter(GatherItemTask::item),
+                NbtPredicate.CODEC.fieldOf("nbt").orElse(NbtPredicate.ANY).forGetter(GatherItemTask::nbt),
+                Codec.INT.fieldOf("amount").orElse(1).forGetter(GatherItemTask::target),
+                EnumCodec.of(CollectionType.class).fieldOf("collection").orElse(CollectionType.AUTOMATIC).forGetter(GatherItemTask::collectionType)
+            ).apply(instance, GatherItemTask::new));
+
+            return CodecExtras.eitherLeft(Codec.either(newCodec, legacyCodec(id)));
+        }
+
+        private Codec<GatherItemTask> legacyCodec(String id) {
             return RecordCodecBuilder.create(instance -> instance.group(
                 RecordCodecBuilder.point(id),
                 RegistryValue.codec(Registries.ITEM).fieldOf("item").forGetter(GatherItemTask::item),
                 NbtPredicate.CODEC.fieldOf("nbt").orElse(NbtPredicate.ANY).forGetter(GatherItemTask::nbt),
                 Codec.INT.fieldOf("amount").orElse(1).forGetter(GatherItemTask::target),
-                Codec.BOOL.fieldOf("manual").orElse(false).forGetter(GatherItemTask::manual)
-            ).apply(instance, GatherItemTask::new));
+                Codec.BOOL.fieldOf("manual").orElse(false).forGetter(task -> task.collectionType == CollectionType.MANUAL)
+            ).apply(instance, (i, item, nbt, amount, manual) -> new GatherItemTask(i, item, nbt, amount, manual ? CollectionType.MANUAL : CollectionType.AUTOMATIC)));
+        }
+    }
+
+    public enum CollectionType implements StringRepresentable {
+        MANUAL,
+        AUTOMATIC,
+        CONSUME;
+
+        @Override
+        public @NotNull String getSerializedName() {
+            return name().charAt(0) + name().substring(1).toLowerCase();
         }
     }
 }

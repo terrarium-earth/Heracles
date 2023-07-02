@@ -61,6 +61,7 @@ public final class Settings {
         register(CheckTask.TYPE, CheckTaskSettings.INSTANCE);
         register(DummyTask.TYPE, DummyTaskSettings.INSTANCE);
         register(XpTask.TYPE, XpTaskSettings.INSTANCE);
+        register(StatTask.TYPE, StatTaskSettings.INSTANCE);
 
         register(LootTableReward.TYPE, LootRewardSettings.INSTANCE);
         register(ItemReward.TYPE, ItemRewardSettings.INSTANCE);

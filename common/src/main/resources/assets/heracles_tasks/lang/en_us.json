@@ -57,7 +57,6 @@
     "task.heracles.xp.title.singular": "Retrieve XP",
     "task.heracles.xp.desc.singular": "Retrieve %s xp %s",
     "task.heracles.xp.desc.plural": "Retrieve %s xp %ss",
-    "setting.heracles.entity_interaction.block": "Entity:",
 
     "task.heracles.item_interaction": "\uD83C\uDFA3 Item Interaction",
     "task.heracles.item_interaction.title.singular": "Interact with %s",
@@ -83,5 +82,11 @@
     "setting.heracles.dummy.id": "Dummy ID (Can be shared): ",
     "setting.heracles.dummy.title": "Title: ",
     "setting.heracles.dummy.description": "Description: ",
-    "setting.heracles.dummy.icon": "Icon: "
+    "setting.heracles.dummy.icon": "Icon: ",
+
+    "task.heracles.stat": "\uD83D\uDCAA Stat",
+    "task.heracles.stat.title.singular": "Reach %s %s",
+    "task.heracles.stat.desc.singular": "Increase your %s stat to %s",
+    "setting.heracles.stat.stat": "Stat: ",
+    "setting.heracles.stat.target": "Target: "
 }

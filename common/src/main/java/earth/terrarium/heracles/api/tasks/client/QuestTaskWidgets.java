@@ -49,5 +49,7 @@ public final class QuestTaskWidgets {
         register(DummyTask.TYPE, DummyTaskWidget::new);
         register(EntityInteractTask.TYPE, EntityInteractTaskWidget::new);
         register(XpTask.TYPE, XpTaskWidget::new);
+        register(LocationTask.TYPE, LocationTaskWidget::new);
+        register(StatTask.TYPE, StatTaskWidget::new);
     }
 }

@@ -23,6 +23,7 @@ public record RegistrySetting<T>(
 
     public static final RegistrySetting<EntityType<?>> ENTITY = new RegistrySetting<>(false, Registries.ENTITY_TYPE);
     public static final RegistrySetting<Item> ITEM = new RegistrySetting<>(false, Registries.ITEM);
+    public static final RegistrySetting<ResourceLocation> STAT = new RegistrySetting<>(false, Registries.CUSTOM_STAT);
 
     @Override
     public AutocompleteEditBox<String> createWidget(int width, T value) {

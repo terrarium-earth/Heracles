@@ -3,6 +3,7 @@ package earth.terrarium.heracles.mixins.fabric;
 import com.mojang.authlib.GameProfile;
 import earth.terrarium.heracles.api.tasks.defaults.BiomeTask;
 import earth.terrarium.heracles.api.tasks.defaults.ItemUseTask;
+import earth.terrarium.heracles.api.tasks.defaults.LocationTask;
 import earth.terrarium.heracles.api.tasks.defaults.StructureTask;
 import earth.terrarium.heracles.common.handlers.progress.QuestProgressHandler;
 import earth.terrarium.heracles.common.handlers.progress.QuestsProgress;
@@ -47,6 +48,7 @@ public abstract class ServerPlayerMixin extends Player {
             Map<Structure, LongSet> structures = player.serverLevel().structureManager().getAllStructuresAt(player.getOnPos());
 
             progress.testAndProgressTaskType(player, player.level().getBiome(player.getOnPos()), BiomeTask.TYPE);
+            progress.testAndProgressTaskType(player, player, LocationTask.TYPE);
 
             if (!structures.isEmpty()) {
                 progress.testAndProgressTaskType(player, structures.keySet(), StructureTask.TYPE);

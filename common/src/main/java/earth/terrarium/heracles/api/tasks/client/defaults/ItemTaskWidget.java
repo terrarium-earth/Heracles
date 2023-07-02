@@ -65,7 +65,7 @@ public final class ItemTaskWidget implements DisplayWidget {
         int height = getHeight(width);
         WidgetUtils.drawProgressBar(graphics, x + iconSize + 10, y + height - font.lineHeight + 2, x + width - 5, y + height - 2, this.task, this.progress);
 
-        if (task.manual()) {
+        if (task.collectionType() == GatherItemTask.CollectionType.MANUAL) {
             int buttonY = y + height - font.lineHeight - 10;
             int buttonWidth = font.width(ConstantComponents.Tasks.CHECK);
             boolean buttonHovered = mouseX > x + width - 2 - buttonWidth && mouseX < x + width - 2 && mouseY > buttonY && mouseY < buttonY + font.lineHeight;
@@ -78,7 +78,7 @@ public final class ItemTaskWidget implements DisplayWidget {
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int mouseButton, int width) {
-        if (task.manual() && !progress.isComplete()) {
+        if (task.collectionType() == GatherItemTask.CollectionType.MANUAL && !progress.isComplete()) {
             Font font = Minecraft.getInstance().font;
             int buttonY = getHeight(width) - 19;
             boolean buttonHovered = mouseX > width - 2 - font.width(ConstantComponents.Tasks.CHECK) && mouseX < width - 2 && mouseY > buttonY && mouseY < buttonY + font.lineHeight;

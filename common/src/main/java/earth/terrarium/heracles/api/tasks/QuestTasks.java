@@ -53,5 +53,7 @@ public final class QuestTasks {
         register(DummyTask.TYPE);
         register(XpTask.TYPE);
         register(EntityInteractTask.TYPE);
+        register(LocationTask.TYPE);
+        register(StatTask.TYPE);
     }
 }

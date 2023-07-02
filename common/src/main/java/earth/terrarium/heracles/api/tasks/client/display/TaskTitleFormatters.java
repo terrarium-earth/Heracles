@@ -30,6 +30,8 @@ public class TaskTitleFormatters {
         TaskTitleFormatter.register(CheckTask.TYPE, (task) -> Component.translatable(toTranslationKey(task, true)));
         TaskTitleFormatter.register(DummyTask.TYPE, (task) -> task == null ? CommonComponents.EMPTY : task.title());
         TaskTitleFormatter.register(XpTask.TYPE, (task) -> Component.translatable(toTranslationKey(task, true)));
+        TaskTitleFormatter.register(LocationTask.TYPE, LocationTask::title);
+        TaskTitleFormatter.register(StatTask.TYPE, (task) -> Component.translatable(toTranslationKey(task, true), Component.translatable(task.stat().toLanguageKey("stat")), task.target()));
         TaskTitleFormatter.register(CompositeTask.TYPE, (task) -> {
             List<Component> titles = new ArrayList<>();
             titles.add(Component.translatable(toTranslationKey(task, task.amount() == 1), task.amount()));

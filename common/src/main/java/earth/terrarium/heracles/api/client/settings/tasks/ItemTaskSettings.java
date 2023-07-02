@@ -3,7 +3,7 @@ package earth.terrarium.heracles.api.client.settings.tasks;
 import com.mojang.datafixers.util.Either;
 import com.teamresourceful.resourcefullib.common.codecs.predicates.NbtPredicate;
 import earth.terrarium.heracles.api.client.settings.SettingInitializer;
-import earth.terrarium.heracles.api.client.settings.base.BooleanSetting;
+import earth.terrarium.heracles.api.client.settings.base.EnumSetting;
 import earth.terrarium.heracles.api.client.settings.base.IntSetting;
 import earth.terrarium.heracles.api.client.settings.base.RegistryValueSetting;
 import earth.terrarium.heracles.api.tasks.defaults.GatherItemTask;
@@ -16,13 +16,14 @@ import org.jetbrains.annotations.Nullable;
 public class ItemTaskSettings implements SettingInitializer<GatherItemTask> {
 
     public static final ItemTaskSettings INSTANCE = new ItemTaskSettings();
+    private static final EnumSetting<GatherItemTask.CollectionType> COLLECTION_TYPE = new EnumSetting<>(GatherItemTask.CollectionType.class, GatherItemTask.CollectionType.AUTOMATIC);
 
     @Override
     public CreationData create(@Nullable GatherItemTask object) {
         CreationData settings = new CreationData();
         settings.put("item", RegistryValueSetting.ITEM, getDefaultItem(object));
         settings.put("amount", IntSetting.ONE, getDefaultCount(object));
-        settings.put("manual", BooleanSetting.FALSE, Optionull.mapOrDefault(object, GatherItemTask::manual, false));
+        settings.put("collection_type", COLLECTION_TYPE, Optionull.mapOrDefault(object, GatherItemTask::collectionType, GatherItemTask.CollectionType.AUTOMATIC));
         return settings;
     }
 
@@ -33,7 +34,7 @@ public class ItemTaskSettings implements SettingInitializer<GatherItemTask> {
         return new GatherItemTask(
             id, item, old,
             data.get("amount", IntSetting.ONE).orElse(getDefaultCount(object)),
-            data.get("manual", BooleanSetting.FALSE).orElse(Optionull.mapOrDefault(object, GatherItemTask::manual, false))
+            data.get("collection_type", COLLECTION_TYPE).orElse(Optionull.mapOrDefault(object, GatherItemTask::collectionType, GatherItemTask.CollectionType.AUTOMATIC))
         );
     }
 

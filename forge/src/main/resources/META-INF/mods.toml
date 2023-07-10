@@ -4,7 +4,7 @@ license="MIT"
 
 [[mods]]
 modId="heracles"
-version="${file.jarVersion}"
+version = "${version}"
 displayName="Heracles"
 
 description='''
@@ -23,3 +23,10 @@ mandatory=true
 versionRange="[1.20,)"
 ordering="NONE"
 side="BOTH"
+
+[[dependencies.heracles]]
+modId = "resourcefullib"
+mandatory = true
+versionRange = "[2.1.1,)"
+ordering = "NONE"
+side = "BOTH"

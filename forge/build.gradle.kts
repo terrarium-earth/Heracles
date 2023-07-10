@@ -14,3 +14,11 @@ dependencies {
 
     forge(group = "net.minecraftforge", name = "forge", version = "$minecraftVersion-$forgeVersion")
 }
+
+tasks.processResources {
+    inputs.property("version", version)
+
+    filesMatching("META-INF/mods.toml") {
+        expand("version" to version)
+    }
+}

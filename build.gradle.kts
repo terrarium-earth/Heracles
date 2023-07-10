@@ -55,7 +55,7 @@ subprojects {
 
         compileOnly(group = "com.teamresourceful", name = "yabn", version = "1.0.3")
         "modApi"(group = "com.teamresourceful.resourcefullib", name = "resourcefullib-$modLoader-$minecraftVersion", version = resourcefulLibVersion)
-        val hermes = "modImplementation"(group = "earth.terrarium.hermes", name = "hermes-$modLoader-$minecraftVersion", version = hermesLibVersion) {
+        val hermes = "modImplementation"(group = "earth.terrarium.hermes", name = "hermes-$modLoader-1.20", version = hermesLibVersion) {
             isTransitive = false
         }
         if (!isCommon) {

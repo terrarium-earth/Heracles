@@ -1,4 +1,4 @@
-package earth.terrarium.heracles.mixins;
+package earth.terrarium.heracles.mixins.client;
 
 import earth.terrarium.heracles.client.screens.InternalKeyPressHook;
 import net.minecraft.client.gui.screens.Screen;

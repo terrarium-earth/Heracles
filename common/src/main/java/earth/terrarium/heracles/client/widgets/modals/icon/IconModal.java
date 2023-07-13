@@ -3,8 +3,8 @@ package earth.terrarium.heracles.client.widgets.modals.icon;
 import com.teamresourceful.resourcefullib.client.CloseablePoseStack;
 import com.teamresourceful.resourcefullib.client.screens.CursorScreen;
 import com.teamresourceful.resourcefullib.client.utils.CursorUtils;
+import com.teamresourceful.resourcefullib.client.utils.ScreenUtils;
 import earth.terrarium.heracles.Heracles;
-import earth.terrarium.heracles.client.utils.ClientUtils;
 import earth.terrarium.heracles.client.widgets.ToggleImageButton;
 import earth.terrarium.heracles.client.widgets.base.BaseModal;
 import earth.terrarium.heracles.common.constants.ConstantComponents;
@@ -95,7 +95,7 @@ public class IconModal extends BaseModal {
             if (mouseX >= itemX && mouseX < itemX + ITEM_SIZE && mouseY >= itemY && mouseY < itemY + ITEM_SIZE) {
                 graphics.fill(itemX + 1, itemY + 1, itemX + ITEM_SIZE - 1, itemY + ITEM_SIZE - 1, 0x80A0A0A0);
                 CursorUtils.setCursor(true, CursorScreen.Cursor.POINTER);
-                ClientUtils.setTooltip(item.getDescription());
+                ScreenUtils.setTooltip(item.getDescription());
             }
             try (var pose = new CloseablePoseStack(graphics)) {
                 pose.translate(0, 0, -100);

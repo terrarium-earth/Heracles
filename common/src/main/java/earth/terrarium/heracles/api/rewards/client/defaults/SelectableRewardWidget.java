@@ -3,13 +3,13 @@ package earth.terrarium.heracles.api.rewards.client.defaults;
 import com.teamresourceful.resourcefullib.client.scissor.ScissorBoxStack;
 import com.teamresourceful.resourcefullib.client.screens.CursorScreen;
 import com.teamresourceful.resourcefullib.client.utils.CursorUtils;
+import com.teamresourceful.resourcefullib.client.utils.ScreenUtils;
 import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.api.client.DisplayWidget;
 import earth.terrarium.heracles.api.client.WidgetUtils;
 import earth.terrarium.heracles.api.rewards.defaults.SelectableReward;
 import earth.terrarium.heracles.client.handlers.ClientQuests;
 import earth.terrarium.heracles.client.screens.quest.BaseQuestScreen;
-import earth.terrarium.heracles.client.utils.ClientUtils;
 import earth.terrarium.heracles.client.widgets.base.TemporyWidget;
 import earth.terrarium.heracles.client.widgets.modals.SelectRewardsModal;
 import earth.terrarium.heracles.common.constants.ConstantComponents;
@@ -69,7 +69,7 @@ public record SelectableRewardWidget(SelectableReward reward, String quest,
 
         if (buttonHovered) {
             CursorUtils.setCursor(true, progress != null && progress.canClaim(reward.id()) ? CursorScreen.Cursor.POINTER : CursorScreen.Cursor.DISABLED);
-            ClientUtils.setTooltip(ConstantComponents.Rewards.SELECT_CLAIM);
+            ScreenUtils.setTooltip(ConstantComponents.Rewards.SELECT_CLAIM);
         }
     }
 

@@ -1,4 +1,4 @@
-package earth.terrarium.heracles.mixins;
+package earth.terrarium.heracles.mixins.common;
 
 import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.common.handlers.quests.QuestHandler;

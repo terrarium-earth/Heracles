@@ -9,6 +9,8 @@ import earth.terrarium.heracles.api.tasks.QuestTask;
 import earth.terrarium.heracles.api.tasks.QuestTaskType;
 import earth.terrarium.heracles.api.tasks.QuestTasks;
 import earth.terrarium.heracles.client.handlers.ClientQuests;
+import earth.terrarium.heracles.client.widgets.editor.TextEditor;
+import earth.terrarium.heracles.client.screens.quest.editing.QuestTextEditor;
 import earth.terrarium.heracles.client.screens.quest.rewards.RewardListWidget;
 import earth.terrarium.heracles.client.screens.quest.tasks.TaskListWidget;
 import earth.terrarium.heracles.client.widgets.modals.CreateObjectModal;
@@ -20,13 +22,11 @@ import earth.terrarium.heracles.common.network.packets.quests.OpenQuestPacket;
 import earth.terrarium.heracles.common.utils.ModUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.ImageButton;
-import net.minecraft.client.gui.components.MultiLineEditBox;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.components.events.GuiEventListener;
-import net.minecraft.network.chat.CommonComponents;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
@@ -34,7 +34,7 @@ public class QuestEditScreen extends BaseQuestScreen {
 
     private TaskListWidget taskList;
     private RewardListWidget rewardList;
-    private MultiLineEditBox descriptionBox;
+    private TextEditor descriptionBox;
 
     private CreateObjectModal createModal;
 
@@ -131,8 +131,8 @@ public class QuestEditScreen extends BaseQuestScreen {
             })).setTooltip(Tooltip.create(ConstantComponents.TOGGLE_EDIT));
         }
 
-        this.descriptionBox = new MultiLineEditBox(this.font, contentX, contentY, contentWidth, contentHeight, CommonComponents.EMPTY, CommonComponents.EMPTY);
-        this.descriptionBox.setValue(String.join("\n", this.quest().display().description()));
+        this.descriptionBox = new QuestTextEditor(contentX, contentY, contentWidth, contentHeight);
+        this.descriptionBox.setContent(String.join("\n", this.quest().display().description()));
     }
 
     private <T extends QuestTask<?, ?, T>> void taskPopup(QuestTaskType<T> type, String id, @Nullable T task, Consumer<T> consumer) {
@@ -165,7 +165,7 @@ public class QuestEditScreen extends BaseQuestScreen {
     @Override
     public void removed() {
         super.removed();
-        quest().display().setDescription(Arrays.asList(this.descriptionBox.getValue().split("\n")));
+        quest().display().setDescription(new ArrayList<>(this.descriptionBox.lines()));
         ClientQuests.setDirty(this.content.id());
         ClientQuests.sendDirty();
     }

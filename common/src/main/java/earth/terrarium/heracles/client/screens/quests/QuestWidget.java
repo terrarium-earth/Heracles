@@ -3,6 +3,7 @@ package earth.terrarium.heracles.client.screens.quests;
 import com.teamresourceful.resourcefullib.client.scissor.ScissorBoxStack;
 import com.teamresourceful.resourcefullib.client.screens.CursorScreen;
 import com.teamresourceful.resourcefullib.client.utils.CursorUtils;
+import com.teamresourceful.resourcefullib.client.utils.ScreenUtils;
 import earth.terrarium.heracles.api.quests.Quest;
 import earth.terrarium.heracles.client.handlers.ClientQuests;
 import earth.terrarium.heracles.client.utils.ClientUtils;
@@ -42,14 +43,12 @@ public class QuestWidget {
         if (hovered && (!(ClientUtils.screen() instanceof QuestsScreen screen) || !screen.isTemporaryWidgetVisible())) {
             String subtitleText = quest.display().subtitle().getString().trim();
             if (subtitleText.isBlank()) {
-                ClientUtils.setTooltipNoReplace(List.of(
-                    quest.display().title().copy().withStyle(style -> style.withBold(true))
-                ));
+                ScreenUtils.setTooltip(quest.display().title().copy().withStyle(style -> style.withBold(true)), false);
             } else {
-                ClientUtils.setTooltipNoReplace(List.of(
+                ScreenUtils.setTooltip(List.of(
                     quest.display().title().copy().withStyle(style -> style.withBold(true)),
                     quest.display().subtitle()
-                ));
+                ), false);
             }
         }
     }

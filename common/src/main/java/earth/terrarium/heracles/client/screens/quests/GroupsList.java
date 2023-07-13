@@ -5,8 +5,8 @@ import com.teamresourceful.resourcefullib.client.components.selection.SelectionL
 import com.teamresourceful.resourcefullib.client.scissor.ScissorBoxStack;
 import com.teamresourceful.resourcefullib.client.screens.CursorScreen;
 import com.teamresourceful.resourcefullib.client.utils.CursorUtils;
+import com.teamresourceful.resourcefullib.client.utils.ScreenUtils;
 import earth.terrarium.heracles.client.handlers.ClientQuests;
-import earth.terrarium.heracles.client.utils.ClientUtils;
 import earth.terrarium.heracles.common.constants.ConstantComponents;
 import earth.terrarium.heracles.common.network.NetworkHandler;
 import earth.terrarium.heracles.common.network.packets.groups.DeleteGroupPacket;
@@ -81,7 +81,7 @@ public class GroupsList extends SelectionList<GroupsList.Entry> {
                 if (mouseX - left >= width - 11 && mouseX - left <= width - 2 && mouseY - top >= 2 && mouseY - top <= 12 && hovered) {
                     boolean cant = !ClientQuests.byGroup(name).isEmpty() || this.list.children().size() == 1;
                     CursorUtils.setCursor(cant, CursorScreen.Cursor.DISABLED);
-                    ClientUtils.setTooltip(cant ? ConstantComponents.Groups.DELETE_WITH_QUESTS : ConstantComponents.DELETE);
+                    ScreenUtils.setTooltip(cant ? ConstantComponents.Groups.DELETE_WITH_QUESTS : ConstantComponents.DELETE);
                     graphics.drawString(
                         Minecraft.getInstance().font,
                         "x", left + width - 9, top + 2, 0xFFFFFF,

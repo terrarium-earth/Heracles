@@ -1,16 +1,14 @@
 package earth.terrarium.heracles.client.utils;
 
 import com.mojang.blaze3d.platform.Window;
+import it.unimi.dsi.fastutil.chars.Char2CharMap;
+import it.unimi.dsi.fastutil.chars.Char2CharOpenHashMap;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.MouseHandler;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.gui.screens.inventory.tooltip.DefaultTooltipPositioner;
-import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.FormattedCharSequence;
 
 import java.util.Collection;
-import java.util.List;
 
 public class ClientUtils {
 
@@ -18,40 +16,6 @@ public class ClientUtils {
         var textures = Minecraft.getInstance().getResourceManager()
             .listResources("textures/" + path, location -> location.getPath().endsWith(".png"));
         return textures.keySet();
-    }
-
-    public static void setTooltipNoReplace(List<Component> component) {
-        Screen screen = screen();
-        if (screen != null) {
-            List<FormattedCharSequence> formattedCharSequences = component.stream()
-                .map(c -> Minecraft.getInstance().font.split(c, 10000))
-                .flatMap(List::stream)
-                .toList();
-            screen.setTooltipForNextRenderPass(formattedCharSequences, DefaultTooltipPositioner.INSTANCE, false);
-        }
-    }
-
-    public static void setTooltip(Component component) {
-        if (Minecraft.getInstance().screen != null) {
-            Minecraft.getInstance().screen.setTooltipForNextRenderPass(List.of(component.getVisualOrderText()));
-        }
-    }
-
-    public static void setTooltip(List<Component> component) {
-        Screen screen = screen();
-        if (screen != null) {
-            List<FormattedCharSequence> formattedCharSequences = component.stream()
-                .map(c -> Minecraft.getInstance().font.split(c, 10000))
-                .flatMap(List::stream)
-                .toList();
-            screen.setTooltipForNextRenderPass(formattedCharSequences);
-        }
-    }
-
-    public static void clearTooltip() {
-        if (Minecraft.getInstance().screen != null) {
-            Minecraft.getInstance().screen.setTooltipForNextRenderPass(List.of());
-        }
     }
 
     public static Screen screen() {
@@ -64,5 +28,29 @@ public class ClientUtils {
         double mouseX = mouse.xpos() * (double) window.getGuiScaledWidth() / (double) window.getScreenWidth();
         double mouseY = mouse.ypos() * (double) window.getGuiScaledHeight() / (double) window.getScreenHeight();
         return new MouseClick((int) mouseX, (int) mouseY, -1);
+    }
+
+    private static final Char2CharMap SMALL_NUMBERS = new Char2CharOpenHashMap();
+
+    static {
+        SMALL_NUMBERS.put('0', '₀');
+        SMALL_NUMBERS.put('1', '₁');
+        SMALL_NUMBERS.put('2', '₂');
+        SMALL_NUMBERS.put('3', '₃');
+        SMALL_NUMBERS.put('4', '₄');
+        SMALL_NUMBERS.put('5', '₅');
+        SMALL_NUMBERS.put('6', '₆');
+        SMALL_NUMBERS.put('7', '₇');
+        SMALL_NUMBERS.put('8', '₈');
+        SMALL_NUMBERS.put('9', '₉');
+    }
+
+    public static String getSmallNumber(int num) {
+        String normal = String.valueOf(num);
+        StringBuilder builder = new StringBuilder(normal.length());
+        for (char c : String.valueOf(num).toCharArray()) {
+            builder.append(SMALL_NUMBERS.getOrDefault(c, c));
+        }
+        return builder.toString();
     }
 }

@@ -1,10 +1,10 @@
 package earth.terrarium.heracles.client.screens.pinned;
 
 import com.mojang.blaze3d.platform.Window;
+import com.teamresourceful.resourcefullib.client.utils.ScreenUtils;
 import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.client.handlers.DisplayConfig;
 import earth.terrarium.heracles.client.handlers.PinnedQuests;
-import earth.terrarium.heracles.client.utils.ClientUtils;
 import earth.terrarium.heracles.common.constants.ConstantComponents;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -54,7 +54,7 @@ public class PinnedQuestDisplay {
         if (hovered) {
             graphics.blit(MOVE_ICON, x + PinnedQuests.width(), y + 1, 0, 0, 9, 9, 9, 9);
             if (mouseX >= x + PinnedQuests.width() && mouseX <= x + PinnedQuests.width() + 9 && mouseY >= y + 1 && mouseY <= y + 10) {
-                ClientUtils.setTooltip(ConstantComponents.PinnedQuests.MOVE);
+                ScreenUtils.setTooltip(ConstantComponents.PinnedQuests.MOVE);
             }
         }
 

@@ -18,12 +18,13 @@ public class MarkdownParser {
             String trimedText = line.trim();
             if (state != null && !line.startsWith(state.startsWith)) {
                 builder.add(state.end);
+
                 state = null;
             }
             if (trimedText.startsWith("# ")) {
-                builder.add("<h1>" + line.substring(1) + "</h1>");
+                builder.add("<h1>" + line.substring(2) + "</h1>");
             } else if (trimedText.startsWith("## ")) {
-                builder.add("<h2>" + line.substring(2) + "</h2>");
+                builder.add("<h2>" + line.substring(3) + "</h2>");
             } else if (trimedText.equals("---")) {
                 builder.add("<hr/>");
             } else if (trimedText.startsWith("- ")) {
@@ -31,13 +32,13 @@ public class MarkdownParser {
                     state = State.LIST;
                     builder.add("<ul>");
                 }
-                builder.add("<li>" + line.substring(1) + "</li>");
+                builder.add("<li>" + line.substring(2) + "</li>");
             } else if (trimedText.startsWith("> ")) {
                 if (state == null) {
                     state = State.BLOCKQUOTE;
                     builder.add("<blockquote>");
                 }
-                builder.add(parse(List.of(line.substring(1).trim())).stream().reduce("", (a, b) -> a + b));
+                builder.add(parse(List.of(line.substring(2).trim())).stream().reduce("", (a, b) -> a + b));
             } else if (trimedText.trim().startsWith("<")) {
                 builder.add(line);
             } else {

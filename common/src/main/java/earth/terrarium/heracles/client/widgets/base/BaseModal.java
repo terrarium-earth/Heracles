@@ -4,9 +4,9 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.teamresourceful.resourcefullib.client.CloseablePoseStack;
 import com.teamresourceful.resourcefullib.client.screens.CursorScreen;
 import com.teamresourceful.resourcefullib.client.utils.CursorUtils;
+import com.teamresourceful.resourcefullib.client.utils.ScreenUtils;
 import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.client.screens.AbstractQuestScreen;
-import earth.terrarium.heracles.client.utils.ClientUtils;
 import earth.terrarium.heracles.common.constants.ConstantComponents;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -65,7 +65,7 @@ public abstract class BaseModal extends BaseWidget implements TemporyWidget {
     public final void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
         if (!isVisible()) return;
         if (mouseY > 15) {
-            ClientUtils.clearTooltip();
+            ScreenUtils.clearTooltip();
         }
 
         CursorUtils.setCursor(true, CursorScreen.Cursor.DEFAULT);
@@ -81,7 +81,7 @@ public abstract class BaseModal extends BaseWidget implements TemporyWidget {
         RenderSystem.enableDepthTest();
 
         if (Minecraft.getInstance().screen instanceof CursorScreen cursorScreen) {
-            cursorScreen.setCursor(children());
+            cursorScreen.setCursor(children(), mouseX, mouseY);
         }
 
         CursorUtils.setCursor(mouseY <= 15, CursorScreen.Cursor.DISABLED);

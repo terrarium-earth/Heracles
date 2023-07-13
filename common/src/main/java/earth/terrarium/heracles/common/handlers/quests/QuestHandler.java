@@ -3,11 +3,12 @@ package earth.terrarium.heracles.common.handlers.quests;
 import com.google.common.collect.HashBiMap;
 import com.google.gson.JsonObject;
 import com.mojang.logging.LogUtils;
+import com.mojang.realmsclient.client.FileDownload;
 import com.mojang.serialization.JsonOps;
+import com.teamresourceful.resourcefullib.common.lib.Constants;
 import com.teamresourceful.resourcefullib.common.utils.FileUtils;
 import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.api.quests.Quest;
-import earth.terrarium.heracles.common.utils.ModUtils;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.RegistryOps;
 import org.slf4j.Logger;
@@ -17,9 +18,8 @@ import java.io.Reader;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.function.Predicate;
 
 public class QuestHandler {
 
@@ -44,7 +44,7 @@ public class QuestHandler {
 
     private static void load(RegistryAccess access, Reader reader, String id) {
         try {
-            JsonObject element = ModUtils.PRETTY_GSON.fromJson(reader, JsonObject.class);
+            JsonObject element = Constants.PRETTY_GSON.fromJson(reader, JsonObject.class);
             Quest quest = Quest.CODEC.parse(RegistryOps.create(JsonOps.INSTANCE, access), element).getOrThrow(false, LOGGER::error);
             quest.dependencies().remove(id); // Remove self from dependencies
             QUESTS.put(id, quest);
@@ -80,14 +80,28 @@ public class QuestHandler {
         try {
             org.apache.commons.io.FileUtils.deleteDirectory(questsPath.toFile());
             for (Map.Entry<String, Quest> entry : QUESTS.entrySet()) {
-                File file = new File(questsPath.toFile(), entry.getKey() + ".json");
-                String json = ModUtils.PRETTY_GSON.toJson(Quest.CODEC.encodeStart(RegistryOps.create(JsonOps.INSTANCE, Heracles.getRegistryAccess()), entry.getValue())
+                File file = new File(questsPath.toFile(), pickQuestPath(entry.getValue()) + "/" + entry.getKey() + ".json");
+                String json = Constants.PRETTY_GSON.toJson(Quest.CODEC.encodeStart(RegistryOps.create(JsonOps.INSTANCE, Heracles.getRegistryAccess()), entry.getValue())
                     .getOrThrow(false, LOGGER::error));
                 org.apache.commons.io.FileUtils.write(file, json, StandardCharsets.UTF_8);
             }
         } catch (Exception e) {
             LOGGER.error("Failed to save quests", e);
         }
+    }
+
+    private static String pickQuestPath(Quest quest) {
+        Set<String> groups = quest.display().groups().keySet();
+        if (groups.isEmpty()) {
+            return "main";
+        }
+        return FileDownload.findAvailableFolderName(groups.stream()
+            .map(s -> s.toLowerCase(Locale.ROOT))
+            .map(s -> s.replaceAll("[^a-z0-9]", ""))
+            .filter(Predicate.not(String::isBlank))
+            .sorted()
+            .findFirst()
+            .orElse("main"));
     }
 
     public static void saveGroups() {

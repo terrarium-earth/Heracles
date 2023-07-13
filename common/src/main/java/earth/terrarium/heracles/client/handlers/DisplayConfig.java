@@ -1,7 +1,7 @@
 package earth.terrarium.heracles.client.handlers;
 
 import com.google.gson.JsonObject;
-import earth.terrarium.heracles.common.utils.ModUtils;
+import com.teamresourceful.resourcefullib.common.lib.Constants;
 import net.minecraft.util.GsonHelper;
 import org.apache.commons.io.FileUtils;
 
@@ -24,7 +24,7 @@ public class DisplayConfig {
         try {
             if (displayFile.exists()) {
                 String displayString = FileUtils.readFileToString(displayFile, StandardCharsets.UTF_8);
-                JsonObject displayObject = ModUtils.PRETTY_GSON.fromJson(displayString, JsonObject.class);
+                JsonObject displayObject = Constants.PRETTY_GSON.fromJson(displayString, JsonObject.class);
                 pinnedIndex = GsonHelper.getAsInt(displayObject, "pinnedIndex", 0);
                 showTutorial = GsonHelper.getAsBoolean(displayObject, "showTutorial", true);
             } else {
@@ -42,7 +42,7 @@ public class DisplayConfig {
         displayObject.addProperty("pinnedIndex", pinnedIndex);
         displayObject.addProperty("showTutorial", showTutorial);
         try {
-            FileUtils.write(displayFile, ModUtils.PRETTY_GSON.toJson(displayObject), StandardCharsets.UTF_8);
+            FileUtils.write(displayFile, Constants.PRETTY_GSON.toJson(displayObject), StandardCharsets.UTF_8);
         } catch (Exception e) {
             e.printStackTrace();
         }

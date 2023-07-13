@@ -1,4 +1,4 @@
-package earth.terrarium.heracles.mixins;
+package earth.terrarium.heracles.mixins.client;
 
 import earth.terrarium.heracles.client.widgets.base.FileWidget;
 import net.minecraft.client.gui.components.events.GuiEventListener;

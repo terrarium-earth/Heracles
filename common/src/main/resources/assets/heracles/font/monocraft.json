@@ -1,0 +1,24 @@
+{
+    "providers": [
+        {
+            "type": "ttf",
+            "file": "heracles:monocraft.ttf",
+            "size": 12,
+            "oversample": 16.0,
+            "skip": ".",
+            "license": "https://github.com/IdreesInc/Monocraft/blob/main/LICENSE"
+        },
+        {
+            "type": "reference",
+            "id": "minecraft:include/space"
+        },
+        {
+            "type": "reference",
+            "id": "minecraft:include/default"
+        },
+        {
+            "type": "reference",
+            "id": "minecraft:include/unifont"
+        }
+    ]
+}

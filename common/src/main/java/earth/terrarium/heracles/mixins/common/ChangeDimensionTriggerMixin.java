@@ -1,4 +1,4 @@
-package earth.terrarium.heracles.mixins;
+package earth.terrarium.heracles.mixins.common;
 
 import com.mojang.datafixers.util.Pair;
 import earth.terrarium.heracles.api.tasks.defaults.ChangedDimensionTask;

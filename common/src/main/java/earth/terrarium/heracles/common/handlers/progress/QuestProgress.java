@@ -1,16 +1,13 @@
 package earth.terrarium.heracles.common.handlers.progress;
 
+import com.teamresourceful.resourcefullib.common.nbt.TagUtils;
 import earth.terrarium.heracles.api.quests.Quest;
 import earth.terrarium.heracles.api.tasks.QuestTask;
-import earth.terrarium.heracles.common.utils.ModUtils;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.StringTag;
 import net.minecraft.nbt.Tag;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class QuestProgress {
 
@@ -25,7 +22,7 @@ public class QuestProgress {
     public QuestProgress(Quest quest, CompoundTag tag) {
         if (tag == null) return;
         this.complete = tag.getBoolean("complete");
-        this.claimed.addAll(ModUtils.readSet(tag.getList("rewards", 8), Tag::getAsString));
+        this.claimed.addAll(TagUtils.mapToCollection(ArrayList::new, tag.getList("rewards", 8), Tag::getAsString));
         var compound = tag.getCompound("tasks");
         for (String taskKey : compound.getAllKeys()) {
             if (!quest.tasks().containsKey(taskKey)) continue;
@@ -83,7 +80,7 @@ public class QuestProgress {
     public CompoundTag save() {
         CompoundTag tag = new CompoundTag();
         tag.putBoolean("complete", complete);
-        tag.put("rewards", ModUtils.writeSet(claimed, StringTag::valueOf));
+        tag.put("rewards", TagUtils.mapToListTag(claimed, StringTag::valueOf));
         CompoundTag tasks = new CompoundTag();
         for (var entry : this.tasks.entrySet()) {
             CompoundTag task = new CompoundTag();

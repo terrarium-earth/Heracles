@@ -5,7 +5,7 @@ import com.mojang.blaze3d.vertex.*;
 import com.teamresourceful.resourcefullib.client.scissor.ScissorBoxStack;
 import com.teamresourceful.resourcefullib.client.screens.CursorScreen;
 import com.teamresourceful.resourcefullib.client.utils.CursorUtils;
-import earth.terrarium.heracles.client.utils.ClientUtils;
+import com.teamresourceful.resourcefullib.client.utils.ScreenUtils;
 import earth.terrarium.heracles.client.widgets.modals.upload.UploadModal;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.GameRenderer;
@@ -39,7 +39,7 @@ public record BackgroundModalItem(ResourceLocation texture) {
         if (hovering && mouseX >= x && mouseX <= x + WIDTH && mouseY >= y && mouseY <= y + HEIGHT) {
             CursorUtils.setCursor(true, CursorScreen.Cursor.POINTER);
             String textureName = texture.getNamespace() + ":" + texture.getPath().substring("textures/gui/quest_backgrounds/".length());
-            ClientUtils.setTooltip(Component.literal(textureName));
+            ScreenUtils.setTooltip(Component.literal(textureName));
         }
     }
 }

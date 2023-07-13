@@ -1,4 +1,4 @@
-package earth.terrarium.heracles.mixins;
+package earth.terrarium.heracles.mixins.common;
 
 import earth.terrarium.heracles.common.handlers.syncing.QuestSyncer;
 import net.minecraft.network.Connection;

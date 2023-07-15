@@ -16,6 +16,9 @@
     "client": [
       "earth.terrarium.heracles.client.HeraclesClient::init",
       "earth.terrarium.heracles.fabric.HeraclesFabricClient"
+    ],
+    "rei_client": [
+      "earth.terrarium.heracles.client.compat.rei.HeraclesReiClientPlugin"
     ]
   },
   "mixins": [

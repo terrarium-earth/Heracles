@@ -41,6 +41,7 @@ subprojects {
     dependencies {
         val resourcefulLibVersion: String by project
         val hermesLibVersion: String by project
+        val reiVersion: String by project
 
         "minecraft"("::${minecraftVersion}")
 
@@ -50,7 +51,7 @@ subprojects {
 
             officialMojangMappings()
 
-            parchment(create(group = "org.parchmentmc.data", name = "parchment-1.19.3", version = parchmentVersion))
+            parchment(create(group = "org.parchmentmc.data", name = "parchment-$minecraftVersion", version = parchmentVersion))
         })
 
         compileOnly(group = "com.teamresourceful", name = "yabn", version = "1.0.3")
@@ -60,6 +61,13 @@ subprojects {
         }
         if (!isCommon) {
             "include"(hermes)
+
+            "modRuntimeOnly"("me.shedaniel:RoughlyEnoughItems-$modLoader:$reiVersion")
+            "modCompileOnly"("me.shedaniel:RoughlyEnoughItems-api-$modLoader:$reiVersion")
+            "modCompileOnly"("me.shedaniel:RoughlyEnoughItems-default-plugin-$modLoader:$reiVersion")
+        } else {
+            "modCompileOnly"("me.shedaniel:RoughlyEnoughItems-api:$reiVersion")
+            "modCompileOnly"("me.shedaniel:RoughlyEnoughItems-default-plugin:$reiVersion")
         }
     }
 

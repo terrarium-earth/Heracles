@@ -14,7 +14,7 @@
     "item.heracles.quest_book": "Quest Book",
 
     "key.heracles.open_quests": "Open Quests",
-    "key.categories.odyssey": "Odyssey",
+    "key.categories.odyssey": "Project Odyssey",
 
     "gui.heracles.pinned_quests": "Pinned Quests",
     "gui.heracles.pinned_quests.move": "Move Pinned Quests",
@@ -48,5 +48,8 @@
     "gui.heracles.toggle_edit": "Toggle Edit Mode",
 
     "setting.heracles.quest.individual_progress": "Individual Progress",
-    "setting.heracles.quest.hidden": "Prerequisite Hidden"
+    "setting.heracles.quest.hidden": "Prerequisite Hidden",
+
+    "rei.sections.odyssey": "Project Odyssey",
+    "rei.heracles.heracles.tooltip": "Open Quests"
 }

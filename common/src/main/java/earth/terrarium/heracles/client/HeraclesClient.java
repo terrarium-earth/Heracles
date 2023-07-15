@@ -34,19 +34,23 @@ public class HeraclesClient {
 
     public static void clientTick() {
         if (OPEN_QUESTS.consumeClick()) {
-            if (DisplayConfig.showTutorial) {
-                if (!QuestTutorial.tutorialText().isBlank()) {
-                    Minecraft.getInstance().setScreen(new QuestTutorialScreen());
-                } else {
-                    DisplayConfig.showTutorial = false;
-                    DisplayConfig.save();
-                    NetworkHandler.CHANNEL.sendToServer(new OpenGroupPacket("", false));
-                }
-            } else {
-                NetworkHandler.CHANNEL.sendToServer(new OpenGroupPacket("", false));
-            }
+            openQuestScreen();
         }
         QuestTutorial.tick();
+    }
+
+    public static void openQuestScreen() {
+        if (DisplayConfig.showTutorial) {
+            if (!QuestTutorial.tutorialText().isBlank()) {
+                Minecraft.getInstance().setScreen(new QuestTutorialScreen());
+            } else {
+                DisplayConfig.showTutorial = false;
+                DisplayConfig.save();
+                NetworkHandler.CHANNEL.sendToServer(new OpenGroupPacket("", false));
+            }
+        } else {
+            NetworkHandler.CHANNEL.sendToServer(new OpenGroupPacket("", false));
+        }
     }
 
     public static void displayItemsRewardedToast(String id, List<Item> items) {

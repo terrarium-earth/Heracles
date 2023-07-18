@@ -83,10 +83,10 @@ public final class ItemTaskWidget implements DisplayWidget {
             int buttonY = getHeight(width) - 19;
             boolean buttonHovered = mouseX > width - 2 - font.width(ConstantComponents.Tasks.CHECK) && mouseX < width - 2 && mouseY > buttonY && mouseY < buttonY + font.lineHeight;
             if (buttonHovered) {
-                NetworkHandler.CHANNEL.sendToServer(new ManualItemTaskPacket());
+                NetworkHandler.CHANNEL.sendToServer(new ManualItemTaskPacket(task.id()));
 
                 if (Minecraft.getInstance().player != null) {
-                    progress.addProgress(GatherItemTask.TYPE, task, Pair.of(ItemStack.EMPTY, Minecraft.getInstance().player.getInventory()));
+                    progress.addProgress(GatherItemTask.TYPE, task, Pair.of(task.id(), Minecraft.getInstance().player.getInventory()));
                 }
                 return true;
             }

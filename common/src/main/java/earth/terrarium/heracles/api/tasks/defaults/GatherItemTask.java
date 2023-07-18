@@ -23,17 +23,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 public record GatherItemTask(
-    String id, RegistryValue<Item> item, NbtPredicate nbt, int target, CollectionType collectionType
-) implements PairQuestTask<ItemStack, Container, NumericTag, GatherItemTask> {
+        String id, RegistryValue<Item> item, NbtPredicate nbt, int target, CollectionType collectionType
+) implements PairQuestTask<Object, Container, NumericTag, GatherItemTask> {
 
     public static final QuestTaskType<GatherItemTask> TYPE = new Type();
 
     @Override
-    public NumericTag test(QuestTaskType<?> type, NumericTag progress, ItemStack stack, Container container) {
+    public NumericTag test(QuestTaskType<?> type, NumericTag progress, Object input, Container container) {
         if (this.collectionType == CollectionType.MANUAL) {
-            return manual(progress, container);
-        }
-        if (this.item.is(stack.getItemHolder()) && nbt.matches(stack)) {
+            if (id.equals(input)) {
+                return manual(progress, container);
+            }
+        } else if (input instanceof ItemStack stack && this.item.is(stack.getItemHolder()) && nbt.matches(stack)) {
             return automatic(progress, container);
         }
         return progress;

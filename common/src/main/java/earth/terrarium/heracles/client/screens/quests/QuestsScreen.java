@@ -1,6 +1,7 @@
 package earth.terrarium.heracles.client.screens.quests;
 
 import com.mojang.datafixers.util.Pair;
+import earth.terrarium.heracles.client.HeraclesClient;
 import earth.terrarium.heracles.client.handlers.ClientQuests;
 import earth.terrarium.heracles.client.screens.AbstractQuestScreen;
 import earth.terrarium.heracles.client.screens.mousemode.MouseMode;
@@ -30,6 +31,11 @@ public class QuestsScreen extends AbstractQuestScreen<QuestsContent> {
     public QuestsScreen(QuestsContent content) {
         super(content, CommonComponents.EMPTY);
         this.hasBackButton = false;
+        if (!HeraclesClient.lastGroup.equalsIgnoreCase(content.group())) {
+            QuestsWidget.offset.set(0, 0);
+        }
+
+        HeraclesClient.lastGroup = content.group();
     }
 
     @Override

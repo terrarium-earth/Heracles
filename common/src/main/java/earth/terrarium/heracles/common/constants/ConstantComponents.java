@@ -42,6 +42,9 @@ public final class ConstantComponents {
     @Translate("Toggle Edit Mode")
     public static final Component TOGGLE_EDIT = Component.translatable("gui.heracles.toggle_edit");
 
+    @Translate("Open Quest File")
+    public static final Component OPEN_QUEST_FILE = Component.translatable("gui.heracles.open_quest_file");
+
     public static final class Tools {
 
         @Translate("Move/Select [V]")

@@ -104,6 +104,10 @@ public class QuestHandler {
             .orElse("main"));
     }
 
+    public static Path getQuestPath(Quest quest, String id) {
+        return lastPath.resolve("quests/" + pickQuestPath(quest) + "/" + id + ".json");
+    }
+
     public static void saveGroups() {
         if (lastPath == null) {
             return;

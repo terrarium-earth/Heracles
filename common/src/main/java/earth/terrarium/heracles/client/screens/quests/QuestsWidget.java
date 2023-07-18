@@ -37,7 +37,7 @@ import java.util.function.Supplier;
 
 public class QuestsWidget extends BaseWidget {
 
-    private static final Vector2i offset = new Vector2i();
+    public static final Vector2i offset = new Vector2i();
 
     private static final Vector2i MAX = new Vector2i(500, 500);
     private static final Vector2i MIN = new Vector2i(-500, -500);

@@ -22,8 +22,8 @@ import java.util.List;
 
 public class TextEditor implements Renderable, GuiEventListener, NarratableEntry, CursorWidget {
 
-    private final TextEditorContent content = new TextEditorContent();
-    private final TextHighlighter highlighter;
+    protected final TextEditorContent content = new TextEditorContent();
+    protected final TextHighlighter highlighter;
     protected final int x;
     protected final int y;
     protected final int width;
@@ -106,27 +106,34 @@ public class TextEditor implements Renderable, GuiEventListener, NarratableEntry
                             }
 
                             if (x1 != x2) {
-                                graphics.fill(this.x + 20 + this.font.width(line.substring(0, x1)), this.y + i * 10, this.x + 20 + this.font.width(line.substring(0, x2)), this.y + i * 10 + 10, 0x806464FF);
+                                graphics.fill(this.x + 19 + this.font.width(line.substring(0, x1)), this.y + i * 10, this.x + 19 + this.font.width(line.substring(0, x2)), this.y + i * 10 + 10, 0x806464FF);
                             }
                         }
                     }
                 }
             }
         }
-
-        //CursorUtils.setCursor(isMouseOver(mouseX, mouseY), CursorScreen.Cursor.TEXT);
     }
 
     @Override
-    public boolean mouseClicked(double d, double e, int i) {
-        if (!isMouseOver(d, e)) return false;
-        int cursorX = (int) (d - this.x - 20);
-        int cursorY = Mth.clamp((int) (e - this.y) / 10, 0, content.lines().size() - 1);
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        return setCursorToMouse(mouseX, mouseY, Screen.hasShiftDown());
+    }
+
+    @Override
+    public boolean mouseDragged(double mouseX, double mouseY, int button, double dragX, double dragY) {
+        return setCursorToMouse(mouseX, mouseY, true);
+    }
+
+    private boolean setCursorToMouse(double mouseX, double mouseY, boolean selecting) {
+        if (!canClickText(mouseX, mouseY)) return false;
+        int cursorX = (int)Math.round(mouseX - this.x - 20);
+        int cursorY = Mth.clamp((int) (mouseY - this.y) / 10, 0, content.lines().size() - 1);
         if (cursorY + scroll < 0 || cursorY + scroll >= content.lines().size()) return false;
         String line = content.lines().get(cursorY + scroll);
         String sub = this.font.plainSubstrByWidth(line, cursorX);
         cursorX = Mth.clamp(sub.length(), 0, line.length());
-        content.setCursor(cursorX, cursorY + scroll, Screen.hasShiftDown());
+        content.setCursor(cursorX, cursorY + scroll, selecting);
         return true;
     }
 
@@ -170,12 +177,31 @@ public class TextEditor implements Renderable, GuiEventListener, NarratableEntry
                 content.backspace();
                 yield true;
             }
+            case InputConstants.KEY_END -> {
+                String line = content.lines().get(content.lines().size() - 1);
+                content.setCursor(line.length(), content.lines().size() - 1, Screen.hasShiftDown());
+                yield true;
+            }
+            case InputConstants.KEY_HOME -> {
+                content.setCursor(0, 0, Screen.hasShiftDown());
+                yield true;
+            }
             default -> {
                 if (Screen.isCut(i)) {
+                    if (content.selection() == null) {
+                        int line = content.cursor().y();
+                        content.setCursor(0, line, false);
+                        content.setSelection(new Vector2i(content.lines().get(line).length(), line));
+                    }
                     Minecraft.getInstance().keyboardHandler.setClipboard(content.getSelectedText());
                     content.deleteSelection();
                     yield true;
                 } else if (Screen.isCopy(i)) {
+                    if (content.selection() == null) {
+                        int line = content.cursor().y();
+                        content.setCursor(0, line, false);
+                        content.setSelection(new Vector2i(content.lines().get(line).length(), line));
+                    }
                     Minecraft.getInstance().keyboardHandler.setClipboard(content.getSelectedText());
                     yield true;
                 } else if (Screen.isPaste(i)) {
@@ -184,6 +210,11 @@ public class TextEditor implements Renderable, GuiEventListener, NarratableEntry
                 } else if (Screen.isSelectAll(i)) {
                     content.setCursor(0, 0, false);
                     content.setCursor(content.lines().get(content.lines().size() - 1).length(), content.lines().size() - 1, true);
+                    yield true;
+                } else if (i == InputConstants.KEY_D && Screen.hasControlDown() && !Screen.hasShiftDown() && !Screen.hasAltDown()) {
+                    String line = content.lines().get(content.cursor().y());
+                    content.lines().add(content.cursor().y() + 1, line);
+                    content.setCursor(content.cursor().x, content.cursor().y() + 1, false);
                     yield true;
                 }
                 yield false;
@@ -235,5 +266,9 @@ public class TextEditor implements Renderable, GuiEventListener, NarratableEntry
     @Override
     public CursorScreen.Cursor getCursor() {
         return CursorScreen.Cursor.TEXT;
+    }
+
+    public boolean canClickText(double mouseX, double mouseY) {
+        return isMouseOver(mouseX, mouseY);
     }
 }

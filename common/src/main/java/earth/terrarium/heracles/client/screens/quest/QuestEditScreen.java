@@ -9,23 +9,28 @@ import earth.terrarium.heracles.api.tasks.QuestTask;
 import earth.terrarium.heracles.api.tasks.QuestTaskType;
 import earth.terrarium.heracles.api.tasks.QuestTasks;
 import earth.terrarium.heracles.client.handlers.ClientQuests;
-import earth.terrarium.heracles.client.widgets.editor.TextEditor;
 import earth.terrarium.heracles.client.screens.quest.editing.QuestTextEditor;
 import earth.terrarium.heracles.client.screens.quest.rewards.RewardListWidget;
 import earth.terrarium.heracles.client.screens.quest.tasks.TaskListWidget;
 import earth.terrarium.heracles.client.widgets.modals.CreateObjectModal;
 import earth.terrarium.heracles.client.widgets.modals.EditObjectModal;
 import earth.terrarium.heracles.common.constants.ConstantComponents;
+import earth.terrarium.heracles.common.handlers.quests.QuestHandler;
 import earth.terrarium.heracles.common.menus.quest.QuestContent;
 import earth.terrarium.heracles.common.network.NetworkHandler;
 import earth.terrarium.heracles.common.network.packets.quests.OpenQuestPacket;
 import earth.terrarium.heracles.common.utils.ModUtils;
+import net.minecraft.ChatFormatting;
+import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.ImageButton;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.components.events.GuiEventListener;
+import net.minecraft.network.chat.Component;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
@@ -34,7 +39,7 @@ public class QuestEditScreen extends BaseQuestScreen {
 
     private TaskListWidget taskList;
     private RewardListWidget rewardList;
-    private TextEditor descriptionBox;
+    private QuestTextEditor descriptionBox;
 
     private CreateObjectModal createModal;
 
@@ -133,6 +138,15 @@ public class QuestEditScreen extends BaseQuestScreen {
 
         this.descriptionBox = new QuestTextEditor(contentX, contentY, contentWidth, contentHeight);
         this.descriptionBox.setContent(String.join("\n", this.quest().display().description()));
+
+        if (Minecraft.getInstance().isLocalServer()) {
+            addRenderableWidget(new ImageButton(this.width - 36, 1, 11, 11, 33, 59, 11, HEADING, 256, 256, (button) -> {
+                Path path = QuestHandler.getQuestPath(this.quest(), this.getQuestId());
+                if (path.toFile().isFile() && path.toFile().exists()) {
+                    Util.getPlatform().openFile(path.toFile());
+                }
+            })).setTooltip(Tooltip.create(ConstantComponents.OPEN_QUEST_FILE));
+        }
     }
 
     private <T extends QuestTask<?, ?, T>> void taskPopup(QuestTaskType<T> type, String id, @Nullable T task, Consumer<T> consumer) {
@@ -188,5 +202,13 @@ public class QuestEditScreen extends BaseQuestScreen {
     @Override
     public String getDescriptionError() {
         return null;
+    }
+
+    @Override
+    public @NotNull Component getTitle() {
+        return super.getTitle().copy()
+            .append(" - [")
+            .append(Component.literal(this.getQuestId() + ".json").withStyle(ChatFormatting.BLACK))
+            .append("]");
     }
 }

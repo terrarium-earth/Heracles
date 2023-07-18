@@ -2,6 +2,7 @@ package earth.terrarium.heracles.client;
 
 import com.mojang.blaze3d.platform.InputConstants;
 import earth.terrarium.heracles.Heracles;
+import earth.terrarium.heracles.client.handlers.ClientQuests;
 import earth.terrarium.heracles.client.handlers.DisplayConfig;
 import earth.terrarium.heracles.client.handlers.QuestTutorial;
 import earth.terrarium.heracles.client.screens.QuestTutorialScreen;
@@ -24,6 +25,8 @@ public class HeraclesClient {
         "key.categories.odyssey"
     );
 
+    public static String lastGroup = "";
+
     public static void init() {
         Heracles.setRegistryAccess(() -> {
             var connection = Minecraft.getInstance().getConnection();
@@ -40,16 +43,19 @@ public class HeraclesClient {
     }
 
     public static void openQuestScreen() {
+        if (!ClientQuests.groups().contains(lastGroup)) {
+            lastGroup = "";
+        }
         if (DisplayConfig.showTutorial) {
             if (!QuestTutorial.tutorialText().isBlank()) {
                 Minecraft.getInstance().setScreen(new QuestTutorialScreen());
             } else {
                 DisplayConfig.showTutorial = false;
                 DisplayConfig.save();
-                NetworkHandler.CHANNEL.sendToServer(new OpenGroupPacket("", false));
+                NetworkHandler.CHANNEL.sendToServer(new OpenGroupPacket(lastGroup, false));
             }
         } else {
-            NetworkHandler.CHANNEL.sendToServer(new OpenGroupPacket("", false));
+            NetworkHandler.CHANNEL.sendToServer(new OpenGroupPacket(lastGroup, false));
         }
     }
 

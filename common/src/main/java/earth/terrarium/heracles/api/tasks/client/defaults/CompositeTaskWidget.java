@@ -27,7 +27,7 @@ public final class CompositeTaskWidget implements DisplayWidget {
 
     private boolean isOpened = false;
 
-    public CompositeTaskWidget(CompositeTask task, TaskProgress<CollectionTag<Tag>> progress) {
+    public CompositeTaskWidget(String quest, CompositeTask task, TaskProgress<CollectionTag<Tag>> progress) {
         this.task = task;
         this.progress = progress;
         this.widgets = new ArrayList<>();
@@ -35,7 +35,7 @@ public final class CompositeTaskWidget implements DisplayWidget {
         for (QuestTask<?, ?, ?> value : task.tasks().values()) {
             TaskProgress<?> valueProgress = new TaskProgress<>(progress.progress().get(i), false);
             valueProgress.updateComplete(ModUtils.cast(value));
-            this.widgets.add(QuestTaskWidgets.create(ModUtils.cast(value), valueProgress));
+            this.widgets.add(QuestTaskWidgets.create(quest, ModUtils.cast(value), valueProgress));
             i++;
         }
     }

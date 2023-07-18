@@ -7,10 +7,10 @@ import net.minecraft.nbt.Tag;
 
 public interface QuestTaskWidgetFactory<I, S extends Tag, T extends QuestTask<I, S, T>> {
 
-    DisplayWidget create(T task, TaskProgress<S> progress);
+    DisplayWidget create(String quest, T task, TaskProgress<S> progress);
 
-    default DisplayWidget createAndCast(QuestTask<?, S, ?> task, TaskProgress<S> progress) {
-        return create(this.cast(task), progress);
+    default DisplayWidget createAndCast(String quest, QuestTask<?, S, ?> task, TaskProgress<S> progress) {
+        return create(quest, this.cast(task), progress);
     }
 
     @SuppressWarnings("unchecked")

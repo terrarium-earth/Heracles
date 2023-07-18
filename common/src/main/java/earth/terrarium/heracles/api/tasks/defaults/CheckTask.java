@@ -8,13 +8,13 @@ import earth.terrarium.heracles.api.tasks.storage.defaults.BooleanTaskStorage;
 import net.minecraft.nbt.ByteTag;
 import net.minecraft.resources.ResourceLocation;
 
-public record CheckTask(String id, String checkId) implements QuestTask<String, ByteTag, CheckTask> {
+public record CheckTask(String id) implements QuestTask<Void, ByteTag, CheckTask> {
 
     public static final QuestTaskType<CheckTask> TYPE = new Type();
 
     @Override
-    public ByteTag test(QuestTaskType<?> type, ByteTag progress, String input) {
-        return storage().of(progress, checkId.equals(input));
+    public ByteTag test(QuestTaskType<?> type, ByteTag progress, Void input) {
+        return storage().of(progress, true);
     }
 
     @Override
@@ -41,7 +41,7 @@ public record CheckTask(String id, String checkId) implements QuestTask<String, 
 
         @Override
         public Codec<CheckTask> codec(String id) {
-            return Codec.STRING.xmap(s -> new CheckTask(id, s), CheckTask::checkId);
+            return Codec.unit(new CheckTask(id));
         }
     }
 }

@@ -84,7 +84,7 @@ public class TaskListWidget extends AbstractContainerEventHandler implements Ren
         List<MutablePair<QuestTask<?, ?, ?>, DisplayWidget>> completed = new ArrayList<>();
         for (var task : tasks) {
             TaskProgress<?> taskProgress = this.progress.getTask(task);
-            DisplayWidget widget = QuestTaskWidgets.create(ModUtils.cast(task), taskProgress);
+            DisplayWidget widget = QuestTaskWidgets.create(this.questId, ModUtils.cast(task), taskProgress);
             if (widget != null) {
                 if (taskProgress.isComplete()) {
                     completed.add(new MutablePair<>(task, widget));
@@ -204,7 +204,7 @@ public class TaskListWidget extends AbstractContainerEventHandler implements Ren
     public void updateTask(QuestTask<?, ?, ?> task) {
         for (var pair : this.widgets) {
             if (pair.left != null && pair.left.id().equals(task.id())) {
-                var widget = QuestTaskWidgets.create(ModUtils.cast(task), this.progress.getTask(task));
+                var widget = QuestTaskWidgets.create(this.questId, ModUtils.cast(task), this.progress.getTask(task));
                 if (widget != null) {
                     pair.left = task;
                     pair.right = widget;

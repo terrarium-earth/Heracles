@@ -90,9 +90,10 @@ public abstract class AbstractQuestScreen<T> extends BaseCursorScreen {
         int center = drawSidebar() ?
             (int) ((this.width * 0.25f) + ((this.width * 0.75f) / 2f))
             : (int) (this.width / 2f);
+        Component title = getTitle();
         graphics.drawString(
             this.font,
-            this.title, (int) (center - (this.font.width(this.title) / 2f)), 3, 0x404040,
+            title, (int) (center - (this.font.width(title) / 2f)), 3, 0x404040,
             false
         );
     }
@@ -175,5 +176,10 @@ public abstract class AbstractQuestScreen<T> extends BaseCursorScreen {
 
     public boolean drawSidebar() {
         return true;
+    }
+
+    @Override
+    public boolean isPauseScreen() {
+        return false;
     }
 }

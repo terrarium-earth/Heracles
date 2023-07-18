@@ -58,7 +58,6 @@ public final class Settings {
         register(BlockInteractTask.TYPE, BlockInteractTaskSettings.INSTANCE);
         register(ItemInteractTask.TYPE, ItemInteractTaskSettings.INSTANCE);
         register(EntityInteractTask.TYPE, EntityInteractTaskSettings.INSTANCE);
-        register(CheckTask.TYPE, CheckTaskSettings.INSTANCE);
         register(DummyTask.TYPE, DummyTaskSettings.INSTANCE);
         register(XpTask.TYPE, XpTaskSettings.INSTANCE);
         register(StatTask.TYPE, StatTaskSettings.INSTANCE);

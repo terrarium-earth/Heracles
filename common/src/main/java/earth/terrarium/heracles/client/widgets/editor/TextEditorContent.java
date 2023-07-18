@@ -178,10 +178,14 @@ public class TextEditorContent {
     private void updateSelection(boolean selecting) {
         if (selecting) {
             if (selection == null) {
-                selection = new Vector2i(cursor);
+                setSelection(new Vector2i(cursor));
             }
         } else {
-            selection = null;
+            setSelection(null);
         }
+    }
+
+    public void setSelection(Vector2i selection) {
+        this.selection = selection;
     }
 }

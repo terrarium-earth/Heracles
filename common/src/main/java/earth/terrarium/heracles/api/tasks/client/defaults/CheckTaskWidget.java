@@ -21,7 +21,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
 public record CheckTaskWidget(
-    CheckTask task, TaskProgress<ByteTag> progress
+    String questId, CheckTask task, TaskProgress<ByteTag> progress
 ) implements DisplayWidget {
 
     private static final ResourceLocation BUTTON_TEXTURE = new ResourceLocation("textures/gui/widgets.png");
@@ -65,7 +65,7 @@ public record CheckTaskWidget(
         boolean buttonHovered = mouseX > width - 30 && mouseX < width - 10 && mouseY > buttonY && mouseY < buttonY + 20;
         if (buttonHovered && progress != null && !progress.isComplete()) {
             this.progress.setComplete(true);
-            NetworkHandler.CHANNEL.sendToServer(new CheckTaskPacket(task.checkId()));
+            NetworkHandler.CHANNEL.sendToServer(new CheckTaskPacket(this.questId, this.task.id()));
             return true;
         }
         return false;

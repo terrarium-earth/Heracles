@@ -12,7 +12,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 
-public record ManualItemTaskPacket() implements Packet<ManualItemTaskPacket> {
+public record ManualItemTaskPacket(String quest, String task) implements Packet<ManualItemTaskPacket> {
     public static final ResourceLocation ID = new ResourceLocation(Heracles.MOD_ID, "check_item");
     public static final PacketHandler<ManualItemTaskPacket> HANDLER = new Handler();
 
@@ -29,11 +29,14 @@ public record ManualItemTaskPacket() implements Packet<ManualItemTaskPacket> {
     public static class Handler implements PacketHandler<ManualItemTaskPacket> {
 
         @Override
-        public void encode(ManualItemTaskPacket message, FriendlyByteBuf buffer) {}
+        public void encode(ManualItemTaskPacket message, FriendlyByteBuf buffer) {
+            buffer.writeUtf(message.quest);
+            buffer.writeUtf(message.task);
+        }
 
         @Override
         public ManualItemTaskPacket decode(FriendlyByteBuf buffer) {
-            return new ManualItemTaskPacket();
+            return new ManualItemTaskPacket(buffer.readUtf(), buffer.readUtf());
         }
 
         @Override
@@ -41,7 +44,7 @@ public record ManualItemTaskPacket() implements Packet<ManualItemTaskPacket> {
             return (player, level) -> {
                 if (player instanceof ServerPlayer serverPlayer) {
                     QuestProgressHandler.getProgress(serverPlayer.getServer(), player.getUUID())
-                        .testAndProgressTaskType(serverPlayer, Pair.of(ItemStack.EMPTY, player.getInventory()), GatherItemTask.TYPE);
+                        .testAndProgressTask(serverPlayer, message.quest, message.task, Pair.of(ItemStack.EMPTY, player.getInventory()), GatherItemTask.TYPE);
                 }
             };
         }

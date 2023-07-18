@@ -2,6 +2,8 @@ package earth.terrarium.heracles.api.tasks;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
+import com.mojang.serialization.Encoder;
+import com.mojang.serialization.codecs.KeyDispatchCodec;
 import com.teamresourceful.resourcefullib.common.codecs.maps.DispatchMapCodec;
 import earth.terrarium.heracles.api.tasks.defaults.*;
 import net.minecraft.resources.ResourceLocation;
@@ -9,13 +11,26 @@ import net.minecraft.resources.ResourceLocation;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Function;
 
 public final class QuestTasks {
 
     private static final Map<ResourceLocation, QuestTaskType<?>> TYPES = new HashMap<>();
 
     public static final Codec<QuestTaskType<?>> TYPE_CODEC = ResourceLocation.CODEC.comapFlatMap(QuestTasks::decode, QuestTaskType::id);
-    public static final Codec<Map<String, QuestTask<?, ?, ?>>> CODEC = DispatchMapCodec.of(Codec.STRING, id -> TYPE_CODEC.dispatch(QuestTask::type, type -> type.codec(id)));
+    public static final Codec<Map<String, QuestTask<?, ?, ?>>> CODEC = DispatchMapCodec.of(Codec.STRING, id -> of("type", TYPE_CODEC,
+        quest -> DataResult.success(quest.type()),
+        type -> DataResult.success(type.codec(id))
+    ).codec());
+
+    public static KeyDispatchCodec<QuestTaskType<?>, QuestTask<?, ?, ?>> of(final String typeKey, final Codec<QuestTaskType<?>> keyCodec, final Function<? super QuestTask<?, ?, ?>, ? extends DataResult<? extends QuestTaskType<?>>> type, final Function<? super QuestTaskType<?>, ? extends DataResult<? extends Codec<? extends QuestTask<?, ?, ?>>>> codec) {
+        return KeyDispatchCodec.unsafe(typeKey, keyCodec, type, codec, v -> getCodec(type, codec, v));
+    }
+
+    @SuppressWarnings("unchecked")
+    private static <K, V> DataResult<? extends Encoder<V>> getCodec(final Function<? super V, ? extends DataResult<? extends K>> type, final Function<? super K, ? extends DataResult<? extends Encoder<? extends V>>> encoder, final V input) {
+        return type.apply(input).<Encoder<? extends V>>flatMap(k -> encoder.apply(k).map(Function.identity())).map(c -> ((Encoder<V>) c));
+    }
 
     private static DataResult<? extends QuestTaskType<?>> decode(ResourceLocation id) {
         return Optional.ofNullable(TYPES.get(id))

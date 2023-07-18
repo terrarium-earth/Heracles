@@ -30,11 +30,13 @@ public final class ItemTaskWidget implements DisplayWidget {
     private static final String DESC_SINGULAR = "task.heracles.item.desc.singular";
     private static final String DESC_PLURAL = "task.heracles.item.desc.plural";
 
+    private final String quest;
     private final GatherItemTask task;
     private final TaskProgress<NumericTag> progress;
     private final List<ItemStack> stacks;
 
-    public ItemTaskWidget(GatherItemTask task, TaskProgress<NumericTag> progress) {
+    public ItemTaskWidget(String quest, GatherItemTask task, TaskProgress<NumericTag> progress) {
+        this.quest = quest;
         this.task = task;
         this.progress = progress;
         this.stacks = task.item().getValue().map(
@@ -83,7 +85,7 @@ public final class ItemTaskWidget implements DisplayWidget {
             int buttonY = getHeight(width) - 19;
             boolean buttonHovered = mouseX > width - 2 - font.width(ConstantComponents.Tasks.CHECK) && mouseX < width - 2 && mouseY > buttonY && mouseY < buttonY + font.lineHeight;
             if (buttonHovered) {
-                NetworkHandler.CHANNEL.sendToServer(new ManualItemTaskPacket());
+                NetworkHandler.CHANNEL.sendToServer(new ManualItemTaskPacket(this.quest, this.task.id()));
 
                 if (Minecraft.getInstance().player != null) {
                     progress.addProgress(GatherItemTask.TYPE, task, Pair.of(ItemStack.EMPTY, Minecraft.getInstance().player.getInventory()));

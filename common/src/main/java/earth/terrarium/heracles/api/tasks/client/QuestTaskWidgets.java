@@ -17,6 +17,10 @@ public final class QuestTaskWidgets {
 
     private static final Map<QuestTaskType<?>, QuestTaskWidgetFactory<?, ?, ?>> FACTORIES = new IdentityHashMap<>();
 
+    public static <I, S extends Tag, T extends QuestTask<I, S, T>> void register(QuestTaskType<T> type, QuestTaskWidgetSimpleFactory<I, S, T> factory) {
+        FACTORIES.put(type, factory);
+    }
+
     public static <I, S extends Tag, T extends QuestTask<I, S, T>> void register(QuestTaskType<T> type, QuestTaskWidgetFactory<I, S, T> factory) {
         FACTORIES.put(type, factory);
     }
@@ -30,8 +34,8 @@ public final class QuestTaskWidgets {
     }
 
     @Nullable
-    public static <T extends Tag> DisplayWidget create(QuestTask<?, T, ?> task, TaskProgress<T> progress) {
-        return Optionull.map(getFactory(task.type()), factory -> factory.createAndCast(task, progress));
+    public static <T extends Tag> DisplayWidget create(String quest, QuestTask<?, T, ?> task, TaskProgress<T> progress) {
+        return Optionull.map(getFactory(task.type()), factory -> factory.createAndCast(quest, task, progress));
     }
 
     static {
@@ -51,5 +55,14 @@ public final class QuestTaskWidgets {
         register(XpTask.TYPE, XpTaskWidget::new);
         register(LocationTask.TYPE, LocationTaskWidget::new);
         register(StatTask.TYPE, StatTaskWidget::new);
+    }
+
+    public interface QuestTaskWidgetSimpleFactory<I, S extends Tag, T extends QuestTask<I, S, T>> extends QuestTaskWidgetFactory<I, S, T> {
+        DisplayWidget create(T task, TaskProgress<S> progress);
+
+        @Override
+        default DisplayWidget create(String quest, T task, TaskProgress<S> progress) {
+            return create(task, progress);
+        }
     }
 }

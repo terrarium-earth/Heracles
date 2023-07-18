@@ -51,11 +51,37 @@ public record QuestsProgress(Map<String, QuestProgress> progress, CompletableQue
 
 
         this.completableQuests.updateCompleteQuests(this);
+        syncToTeam(player, editedQuests);
+    }
 
+    public <I, T extends QuestTask<I, ?, T>> boolean testAndProgressTask(ServerPlayer player, String id, String task, I input, QuestTaskType<T> taskType) {
+        List<String> completableQuests = this.completableQuests.getQuests(this);
+        if (!completableQuests.contains(id)) return false;
+        QuestProgress questProgress = getProgress(id);
+        Quest quest = QuestHandler.get(id);
+        if (quest == null) return false;
+        QuestTask<?, ?, ?> questTask = quest.tasks().get(task);
+        if (questTask == null) return false;
+        if (!questTask.isCompatibleWith(taskType)) return false;
+        TaskProgress<?> progress = questProgress.getTask(questTask);
+        if (progress.isComplete()) return false;
+        progress.addProgress(taskType, ModUtils.cast(questTask), input);
+        questProgress.update(quest);
+        this.progress.put(id, questProgress);
+        if (questProgress.isComplete()) {
+            sendOutQuestComplete(player, id);
+        }
+        PinnedQuestHandler.syncIfChanged(player, List.of(id));
+        this.completableQuests.updateCompleteQuests(this);
+        syncToTeam(player, List.of(Pair.of(id, quest)));
+        return true;
+    }
+
+    private void syncToTeam(ServerPlayer player, List<Pair<String, Quest>> quests) {
         TeamProviders.getMembers(player)
             .forEach(member -> {
                 QuestsProgress memberProgress = QuestProgressHandler.getProgress(player.server, member);
-                for (var quest : editedQuests) {
+                for (var quest : quests) {
                     if (quest.getSecond().settings().individualProgress()) continue;
                     var currentProgress = memberProgress.progress().get(quest.getFirst());
                     var questProgress = progress.get(quest.getFirst());

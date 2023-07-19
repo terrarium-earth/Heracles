@@ -152,28 +152,40 @@ public class QuestEditScreen extends BaseQuestScreen {
     private <T extends QuestTask<?, ?, T>> void taskPopup(QuestTaskType<T> type, String id, @Nullable T task, Consumer<T> consumer) {
         SettingInitializer<?> setting = Settings.getFactory(type);
         if (setting == null) return;
-        EditObjectModal widget = findOrCreateEditWidget();
 
         SettingInitializer.CreationData data = setting.create(ModUtils.cast(task));
-        widget.init(type.id(), data, savedData -> {
-            var newTask = setting.create(id, ModUtils.cast(task), savedData);
+        if (data.isEmpty()) {
+            var newTask = setting.create(id, ModUtils.cast(task), new SettingInitializer.Data());
             if (newTask == null) return;
             consumer.accept(ModUtils.cast(newTask));
-        });
-        widget.setTitle(ConstantComponents.Tasks.EDIT);
+        } else {
+            EditObjectModal widget = findOrCreateEditWidget();
+            widget.init(type.id(), data, savedData -> {
+                var newTask = setting.create(id, ModUtils.cast(task), savedData);
+                if (newTask == null) return;
+                consumer.accept(ModUtils.cast(newTask));
+            });
+            widget.setTitle(ConstantComponents.Tasks.EDIT);
+        }
     }
 
     private <T extends QuestReward<T>> void rewardPopup(QuestRewardType<T> type, String id, @Nullable T reward, Consumer<T> consumer) {
         SettingInitializer<?> setting = Settings.getFactory(type);
         if (setting == null) return;
-        EditObjectModal widget = findOrCreateEditWidget();
         SettingInitializer.CreationData data = setting.create(ModUtils.cast(reward));
-        widget.init(type.id(), data, savedData -> {
-            var newReward = setting.create(id, ModUtils.cast(reward), savedData);
+        if (data.isEmpty()) {
+            var newReward = setting.create(id, ModUtils.cast(reward), new SettingInitializer.Data());
             if (newReward == null) return;
             consumer.accept(ModUtils.cast(newReward));
-        });
-        widget.setTitle(ConstantComponents.Rewards.EDIT);
+        } else {
+            EditObjectModal widget = findOrCreateEditWidget();
+            widget.init(type.id(), data, savedData -> {
+                var newReward = setting.create(id, ModUtils.cast(reward), savedData);
+                if (newReward == null) return;
+                consumer.accept(ModUtils.cast(newReward));
+            });
+            widget.setTitle(ConstantComponents.Rewards.EDIT);
+        }
     }
 
     @Override

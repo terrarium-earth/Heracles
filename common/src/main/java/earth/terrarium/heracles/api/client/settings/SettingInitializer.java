@@ -30,6 +30,10 @@ public interface SettingInitializer<T> {
         public Renderable get(int width, String id) {
             return data.get(id).getSecond().createWidget(width, ModUtils.cast(data.get(id).getFirst()));
         }
+
+        public boolean isEmpty() {
+            return data.isEmpty();
+        }
     }
 
     record Data(Map<String, Renderable> settings) {

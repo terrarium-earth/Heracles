@@ -12,6 +12,8 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 
+import java.util.Optional;
+
 public record ManualItemTaskPacket(String quest, String task) implements Packet<ManualItemTaskPacket> {
     public static final ResourceLocation ID = new ResourceLocation(Heracles.MOD_ID, "check_item");
     public static final PacketHandler<ManualItemTaskPacket> HANDLER = new Handler();
@@ -44,7 +46,7 @@ public record ManualItemTaskPacket(String quest, String task) implements Packet<
             return (player, level) -> {
                 if (player instanceof ServerPlayer serverPlayer) {
                     QuestProgressHandler.getProgress(serverPlayer.getServer(), player.getUUID())
-                        .testAndProgressTask(serverPlayer, message.quest, message.task, Pair.of(ItemStack.EMPTY, player.getInventory()), GatherItemTask.TYPE);
+                        .testAndProgressTask(serverPlayer, message.quest, message.task, Pair.of(Optional.empty(), player.getInventory()), GatherItemTask.TYPE);
                 }
             };
         }

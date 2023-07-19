@@ -24,6 +24,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
 import java.util.List;
+import java.util.Optional;
 
 public final class ItemTaskWidget implements DisplayWidget {
 
@@ -88,7 +89,7 @@ public final class ItemTaskWidget implements DisplayWidget {
                 NetworkHandler.CHANNEL.sendToServer(new ManualItemTaskPacket(this.quest, this.task.id()));
 
                 if (Minecraft.getInstance().player != null) {
-                    progress.addProgress(GatherItemTask.TYPE, task, Pair.of(ItemStack.EMPTY, Minecraft.getInstance().player.getInventory()));
+                    progress.addProgress(GatherItemTask.TYPE, task, Pair.of(Optional.empty(), Minecraft.getInstance().player.getInventory()));
                 }
                 return true;
             }

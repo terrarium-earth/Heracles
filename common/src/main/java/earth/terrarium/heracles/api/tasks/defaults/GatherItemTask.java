@@ -21,20 +21,24 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public record GatherItemTask(
     String id, RegistryValue<Item> item, NbtPredicate nbt, int target, CollectionType collectionType
-) implements PairQuestTask<ItemStack, Container, NumericTag, GatherItemTask> {
+) implements PairQuestTask<Optional<ItemStack>, Container, NumericTag, GatherItemTask> {
 
     public static final QuestTaskType<GatherItemTask> TYPE = new Type();
 
     @Override
-    public NumericTag test(QuestTaskType<?> type, NumericTag progress, ItemStack stack, Container container) {
+    public NumericTag test(QuestTaskType<?> type, NumericTag progress, Optional<ItemStack> stack, Container container) {
         if (this.collectionType == CollectionType.MANUAL) {
-            return manual(progress, container);
-        }
-        if (this.item.is(stack.getItemHolder()) && nbt.matches(stack)) {
-            return automatic(progress, container);
+            if (stack.isEmpty()) {
+                return manual(progress, container);
+            }
+        } else if (stack.isPresent()) {
+            if (this.item.is(stack.get().getItemHolder()) && nbt.matches(stack.get())) {
+                return automatic(progress, container);
+            }
         }
         return progress;
     }

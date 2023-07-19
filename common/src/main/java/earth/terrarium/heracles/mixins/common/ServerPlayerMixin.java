@@ -23,6 +23,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.util.Collection;
+import java.util.Optional;
 
 @Mixin(ServerPlayer.class)
 public abstract class ServerPlayerMixin {
@@ -52,7 +53,7 @@ public abstract class ServerPlayerMixin {
     public void heracles$onItemPickup(ItemEntity itemEntity, CallbackInfo ci) {
         ServerPlayer player = (ServerPlayer) (Object) this;
         QuestsProgress progress = QuestProgressHandler.getProgress(server, player.getUUID());
-        progress.testAndProgressTaskType(player, Pair.of(itemEntity.getItem(), player.getInventory()), GatherItemTask.TYPE);
+        progress.testAndProgressTaskType(player, Pair.of(Optional.of(itemEntity.getItem()), player.getInventory()), GatherItemTask.TYPE);
     }
 
     @Inject(

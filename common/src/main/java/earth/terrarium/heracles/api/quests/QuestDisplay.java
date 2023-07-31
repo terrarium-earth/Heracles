@@ -122,7 +122,7 @@ public final class QuestDisplay {
         return new QuestDisplay(
             new ItemQuestIcon(Items.MAP),
             DEFAULT_BACKGROUND,
-            Component.literal("New quest"),
+            Component.literal("New Quest"),
             CommonComponents.EMPTY,
             List.of(),
             Map.of(display.id(), display)

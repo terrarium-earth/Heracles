@@ -165,7 +165,7 @@ public class Dropdown<T> extends AbstractWidget implements Renderable {
     }
 
     private void move(double amount) {
-        this.scrollAmount = Mth.clamp(this.scrollAmount + amount, 0.0D, Math.max(0, (options.size() * 10) - (MAX_OPTIONS_SHOWN * 10)));
+        this.scrollAmount = Mth.clamp(this.scrollAmount - amount, 0.0D, Math.max(0, (options.size() * 10) - (MAX_OPTIONS_SHOWN * 10)));
     }
 
     @Override

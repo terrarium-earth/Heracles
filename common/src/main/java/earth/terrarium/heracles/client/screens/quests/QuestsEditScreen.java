@@ -24,6 +24,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.ImageButton;
 import net.minecraft.client.gui.components.Tooltip;
+import net.minecraft.network.chat.Component;
 import net.minecraft.util.Unit;
 import org.joml.Vector2i;
 
@@ -107,7 +108,8 @@ public class QuestsEditScreen extends QuestsScreen {
             QuestDisplay display = QuestDisplay.createDefault(new GroupDisplay(
                 this.content.group(),
                 new Vector2i((int) local.x() - 12, (int) local.y() - 12)
-            ), text);
+            ));
+            display.setTitle(Component.literal(text));
             Quest quest = new Quest(
                 display,
                 QuestSettings.createDefault(),

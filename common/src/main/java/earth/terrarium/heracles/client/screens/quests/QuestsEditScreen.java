@@ -107,7 +107,7 @@ public class QuestsEditScreen extends QuestsScreen {
             QuestDisplay display = QuestDisplay.createDefault(new GroupDisplay(
                 this.content.group(),
                 new Vector2i((int) local.x() - 12, (int) local.y() - 12)
-            ));
+            ), text);
             Quest quest = new Quest(
                 display,
                 QuestSettings.createDefault(),

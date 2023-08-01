@@ -3,12 +3,12 @@ package earth.terrarium.heracles.common.handlers.quests;
 import com.google.common.collect.HashBiMap;
 import com.google.gson.JsonObject;
 import com.mojang.logging.LogUtils;
-import com.mojang.realmsclient.client.FileDownload;
 import com.mojang.serialization.JsonOps;
 import com.teamresourceful.resourcefullib.common.lib.Constants;
 import com.teamresourceful.resourcefullib.common.utils.FileUtils;
 import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.api.quests.Quest;
+import earth.terrarium.heracles.common.utils.ModUtils;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.RegistryOps;
 import org.slf4j.Logger;
@@ -30,11 +30,13 @@ public class QuestHandler {
     private static boolean dirty;
 
     public static void load(RegistryAccess access, Path path) {
+        LOGGER.info("Loading quests");
         Path heraclesPath = path.resolve(Heracles.MOD_ID);
         QuestHandler.lastPath = heraclesPath;
         Path questsPath = heraclesPath.resolve("quests");
         try {
             Files.createDirectories(questsPath);
+            QUESTS.clear();
             FileUtils.streamFilesAndParse(questsPath, (reader, id) -> load(access, reader, id), FileUtils::isJson);
         } catch (Exception e) {
             LOGGER.error("Failed to load quests", e);
@@ -83,6 +85,7 @@ public class QuestHandler {
                 File file = new File(questsPath.toFile(), pickQuestPath(entry.getValue()) + "/" + entry.getKey() + ".json");
                 String json = Constants.PRETTY_GSON.toJson(Quest.CODEC.encodeStart(RegistryOps.create(JsonOps.INSTANCE, Heracles.getRegistryAccess()), entry.getValue())
                     .getOrThrow(false, LOGGER::error));
+                file.getParentFile().mkdirs();
                 org.apache.commons.io.FileUtils.write(file, json, StandardCharsets.UTF_8);
             }
         } catch (Exception e) {
@@ -95,7 +98,7 @@ public class QuestHandler {
         if (groups.isEmpty()) {
             return "main";
         }
-        return FileDownload.findAvailableFolderName(groups.stream()
+        return ModUtils.findAvailableFolderName(groups.stream()
             .map(s -> s.toLowerCase(Locale.ROOT))
             .map(s -> s.replaceAll("[^a-z0-9]", ""))
             .filter(Predicate.not(String::isBlank))

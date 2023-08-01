@@ -25,6 +25,8 @@ import java.util.Map;
 
 public class ModUtils {
 
+    private static final String[] INVALID_FILE_NAMES = new String[]{"CON", "COM", "PRN", "AUX", "CLOCK$", "NUL", "COM1", "COM2", "COM3", "COM4", "COM5", "COM6", "COM7", "COM8", "COM9", "LPT1", "LPT2", "LPT3", "LPT4", "LPT5", "LPT6", "LPT7", "LPT8", "LPT9"};
+
     public static final Codec<Vector2i> VECTOR2I = Codec.INT
         .listOf()
         .comapFlatMap(
@@ -112,5 +114,16 @@ public class ModUtils {
         COMPLETED,
         IN_PROGRESS,
         LOCKED
+    }
+
+    public static String findAvailableFolderName(String folderName) {
+        folderName = folderName.replaceAll("[\\./\"]", "_");
+        for (String string : INVALID_FILE_NAMES) {
+            if (folderName.equalsIgnoreCase(string)) {
+                folderName = "_" + folderName + "_";
+            }
+        }
+
+        return folderName;
     }
 }

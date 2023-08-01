@@ -10,6 +10,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.nbt.ByteTag;
+import net.minecraft.network.chat.CommonComponents;
 
 public record DummyTaskWidget(
     DummyTask task, TaskProgress<ByteTag> progress
@@ -28,7 +29,7 @@ public record DummyTaskWidget(
         );
         graphics.drawString(
             font,
-            this.task.description(), x + iconSize + 10, y + 7 + font.lineHeight, 0xFF808080,
+            this.task.description() == null ? CommonComponents.EMPTY : this.task.description(), x + iconSize + 10, y + 7 + font.lineHeight, 0xFF808080,
             false
         );
         WidgetUtils.drawProgressText(graphics, x, y, width, this.task, this.progress);

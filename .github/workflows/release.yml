@@ -74,11 +74,12 @@ jobs:
           version: ${{ steps.properties.outputs.version }}
           version-type: release
           changelog-file: changelog.md
-          loaders: forge
+          loaders: fabric
           game-versions: ${{ steps.properties.outputs.minecraftVersion }}
           version-resolver: exact
 
           dependencies: |
+            fabric-api | depends | *
             resourceful-lib | depends | *
 
       - name: Generate Discord Embed
@@ -88,4 +89,4 @@ jobs:
         uses: tsickert/discord-webhook@v5.3.0
         with:
           webhook-url: ${{ secrets.WEBHOOK_URL }}
-          raw-data: ./build/release_embed.json
+          raw-data: ./build/embed.json

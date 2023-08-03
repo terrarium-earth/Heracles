@@ -5,8 +5,10 @@ import com.teamresourceful.resourcefullib.common.networking.base.PacketContext;
 import com.teamresourceful.resourcefullib.common.networking.base.PacketHandler;
 import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.client.ModScreens;
+import earth.terrarium.heracles.common.handlers.quests.QuestHandler;
 import earth.terrarium.heracles.common.menus.quests.QuestsContent;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
 public record OpenQuestsScreenPacket(boolean editing, QuestsContent content) implements Packet<OpenQuestsScreenPacket> {
@@ -42,6 +44,11 @@ public record OpenQuestsScreenPacket(boolean editing, QuestsContent content) imp
         @Override
         public PacketContext handle(OpenQuestsScreenPacket message) {
             return (player, level) -> {
+                if (QuestHandler.failedToLoad) {
+                    player.sendSystemMessage(Component.literal("Failed to load quests, check the logs for more information."));
+                    player.sendSystemMessage(Component.literal("Manually fix and reload the quests by running /reload"));
+                    return;
+                }
                 if (message.editing) {
                     ModScreens.openEditQuestsScreen(message.content);
                 } else {

@@ -6,14 +6,15 @@
     "mixins": [
         "common.ChangeDimensionTriggerMixin",
         "common.PlayerListMixin",
+        "common.PlayerMixin",
         "common.ReloadableServerResourcesMixin",
         "common.ServerPlayerMixin"
     ],
     "client": [
-        "client.InternalKeyPressedScreen",
-        "client.ScreenMixin",
         "client.FontManagerAccessor",
-        "client.MinecraftAccessor"
+        "client.InternalKeyPressedScreen",
+        "client.MinecraftAccessor",
+        "client.ScreenMixin"
     ],
     "injectors": {
         "defaultRequire": 1

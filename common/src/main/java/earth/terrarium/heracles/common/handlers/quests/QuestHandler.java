@@ -29,27 +29,38 @@ public class QuestHandler {
     private static Path lastPath;
     private static boolean dirty;
 
+    public static boolean failedToLoad;
+
     public static void load(RegistryAccess access, Path path) {
+        failedToLoad = false;
         LOGGER.info("Loading quests");
         Path heraclesPath = path.resolve(Heracles.MOD_ID);
         QuestHandler.lastPath = heraclesPath;
         Path questsPath = heraclesPath.resolve("quests");
+        Map<String, Quest> tempQuests = new HashMap<>();
         try {
             Files.createDirectories(questsPath);
-            QUESTS.clear();
-            FileUtils.streamFilesAndParse(questsPath, (reader, id) -> load(access, reader, id), FileUtils::isJson);
+            FileUtils.streamFilesAndParse(questsPath, (reader, id) -> load(access, reader, id, tempQuests), FileUtils::isJson);
         } catch (Exception e) {
             LOGGER.error("Failed to load quests", e);
+            LOGGER.error("Quests reverted to last known good state");
+            failedToLoad = true;
+            return;
+        }
+        QUESTS.clear();
+        QUESTS.putAll(tempQuests);
+        for (Quest value : QUESTS.values()) {
+            value.dependencies().removeIf(Predicate.not(QUESTS::containsKey));
         }
         loadGroups(heraclesPath.resolve("groups.txt").toFile());
     }
 
-    private static void load(RegistryAccess access, Reader reader, String id) {
+    private static void load(RegistryAccess access, Reader reader, String id, Map<String, Quest> quests) {
         try {
             JsonObject element = Constants.PRETTY_GSON.fromJson(reader, JsonObject.class);
             Quest quest = Quest.CODEC.parse(RegistryOps.create(JsonOps.INSTANCE, access), element).getOrThrow(false, LOGGER::error);
             quest.dependencies().remove(id); // Remove self from dependencies
-            QUESTS.put(id, quest);
+            quests.put(id, quest);
         } catch (Exception e) {
             LOGGER.error("Failed to load quest " + id, e);
         }
@@ -78,15 +89,33 @@ public class QuestHandler {
             return;
         }
         dirty = false;
+        if (failedToLoad) {
+            LOGGER.error("Failed to load initial quests, not saving");
+            return;
+        }
         Path questsPath = lastPath.resolve("quests");
+        Set<Path> filesWritten = new HashSet<>();
         try {
-            org.apache.commons.io.FileUtils.deleteDirectory(questsPath.toFile());
             for (Map.Entry<String, Quest> entry : QUESTS.entrySet()) {
-                File file = new File(questsPath.toFile(), pickQuestPath(entry.getValue()) + "/" + entry.getKey() + ".json");
-                String json = Constants.PRETTY_GSON.toJson(Quest.CODEC.encodeStart(RegistryOps.create(JsonOps.INSTANCE, Heracles.getRegistryAccess()), entry.getValue())
-                    .getOrThrow(false, LOGGER::error));
-                file.getParentFile().mkdirs();
-                org.apache.commons.io.FileUtils.write(file, json, StandardCharsets.UTF_8);
+                try {
+                    File file = new File(questsPath.toFile(), pickQuestPath(entry.getValue()) + "/" + entry.getKey() + ".json");
+                    filesWritten.add(file.toPath());
+                    String json = Constants.PRETTY_GSON.toJson(Quest.CODEC.encodeStart(RegistryOps.create(JsonOps.INSTANCE, Heracles.getRegistryAccess()), entry.getValue())
+                        .getOrThrow(false, LOGGER::error));
+                    file.getParentFile().mkdirs();
+                    org.apache.commons.io.FileUtils.write(file, json, StandardCharsets.UTF_8);
+                }catch (Exception e) {
+                    LOGGER.error("Failed to save quest " + entry.getKey(), e);
+                }
+            }
+
+            try (var files = Files.walk(questsPath)) {
+                files.filter(Predicate.not(Files::isDirectory))
+                    .filter(path -> path.endsWith(".json"))
+                    .filter(path -> !filesWritten.contains(path))
+                    .forEach(path -> path.toFile().delete());
+            }catch (Exception e) {
+                LOGGER.error("Failed to delete unused quest files", e);
             }
         } catch (Exception e) {
             LOGGER.error("Failed to save quests", e);

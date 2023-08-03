@@ -22,9 +22,9 @@ public class MarkdownParser {
                 state = null;
             }
             if (trimedText.startsWith("# ")) {
-                builder.add("<h1>" + line.substring(2) + "</h1>");
+                builder.add("<h1>" + xmlEncode(line.substring(2)) + "</h1>");
             } else if (trimedText.startsWith("## ")) {
-                builder.add("<h2>" + line.substring(3) + "</h2>");
+                builder.add("<h2>" + xmlEncode(line.substring(3)) + "</h2>");
             } else if (trimedText.equals("---")) {
                 builder.add("<hr/>");
             } else if (trimedText.startsWith("- ")) {
@@ -32,7 +32,7 @@ public class MarkdownParser {
                     state = State.LIST;
                     builder.add("<ul>");
                 }
-                builder.add("<li>" + line.substring(2) + "</li>");
+                builder.add("<li>" + xmlEncode(line.substring(2)) + "</li>");
             } else if (trimedText.startsWith("> ")) {
                 if (state == null) {
                     state = State.BLOCKQUOTE;
@@ -43,13 +43,21 @@ public class MarkdownParser {
                 builder.add(line);
             } else {
                 String json = Component.Serializer.toJson(parseTextToComponent(line));
-                builder.add("<component>" + json + "</component>");
+                builder.add("<component>" + xmlEncode(json) + "</component>");
             }
         }
         if (state != null) {
             builder.add(state.end);
         }
         return builder;
+    }
+
+    private static String xmlEncode(String text) {
+        return text.replaceAll("&(?![^;]+;)", "&amp;")
+            .replace("<", "&lt;")
+            .replace(">", "&gt;")
+            .replace("\"", "&quot;")
+            .replace("'", "&apos;");
     }
 
     public static MutableComponent parseTextToComponent(String text) {

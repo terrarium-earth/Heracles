@@ -143,7 +143,10 @@ public class SelectQuestWidget extends BaseWidget {
                         QuestSettingsInitalizer.INSTANCE.create(settings),
                         data -> updateQuest(quest -> {
                             QuestSettings questSettings = QuestSettingsInitalizer.INSTANCE.create("quest", settings, data);
-                            return NetworkQuestData.builder().individualProgress(questSettings.individualProgress()).hidden(questSettings.hidden());
+                            return NetworkQuestData.builder()
+                                .individualProgress(questSettings.individualProgress())
+                                .hidden(questSettings.hidden())
+                                .unlockNotification(questSettings.unlockNotification());
                         })
                     );
                     edit.setTitle(Component.literal("Edit Quest Settings"));

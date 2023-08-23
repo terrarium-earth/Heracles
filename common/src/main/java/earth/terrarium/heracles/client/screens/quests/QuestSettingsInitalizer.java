@@ -14,6 +14,7 @@ public class QuestSettingsInitalizer implements SettingInitializer<QuestSettings
         CreationData settings = new CreationData();
         settings.put("individual_progress", BooleanSetting.FALSE, object != null && object.individualProgress());
         settings.put("hidden", BooleanSetting.FALSE, object != null && object.hidden());
+        settings.put("unlock_notification", BooleanSetting.FALSE, object != null && object.unlockNotification());
         return settings;
     }
 
@@ -21,7 +22,8 @@ public class QuestSettingsInitalizer implements SettingInitializer<QuestSettings
     public QuestSettings create(String id, QuestSettings object, Data data) {
         return new QuestSettings(
             data.get("individual_progress", BooleanSetting.FALSE).orElse(object != null && object.individualProgress()),
-            data.get("hidden", BooleanSetting.FALSE).orElse(object != null && object.hidden())
+            data.get("hidden", BooleanSetting.FALSE).orElse(object != null && object.hidden()),
+            data.get("unlock_notification", BooleanSetting.FALSE).orElse(object != null && object.unlockNotification())
         );
     }
 }

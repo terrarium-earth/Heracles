@@ -5,6 +5,7 @@ import com.teamresourceful.resourcefullib.common.networking.base.NetworkDirectio
 import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.common.network.packets.QuestCompletedPacket;
 import earth.terrarium.heracles.common.network.packets.QuestRewardClaimedPacket;
+import earth.terrarium.heracles.common.network.packets.QuestUnlockedPacket;
 import earth.terrarium.heracles.common.network.packets.groups.CreateGroupPacket;
 import earth.terrarium.heracles.common.network.packets.groups.DeleteGroupPacket;
 import earth.terrarium.heracles.common.network.packets.groups.OpenGroupPacket;
@@ -33,6 +34,7 @@ public class NetworkHandler {
         CHANNEL.registerPacket(NetworkDirection.SERVER_TO_CLIENT, ClientboundAddQuestPacket.ID, ClientboundAddQuestPacket.HANDLER, ClientboundAddQuestPacket.class);
         CHANNEL.registerPacket(NetworkDirection.SERVER_TO_CLIENT, ClientboundRemoveQuestPacket.ID, ClientboundRemoveQuestPacket.HANDLER, ClientboundRemoveQuestPacket.class);
         CHANNEL.registerPacket(NetworkDirection.SERVER_TO_CLIENT, ClientboundUpdateQuestPacket.ID, ClientboundUpdateQuestPacket.HANDLER, ClientboundUpdateQuestPacket.class);
+        CHANNEL.registerPacket(NetworkDirection.SERVER_TO_CLIENT, QuestUnlockedPacket.ID, QuestUnlockedPacket.HANDLER, QuestUnlockedPacket.class);
 
         CHANNEL.registerPacket(NetworkDirection.CLIENT_TO_SERVER, OpenGroupPacket.ID, OpenGroupPacket.HANDLER, OpenGroupPacket.class);
         CHANNEL.registerPacket(NetworkDirection.CLIENT_TO_SERVER, OpenQuestPacket.ID, OpenQuestPacket.HANDLER, OpenQuestPacket.class);

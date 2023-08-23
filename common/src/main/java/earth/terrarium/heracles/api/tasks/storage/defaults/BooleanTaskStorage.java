@@ -22,6 +22,11 @@ public final class BooleanTaskStorage implements TaskStorage<Boolean, ByteTag> {
         return readBoolean(tag);
     }
 
+    @Override
+    public boolean same(Tag tag1, Tag tag2) {
+        return readBoolean(tag1) == readBoolean(tag2);
+    }
+
     public boolean readBoolean(Tag tag) {
         return tag instanceof NumericTag numericTag && numericTag.getAsByte() == 1;
     }

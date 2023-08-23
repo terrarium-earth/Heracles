@@ -9,12 +9,14 @@ import java.util.Optional;
 
 public record NetworkQuestSettingsData(
     Optional<Boolean> individualProgress,
-    Optional<Boolean> hidden
+    Optional<Boolean> hidden,
+    Optional<Boolean> unlockNotification
 ) {
 
     public static final ByteCodec<NetworkQuestSettingsData> CODEC = ObjectByteCodec.create(
         ByteCodec.BOOLEAN.optionalFieldOf(NetworkQuestSettingsData::individualProgress),
         ByteCodec.BOOLEAN.optionalFieldOf(NetworkQuestSettingsData::hidden),
+        ByteCodec.BOOLEAN.optionalFieldOf(NetworkQuestSettingsData::unlockNotification),
         NetworkQuestSettingsData::new
     );
 
@@ -22,5 +24,6 @@ public record NetworkQuestSettingsData(
         QuestSettings settings = quest.settings();
         individualProgress.ifPresent(settings::setIndividualProgress);
         hidden.ifPresent(settings::setHidden);
+        unlockNotification.ifPresent(settings::setUnlockNotification);
     }
 }

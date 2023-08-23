@@ -8,6 +8,9 @@
     "quest.heracles.toast": "Quest Complete!",
     "quest.heracles.toast.desc": "Press [%s] to open",
 
+    "quest_unlocked.heracles.toast": "Quest Unlocked!",
+    "quest_unlocked.heracles.toast.desc": "Press [%s] to open",
+
     "quest.heracles.tutorial.title": "Discover Quests!",
     "quest.heracles.tutorial.desc": "Press [%s] to open",
 
@@ -50,6 +53,7 @@
 
     "setting.heracles.quest.individual_progress": "Individual Progress",
     "setting.heracles.quest.hidden": "Prerequisite Hidden",
+    "setting.heracles.quest.unlock_notification": "Unlock Notification",
 
     "rei.sections.odyssey": "Project Odyssey",
     "rei.heracles.heracles.tooltip": "Open Quests"

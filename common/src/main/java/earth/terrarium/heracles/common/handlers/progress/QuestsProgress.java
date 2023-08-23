@@ -13,6 +13,7 @@ import earth.terrarium.heracles.common.network.NetworkHandler;
 import earth.terrarium.heracles.common.network.packets.QuestCompletedPacket;
 import earth.terrarium.heracles.common.utils.ModUtils;
 import net.minecraft.Optionull;
+import net.minecraft.nbt.Tag;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -33,8 +34,11 @@ public record QuestsProgress(Map<String, QuestProgress> progress, CompletableQue
             for (QuestTask<?, ?, ?> task : quest.tasks().values()) {
                 if (task.isCompatibleWith(taskType)) {
                     TaskProgress<?> progress = questProgress.getTask(task);
+                    Tag before = progress.progress();
                     if (progress.isComplete()) continue;
                     progress.addProgress(taskType, ModUtils.cast(task), input);
+                    Tag after = progress.progress();
+                    if (task.storage().same(before, after)) continue;
                     editedQuests.add(Pair.of(id, quest));
                 }
             }
@@ -50,7 +54,7 @@ public record QuestsProgress(Map<String, QuestProgress> progress, CompletableQue
         PinnedQuestHandler.syncIfChanged(player, updatedQuests);
 
 
-        this.completableQuests.updateCompleteQuests(this);
+        this.completableQuests.updateCompleteQuests(this, player);
         syncToTeam(player, editedQuests);
     }
 
@@ -72,7 +76,7 @@ public record QuestsProgress(Map<String, QuestProgress> progress, CompletableQue
             sendOutQuestComplete(player, id);
         }
         PinnedQuestHandler.syncIfChanged(player, List.of(id));
-        this.completableQuests.updateCompleteQuests(this);
+        this.completableQuests.updateCompleteQuests(this, player);
         syncToTeam(player, List.of(Pair.of(id, quest)));
         return true;
     }
@@ -81,6 +85,7 @@ public record QuestsProgress(Map<String, QuestProgress> progress, CompletableQue
         TeamProviders.getMembers(player)
             .forEach(member -> {
                 QuestsProgress memberProgress = QuestProgressHandler.getProgress(player.server, member);
+                ServerPlayer serverPlayer = player.server.getPlayerList().getPlayer(member);
                 for (var quest : quests) {
                     if (quest.getSecond().settings().individualProgress()) continue;
                     boolean wasComplete = memberProgress.isComplete(quest.getFirst());
@@ -88,12 +93,11 @@ public record QuestsProgress(Map<String, QuestProgress> progress, CompletableQue
                     var questProgress = progress.get(quest.getFirst());
                     var newTasks = copyTasks(questProgress.tasks());
                     memberProgress.progress.put(quest.getFirst(), new QuestProgress(questProgress.isComplete(), Set.copyOf(Optionull.mapOrDefault(currentProgress, QuestProgress::claimedRewards, new HashSet<>())), newTasks));
-                    ServerPlayer serverPlayer = player.server.getPlayerList().getPlayer(member);
                     if (serverPlayer != null && (questProgress.isComplete() && !wasComplete)) {
                         sendOutQuestComplete(serverPlayer, quest.getFirst());
                     }
                 }
-                memberProgress.completableQuests.updateCompleteQuests(memberProgress);
+                memberProgress.completableQuests.updateCompleteQuests(memberProgress, serverPlayer);
             });
     }
 

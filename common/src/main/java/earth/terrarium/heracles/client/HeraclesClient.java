@@ -8,6 +8,7 @@ import earth.terrarium.heracles.client.handlers.QuestTutorial;
 import earth.terrarium.heracles.client.screens.QuestTutorialScreen;
 import earth.terrarium.heracles.client.toasts.QuestClaimedToast;
 import earth.terrarium.heracles.client.toasts.QuestCompletedToast;
+import earth.terrarium.heracles.client.toasts.QuestUnlockedToast;
 import earth.terrarium.heracles.common.network.NetworkHandler;
 import earth.terrarium.heracles.common.network.packets.groups.OpenGroupPacket;
 import net.minecraft.client.KeyMapping;
@@ -65,5 +66,9 @@ public class HeraclesClient {
 
     public static void displayQuestCompleteToast(String id) {
         QuestCompletedToast.add(Minecraft.getInstance().getToasts(), id);
+    }
+
+    public static void displayQuestUnlockedToast(String id) {
+        QuestUnlockedToast.add(Minecraft.getInstance().getToasts(), id);
     }
 }

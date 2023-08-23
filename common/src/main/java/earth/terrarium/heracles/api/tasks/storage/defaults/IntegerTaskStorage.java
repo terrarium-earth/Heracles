@@ -3,6 +3,7 @@ package earth.terrarium.heracles.api.tasks.storage.defaults;
 import earth.terrarium.heracles.api.tasks.storage.TaskStorage;
 import net.minecraft.nbt.IntTag;
 import net.minecraft.nbt.NumericTag;
+import net.minecraft.nbt.Tag;
 
 public final class IntegerTaskStorage implements TaskStorage<Integer, NumericTag> {
 
@@ -21,8 +22,13 @@ public final class IntegerTaskStorage implements TaskStorage<Integer, NumericTag
         return readInt(tag);
     }
 
-    public int readInt(NumericTag tag) {
-        return tag.getAsInt();
+    @Override
+    public boolean same(Tag tag1, Tag tag2) {
+        return readInt(tag1) == readInt(tag2);
+    }
+
+    public int readInt(Tag tag) {
+        return tag instanceof NumericTag numericTag ? numericTag.getAsInt() : 0;
     }
 
     public IntTag add(NumericTag progress, int amount) {

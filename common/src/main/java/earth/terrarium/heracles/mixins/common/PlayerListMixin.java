@@ -27,10 +27,7 @@ public class PlayerListMixin {
 
     @Inject(
         method = "placeNewPlayer",
-        at = @At(
-            value = "INVOKE",
-            target = "Lnet/minecraft/server/players/PlayerList;sendPlayerPermissionLevel(Lnet/minecraft/server/level/ServerPlayer;)V"
-        )
+        at = @At("TAIL")
     )
     private void heracles$afterSyncData(Connection netManager, ServerPlayer player, CallbackInfo ci) {
         QuestSyncer.sync(player);

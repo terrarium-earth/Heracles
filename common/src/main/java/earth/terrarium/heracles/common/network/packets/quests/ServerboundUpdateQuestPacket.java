@@ -8,6 +8,7 @@ import com.teamresourceful.resourcefullib.common.networking.base.PacketContext;
 import com.teamresourceful.resourcefullib.common.networking.base.PacketHandler;
 import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.api.quests.Quest;
+import earth.terrarium.heracles.common.handlers.progress.QuestProgressHandler;
 import earth.terrarium.heracles.common.handlers.quests.QuestHandler;
 import earth.terrarium.heracles.common.network.NetworkHandler;
 import earth.terrarium.heracles.common.network.packets.quests.data.NetworkQuestData;
@@ -56,6 +57,7 @@ public record ServerboundUpdateQuestPacket(
                         new ClientboundUpdateQuestPacket(message.id, message.data),
                         Objects.requireNonNull(player.getServer())
                     );
+                    QuestProgressHandler.read(player.getServer()).updatePossibleQuests();
                 }
             };
         }

@@ -6,6 +6,7 @@ import com.teamresourceful.resourcefullib.common.networking.base.Packet;
 import com.teamresourceful.resourcefullib.common.networking.base.PacketContext;
 import com.teamresourceful.resourcefullib.common.networking.base.PacketHandler;
 import earth.terrarium.heracles.Heracles;
+import earth.terrarium.heracles.common.handlers.progress.QuestProgressHandler;
 import earth.terrarium.heracles.common.handlers.quests.QuestHandler;
 import earth.terrarium.heracles.common.network.NetworkHandler;
 import net.minecraft.resources.ResourceLocation;
@@ -44,6 +45,7 @@ public record ServerboundRemoveQuestPacket(String id) implements Packet<Serverbo
                         new ClientboundRemoveQuestPacket(message.id()),
                         Objects.requireNonNull(player.getServer())
                     );
+                    QuestProgressHandler.read(player.getServer()).updatePossibleQuests();
                 }
             };
         }

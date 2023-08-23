@@ -113,15 +113,12 @@ public class QuestsWidget extends BaseWidget {
     private static boolean shouldHide(String group, Object2BooleanMap<String> statuses, ClientQuests.QuestEntry quest) {
         var value = quest.value();
         boolean inGroup = value.display().groups().containsKey(group);
-        if (inGroup && !statuses.getBoolean(quest.key()) && value.settings().hidden()) {
-            return true;
-        }
-        if (!inGroup) {
-            return false;
-        }
-        for (var dependency : quest.dependencies()) {
-            if (shouldHide(group, statuses, dependency)) {
-                return true;
+        if (!inGroup) return true;
+        if (value.settings().hidden()) {
+            for (var dependency : quest.dependencies()) {
+                if (!statuses.getBoolean(dependency.key())) {
+                    return true;
+                }
             }
         }
         return false;

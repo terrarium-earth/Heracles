@@ -1,7 +1,6 @@
 package earth.terrarium.heracles.client.widgets.modals;
 
 import earth.terrarium.heracles.Heracles;
-import earth.terrarium.heracles.client.handlers.ClientQuests;
 import earth.terrarium.heracles.client.widgets.base.BaseModal;
 import earth.terrarium.heracles.client.widgets.boxes.EnterableEditBox;
 import earth.terrarium.heracles.common.constants.ConstantComponents;
@@ -90,14 +89,6 @@ public class TextInputModal<T> extends BaseModal {
             setVisible(false);
         }
         return true;
-    }
-
-    @Override
-    public void setVisible(boolean visible) {
-        super.setVisible(visible);
-        if (!visible) {
-            ClientQuests.sendDirty();
-        }
     }
 
     public void setData(T data) {

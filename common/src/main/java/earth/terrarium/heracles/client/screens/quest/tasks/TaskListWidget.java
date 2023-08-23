@@ -14,6 +14,7 @@ import earth.terrarium.heracles.client.screens.quest.HeadingWidget;
 import earth.terrarium.heracles.client.utils.MouseClick;
 import earth.terrarium.heracles.common.handlers.progress.QuestProgress;
 import earth.terrarium.heracles.common.handlers.progress.TaskProgress;
+import earth.terrarium.heracles.common.network.packets.quests.data.NetworkQuestData;
 import earth.terrarium.heracles.common.utils.ModUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -26,10 +27,7 @@ import org.apache.commons.lang3.tuple.MutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.BiConsumer;
 
 public class TaskListWidget extends AbstractContainerEventHandler implements Renderable {
@@ -42,7 +40,7 @@ public class TaskListWidget extends AbstractContainerEventHandler implements Ren
 
     private final QuestProgress progress;
     private final String questId;
-    private final Quest quest;
+    private final ClientQuests.QuestEntry entry;
     private final Map<String, ModUtils.QuestStatus> quests;
     private final float completion;
 
@@ -61,14 +59,14 @@ public class TaskListWidget extends AbstractContainerEventHandler implements Ren
 
     public TaskListWidget(
         int x, int y, int width, int height,
-        String questId, Quest quest, QuestProgress progress,
+        String questId, ClientQuests.QuestEntry entry, QuestProgress progress,
         Map<String, ModUtils.QuestStatus> quests, BiConsumer<QuestTask<?, ?, ?>, Boolean> onClick, Runnable onCreate
     ) {
         this.progress = progress;
-        this.completion = progress.isComplete() ? 1 : calculationCompletion(quest, progress);
+        this.completion = progress.isComplete() ? 1 : calculationCompletion(entry.value(), progress);
         this.quests = quests;
         this.questId = questId;
-        this.quest = quest;
+        this.entry = entry;
         this.x = x;
         this.y = y;
         this.width = width;
@@ -93,7 +91,7 @@ public class TaskListWidget extends AbstractContainerEventHandler implements Ren
                 }
             }
         }
-        for (String dependency : quest.dependencies()) {
+        for (String dependency : entry.value().dependencies()) {
             ModUtils.QuestStatus status = this.quests.get(dependency);
             Quest questDependency = ClientQuests.get(dependency).map(ClientQuests.QuestEntry::value).orElse(null);
             if (status != ModUtils.QuestStatus.COMPLETED && questDependency != null) {
@@ -212,8 +210,9 @@ public class TaskListWidget extends AbstractContainerEventHandler implements Ren
                 break;
             }
         }
-        this.quest.tasks().put(task.id(), task);
-        ClientQuests.setDirty(this.questId);
-        ClientQuests.get(this.questId).ifPresent(entry -> entry.value().tasks().put(task.id(), task));
+        ClientQuests.updateQuest(this.entry, quest -> {
+            quest.tasks().put(task.id(), task);
+            return NetworkQuestData.builder().tasks(quest.tasks());
+        });
     }
 }

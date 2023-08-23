@@ -29,7 +29,7 @@
     "gui.heracles.tasks.create": "Create Task",
     "gui.heracles.tasks.edit": "Edit Task",
     "gui.heracles.tasks.check": "Check Task",
-    "gui.heracles.quests.create": "Create Quest",
+    "gui.heracles.quests.create": "Enter New Quest ID",
     "gui.heracles.quests.import": "Import Quests",
     "gui.heracles.quests.view": "View Quests",
     "gui.heracles.quests.overview": "Overview",

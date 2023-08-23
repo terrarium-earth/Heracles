@@ -30,16 +30,19 @@ public class NetworkHandler {
         CHANNEL.registerPacket(NetworkDirection.SERVER_TO_CLIENT, SyncDescriptionsPacket.ID, SyncDescriptionsPacket.HANDLER, SyncDescriptionsPacket.class);
         CHANNEL.registerPacket(NetworkDirection.SERVER_TO_CLIENT, OpenQuestScreenPacket.ID, OpenQuestScreenPacket.HANDLER, OpenQuestScreenPacket.class);
         CHANNEL.registerPacket(NetworkDirection.SERVER_TO_CLIENT, OpenQuestsScreenPacket.ID, OpenQuestsScreenPacket.HANDLER, OpenQuestsScreenPacket.class);
+        CHANNEL.registerPacket(NetworkDirection.SERVER_TO_CLIENT, ClientboundAddQuestPacket.ID, ClientboundAddQuestPacket.HANDLER, ClientboundAddQuestPacket.class);
+        CHANNEL.registerPacket(NetworkDirection.SERVER_TO_CLIENT, ClientboundRemoveQuestPacket.ID, ClientboundRemoveQuestPacket.HANDLER, ClientboundRemoveQuestPacket.class);
+        CHANNEL.registerPacket(NetworkDirection.SERVER_TO_CLIENT, ClientboundUpdateQuestPacket.ID, ClientboundUpdateQuestPacket.HANDLER, ClientboundUpdateQuestPacket.class);
 
-        CHANNEL.registerPacket(NetworkDirection.CLIENT_TO_SERVER, QuestActionPacket.ID, QuestActionPacket.HANDLER, QuestActionPacket.class);
-        CHANNEL.registerPacket(NetworkDirection.CLIENT_TO_SERVER, UploadQuestPacket.ID, UploadQuestPacket.HANDLER, UploadQuestPacket.class);
         CHANNEL.registerPacket(NetworkDirection.CLIENT_TO_SERVER, OpenGroupPacket.ID, OpenGroupPacket.HANDLER, OpenGroupPacket.class);
         CHANNEL.registerPacket(NetworkDirection.CLIENT_TO_SERVER, OpenQuestPacket.ID, OpenQuestPacket.HANDLER, OpenQuestPacket.class);
+        CHANNEL.registerPacket(NetworkDirection.CLIENT_TO_SERVER, ServerboundUpdateQuestPacket.ID, ServerboundUpdateQuestPacket.HANDLER, ServerboundUpdateQuestPacket.class);
+        CHANNEL.registerPacket(NetworkDirection.CLIENT_TO_SERVER, ServerboundAddQuestPacket.ID, ServerboundAddQuestPacket.HANDLER, ServerboundAddQuestPacket.class);
+        CHANNEL.registerPacket(NetworkDirection.CLIENT_TO_SERVER, ServerboundRemoveQuestPacket.ID, ServerboundRemoveQuestPacket.HANDLER, ServerboundRemoveQuestPacket.class);
         CHANNEL.registerPacket(NetworkDirection.CLIENT_TO_SERVER, CreateGroupPacket.ID, CreateGroupPacket.HANDLER, CreateGroupPacket.class);
         CHANNEL.registerPacket(NetworkDirection.CLIENT_TO_SERVER, ClaimRewardsPacket.ID, ClaimRewardsPacket.HANDLER, ClaimRewardsPacket.class);
         CHANNEL.registerPacket(NetworkDirection.CLIENT_TO_SERVER, SetPinnedQuestPacket.ID, SetPinnedQuestPacket.HANDLER, SetPinnedQuestPacket.class);
         CHANNEL.registerPacket(NetworkDirection.CLIENT_TO_SERVER, ClaimSelectableRewardsPacket.ID, ClaimSelectableRewardsPacket.HANDLER, ClaimSelectableRewardsPacket.class);
-        CHANNEL.registerPacket(NetworkDirection.CLIENT_TO_SERVER, DeleteQuestPacket.ID, DeleteQuestPacket.HANDLER, DeleteQuestPacket.class);
         CHANNEL.registerPacket(NetworkDirection.CLIENT_TO_SERVER, DeleteGroupPacket.ID, DeleteGroupPacket.HANDLER, DeleteGroupPacket.class);
         CHANNEL.registerPacket(NetworkDirection.CLIENT_TO_SERVER, CheckTaskPacket.ID, CheckTaskPacket.HANDLER, CheckTaskPacket.class);
         CHANNEL.registerPacket(NetworkDirection.CLIENT_TO_SERVER, ManualItemTaskPacket.ID, ManualItemTaskPacket.HANDLER, ManualItemTaskPacket.class);

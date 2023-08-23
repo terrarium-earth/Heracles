@@ -3,7 +3,7 @@ package earth.terrarium.heracles.client.widgets.modals.upload;
 import com.teamresourceful.resourcefullib.client.utils.RenderUtils;
 import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.api.quests.Quest;
-import earth.terrarium.heracles.client.handlers.ClientQuests;
+import earth.terrarium.heracles.client.handlers.ClientQuestNetworking;
 import earth.terrarium.heracles.client.widgets.base.BaseModal;
 import earth.terrarium.heracles.client.widgets.base.FileWidget;
 import earth.terrarium.heracles.common.constants.ConstantComponents;
@@ -39,7 +39,7 @@ public class UploadModal extends BaseModal implements FileWidget {
                 if (!item.isErrored()) {
                     Quest quest = item.quest();
                     String filename = item.path().getFileName().toString();
-                    ClientQuests.addQuest(filename.substring(0, filename.lastIndexOf(".")), quest);
+                    ClientQuestNetworking.add(filename.substring(0, filename.lastIndexOf(".")), quest);
                     iterator.remove();
                 }
             }
@@ -135,13 +135,5 @@ public class UploadModal extends BaseModal implements FileWidget {
         }
         items.sort((first, second) -> Boolean.compare(first.isErrored(), second.isErrored()));
         Collections.reverse(items);
-    }
-
-    @Override
-    public void setVisible(boolean visible) {
-        super.setVisible(visible);
-        if (!visible) {
-            ClientQuests.sendDirty();
-        }
     }
 }

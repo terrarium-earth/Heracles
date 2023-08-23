@@ -4,8 +4,10 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.Encoder;
 import com.mojang.serialization.codecs.KeyDispatchCodec;
+import com.teamresourceful.bytecodecs.base.ByteCodec;
 import com.teamresourceful.resourcefullib.common.codecs.maps.DispatchMapCodec;
 import earth.terrarium.heracles.api.tasks.defaults.*;
+import earth.terrarium.heracles.common.utils.ModUtils;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.HashMap;
@@ -22,6 +24,8 @@ public final class QuestTasks {
         quest -> DataResult.success(quest.type()),
         type -> DataResult.success(type.codec(id))
     ).codec());
+
+    public static final ByteCodec<Map<String, QuestTask<?, ?, ?>>> BYTE_CODEC = ModUtils.toByteCodec(CODEC, "No quest task data found", "Failed to parse quest task data");
 
     public static KeyDispatchCodec<QuestTaskType<?>, QuestTask<?, ?, ?>> of(final String typeKey, final Codec<QuestTaskType<?>> keyCodec, final Function<? super QuestTask<?, ?, ?>, ? extends DataResult<? extends QuestTaskType<?>>> type, final Function<? super QuestTaskType<?>, ? extends DataResult<? extends Codec<? extends QuestTask<?, ?, ?>>>> codec) {
         return KeyDispatchCodec.unsafe(typeKey, keyCodec, type, codec, v -> getCodec(type, codec, v));

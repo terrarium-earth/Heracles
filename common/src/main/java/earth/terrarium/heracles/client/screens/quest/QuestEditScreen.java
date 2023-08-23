@@ -19,6 +19,7 @@ import earth.terrarium.heracles.common.handlers.quests.QuestHandler;
 import earth.terrarium.heracles.common.menus.quest.QuestContent;
 import earth.terrarium.heracles.common.network.NetworkHandler;
 import earth.terrarium.heracles.common.network.packets.quests.OpenQuestPacket;
+import earth.terrarium.heracles.common.network.packets.quests.data.NetworkQuestData;
 import earth.terrarium.heracles.common.utils.ModUtils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
@@ -59,11 +60,12 @@ public class QuestEditScreen extends BaseQuestScreen {
         int contentHeight = this.height - 45;
 
         this.taskList = new TaskListWidget(contentX, contentY, contentWidth, contentHeight,
-            this.content.id(), this.quest(), this.content.progress(), this.content.quests(), (task, isRemoving) -> {
+            this.content.id(), this.entry(), this.content.progress(), this.content.quests(), (task, isRemoving) -> {
             if (isRemoving) {
-                this.quest().tasks().remove(task.id());
-                ClientQuests.setDirty(this.content.id());
-                ClientQuests.get(this.content.id()).ifPresent(entry -> entry.value().tasks().remove(task.id()));
+                ClientQuests.updateQuest(this.entry(), quest -> {
+                    quest.tasks().remove(task.id());
+                    return NetworkQuestData.builder().tasks(quest.tasks());
+                });
                 this.taskList.update(this.quest().tasks().values());
                 return;
             }
@@ -71,9 +73,10 @@ public class QuestEditScreen extends BaseQuestScreen {
         }, () -> {
             BiConsumer<String, QuestTaskType<?>> creator = (id, type) ->
                 taskPopup(ModUtils.cast(type), id, null, newTask -> {
-                    this.quest().tasks().put(id, newTask);
-                    ClientQuests.setDirty(this.content.id());
-                    ClientQuests.get(this.content.id()).ifPresent(entry -> entry.value().tasks().put(id, newTask));
+                    ClientQuests.updateQuest(this.entry(), quest -> {
+                        quest.tasks().put(id, newTask);
+                        return NetworkQuestData.builder().tasks(quest.tasks());
+                    });
                     this.taskList.update(this.quest().tasks().values());
                 });
 
@@ -93,13 +96,13 @@ public class QuestEditScreen extends BaseQuestScreen {
         this.taskList.update(this.quest().tasks().values());
 
         this.rewardList = new RewardListWidget(
-            contentX, contentY, contentWidth, contentHeight,
-            this.content.id(), this.quest(),
+            contentX, contentY, contentWidth, contentHeight, this.entry(),
             (reward, isRemoving) -> {
                 if (isRemoving) {
-                    this.quest().rewards().remove(reward.id());
-                    ClientQuests.setDirty(this.content.id());
-                    ClientQuests.get(this.content.id()).ifPresent(entry -> entry.value().rewards().remove(reward.id()));
+                    ClientQuests.updateQuest(this.entry(), quest -> {
+                        quest.rewards().remove(reward.id());
+                        return NetworkQuestData.builder().rewards(quest.rewards());
+                    });
                     this.rewardList.update(this.content.fromGroup(), this.content.id(), this.quest());
                     return;
                 }
@@ -107,9 +110,10 @@ public class QuestEditScreen extends BaseQuestScreen {
             }, () -> {
             BiConsumer<String, QuestRewardType<?>> creator = (id, type) ->
                 rewardPopup(ModUtils.cast(type), id, null, newReward -> {
-                    this.quest().rewards().put(id, newReward);
-                    ClientQuests.setDirty(this.content.id());
-                    ClientQuests.get(this.content.id()).ifPresent(entry -> entry.value().rewards().put(id, newReward));
+                    ClientQuests.updateQuest(this.entry(), quest -> {
+                        quest.rewards().put(id, newReward);
+                        return NetworkQuestData.builder().rewards(quest.rewards());
+                    });
                     this.rewardList.update(this.content.fromGroup(), this.content.id(), this.quest());
                 });
 
@@ -130,14 +134,13 @@ public class QuestEditScreen extends BaseQuestScreen {
         this.rewardList.update(this.content.fromGroup(), this.content.id(), this.quest());
 
         if (Minecraft.getInstance().player != null && Minecraft.getInstance().player.hasPermissions(2)) {
-            addRenderableWidget(new ImageButton(this.width - 24, 1, 11, 11, 33, 15, 11, HEADING, 256, 256, (button) -> {
-                ClientQuests.sendDirty();
-                NetworkHandler.CHANNEL.sendToServer(new OpenQuestPacket(this.content.fromGroup(), this.content.id(), false));
-            })).setTooltip(Tooltip.create(ConstantComponents.TOGGLE_EDIT));
+            addRenderableWidget(new ImageButton(this.width - 24, 1, 11, 11, 33, 15, 11, HEADING, 256, 256, (button) ->
+                NetworkHandler.CHANNEL.sendToServer(new OpenQuestPacket(this.content.fromGroup(), this.content.id(), false))
+            )).setTooltip(Tooltip.create(ConstantComponents.TOGGLE_EDIT));
         }
 
         this.descriptionBox = new QuestTextEditor(contentX, contentY, contentWidth, contentHeight);
-        this.descriptionBox.setContent(String.join("\n", this.quest().display().description()));
+        this.descriptionBox.setContent(String.join("\n", this.quest().display().description()).replace("§", "&&"));
 
         if (Minecraft.getInstance().isLocalServer()) {
             addRenderableWidget(new ImageButton(this.width - 36, 1, 11, 11, 33, 59, 11, HEADING, 256, 256, (button) -> {
@@ -191,9 +194,9 @@ public class QuestEditScreen extends BaseQuestScreen {
     @Override
     public void removed() {
         super.removed();
-        quest().display().setDescription(new ArrayList<>(this.descriptionBox.lines()));
-        ClientQuests.setDirty(this.content.id());
-        ClientQuests.sendDirty();
+        ClientQuests.updateQuest(entry(), quest ->
+            NetworkQuestData.builder().description(new ArrayList<>(this.descriptionBox.lines()))
+        );
     }
 
     @Override

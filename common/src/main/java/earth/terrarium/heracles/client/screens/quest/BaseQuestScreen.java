@@ -104,7 +104,6 @@ public abstract class BaseQuestScreen extends AbstractQuestScreen<QuestContent> 
 
     @Override
     protected void goBack() {
-        ClientQuests.sendDirty();
         NetworkHandler.CHANNEL.sendToServer(new OpenGroupPacket(this.content.fromGroup(), this instanceof QuestEditScreen));
     }
 
@@ -178,6 +177,10 @@ public abstract class BaseQuestScreen extends AbstractQuestScreen<QuestContent> 
 
     public Quest quest() {
         return quest(this.content);
+    }
+
+    public ClientQuests.QuestEntry entry() {
+        return ClientQuests.get(this.content.id()).orElse(null);
     }
 
     public static Quest quest(QuestContent content) {

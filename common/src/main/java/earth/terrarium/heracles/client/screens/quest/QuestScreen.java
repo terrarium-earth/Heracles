@@ -1,6 +1,5 @@
 package earth.terrarium.heracles.client.screens.quest;
 
-import earth.terrarium.heracles.client.handlers.ClientQuests;
 import earth.terrarium.heracles.client.screens.quest.rewards.RewardListWidget;
 import earth.terrarium.heracles.client.screens.quest.tasks.TaskListWidget;
 import earth.terrarium.heracles.common.constants.ConstantComponents;
@@ -39,17 +38,16 @@ public class QuestScreen extends BaseQuestScreen {
             contentX = (int) ((this.width - contentWidth) / 2f);
         }
 
-        this.taskList = new TaskListWidget(contentX, contentY, contentWidth, contentHeight, this.content.id(), this.quest(), this.content.progress(), this.content.quests(), null, null);
+        this.taskList = new TaskListWidget(contentX, contentY, contentWidth, contentHeight, this.content.id(), this.entry(), this.content.progress(), this.content.quests(), null, null);
         this.taskList.update(this.quest().tasks().values());
 
-        this.rewardList = new RewardListWidget(contentX, contentY, contentWidth, contentHeight, this.content.id(), this.quest(), null, null);
+        this.rewardList = new RewardListWidget(contentX, contentY, contentWidth, contentHeight, this.entry(), null, null);
         this.rewardList.update(this.content.fromGroup(), this.content.id(), this.quest());
 
         if (Minecraft.getInstance().player != null && Minecraft.getInstance().player.hasPermissions(2)) {
-            addRenderableWidget(new ImageButton(this.width - 24, 1, 11, 11, 33, 15, 11, HEADING, 256, 256, (button) -> {
-                ClientQuests.sendDirty();
-                NetworkHandler.CHANNEL.sendToServer(new OpenQuestPacket(this.content.fromGroup(), this.content.id(), true));
-            })).setTooltip(Tooltip.create(ConstantComponents.TOGGLE_EDIT));
+            addRenderableWidget(new ImageButton(this.width - 24, 1, 11, 11, 33, 15, 11, HEADING, 256, 256, (button) ->
+                NetworkHandler.CHANNEL.sendToServer(new OpenQuestPacket(this.content.fromGroup(), this.content.id(), true))
+            )).setTooltip(Tooltip.create(ConstantComponents.TOGGLE_EDIT));
         }
 
         try {
@@ -60,6 +58,10 @@ public class QuestScreen extends BaseQuestScreen {
         } catch (Throwable e) {
             this.descriptionError = e.getMessage();
             e.printStackTrace();
+            if (e.getCause() != null) {
+                e.getCause().printStackTrace();
+                System.out.println("Error parsing quest description: " + e.getCause().getMessage());
+            }
         }
     }
 

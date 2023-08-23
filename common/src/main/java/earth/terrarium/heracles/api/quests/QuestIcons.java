@@ -2,7 +2,9 @@ package earth.terrarium.heracles.api.quests;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
+import com.teamresourceful.bytecodecs.base.ByteCodec;
 import earth.terrarium.heracles.api.quests.defaults.ItemQuestIcon;
+import earth.terrarium.heracles.common.utils.ModUtils;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.HashMap;
@@ -15,6 +17,8 @@ public final class QuestIcons {
 
     public static final Codec<QuestIconType<?>> TYPE_CODEC = ResourceLocation.CODEC.comapFlatMap(QuestIcons::decode, QuestIconType::id);
     public static final Codec<QuestIcon<?>> CODEC = TYPE_CODEC.dispatch(QuestIcon::type, QuestIconType::codec);
+
+    public static final ByteCodec<QuestIcon<?>> BYTE_CODEC = ModUtils.toByteCodec(CODEC, "No quest icon data found", "Failed to parse quest icon data");
 
     private static DataResult<? extends QuestIconType<?>> decode(ResourceLocation id) {
         return Optional.ofNullable(TYPES.get(id))

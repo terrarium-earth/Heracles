@@ -43,6 +43,7 @@ public class TextEditorContent {
     }
 
     public void addText(String s) {
+        s = s.replace("§", "");
         if (selection != null) {
             deleteSelection();
         }

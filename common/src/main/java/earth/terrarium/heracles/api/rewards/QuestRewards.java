@@ -2,8 +2,10 @@ package earth.terrarium.heracles.api.rewards;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
+import com.teamresourceful.bytecodecs.base.ByteCodec;
 import com.teamresourceful.resourcefullib.common.codecs.maps.DispatchMapCodec;
 import earth.terrarium.heracles.api.rewards.defaults.*;
+import earth.terrarium.heracles.common.utils.ModUtils;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.HashMap;
@@ -16,6 +18,7 @@ public class QuestRewards {
 
     public static final Codec<QuestRewardType<?>> TYPE_CODEC = ResourceLocation.CODEC.comapFlatMap(QuestRewards::decode, QuestRewardType::id);
     public static final Codec<Map<String, QuestReward<?>>> CODEC = DispatchMapCodec.of(Codec.STRING, id -> TYPE_CODEC.dispatch(QuestReward::type, type -> type.codec(id)));
+    public static final ByteCodec<Map<String, QuestReward<?>>> BYTE_CODEC = ModUtils.toByteCodec(CODEC, "No quest reward data found", "Failed to parse quest reward data");
 
     private static DataResult<? extends QuestRewardType<?>> decode(ResourceLocation id) {
         return Optional.ofNullable(TYPES.get(id))

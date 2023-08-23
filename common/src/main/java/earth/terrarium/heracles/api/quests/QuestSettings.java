@@ -52,4 +52,12 @@ public final class QuestSettings {
         this.hidden = newSettings.hidden;
     }
 
+    public void setIndividualProgress(boolean individualProgress) {
+        this.individualProgress = individualProgress;
+    }
+
+    public void setHidden(boolean hidden) {
+        this.hidden = hidden;
+    }
+
 }

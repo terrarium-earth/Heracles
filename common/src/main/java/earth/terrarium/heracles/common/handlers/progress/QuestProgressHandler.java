@@ -71,8 +71,6 @@ public class QuestProgressHandler extends SavedData {
 
     @Override
     public @NotNull CompoundTag save(CompoundTag tag) {
-        // This is called whenever the world is saved.
-        QuestHandler.save();
         for (var entry : progress.entrySet()) {
             CompoundTag progressTag = new CompoundTag();
             entry.getValue().progress().forEach((id, progress) -> {

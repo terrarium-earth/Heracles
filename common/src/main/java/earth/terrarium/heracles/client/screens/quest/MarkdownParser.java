@@ -8,13 +8,27 @@ import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class MarkdownParser {
+
+    private static final Pattern COLOR_PATTERN = Pattern.compile("([^\\\\]|^)&&([0-9a-fA-Fk-oK-OrR])");
+
+    private static String replaceColor(String text) {
+        Matcher matcher;
+        while ((matcher = COLOR_PATTERN.matcher(text)).find()) {
+            text = matcher.replaceFirst("$1&sect;$2");
+        }
+        return text;
+    }
 
     public static List<String> parse(List<String> lines) {
         State state = null;
         List<String> builder = new ArrayList<>();
         for (String line : lines) {
+            line = replaceColor(line);
+            line = line.replace("\\&&", "&&");
             String trimedText = line.trim();
             if (state != null && !line.startsWith(state.startsWith)) {
                 builder.add(state.end);
@@ -53,7 +67,7 @@ public class MarkdownParser {
     }
 
     private static String xmlEncode(String text) {
-        return text.replaceAll("&(?![^;]+;)", "&amp;")
+        return text.replaceAll("&(?![^; ]+;)", "&amp;")
             .replace("<", "&lt;")
             .replace(">", "&gt;")
             .replace("\"", "&quot;")

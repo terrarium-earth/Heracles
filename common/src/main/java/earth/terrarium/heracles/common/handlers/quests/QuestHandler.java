@@ -1,11 +1,14 @@
 package earth.terrarium.heracles.common.handlers.quests;
 
 import com.google.common.collect.HashBiMap;
+import com.google.common.collect.Sets;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.mojang.logging.LogUtils;
 import com.mojang.serialization.JsonOps;
 import com.teamresourceful.resourcefullib.common.lib.Constants;
 import com.teamresourceful.resourcefullib.common.utils.FileUtils;
+import com.teamresourceful.resourcefullib.common.utils.Scheduling;
 import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.api.quests.Quest;
 import earth.terrarium.heracles.common.utils.ModUtils;
@@ -19,15 +22,20 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Predicate;
 
 public class QuestHandler {
 
     private static final Map<String, Quest> QUESTS = HashBiMap.create();
+    private static final Set<String> QUEST_KEYS = Sets.newConcurrentHashSet();
     private static final List<String> GROUPS = new ArrayList<>();
     private static final Logger LOGGER = LogUtils.getLogger();
     private static Path lastPath;
-    private static boolean dirty;
+
+    private static final Map<String, ScheduledFuture<?>> SAVING_FUTURES = new HashMap<>();
+    private static ScheduledFuture<?> delayedDeletion;
 
     public static boolean failedToLoad;
 
@@ -49,6 +57,7 @@ public class QuestHandler {
         }
         QUESTS.clear();
         QUESTS.putAll(tempQuests);
+        QUEST_KEYS.addAll(QUESTS.keySet());
         for (Quest value : QUESTS.values()) {
             value.dependencies().removeIf(Predicate.not(QUESTS::containsKey));
         }
@@ -84,42 +93,29 @@ public class QuestHandler {
         }
     }
 
-    public static void save() {
-        if (lastPath == null || !dirty) {
-            return;
-        }
-        dirty = false;
-        if (failedToLoad) {
-            LOGGER.error("Failed to load initial quests, not saving");
-            return;
-        }
-        Path questsPath = lastPath.resolve("quests");
-        Set<Path> filesWritten = new HashSet<>();
+    public static void markDirty(String id) {
         try {
-            for (Map.Entry<String, Quest> entry : QUESTS.entrySet()) {
+            if (lastPath == null) {
+                LOGGER.error("Failed to mark quest dirty, last path is null");
+                return;
+            }
+            Quest quest = QUESTS.get(id);
+            Path questsPath = lastPath.resolve("quests");
+            File file = new File(questsPath.toFile(), pickQuestPath(quest) + "/" + id + ".json");
+            JsonElement json = Quest.CODEC.encodeStart(RegistryOps.create(JsonOps.INSTANCE, Heracles.getRegistryAccess()), quest)
+                .getOrThrow(false, LOGGER::error);
+            if (SAVING_FUTURES.containsKey(id)) {
+                SAVING_FUTURES.get(id).cancel(true);
+            }
+            SAVING_FUTURES.put(id, Scheduling.schedule(() -> {
                 try {
-                    File file = new File(questsPath.toFile(), pickQuestPath(entry.getValue()) + "/" + entry.getKey() + ".json");
-                    filesWritten.add(file.toPath());
-                    String json = Constants.PRETTY_GSON.toJson(Quest.CODEC.encodeStart(RegistryOps.create(JsonOps.INSTANCE, Heracles.getRegistryAccess()), entry.getValue())
-                        .getOrThrow(false, LOGGER::error));
                     file.getParentFile().mkdirs();
-                    org.apache.commons.io.FileUtils.write(file, json, StandardCharsets.UTF_8);
-                }catch (Exception e) {
-                    LOGGER.error("Failed to save quest " + entry.getKey(), e);
+                    org.apache.commons.io.FileUtils.write(file, Constants.PRETTY_GSON.toJson(json), StandardCharsets.UTF_8);
+                } catch (Exception e) {
+                    LOGGER.error("Failed to save quest " + id, e);
                 }
-            }
-
-            try (var files = Files.walk(questsPath)) {
-                files.filter(Predicate.not(Files::isDirectory))
-                    .filter(path -> path.endsWith(".json"))
-                    .filter(path -> !filesWritten.contains(path))
-                    .forEach(path -> path.toFile().delete());
-            }catch (Exception e) {
-                LOGGER.error("Failed to delete unused quest files", e);
-            }
-        } catch (Exception e) {
-            LOGGER.error("Failed to save quests", e);
-        }
+            }, 1500, TimeUnit.MILLISECONDS));
+        } catch (Exception ignored) {}
     }
 
     private static String pickQuestPath(Quest quest) {
@@ -158,12 +154,39 @@ public class QuestHandler {
 
     public static void upload(String id, Quest quest) {
         QUESTS.put(id, quest);
-        dirty = true;
+        QUEST_KEYS.add(id);
+        markDirty(id);
     }
 
-    public static void delete(String id) {
-        QUESTS.remove(id);
-        dirty = true;
+    public static void remove(String quest) {
+        QUESTS.remove(quest);
+        QUEST_KEYS.remove(quest);
+        if (SAVING_FUTURES.containsKey(quest)) SAVING_FUTURES.get(quest).cancel(true);
+        SAVING_FUTURES.remove(quest);
+        if (delayedDeletion != null) {
+            delayedDeletion.cancel(true);
+        }
+        if (lastPath == null) {
+            LOGGER.error("Failed to remove dead quest files, last path is null");
+            return;
+        }
+        Path questsPath = lastPath.resolve("quests");
+        delayedDeletion = Scheduling.schedule(() -> {
+            try {
+                try (var files = Files.walk(questsPath)) {
+                    files.filter(Predicate.not(Files::isDirectory))
+                        .filter(FileUtils::isJson)
+                        .forEach(path -> {
+                            String id = path.getFileName().toString().replace(".json", "");
+                            if (!QUEST_KEYS.contains(id)) {
+                                path.toFile().delete();
+                            }
+                        });
+                }
+            } catch (Exception e) {
+                LOGGER.error("Failed to remove dead quest files", e);
+            }
+        }, 1500, TimeUnit.MILLISECONDS);
     }
 
     public static Map<String, Quest> quests() {

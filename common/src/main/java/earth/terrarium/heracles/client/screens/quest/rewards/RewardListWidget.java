@@ -12,6 +12,7 @@ import earth.terrarium.heracles.client.screens.AbstractQuestScreen;
 import earth.terrarium.heracles.client.screens.quest.AddDisplayWidget;
 import earth.terrarium.heracles.client.screens.quest.HeadingWidget;
 import earth.terrarium.heracles.client.utils.MouseClick;
+import earth.terrarium.heracles.common.network.packets.quests.data.NetworkQuestData;
 import earth.terrarium.heracles.common.utils.ModUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -37,8 +38,7 @@ public class RewardListWidget extends AbstractContainerEventHandler implements R
     private final int width;
     private final int height;
 
-    private final String questId;
-    private final Quest quest;
+    private final ClientQuests.QuestEntry entry;
 
     private double scrollAmount;
     private int lastFullHeight;
@@ -50,7 +50,7 @@ public class RewardListWidget extends AbstractContainerEventHandler implements R
 
     public RewardListWidget(
         int x, int y, int width, int height,
-        String questId, Quest quest,
+        ClientQuests.QuestEntry entry,
         BiConsumer<QuestReward<?>, Boolean> onClick, Runnable onCreate
     ) {
         this.x = x;
@@ -58,8 +58,7 @@ public class RewardListWidget extends AbstractContainerEventHandler implements R
         this.width = width;
         this.height = height;
         this.lastFullHeight = this.height;
-        this.questId = questId;
-        this.quest = quest;
+        this.entry = entry;
         this.onClick = onClick;
         this.onCreate = onCreate;
     }
@@ -179,8 +178,9 @@ public class RewardListWidget extends AbstractContainerEventHandler implements R
                 break;
             }
         }
-        this.quest.rewards().put(reward.id(), reward);
-        ClientQuests.setDirty(this.questId);
-        ClientQuests.get(this.questId).ifPresent(entry -> entry.value().rewards().put(reward.id(), reward));
+        ClientQuests.updateQuest(this.entry, quest -> {
+            quest.rewards().put(reward.id(), reward);
+            return NetworkQuestData.builder().rewards(quest.rewards());
+        });
     }
 }

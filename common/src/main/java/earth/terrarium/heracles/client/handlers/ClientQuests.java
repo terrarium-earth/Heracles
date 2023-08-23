@@ -3,16 +3,15 @@ package earth.terrarium.heracles.client.handlers;
 import earth.terrarium.heracles.api.quests.Quest;
 import earth.terrarium.heracles.common.handlers.progress.QuestProgress;
 import earth.terrarium.heracles.common.network.NetworkHandler;
-import earth.terrarium.heracles.common.network.packets.quests.DeleteQuestPacket;
-import earth.terrarium.heracles.common.network.packets.quests.QuestActionPacket;
-import earth.terrarium.heracles.common.network.packets.quests.UploadQuestPacket;
+import earth.terrarium.heracles.common.network.packets.quests.ServerboundUpdateQuestPacket;
+import earth.terrarium.heracles.common.network.packets.quests.data.NetworkQuestData;
 
 import java.util.*;
+import java.util.function.Function;
 
 public class ClientQuests {
     private static final Map<String, QuestEntry> ENTRIES = new HashMap<>();
     private static final Map<String, List<QuestEntry>> BY_GROUPS = new HashMap<>();
-    private static final Set<String> DIRTY = new HashSet<>();
     private static final List<String> GROUPS = new ArrayList<>();
 
     private static final Map<String, QuestProgress> PROGRESS = new HashMap<>();
@@ -26,7 +25,6 @@ public class ClientQuests {
     }
 
     public static void sync(Map<String, Quest> quests, List<String> groups) {
-        DIRTY.clear();
         ENTRIES.clear();
         GROUPS.clear();
         BY_GROUPS.clear();
@@ -74,78 +72,47 @@ public class ClientQuests {
         }
 
         QuestEntry entry = new QuestEntry(dependencies, key, quest, new ArrayList<>());
-
-        if (!dependencies.isEmpty()) {
-            for (QuestEntry dependency : dependencies) {
-                dependency.children().add(entry);
-            }
-        }
+        dependencies.forEach(dependency -> dependency.children().add(entry));
 
         return ENTRIES.computeIfAbsent(key, k -> entry);
     }
 
+    public static void remove(String id) {
+        QuestEntry quest = ENTRIES.remove(id);
+        BY_GROUPS.values().forEach(list -> list.removeIf(entry -> entry.key().equals(id)));
+        if (quest != null) {
+            for (QuestEntry dependency : quest.dependencies()) {
+                dependency.children().remove(quest);
+            }
+            for (QuestEntry child : quest.children()) {
+                child.dependencies().remove(quest);
+            }
+        }
+    }
+
     public static QuestEntry addQuest(String id, Quest quest) {
+        remove(id);
         QuestEntry entry = new QuestEntry(new ArrayList<>(), id, quest, new ArrayList<>());
         for (String dependency : quest.dependencies()) {
             QuestEntry dependent = ENTRIES.get(dependency);
             if (dependent != null) {
-                boolean isAlreadyChild = dependent.children().stream().anyMatch(d -> d.key().equals(id));
-                if (!isAlreadyChild) {
-                    entry.dependencies().add(dependent);
-                    dependent.children().add(entry);
-                }
+                entry.dependencies().add(dependent);
+                dependent.children().removeIf(child -> child.key().equals(id));
+                dependent.children().add(entry);
             }
         }
         for (QuestEntry value : ENTRIES.values()) {
             if (value.value.dependencies().contains(id)) {
-                boolean isAlreadyDependency = value.dependencies().stream().anyMatch(d -> d.key().equals(id));
-                if (!isAlreadyDependency) {
-                    entry.children().add(value);
-                    value.dependencies().add(entry);
-                }
+                entry.children().add(value);
+                value.dependencies().removeIf(dependency -> dependency.key().equals(id));
+                value.dependencies().add(entry);
             }
         }
         ENTRIES.put(id, entry);
-        DIRTY.add(id);
         for (String s : quest.display().groups().keySet()) {
             BY_GROUPS.computeIfAbsent(s, k -> new ArrayList<>()).add(entry);
         }
         return entry;
-    }
-
-    public static void removeQuest(QuestEntry entry) {
-        ENTRIES.remove(entry.key());
-        DIRTY.add(entry.key());
-        for (String s : entry.value().display().groups().keySet()) {
-            BY_GROUPS.computeIfAbsent(s, k -> new ArrayList<>()).remove(entry);
-        }
-
-        for (QuestEntry child : entry.children()) {
-            child.dependencies().remove(entry);
-        }
-
-        for (QuestEntry dependency : entry.dependencies()) {
-            dependency.children().remove(entry);
-        }
-    }
-
-    public static void setDirty(String id) {
-        DIRTY.add(id);
-    }
-
-    public static void sendDirty() {
-        for (String id : DIRTY) {
-            QuestEntry entry = ENTRIES.get(id);
-            if (entry == null) {
-                NetworkHandler.CHANNEL.sendToServer(new DeleteQuestPacket(id));
-            } else {
-                NetworkHandler.CHANNEL.sendToServer(new UploadQuestPacket(id, entry.value));
-            }
-        }
-        if (!DIRTY.isEmpty()) {
-            NetworkHandler.CHANNEL.sendToServer(new QuestActionPacket(QuestActionPacket.Action.SAVE));
-        }
-        DIRTY.clear();
     }
 
     public static Collection<QuestEntry> entries() {
@@ -160,21 +127,15 @@ public class ClientQuests {
         return BY_GROUPS.getOrDefault(group, List.of());
     }
 
-    public static void addToGroup(String group, QuestEntry entry) {
-        var questEntries = BY_GROUPS.computeIfAbsent(group, k -> new ArrayList<>());
-        if (!questEntries.contains(entry)) {
-            questEntries.add(entry);
-        }
-        DIRTY.add(entry.key());
+    public static void updateQuest(QuestEntry entry, Function<Quest, NetworkQuestData.Builder> supplier) {
+        if (entry == null) return;
+        ClientQuests.updateQuest(entry, supplier.apply(entry.value()));
     }
 
-    public static void removeFromGroup(String group, QuestEntry entry) {
-        var questEntries = BY_GROUPS.get(group);
-        if (questEntries != null) {
-            questEntries.remove(entry);
-        }
-        DIRTY.add(entry.key());
-        entry.value().display().groups().remove(group);
+    public static void updateQuest(QuestEntry entry, NetworkQuestData.Builder builder) {
+        NetworkQuestData data = builder.build();
+        data.update(entry.value());
+        NetworkHandler.CHANNEL.sendToServer(new ServerboundUpdateQuestPacket(entry.key(), data));
     }
 
     public record QuestEntry(List<QuestEntry> dependencies, String key, Quest value, List<QuestEntry> children) {

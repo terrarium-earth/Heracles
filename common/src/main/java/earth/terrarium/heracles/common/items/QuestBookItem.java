@@ -1,8 +1,6 @@
 package earth.terrarium.heracles.common.items;
 
-import earth.terrarium.heracles.common.handlers.quests.QuestHandler;
-import earth.terrarium.heracles.common.utils.ModUtils;
-import net.minecraft.server.level.ServerPlayer;
+import earth.terrarium.heracles.client.HeraclesClient;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
@@ -20,12 +18,9 @@ public class QuestBookItem extends Item {
     public @NotNull InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand usedHand) {
         ItemStack stack = player.getItemInHand(usedHand);
         if (level.isClientSide) {
+            HeraclesClient.openQuestScreen();
             return InteractionResultHolder.success(stack);
         }
-        if (player instanceof ServerPlayer serverPlayer) {
-            ModUtils.openGroup(serverPlayer, QuestHandler.groups().get(0));
-            return InteractionResultHolder.consume(stack);
-        }
-        return super.use(level, player, usedHand);
+        return InteractionResultHolder.consume(stack);
     }
 }

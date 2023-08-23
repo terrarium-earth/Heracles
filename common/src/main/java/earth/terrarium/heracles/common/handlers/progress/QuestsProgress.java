@@ -83,12 +83,13 @@ public record QuestsProgress(Map<String, QuestProgress> progress, CompletableQue
                 QuestsProgress memberProgress = QuestProgressHandler.getProgress(player.server, member);
                 for (var quest : quests) {
                     if (quest.getSecond().settings().individualProgress()) continue;
+                    boolean wasComplete = memberProgress.isComplete(quest.getFirst());
                     var currentProgress = memberProgress.progress().get(quest.getFirst());
                     var questProgress = progress.get(quest.getFirst());
                     var newTasks = copyTasks(questProgress.tasks());
                     memberProgress.progress.put(quest.getFirst(), new QuestProgress(questProgress.isComplete(), Set.copyOf(Optionull.mapOrDefault(currentProgress, QuestProgress::claimedRewards, new HashSet<>())), newTasks));
                     ServerPlayer serverPlayer = player.server.getPlayerList().getPlayer(member);
-                    if (serverPlayer != null && questProgress.isComplete()) {
+                    if (serverPlayer != null && (questProgress.isComplete() && !wasComplete)) {
                         sendOutQuestComplete(serverPlayer, quest.getFirst());
                     }
                 }

@@ -2,7 +2,9 @@ package earth.terrarium.heracles.client.screens.quests;
 
 import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.api.quests.Quest;
+import earth.terrarium.heracles.api.quests.QuestSettings;
 import earth.terrarium.heracles.api.quests.defaults.ItemQuestIcon;
+import earth.terrarium.heracles.client.handlers.ClientQuestNetworking;
 import earth.terrarium.heracles.client.handlers.ClientQuests;
 import earth.terrarium.heracles.client.handlers.QuestClipboard;
 import earth.terrarium.heracles.client.screens.AbstractQuestScreen;
@@ -11,6 +13,7 @@ import earth.terrarium.heracles.client.widgets.base.BaseWidget;
 import earth.terrarium.heracles.client.widgets.boxes.IntEditBox;
 import earth.terrarium.heracles.client.widgets.modals.EditObjectModal;
 import earth.terrarium.heracles.common.constants.ConstantComponents;
+import earth.terrarium.heracles.common.network.packets.quests.data.NetworkQuestData;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
@@ -24,7 +27,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.contents.TranslatableContents;
 import net.minecraft.resources.ResourceLocation;
 
-import java.util.function.Consumer;
+import java.util.function.Function;
 
 public class SelectQuestWidget extends BaseWidget {
 
@@ -56,23 +59,29 @@ public class SelectQuestWidget extends BaseWidget {
         this.group = ClientUtils.screen() instanceof QuestsScreen screen ? screen.getGroup() : "";
 
         this.titleBox = this.addChild(new EditBox(this.font, this.x + 6, this.y + 14, this.width - 12, 10, CommonComponents.EMPTY));
-        this.titleBox.setResponder(s -> changeOption(quest -> quest.display().setTitle(s.isEmpty() ? null : Component.translatable(s))));
+        this.titleBox.setResponder(s -> updateQuest(quest -> NetworkQuestData.builder().title(s.isEmpty() ? null : Component.translatable(s))));
 
         int boxWidth = (this.width - 40) / 2;
 
         this.xBox = this.addChild(new PositionBox(this.font, this.x + 16, this.y + 44, boxWidth, 10, ConstantComponents.X));
         this.yBox = this.addChild(new PositionBox(this.font, this.x + 33 + boxWidth, this.y + 44, boxWidth, 10, Component.literal("y")));
-        this.xBox.setNumberResponder(value -> changeOption(quest -> quest.display().position(this.group).x = value));
-        this.yBox.setNumberResponder(value -> changeOption(quest -> quest.display().position(this.group).y = value));
+        this.xBox.setNumberResponder(value -> updateQuest(quest -> NetworkQuestData.builder().group(quest, this.group, pos -> {
+            pos.x = value;
+            return pos;
+        })));
+        this.yBox.setNumberResponder(value -> updateQuest(quest -> NetworkQuestData.builder().group(quest, this.group, pos -> {
+            pos.y = value;
+            return pos;
+        })));
 
         this.subtitleBox = this.addChild(new MultiLineEditBox(this.font, this.x + 6, this.y + 76, this.width - 12, 40, CommonComponents.EMPTY, CommonComponents.EMPTY));
-        this.subtitleBox.setValueListener(s -> changeOption(quest -> quest.display().setSubtitle(s.isEmpty() ? null : Component.translatable(s))));
+        this.subtitleBox.setValueListener(s -> updateQuest(quest -> NetworkQuestData.builder().subtitle(s.isEmpty() ? null : Component.translatable(s))));
 
         addChild(Button.builder(Component.literal("ℹ"), b -> {
                 if (Minecraft.getInstance().screen instanceof QuestsEditScreen screen) {
                     screen.iconModal().setVisible(true);
                     screen.iconModal().setCallback(item -> {
-                        changeOption(quest -> quest.display().setIcon(new ItemQuestIcon(item)));
+                        updateQuest(quest -> NetworkQuestData.builder().icon(new ItemQuestIcon(item)));
                         screen.iconModal().setVisible(false);
                     });
                 }
@@ -85,7 +94,7 @@ public class SelectQuestWidget extends BaseWidget {
                 if (Minecraft.getInstance().screen instanceof QuestsEditScreen screen) {
                     screen.iconBackgroundModal().setVisible(true);
                     screen.iconBackgroundModal().update(ClientUtils.getTextures("gui/quest_backgrounds"), selected -> {
-                        changeOption(quest -> quest.display().setIconBackground(selected));
+                        updateQuest(quest -> NetworkQuestData.builder().background(selected));
                         screen.iconBackgroundModal().setVisible(false);
                     });
                 }
@@ -97,7 +106,7 @@ public class SelectQuestWidget extends BaseWidget {
         addChild(Button.builder(Component.literal("⬈"), b -> {
                 if (Minecraft.getInstance().screen instanceof QuestsEditScreen screen && this.entry != null) {
                     screen.dependencyModal().setVisible(true);
-                    screen.dependencyModal().update(this.entry, () -> changeOption(quest -> {}));
+                    screen.dependencyModal().update(this.entry, () -> updateQuest(quest -> NetworkQuestData.builder().dependencies(quest.dependencies())));
                 }
                 loseFocusListener = b;
             }).bounds(this.x + 42, this.y + 137, 16, 16)
@@ -109,9 +118,13 @@ public class SelectQuestWidget extends BaseWidget {
                     screen.confirmModal().setVisible(true);
                     screen.confirmModal().setCallback(() -> {
                         if (this.entry.value().display().groups().size() == 1) {
-                            ClientQuests.removeQuest(entry);
+                            ClientQuestNetworking.remove(entry.key());
+                        } else {
+                            ClientQuests.updateQuest(entry, quest -> {
+                                quest.display().groups().remove(widget.group());
+                                return NetworkQuestData.builder().groups(quest.display().groups());
+                            });
                         }
-                        ClientQuests.removeFromGroup(widget.group(), entry);
                         screen.questsWidget.removeQuest(this.entry);
                     });
                 }
@@ -124,13 +137,14 @@ public class SelectQuestWidget extends BaseWidget {
                 if (Minecraft.getInstance().screen instanceof QuestsEditScreen screen && this.entry != null) {
                     EditObjectModal edit = screen.findOrCreateEditWidget();
                     ResourceLocation id = new ResourceLocation(Heracles.MOD_ID, "quest");
-                    var settings = this.entry.value().settings();
+                    QuestSettings settings = this.entry.value().settings();
                     edit.init(
                         id,
                         QuestSettingsInitalizer.INSTANCE.create(settings),
-                        data -> changeOption(quest ->
-                            quest.settings().update(QuestSettingsInitalizer.INSTANCE.create("quest", settings, data))
-                        )
+                        data -> updateQuest(quest -> {
+                            QuestSettings questSettings = QuestSettingsInitalizer.INSTANCE.create("quest", settings, data);
+                            return NetworkQuestData.builder().individualProgress(questSettings.individualProgress()).hidden(questSettings.hidden());
+                        })
                     );
                     edit.setTitle(Component.literal("Edit Quest Settings"));
                 }
@@ -230,10 +244,8 @@ public class SelectQuestWidget extends BaseWidget {
         return this.entry;
     }
 
-    private void changeOption(Consumer<Quest> consumer) {
-        if (this.entry == null) return;
-        consumer.accept(this.entry.value());
-        ClientQuests.setDirty(this.entry.key());
+    private void updateQuest(Function<Quest, NetworkQuestData.Builder> supplier) {
+        ClientQuests.updateQuest(this.entry, supplier);
     }
 
     public QuestsWidget widget() {

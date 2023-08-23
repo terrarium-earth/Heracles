@@ -9,6 +9,7 @@ import earth.terrarium.heracles.client.screens.quests.SelectQuestWidget;
 import earth.terrarium.heracles.client.utils.ClientUtils;
 import earth.terrarium.heracles.client.utils.MouseClick;
 import earth.terrarium.heracles.client.widgets.modals.TextInputModal;
+import earth.terrarium.heracles.common.network.packets.quests.data.NetworkQuestData;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
@@ -44,8 +45,10 @@ public class QuestClipboard {
                 String group = screen.getGroup();
                 ClientQuests.get(this.key).ifPresent(entry -> {
                     if (entry.value().display().groups().containsKey(group)) return;
-                    entry.value().display().groups().put(group, new GroupDisplay(group, new Vector2i((int) pos.x() - 12, (int) pos.y() - 12)));
-                    ClientQuests.addToGroup(group, entry);
+                    ClientQuests.updateQuest(entry, quest -> {
+                        quest.display().groups().put(group, new GroupDisplay(group, new Vector2i((int) pos.x() - 12, (int) pos.y() - 12)));
+                        return NetworkQuestData.builder().groups(quest.display().groups());
+                    });
                     widget.widget().addQuest(entry);
                 });
                 return true;
@@ -66,9 +69,13 @@ public class QuestClipboard {
                 this.quest = entry.value();
                 this.key = entry.key();
                 if (this.quest.display().groups().size() == 1) {
-                    ClientQuests.removeQuest(entry);
+                    ClientQuestNetworking.remove(entry.key());
+                } else {
+                    ClientQuests.updateQuest(entry, quest -> {
+                        quest.display().groups().remove(widget.group());
+                        return NetworkQuestData.builder().groups(quest.display().groups());
+                    });
                 }
-                ClientQuests.removeFromGroup(widget.group(), entry);
                 widget.removeQuest(entry);
             }
             case COPY -> {
@@ -120,7 +127,7 @@ public class QuestClipboard {
                 Map.copyOf(quest.tasks()),
                 Map.copyOf(quest.rewards())
             );
-            callback.accept(ClientQuests.addQuest(id, newQuest));
+            callback.accept(ClientQuestNetworking.add(id, newQuest));
         }
     }
 

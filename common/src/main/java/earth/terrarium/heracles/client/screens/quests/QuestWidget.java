@@ -27,7 +27,7 @@ public class QuestWidget {
         this.id = entry.key();
     }
 
-    public void render(GuiGraphics graphics, ScissorBoxStack scissor, int x, int y, int mouseX, int mouseY, boolean hovered, float partialTicks) {
+    public void render(GuiGraphics graphics, ScissorBoxStack scissor, int x, int y, int mouseX, int mouseY, boolean hovered, float ignoredPartialTicks) {
         int offset = switch (status) {
             case COMPLETED -> 24;
             case LOCKED -> 48;
@@ -70,6 +70,13 @@ public class QuestWidget {
             return this.quest.display().position(screen.getGroup());
         }
         return new Vector2i();
+    }
+
+    public String group() {
+        if (ClientUtils.screen() instanceof QuestsScreen screen) {
+            return screen.getGroup();
+        }
+        return "";
     }
 
     public Quest quest() {

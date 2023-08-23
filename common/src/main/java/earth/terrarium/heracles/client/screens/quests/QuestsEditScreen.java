@@ -5,6 +5,7 @@ import earth.terrarium.heracles.api.quests.GroupDisplay;
 import earth.terrarium.heracles.api.quests.Quest;
 import earth.terrarium.heracles.api.quests.QuestDisplay;
 import earth.terrarium.heracles.api.quests.QuestSettings;
+import earth.terrarium.heracles.client.handlers.ClientQuestNetworking;
 import earth.terrarium.heracles.client.handlers.ClientQuests;
 import earth.terrarium.heracles.client.screens.mousemode.MouseButtonType;
 import earth.terrarium.heracles.client.screens.mousemode.MouseMode;
@@ -30,6 +31,7 @@ import org.joml.Vector2i;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Locale;
 
 public class QuestsEditScreen extends QuestsScreen {
 
@@ -117,8 +119,8 @@ public class QuestsEditScreen extends QuestsScreen {
                 new HashMap<>(),
                 new HashMap<>()
             );
-            this.questsWidget.addQuest(ClientQuests.addQuest(text, quest));
-        }, text -> ClientQuests.get(text.trim()).isEmpty()));
+            this.questsWidget.addQuest(ClientQuestNetworking.add(text, quest));
+        }, text -> text.toLowerCase(Locale.ROOT).replaceAll("[^a-zA-Z_-]", "").length() >= 2 && ClientQuests.get(text.trim()).isEmpty()));
     }
 
     @Override
@@ -188,7 +190,6 @@ public class QuestsEditScreen extends QuestsScreen {
     public void removed() {
         super.removed();
         uploadModal.setVisible(false);
-        ClientQuests.sendDirty();
     }
 
     private void clearWidget() {

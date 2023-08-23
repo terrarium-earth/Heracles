@@ -8,6 +8,7 @@ import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.client.widgets.ToggleImageButton;
 import earth.terrarium.heracles.client.widgets.base.BaseModal;
 import earth.terrarium.heracles.common.constants.ConstantComponents;
+import earth.terrarium.heracles.common.utils.ModUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
@@ -154,7 +155,7 @@ public class IconModal extends BaseModal {
         for (Item item : items) {
             if (filteredItems.size() >= ITEM_COLUMNS * ITEM_ROWS) break;
             if (item == Items.AIR) continue;
-            Component text = item.getDescription();
+            Component text = ModUtils.throwStackoverflow(item, Item::getDescription);
             if (text.getString().toLowerCase(Locale.ROOT).contains(search)) {
                 filteredItems.add(item);
             }

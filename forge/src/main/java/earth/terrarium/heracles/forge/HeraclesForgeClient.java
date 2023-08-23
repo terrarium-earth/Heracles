@@ -18,6 +18,10 @@ import net.minecraftforge.fml.loading.FMLPaths;
 @Mod.EventBusSubscriber(value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class HeraclesForgeClient {
 
+    public static void init() {
+        FMLJavaModLoadingContext.get().getModEventBus().addListener(HeraclesForgeClient::onRegisterKeyBindings);
+    }
+
     @SubscribeEvent
     public static void onClientSetup(FMLClientSetupEvent event) {
         DisplayConfig.load(FMLPaths.GAMEDIR.get());
@@ -25,8 +29,6 @@ public class HeraclesForgeClient {
         event.enqueueWork(HeraclesClient::init);
         MinecraftForge.EVENT_BUS.addListener(HeraclesForgeClient::onClientTick);
         MinecraftForge.EVENT_BUS.addListener(HeraclesForgeClient::onMouseClickedPreScreen);
-
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(HeraclesForgeClient::onRegisterKeyBindings);
     }
 
     public static void onRegisterKeyBindings(RegisterKeyMappingsEvent event) {

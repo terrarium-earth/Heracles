@@ -15,6 +15,7 @@ import net.minecraftforge.event.entity.player.AdvancementEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.server.ServerAboutToStartEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.loading.FMLEnvironment;
 import net.minecraftforge.fml.loading.FMLPaths;
 
 import java.util.Map;
@@ -33,6 +34,10 @@ public class HeraclesForge {
         MinecraftForge.EVENT_BUS.addListener(HeraclesForge::onItemInteract);
         MinecraftForge.EVENT_BUS.addListener(HeraclesForge::onBlockInteract);
         MinecraftForge.EVENT_BUS.addListener(HeraclesForge::onEntityInteract);
+
+        if (FMLEnvironment.dist.isClient()) {
+            HeraclesForgeClient.init();
+        }
     }
 
     private static void onServerStarting(ServerAboutToStartEvent event) {

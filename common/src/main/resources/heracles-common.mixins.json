@@ -5,8 +5,8 @@
     "compatibilityLevel": "JAVA_17",
     "mixins": [
         "common.ChangeDimensionTriggerMixin",
+        "common.InventoryMixin",
         "common.PlayerListMixin",
-        "common.PlayerMixin",
         "common.ReloadableServerResourcesMixin",
         "common.ServerPlayerMixin"
     ],

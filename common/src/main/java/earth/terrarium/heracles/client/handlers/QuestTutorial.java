@@ -93,7 +93,7 @@ public class QuestTutorial {
 
             graphics.renderFakeItem(ModItems.QUEST_BOOK.get().getDefaultInstance(), 8, 8);
 
-            return DisplayConfig.showTutorial ? Visibility.SHOW : Visibility.HIDE;
+            return DisplayConfig.showTutorial && QuestTutorial.toast == this ? Visibility.SHOW : Visibility.HIDE;
         }
     }
 }

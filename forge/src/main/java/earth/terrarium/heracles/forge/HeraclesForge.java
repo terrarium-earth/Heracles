@@ -10,6 +10,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.levelgen.structure.Structure;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingEntityUseItemEvent;
 import net.minecraftforge.event.entity.player.AdvancementEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
@@ -34,10 +35,18 @@ public class HeraclesForge {
         MinecraftForge.EVENT_BUS.addListener(HeraclesForge::onItemInteract);
         MinecraftForge.EVENT_BUS.addListener(HeraclesForge::onBlockInteract);
         MinecraftForge.EVENT_BUS.addListener(HeraclesForge::onEntityInteract);
+        MinecraftForge.EVENT_BUS.addListener(HeraclesForge::onEntityDeath);
 
         if (FMLEnvironment.dist.isClient()) {
             HeraclesForgeClient.init();
         }
+    }
+
+    private static void onEntityDeath(LivingDeathEvent event) {
+        if (!(event.getSource().getEntity() instanceof ServerPlayer player)) return;
+
+        QuestProgressHandler.getProgress(player.server, player.getUUID())
+            .testAndProgressTaskType(player, event.getEntity(), KillEntityQuestTask.TYPE);
     }
 
     private static void onServerStarting(ServerAboutToStartEvent event) {

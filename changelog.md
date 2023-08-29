@@ -1,14 +1,6 @@
-- Added unlock notification quest setting
-- Fixed hidden quests not hiding correctly
-- Fixed keybinds not registering correctly on forge
-- Fixed rlib not being declared a dependency on fabric
-- Item tasks now register when item is added to inventory not just picked up
-- Added auto xml encoding contents of markdown
-- Fixed that quest book does not trigger tutorial
-- Fixed quest complete messaging getting sent if you join a server that you've already progressed on with another member online
-- Added capturing stackoverflows in icon modal to catch mods that crash
-- Removed the ability to use section symbols in text editor
-- Changed identifier input modal to only accept [a-zA-Z0-9_-]
-- Changed parsing errors to print full stacktrace in logs when occurred
-- Added ability to use color codes by using && instead of section symbols
-- Changed how saving and deleting works to defer and updating immediately on clients as to make it seems instant and have responsive feedback
+- Change how check inventory task works
+- Make it so that only 1 quest tutorial toast can appear at a time
+- Fix HOME and END keys not functioning properly
+- Added support for DEL key
+- Fix ampersand parsing
+- Add missing event on forge

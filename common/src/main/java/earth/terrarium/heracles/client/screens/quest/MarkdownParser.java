@@ -14,6 +14,7 @@ import java.util.regex.Pattern;
 public class MarkdownParser {
 
     private static final Pattern COLOR_PATTERN = Pattern.compile("([^\\\\]|^)&&([0-9a-fA-Fk-oK-OrR])");
+    private static final Pattern AMPERSANDS_NOT_ENTITY_PATTERN = Pattern.compile("&(?!([a-z0-9]+|#[0-9]{1,6}|#x[0-9a-fA-F]{1,6});)");
 
     private static String replaceColor(String text) {
         Matcher matcher;
@@ -67,11 +68,12 @@ public class MarkdownParser {
     }
 
     private static String xmlEncode(String text) {
-        return text.replaceAll("&(?![^; ]+;)", "&amp;")
+        return AMPERSANDS_NOT_ENTITY_PATTERN.matcher(text).replaceAll("&amp;")
             .replace("<", "&lt;")
             .replace(">", "&gt;")
             .replace("\"", "&quot;")
             .replace("'", "&apos;");
+
     }
 
     public static MutableComponent parseTextToComponent(String text) {

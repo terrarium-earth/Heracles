@@ -3,10 +3,11 @@
   "id": "heracles",
   "version": "${version}",
   "name": "Heracles",
-  "description": "",
+  "description": "Heracles is a comprehensive questing mod that allows pack makers to create tree style quests that can be distributed via the config folder for users to play and complete.",
   "authors": [
-    ""
+    "ThatGravyBoat"
   ],
+  "icon": "assets/heracles/icon.png",
   "license": "MIT",
   "environment": "*",
   "entrypoints": {

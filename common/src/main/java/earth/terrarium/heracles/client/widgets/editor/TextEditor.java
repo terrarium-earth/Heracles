@@ -177,13 +177,17 @@ public class TextEditor implements Renderable, GuiEventListener, NarratableEntry
                 content.backspace();
                 yield true;
             }
+            case InputConstants.KEY_DELETE -> {
+                content.delete();
+                yield true;
+            }
             case InputConstants.KEY_END -> {
-                String line = content.lines().get(content.lines().size() - 1);
-                content.setCursor(line.length(), content.lines().size() - 1, Screen.hasShiftDown());
+                String line = content.lines().get(content.cursor().y());
+                content.setCursor(line.length(), content.cursor().y(), Screen.hasShiftDown());
                 yield true;
             }
             case InputConstants.KEY_HOME -> {
-                content.setCursor(0, 0, Screen.hasShiftDown());
+                content.setCursor(0, content.cursor().y(), Screen.hasShiftDown());
                 yield true;
             }
             default -> {

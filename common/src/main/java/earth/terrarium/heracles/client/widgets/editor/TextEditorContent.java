@@ -98,6 +98,24 @@ public class TextEditorContent {
         cursor.set(0, cursor.y() + 1);
     }
 
+    public void delete() {
+        if (selection != null) {
+            deleteSelection();
+            return;
+        }
+        if (cursor.x() == lines.get(cursor.y()).length()) {
+            if (cursor.y() + 1 < lines.size()) {
+                int y = cursor.y() + 1;
+                String line = lines.get(y);
+                lines.remove(y);
+                lines.set(cursor.y(), lines.get(cursor.y()) + line);
+            }
+        } else {
+            String line = lines.get(cursor.y());
+            lines.set(cursor.y(), line.substring(0, cursor.x()) + line.substring(cursor.x() + 1));
+        }
+    }
+
     public void backspace() {
         if (selection != null) {
             deleteSelection();

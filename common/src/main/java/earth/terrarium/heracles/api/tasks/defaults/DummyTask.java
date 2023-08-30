@@ -8,6 +8,7 @@ import earth.terrarium.heracles.api.tasks.QuestTaskType;
 import earth.terrarium.heracles.api.tasks.storage.defaults.BooleanTaskStorage;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.ByteTag;
+import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.ExtraCodecs;
@@ -38,6 +39,14 @@ public record DummyTask(
     @Override
     public QuestTaskType<DummyTask> type() {
         return TYPE;
+    }
+
+    public Component title() {
+        return title == null ? CommonComponents.EMPTY : title;
+    }
+
+    public Component description() {
+        return description == null ? CommonComponents.EMPTY : description;
     }
 
     private static class Type implements QuestTaskType<DummyTask> {

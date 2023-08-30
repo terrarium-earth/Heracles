@@ -58,7 +58,8 @@ public class DummyTaskSettings implements SettingInitializer<DummyTask> {
 
     private static Component toComponent(String text) {
         try {
-            return Component.Serializer.fromJson(text);
+            Component component = Component.Serializer.fromJson(text);
+            return component != null ? component : Component.nullToEmpty(text);
         } catch (Exception e) {
             return Component.nullToEmpty(text);
         }

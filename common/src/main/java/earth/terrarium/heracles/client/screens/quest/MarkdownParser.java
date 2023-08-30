@@ -15,11 +15,23 @@ public class MarkdownParser {
 
     private static final Pattern COLOR_PATTERN = Pattern.compile("([^\\\\]|^)&&([0-9a-fA-Fk-oK-OrR])");
     private static final Pattern AMPERSANDS_NOT_ENTITY_PATTERN = Pattern.compile("&(?!([a-z0-9]+|#[0-9]{1,6}|#x[0-9a-fA-F]{1,6});)");
+    private static final Map<String, String> CHAR_TO_ENTITY = Map.of(
+        "<", "&#60;",
+        ">", "&#62;",
+        "\"", "&#34;",
+        "'", "&#39;",
+        "¢", "&#162;",
+        "£", "&#163;",
+        "¥", "&#165;",
+        "€", "&#8364;",
+        "©", "&#169;",
+        "®", "&#174;"
+    );
 
     private static String replaceColor(String text) {
         Matcher matcher;
         while ((matcher = COLOR_PATTERN.matcher(text)).find()) {
-            text = matcher.replaceFirst("$1&sect;$2");
+            text = matcher.replaceFirst("$1&#167;$2");
         }
         return text;
     }
@@ -68,12 +80,11 @@ public class MarkdownParser {
     }
 
     private static String xmlEncode(String text) {
-        return AMPERSANDS_NOT_ENTITY_PATTERN.matcher(text).replaceAll("&amp;")
-            .replace("<", "&lt;")
-            .replace(">", "&gt;")
-            .replace("\"", "&quot;")
-            .replace("'", "&apos;");
-
+        text = AMPERSANDS_NOT_ENTITY_PATTERN.matcher(text).replaceAll("&#38;");
+        for (var entry : CHAR_TO_ENTITY.entrySet()) {
+            text = text.replace(entry.getKey(), entry.getValue());
+        }
+        return text;
     }
 
     public static MutableComponent parseTextToComponent(String text) {

@@ -1,6 +1,3 @@
-- Change how check inventory task works
-- Make it so that only 1 quest tutorial toast can appear at a time
-- Fix HOME and END keys not functioning properly
-- Added support for DEL key
-- Fix ampersand parsing
-- Add missing event on forge
+- Change markdown parser to do sanity checking depending on OS
+- Fix NPE in dummy task
+- Update FMJ to contain icon

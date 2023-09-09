@@ -63,6 +63,7 @@ subprojects {
             "include"(hermes)
 
             "modRuntimeOnly"("me.shedaniel:RoughlyEnoughItems-$modLoader:$reiVersion")
+            "modCompileOnly"("me.shedaniel:RoughlyEnoughItems-$modLoader:$reiVersion")
             "modCompileOnly"("me.shedaniel:RoughlyEnoughItems-api-$modLoader:$reiVersion")
             "modCompileOnly"("me.shedaniel:RoughlyEnoughItems-default-plugin-$modLoader:$reiVersion")
         } else {

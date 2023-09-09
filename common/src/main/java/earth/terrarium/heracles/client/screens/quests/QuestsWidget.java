@@ -11,6 +11,7 @@ import com.mojang.math.Axis;
 import com.teamresourceful.resourcefullib.client.CloseablePoseStack;
 import com.teamresourceful.resourcefullib.client.utils.RenderUtils;
 import earth.terrarium.heracles.Heracles;
+import earth.terrarium.heracles.api.quests.Quest;
 import earth.terrarium.heracles.client.handlers.ClientQuests;
 import earth.terrarium.heracles.client.screens.mousemode.MouseMode;
 import earth.terrarium.heracles.client.utils.ClientUtils;
@@ -39,8 +40,8 @@ public class QuestsWidget extends BaseWidget {
 
     public static final Vector2i offset = new Vector2i();
 
-    private static final Vector2i MAX = new Vector2i(500, 500);
-    private static final Vector2i MIN = new Vector2i(-500, -500);
+    private static final Vector2i MAX = new Vector2i(5000, 5000);
+    private static final Vector2i MIN = new Vector2i(-5000, -5000);
 
     private static final ResourceLocation ARROW = new ResourceLocation(Heracles.MOD_ID, "textures/gui/arrow.png");
 
@@ -69,6 +70,11 @@ public class QuestsWidget extends BaseWidget {
     private final String group;
 
     private QuestsContent content;
+
+    private int maxX = 0;
+    private int maxY = 0;
+    private int minX = 0;
+    private int minY = 0;
 
     public QuestsWidget(int x, int y, int width, int selectedWidth, int height, BooleanSupplier inspectorOpened, Supplier<MouseMode> mouseMode, Consumer<ClientQuests.QuestEntry> onSelection) {
         this.x = x;
@@ -107,6 +113,29 @@ public class QuestsWidget extends BaseWidget {
             this.widgets.add(new QuestWidget(quest.getFirst(), quest.getSecond()));
             this.entries.add(quest.getFirst());
             this.visibleQuests.add(quest.getFirst().key());
+        }
+
+        if (isEditing) {
+            this.minX = MIN.x();
+            this.minY = MIN.y();
+            this.maxX = MAX.x();
+            this.maxY = MAX.y();
+        } else {
+            int[] xs = this.entries.stream()
+                .map(ClientQuests.QuestEntry::value)
+                .map(Quest::display)
+                .map(display -> display.groups().get(this.group))
+                .mapToInt(display -> display.position().x).toArray();
+            int[] ys = this.entries.stream()
+                .map(ClientQuests.QuestEntry::value)
+                .map(Quest::display)
+                .map(display -> display.groups().get(this.group))
+                .mapToInt(display -> display.position().y).toArray();
+
+            this.minX = Arrays.stream(xs).min().orElse(0) - 100;
+            this.minY = Arrays.stream(ys).min().orElse(0) - 100;
+            this.maxX = Arrays.stream(xs).max().orElse(0) + 100;
+            this.maxY = Arrays.stream(ys).max().orElse(0) + 100;
         }
     }
 
@@ -218,8 +247,8 @@ public class QuestsWidget extends BaseWidget {
 
         try (var pose = new CloseablePoseStack(graphics)) {
             pose.translate(0, 0, 300);
-            int width = (int) ((this.width - 10) * (offset.x / 500f));
-            int height = (int) ((this.height - 10) * (offset.y / 500f));
+            int width = (int) ((this.width - 10) * (offset.x / (float)Math.max(this.minX, this.maxX)));
+            int height = (int) ((this.height - 10) * (offset.y / (float)Math.max(this.minY, this.maxY)));
 
             if (offset.x > this.width / 4) {
                 graphics.fill(this.x + 1 + width, this.y + this.height - 4, this.x - 6 + this.width, this.y + this.height - 2, 0xFFFFFFFF);
@@ -242,7 +271,7 @@ public class QuestsWidget extends BaseWidget {
         } else {
             offset.add(0, (int) scrollAmount * 10);
         }
-        offset.set(Mth.clamp(offset.x(), MIN.x(), MAX.x()), Mth.clamp(offset.y(), MIN.y(), MAX.y()));
+        offset.set(Mth.clamp(offset.x(), minX, maxX), Mth.clamp(offset.y(), minY, maxY));
         return true;
     }
 
@@ -282,7 +311,7 @@ public class QuestsWidget extends BaseWidget {
         if (mode.canDrag() || button == InputConstants.MOUSE_BUTTON_MIDDLE) {
             int newX = (int) (mouseX - start.x() + startOffset.x());
             int newY = (int) (mouseY - start.y() + startOffset.y());
-            offset.set(Mth.clamp(newX, MIN.x(), MAX.x()), Mth.clamp(newY, MIN.y(), MAX.y()));
+            offset.set(Mth.clamp(newX, minX, maxX), Mth.clamp(newY, minY, maxY));
         } else if (mode.canDragSelection()) {
             this.selectHandler.onDrag((int) mouseX, (int) mouseY);
         }

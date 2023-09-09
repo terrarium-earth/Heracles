@@ -1,12 +1,19 @@
 package earth.terrarium.heracles.api.client;
 
+import com.mojang.math.Axis;
+import com.teamresourceful.resourcefullib.client.CloseablePoseStack;
 import earth.terrarium.heracles.api.tasks.QuestTask;
 import earth.terrarium.heracles.api.tasks.QuestTaskDisplayFormatter;
 import earth.terrarium.heracles.common.handlers.progress.TaskProgress;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.renderer.LightTexture;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import net.minecraft.nbt.Tag;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.boss.enderdragon.EnderDragon;
 
 public final class WidgetUtils {
 
@@ -31,5 +38,42 @@ public final class WidgetUtils {
             text, x + width - 5 - font.width(text), y + 5, 0xFFFFFFFF,
             false
         );
+    }
+
+    public static void drawEntity(GuiGraphics graphics, int x, int y, int size, Entity entity) {
+        y += size / 2f;
+        x += size / 4f;
+        Minecraft mc = Minecraft.getInstance();
+        float scaledSize = 25 / (Math.max(entity.getBbWidth(), entity.getBbHeight()));
+        if (Math.abs(entity.getBbHeight() - entity.getBbWidth()) > 5) {
+            scaledSize *= 1.2f;
+        } else if (Math.abs(entity.getBbHeight() - entity.getBbWidth()) == 0) {
+            scaledSize *= 0.8f;
+        }
+
+        scaledSize *= size / 40f;
+
+        x += size / 40f < 1 ? -6 * size / 40f : 5 * size / 40f;
+        y += size / 40f < 1 ? -6 * size / 40f : 8 * size / 35f;
+
+        float rot = 45f;
+        if (entity instanceof EnderDragon) {
+            // Ender dragon is rotated 180 degrees
+            rot = 225f;
+        }
+
+        float entityY = y + 3 - (Math.max(0, size - entity.getBbHeight() * scaledSize));
+        try (var pose = new CloseablePoseStack(graphics)) {
+            pose.translate(14, 20 + 4, 0.5);
+            pose.translate(x - 2, entityY, 1);
+            pose.mulPose(Axis.ZP.rotationDegrees(180.0F));
+            pose.translate(0, 0, 100);
+            pose.scale(-(scaledSize), (scaledSize), 50);
+            pose.mulPose(Axis.YP.rotationDegrees(rot));
+            EntityRenderDispatcher entityRenderer = mc.getEntityRenderDispatcher();
+            MultiBufferSource.BufferSource buffer = mc.renderBuffers().bufferSource();
+            entityRenderer.render(entity, 0, 0, 0.0D, mc.getFrameTime(), 1, pose, buffer, LightTexture.FULL_BRIGHT);
+            buffer.endBatch();
+        }
     }
 }

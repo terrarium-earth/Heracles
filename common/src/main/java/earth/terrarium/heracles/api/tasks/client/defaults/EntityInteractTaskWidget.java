@@ -13,13 +13,11 @@ import earth.terrarium.heracles.common.utils.ModUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.ByteTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.LivingEntity;
 
 import java.util.List;
 
@@ -46,10 +44,9 @@ public record EntityInteractTaskWidget(
         int iconSize = (int) (width * 0.1f);
         EntityType<?> type = getType();
         if (type != null) {
-            if (factory.apply(type) instanceof LivingEntity living) {
-                try (var ignored = RenderUtils.createScissorBoxStack(scissor, Minecraft.getInstance(), graphics.pose(), x + 5, y + 5, iconSize, iconSize)) {
-                    InventoryScreen.renderEntityInInventoryFollowsMouse(graphics, x + 5 + (int) (iconSize / 2f), y + 5 + iconSize, (int) (iconSize * 0.5f), x - mouseX, y - mouseY, living);
-                }
+            Entity entity = factory.apply(type);
+            try (var ignored = RenderUtils.createScissorBoxStack(scissor, Minecraft.getInstance(), graphics.pose(), x + 5, y + 5, iconSize, iconSize)) {
+                WidgetUtils.drawEntity(graphics, x + 5, y + 5, iconSize, entity);
             }
         }
         graphics.drawString(

@@ -146,7 +146,8 @@ public class SelectQuestWidget extends BaseWidget {
                             return NetworkQuestData.builder()
                                 .individualProgress(questSettings.individualProgress())
                                 .hidden(questSettings.hidden())
-                                .unlockNotification(questSettings.unlockNotification());
+                                .unlockNotification(questSettings.unlockNotification())
+                                .showDependencyArrow(questSettings.showDependencyArrow());
                         })
                     );
                     edit.setTitle(Component.literal("Edit Quest Settings"));

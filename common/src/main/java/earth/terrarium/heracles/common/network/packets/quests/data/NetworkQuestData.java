@@ -66,6 +66,7 @@ public record NetworkQuestData(
         private TriState individualProgress = TriState.UNDEFINED;
         private TriState hidden = TriState.UNDEFINED;
         private TriState unlockNotification = TriState.UNDEFINED;
+        private TriState showDependencyArrow = TriState.UNDEFINED;
         private Set<String> dependencies;
         private Map<String, QuestTask<?, ?, ?>> tasks;
         private Map<String, QuestReward<?>> rewards;
@@ -125,6 +126,11 @@ public record NetworkQuestData(
             return this;
         }
 
+        public Builder showDependencyArrow(boolean showDependencyArrow) {
+            this.showDependencyArrow = TriState.of(showDependencyArrow);
+            return this;
+        }
+
         public Builder dependencies(Set<String> dependencies) {
             this.dependencies = new HashSet<>(dependencies);
             return this;
@@ -157,7 +163,8 @@ public record NetworkQuestData(
                 settings = new NetworkQuestSettingsData(
                     Optional.ofNullable(individualProgress.isUndefined() ? null : individualProgress.isTrue()),
                     Optional.ofNullable(hidden.isUndefined() ? null : hidden.isTrue()),
-                    Optional.ofNullable(unlockNotification.isUndefined() ? null : unlockNotification.isTrue())
+                    Optional.ofNullable(unlockNotification.isUndefined() ? null : unlockNotification.isTrue()),
+                    Optional.ofNullable(showDependencyArrow.isUndefined() ? null : showDependencyArrow.isTrue())
                 );
             }
 

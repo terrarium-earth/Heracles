@@ -207,6 +207,7 @@ public class QuestsWidget extends BaseWidget {
                 for (ClientQuests.QuestEntry child : entry.children()) {
                     if (!child.value().display().groups().containsKey(this.group)) continue;
                     if (!this.visibleQuests.contains(child.key())) continue;
+                    if (!child.value().settings().showDependencyArrow()) continue;
                     var childPosition = child.value().display().position(this.group);
 
                     if (lines.contains(new Pair<>(position, childPosition))) continue;

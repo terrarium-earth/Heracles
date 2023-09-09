@@ -15,6 +15,7 @@ public class QuestSettingsInitalizer implements SettingInitializer<QuestSettings
         settings.put("individual_progress", BooleanSetting.FALSE, object != null && object.individualProgress());
         settings.put("hidden", BooleanSetting.FALSE, object != null && object.hidden());
         settings.put("unlock_notification", BooleanSetting.FALSE, object != null && object.unlockNotification());
+        settings.put("show_dependency_arrow", BooleanSetting.TRUE, object != null && object.showDependencyArrow());
         return settings;
     }
 
@@ -23,7 +24,8 @@ public class QuestSettingsInitalizer implements SettingInitializer<QuestSettings
         return new QuestSettings(
             data.get("individual_progress", BooleanSetting.FALSE).orElse(object != null && object.individualProgress()),
             data.get("hidden", BooleanSetting.FALSE).orElse(object != null && object.hidden()),
-            data.get("unlock_notification", BooleanSetting.FALSE).orElse(object != null && object.unlockNotification())
+            data.get("unlock_notification", BooleanSetting.FALSE).orElse(object != null && object.unlockNotification()),
+            data.get("show_dependency_arrow", BooleanSetting.TRUE).orElse(object != null && object.showDependencyArrow())
         );
     }
 }

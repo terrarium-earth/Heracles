@@ -21,7 +21,7 @@ public record ItemInteractTaskWidget(
     ItemInteractTask task, TaskProgress<ByteTag> progress, List<ItemStack> stacks
 ) implements DisplayWidget {
 
-    private static final Component DESCRIPTION = Component.translatable("task.heracles.item_interaction.desc.singular");
+    private static final String DESC = "task.heracles.item_interaction.desc.singular";
 
     public ItemInteractTaskWidget(ItemInteractTask task, TaskProgress<ByteTag> progress) {
         this(
@@ -48,7 +48,7 @@ public record ItemInteractTaskWidget(
         );
         graphics.drawString(
             font,
-            DESCRIPTION, x + iconSize + 10, y + 7 + font.lineHeight, 0xFF808080,
+            Component.translatable(DESC, Component.keybind("key.use")), x + iconSize + 10, y + 7 + font.lineHeight, 0xFF808080,
             false
         );
         WidgetUtils.drawProgressText(graphics, x, y, width, this.task, this.progress);

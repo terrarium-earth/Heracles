@@ -28,6 +28,10 @@ public record RegistryValue<T>(Either<Holder<T>, TagKey<T>> value) {
         return this.value.mapLeft(Holder::value);
     }
 
+    public boolean isTag() {
+        return this.value.right().isPresent();
+    }
+
     public Component getDisplayName(Function<T, Component> mapper) {
         return getValue().map(mapper, RegistryValue::getDisplayName);
     }

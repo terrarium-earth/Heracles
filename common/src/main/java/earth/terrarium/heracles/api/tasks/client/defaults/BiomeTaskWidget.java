@@ -36,12 +36,12 @@ public final class BiomeTaskWidget implements DisplayWidget {
         graphics.renderFakeItem(getIcon(), x + 5 + (int) (iconSize / 2f) - 8, y + 5 + (int) (iconSize / 2f) - 8);
         graphics.drawString(
             font,
-            TaskTitleFormatter.create(this.task), x + iconSize + 10, y + 5, 0xFFFFFFFF,
+            DESCRIPTION, x + iconSize + 10, y + 5, 0xFFFFFFFF,
             false
         );
         graphics.drawString(
             font,
-            DESCRIPTION, x + iconSize + 10, y + 7 + font.lineHeight, 0xFF808080,
+            TaskTitleFormatter.create(this.task), x + iconSize + 10, y + 7 + font.lineHeight, 0xFF808080,
             false
         );
         String progress = QuestTaskDisplayFormatter.create(this.task, this.progress);

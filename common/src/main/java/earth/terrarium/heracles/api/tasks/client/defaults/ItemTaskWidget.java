@@ -4,6 +4,7 @@ import com.mojang.datafixers.util.Pair;
 import com.teamresourceful.resourcefullib.client.scissor.ScissorBoxStack;
 import com.teamresourceful.resourcefullib.client.screens.CursorScreen;
 import com.teamresourceful.resourcefullib.client.utils.CursorUtils;
+import com.teamresourceful.resourcefullib.client.utils.ScreenUtils;
 import earth.terrarium.heracles.api.client.DisplayWidget;
 import earth.terrarium.heracles.api.client.WidgetUtils;
 import earth.terrarium.heracles.api.tasks.client.display.TaskTitleFormatter;
@@ -28,8 +29,10 @@ import java.util.Optional;
 
 public final class ItemTaskWidget implements DisplayWidget {
 
-    private static final String DESC_SINGULAR = "task.heracles.item.desc.singular";
-    private static final String DESC_PLURAL = "task.heracles.item.desc.plural";
+    private static final String DESC_ITEM = "task.heracles.item.desc.item";
+    private static final String DESC_TAG = "task.heracles.item.desc.tag";
+    private static final String DESC_SUBMIT_ITEM = "task.heracles.item.submit.desc.item";
+    private static final String DESC_SUBMIT_TAG = "task.heracles.item.submit.desc.tag";
 
     private final String quest;
     private final GatherItemTask task;
@@ -53,7 +56,7 @@ public final class ItemTaskWidget implements DisplayWidget {
         int iconSize = (int) (width * 0.1f);
         ItemStack item = this.getCurrentItem();
         graphics.renderFakeItem(item, x + 5 + (int) (iconSize / 2f) - 8, y + 5 + (int) (iconSize / 2f) - 8);
-        String desc = this.task.target() == 1 ? DESC_SINGULAR : DESC_PLURAL;
+        String desc = task.collectionType() == GatherItemTask.CollectionType.AUTOMATIC ? (task.item().isTag() ? DESC_TAG : DESC_ITEM) : (task.item().isTag() ? DESC_SUBMIT_TAG : DESC_SUBMIT_ITEM);
         graphics.drawString(
             font,
             TaskTitleFormatter.create(this.task), x + iconSize + 10, y + 5, 0xFFFFFFFF,
@@ -70,12 +73,15 @@ public final class ItemTaskWidget implements DisplayWidget {
 
         if (task.collectionType() == GatherItemTask.CollectionType.MANUAL) {
             int buttonY = y + height - font.lineHeight - 10;
-            int buttonWidth = font.width(ConstantComponents.Tasks.CHECK);
+            int buttonWidth = font.width(ConstantComponents.Tasks.SUBMIT);
             boolean buttonHovered = mouseX > x + width - 2 - buttonWidth && mouseX < x + width - 2 && mouseY > buttonY && mouseY < buttonY + font.lineHeight;
 
-            Component text = buttonHovered ? ConstantComponents.Tasks.CHECK.copy().withStyle(ChatFormatting.UNDERLINE) : ConstantComponents.Tasks.CHECK;
+            Component text = buttonHovered ? ConstantComponents.Tasks.SUBMIT.copy().withStyle(ChatFormatting.UNDERLINE) : ConstantComponents.Tasks.SUBMIT;
             graphics.drawString(font, text, x + width - 2 - buttonWidth, buttonY, progress.isComplete() ? 0xFF707070 : 0xFFD0D0D0, false);
             CursorUtils.setCursor(buttonHovered, progress.isComplete() ? CursorScreen.Cursor.DISABLED : CursorScreen.Cursor.POINTER);
+            if (buttonHovered) {
+                ScreenUtils.setTooltip(Component.translatable("task.heracles.item.submit.button.tooltip", this.task.target()));
+            }
         }
     }
 
@@ -84,7 +90,7 @@ public final class ItemTaskWidget implements DisplayWidget {
         if (task.collectionType() == GatherItemTask.CollectionType.MANUAL && !progress.isComplete()) {
             Font font = Minecraft.getInstance().font;
             int buttonY = getHeight(width) - 19;
-            boolean buttonHovered = mouseX > width - 2 - font.width(ConstantComponents.Tasks.CHECK) && mouseX < width - 2 && mouseY > buttonY && mouseY < buttonY + font.lineHeight;
+            boolean buttonHovered = mouseX > width - 2 - font.width(ConstantComponents.Tasks.SUBMIT) && mouseX < width - 2 && mouseY > buttonY && mouseY < buttonY + font.lineHeight;
             if (buttonHovered) {
                 NetworkHandler.CHANNEL.sendToServer(new ManualItemTaskPacket(this.quest, this.task.id()));
 

@@ -22,7 +22,7 @@ public record BlockInteractTaskWidget(
     BlockInteractTask task, TaskProgress<ByteTag> progress, List<ItemStack> stacks
 ) implements DisplayWidget {
 
-    private static final Component DESCRIPTION = Component.translatable("task.heracles.block_interaction.desc.singular");
+    private static final String DESC = "task.heracles.block_interaction.desc.singular";
 
     public BlockInteractTaskWidget(BlockInteractTask task, TaskProgress<ByteTag> progress) {
         this(task, progress, task.block().getValue().map(
@@ -44,7 +44,7 @@ public record BlockInteractTaskWidget(
         );
         graphics.drawString(
             font,
-            DESCRIPTION, x + iconSize + 10, y + 7 + font.lineHeight, 0xFF808080,
+            Component.translatable(DESC, Component.keybind("key.use")), x + iconSize + 10, y + 7 + font.lineHeight, 0xFF808080,
             false
         );
         String progress = QuestTaskDisplayFormatter.create(this.task, this.progress);

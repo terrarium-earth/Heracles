@@ -3,10 +3,10 @@
     "gui.heracles.rewards.unlocks_quest.desc": "Grants you access to a new quest.",
 
     "reward.heracles.xp": "☠ Experience",
-    "reward.heracles.xp.title.singular": "Receive an xp %s",
-    "reward.heracles.xp.title.plural": "Receive xp %ss",
-    "reward.heracles.xp.desc.singular": "Receive xp %s %s",
-    "reward.heracles.xp.desc.plural": "Receive xp %s %ss",
+    "reward.heracles.xp.title.singular": "Receive: XP",
+    "reward.heracles.xp.title.plural": "Receive: XP",
+    "reward.heracles.xp.desc.singular": "Receive %s XP %s",
+    "reward.heracles.xp.desc.plural": "Receive %s XP %ss",
     "setting.heracles.xp.type": "Experience Type:",
     "setting.heracles.xp.amount": "Experience Amount:",
 
@@ -14,16 +14,16 @@
     "reward.heracles.xp.type.level": "level",
 
     "reward.heracles.item": "\uD83E\uDDEA Item",
-    "reward.heracles.item.title.singular": "Receive a %s",
-    "reward.heracles.item.title.plural": "Receive %ss",
-    "reward.heracles.item.desc.singular": "Receive %s %s",
-    "reward.heracles.item.desc.plural": "Receive %s %ss",
+    "reward.heracles.item.title.singular": "Receive: %s",
+    "reward.heracles.item.title.plural": "Receive: %s",
+    "reward.heracles.item.desc.singular": "Receive %sx %s",
+    "reward.heracles.item.desc.plural": "Receive %sx %s",
     "setting.heracles.item.item": "Item:",
     "setting.heracles.item.count": "Amount:",
 
     "reward.heracles.loottable": "↔ Loot Table",
-    "reward.heracles.loottable.title.singular": "Receive a Loot Table",
-    "reward.heracles.loottable.desc.singular": "Receive %s Loot Table",
+    "reward.heracles.loottable.title.singular": "Receive Random Loot",
+    "reward.heracles.loottable.desc.singular": "From %s",
     "setting.heracles.loottable.loottable": "Loot Table:",
 
     "reward.heracles.select": "❓ Selection",

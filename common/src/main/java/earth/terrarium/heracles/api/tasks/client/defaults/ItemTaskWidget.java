@@ -7,7 +7,6 @@ import com.teamresourceful.resourcefullib.client.utils.CursorUtils;
 import com.teamresourceful.resourcefullib.client.utils.ScreenUtils;
 import earth.terrarium.heracles.api.client.DisplayWidget;
 import earth.terrarium.heracles.api.client.WidgetUtils;
-import earth.terrarium.heracles.api.tasks.client.display.TaskTitleFormatter;
 import earth.terrarium.heracles.api.tasks.defaults.GatherItemTask;
 import earth.terrarium.heracles.common.constants.ConstantComponents;
 import earth.terrarium.heracles.common.handlers.progress.TaskProgress;
@@ -29,6 +28,10 @@ import java.util.Optional;
 
 public final class ItemTaskWidget implements DisplayWidget {
 
+    private static final String TITLE_ITEM = "task.heracles.item.title.item";
+    private static final String TITLE_TAG = "task.heracles.item.title.tag";
+    private static final String TITLE_SUBMIT_ITEM = "task.heracles.item.submit.title.item";
+    private static final String TITLE_SUBMIT_TAG = "task.heracles.item.submit.title.tag";    
     private static final String DESC_ITEM = "task.heracles.item.desc.item";
     private static final String DESC_TAG = "task.heracles.item.desc.tag";
     private static final String DESC_SUBMIT_ITEM = "task.heracles.item.submit.desc.item";
@@ -56,10 +59,11 @@ public final class ItemTaskWidget implements DisplayWidget {
         int iconSize = (int) (width * 0.1f);
         ItemStack item = this.getCurrentItem();
         graphics.renderFakeItem(item, x + 5 + (int) (iconSize / 2f) - 8, y + 5 + (int) (iconSize / 2f) - 8);
+        String title = task.collectionType() == GatherItemTask.CollectionType.AUTOMATIC ? (task.item().isTag() ? TITLE_TAG : TITLE_ITEM) : (task.item().isTag() ? TITLE_SUBMIT_TAG : TITLE_SUBMIT_ITEM);
         String desc = task.collectionType() == GatherItemTask.CollectionType.AUTOMATIC ? (task.item().isTag() ? DESC_TAG : DESC_ITEM) : (task.item().isTag() ? DESC_SUBMIT_TAG : DESC_SUBMIT_ITEM);
         graphics.drawString(
             font,
-            TaskTitleFormatter.create(this.task), x + iconSize + 10, y + 5, 0xFFFFFFFF,
+            Component.translatable(title, task.item().getDisplayName(Item::getDescription)), x + iconSize + 10, y + 5, 0xFFFFFFFF,
             false
         );
         graphics.drawString(

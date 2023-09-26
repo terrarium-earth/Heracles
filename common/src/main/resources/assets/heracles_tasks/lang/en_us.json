@@ -12,8 +12,8 @@
     "setting.heracles.kill_entity.amount": "Amount to Kill:",
 
     "task.heracles.item": "\uD83E\uDDEA Acquire Item",
-    "task.heracles.item.title.singular": "Acquire: %s",
-    "task.heracles.item.title.plural": "Acquire: any %s",
+    "task.heracles.item.title.item": "Acquire: %s",
+    "task.heracles.item.title.tag": "Acquire: any %s",
     "task.heracles.item.desc.item": "Acquire %sx %s",
     "task.heracles.item.desc.tag": "Acquire %sx of any %s",
     "task.heracles.item.submit.title.item": "Submit: %s",

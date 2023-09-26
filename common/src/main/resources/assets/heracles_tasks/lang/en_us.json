@@ -1,5 +1,8 @@
 {
 
+    "task.heracles.progress.desc.incomplete": "%s tasks remaining",
+    "task.heracles.progress.desc.complete": "All tasks completed",
+
     "task.heracles.require_quest.title": "Finish Another Quest",
     "task.heracles.require_quest.desc": "Complete '%s'",
 

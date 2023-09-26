@@ -99,7 +99,7 @@ public class TaskListWidget extends AbstractContainerEventHandler implements Ren
             }
         }
         this.widgets.clear();
-        this.widgets.add(new MutablePair<>(null, new TaskListHeadingWidget(this.completion)));
+        this.widgets.add(new MutablePair<>(null, new TaskListHeadingWidget(this.completion, this.quests)));
         if (!dependencies.isEmpty()) {
             this.widgets.add(new MutablePair<>(null, DEPENDENCIES));
             this.widgets.addAll(dependencies);

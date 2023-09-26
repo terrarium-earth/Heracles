@@ -28,7 +28,7 @@
     "gui.heracles.rewards.claim": "Claim Rewards",
     "gui.heracles.rewards.claim_reward": "Claim",
     "gui.heracles.tasks.title": "Tasks",
-    "gui.heracles.tasks.description": "Complete all tasks",
+    "gui.heracles.tasks.progress": "Task Completion",
     "gui.heracles.tasks.create": "Create Task",
     "gui.heracles.tasks.edit": "Edit Task",
     "gui.heracles.tasks.check": "Complete Task",

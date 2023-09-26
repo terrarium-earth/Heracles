@@ -33,7 +33,7 @@
     "reward.heracles.select.desc.plural": "Click the button to select %s rewards",
 
     "reward.heracles.command": "/ Command",
-    "reward.heracles.command.title.singular": "Executes a command",
-    "reward.heracles.command.desc.singular": "Executes %s",
+    "reward.heracles.command.title.singular": "Execute a Command",
+    "reward.heracles.command.desc.singular": "/%s ...",
     "setting.heracles.command.command": "Command:"
 }

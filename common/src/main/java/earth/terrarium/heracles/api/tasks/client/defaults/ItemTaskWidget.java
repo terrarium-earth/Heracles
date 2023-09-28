@@ -59,8 +59,8 @@ public final class ItemTaskWidget implements DisplayWidget {
         int iconSize = (int) (width * 0.1f);
         ItemStack item = this.getCurrentItem();
         graphics.renderFakeItem(item, x + 5 + (int) (iconSize / 2f) - 8, y + 5 + (int) (iconSize / 2f) - 8);
-        String title = task.collectionType() == GatherItemTask.CollectionType.AUTOMATIC ? (task.item().isTag() ? TITLE_TAG : TITLE_ITEM) : (task.item().isTag() ? TITLE_SUBMIT_TAG : TITLE_SUBMIT_ITEM);
-        String desc = task.collectionType() == GatherItemTask.CollectionType.AUTOMATIC ? (task.item().isTag() ? DESC_TAG : DESC_ITEM) : (task.item().isTag() ? DESC_SUBMIT_TAG : DESC_SUBMIT_ITEM);
+        String title = chooseGatherKey(task, TITLE_ITEM, TITLE_TAG, TITLE_SUBMIT_ITEM, TITLE_SUBMIT_TAG);
+        String desc = chooseGatherKey(task, DESC_ITEM, DESC_TAG, DESC_SUBMIT_ITEM, DESC_SUBMIT_TAG);
         graphics.drawString(
             font,
             Component.translatable(title, task.item().getDisplayName(Item::getDescription)), x + iconSize + 10, y + 5, 0xFFFFFFFF,
@@ -85,6 +85,23 @@ public final class ItemTaskWidget implements DisplayWidget {
             CursorUtils.setCursor(buttonHovered, progress.isComplete() ? CursorScreen.Cursor.DISABLED : CursorScreen.Cursor.POINTER);
             if (buttonHovered) {
                 ScreenUtils.setTooltip(Component.translatable("task.heracles.item.submit.button.tooltip", this.task.target()));
+            }
+        }
+    }
+
+    private static String chooseGatherKey(GatherItemTask task, String item, String tag, String submitItem, String submitTag) {
+        if (task.collectionType() == GatherItemTask.CollectionType.AUTOMATIC) {
+            if (task.item().isTag()) {
+                return tag;
+            } else {
+                return item;
+            }
+        }
+        else {
+            if (task.item().isTag()) {
+                return submitTag;
+            } else {
+                return submitItem;
             }
         }
     }

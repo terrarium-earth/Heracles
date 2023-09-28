@@ -4,11 +4,12 @@ import com.teamresourceful.resourcefullib.client.scissor.ScissorBoxStack;
 import earth.terrarium.heracles.api.client.DisplayWidget;
 import earth.terrarium.heracles.common.constants.ConstantComponents;
 import earth.terrarium.heracles.common.utils.ModUtils;
+import earth.terrarium.heracles.common.utils.ModUtils.QuestStatus;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 
-public record TaskListHeadingWidget(float completion, java.util.Map<String,earth.terrarium.heracles.common.utils.ModUtils.QuestStatus> quests) implements DisplayWidget {
+public record TaskListHeadingWidget(float completion, java.util.Map<String, QuestStatus> quests) implements DisplayWidget {
 
     private static final String DESC_INCOMPLETE = "task.heracles.progress.desc.incomplete";
     private static final String DESC_COMPLETE = "task.heracles.progress.desc.complete";

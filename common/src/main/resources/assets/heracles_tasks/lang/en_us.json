@@ -16,7 +16,7 @@
 
     "task.heracles.item": "\uD83E\uDDEA Acquire Item",
     "task.heracles.item.title.singular": "Acquire: %s",
-    "task.heracles.item.title.plural": "Acquire: %s",
+    "task.heracles.item.title.plural": "Submit: %s",
     "task.heracles.item.title.item": "Acquire: %s",
     "task.heracles.item.title.tag": "Acquire: any %s",
     "task.heracles.item.desc.item": "Acquire %sx %s",

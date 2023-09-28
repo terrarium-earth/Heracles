@@ -32,8 +32,8 @@
     "task.heracles.advancement": "✔ Advancement",
     "task.heracles.advancement.title.singular": "Complete an Advancement",
     "task.heracles.advancement.title.plural": "Complete an Advancement",
-    "task.heracles.advancement.desc.singular": "Achieve '%s'",
-    "task.heracles.advancement.desc.plural": "%s Achieve one of the following",
+    "task.heracles.advancement.desc.singular": "Complete '%s'",
+    "task.heracles.advancement.desc.plural": "%s Complete one of the following",
     "setting.heracles.advancement.advancement": "Advancement:",
 
     "task.heracles.recipe": "\uD83E\uDE93 Recipe",

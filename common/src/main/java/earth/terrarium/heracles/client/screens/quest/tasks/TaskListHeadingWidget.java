@@ -9,7 +9,9 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 
-public record TaskListHeadingWidget(float completion, java.util.Map<String, QuestStatus> quests) implements DisplayWidget {
+import java.util.Map;
+
+public record TaskListHeadingWidget(float completion, Map<String, QuestStatus> quests) implements DisplayWidget {
 
     private static final String DESC_INCOMPLETE = "task.heracles.progress.desc.incomplete";
     private static final String DESC_COMPLETE = "task.heracles.progress.desc.complete";

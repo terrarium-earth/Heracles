@@ -6,6 +6,7 @@ import com.teamresourceful.resourcefullib.common.codecs.CodecExtras;
 import com.teamresourceful.resourcefullib.common.codecs.EnumCodec;
 import com.teamresourceful.resourcefullib.common.codecs.predicates.NbtPredicate;
 import earth.terrarium.heracles.Heracles;
+import earth.terrarium.heracles.api.tasks.CollectionType;
 import earth.terrarium.heracles.api.tasks.PairQuestTask;
 import earth.terrarium.heracles.api.tasks.QuestTaskType;
 import earth.terrarium.heracles.api.tasks.storage.defaults.IntegerTaskStorage;
@@ -13,11 +14,9 @@ import earth.terrarium.heracles.common.utils.RegistryValue;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.NumericTag;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -141,14 +140,4 @@ public record GatherItemTask(
         }
     }
 
-    public enum CollectionType implements StringRepresentable {
-        MANUAL,
-        AUTOMATIC,
-        CONSUME;
-
-        @Override
-        public @NotNull String getSerializedName() {
-            return name().charAt(0) + name().substring(1).toLowerCase();
-        }
-    }
 }

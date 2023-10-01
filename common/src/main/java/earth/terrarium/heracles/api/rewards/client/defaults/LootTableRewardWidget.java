@@ -42,7 +42,7 @@ public record LootTableRewardWidget(LootTableReward reward) implements BaseItemR
 
     @Override
     public List<Component> getTooltip() {
-        return ImmutableList.of(
+        return List.of(
             Component.translatable(TOOLTIP_SINGULAR, this.reward.lootTable()).withStyle(ChatFormatting.GREEN));
     }
 }

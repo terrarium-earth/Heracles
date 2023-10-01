@@ -44,7 +44,7 @@ public record CommandRewardWidget(CommandReward reward) implements BaseItemRewar
 
     @Override
     public List<Component> getTooltip() {
-        return ImmutableList.of(
+        return List.of(
             Component.translatable(TOOLTIP_SINGULAR, this.reward.command()).withStyle(ChatFormatting.GREEN));
     }
 }

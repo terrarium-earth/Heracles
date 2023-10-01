@@ -6,6 +6,7 @@ import com.teamresourceful.resourcefullib.client.screens.CursorScreen;
 import com.teamresourceful.resourcefullib.client.utils.CursorUtils;
 import earth.terrarium.heracles.api.client.DisplayWidget;
 import earth.terrarium.heracles.api.client.WidgetUtils;
+import earth.terrarium.heracles.api.tasks.CollectionType;
 import earth.terrarium.heracles.api.tasks.client.display.TaskTitleFormatter;
 import earth.terrarium.heracles.api.tasks.defaults.GatherItemTask;
 import earth.terrarium.heracles.common.constants.ConstantComponents;
@@ -68,7 +69,7 @@ public final class ItemTaskWidget implements DisplayWidget {
         int height = getHeight(width);
         WidgetUtils.drawProgressBar(graphics, x + iconSize + 10, y + height - font.lineHeight + 2, x + width - 5, y + height - 2, this.task, this.progress);
 
-        if (task.collectionType() == GatherItemTask.CollectionType.MANUAL) {
+        if (task.collectionType() == CollectionType.MANUAL) {
             int buttonY = y + height - font.lineHeight - 10;
             int buttonWidth = font.width(ConstantComponents.Tasks.CHECK);
             boolean buttonHovered = mouseX > x + width - 2 - buttonWidth && mouseX < x + width - 2 && mouseY > buttonY && mouseY < buttonY + font.lineHeight;
@@ -81,7 +82,7 @@ public final class ItemTaskWidget implements DisplayWidget {
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int mouseButton, int width) {
-        if (task.collectionType() == GatherItemTask.CollectionType.MANUAL && !progress.isComplete()) {
+        if (task.collectionType() == CollectionType.MANUAL && !progress.isComplete()) {
             Font font = Minecraft.getInstance().font;
             int buttonY = getHeight(width) - 19;
             boolean buttonHovered = mouseX > width - 2 - font.width(ConstantComponents.Tasks.CHECK) && mouseX < width - 2 && mouseY > buttonY && mouseY < buttonY + font.lineHeight;

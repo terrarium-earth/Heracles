@@ -67,7 +67,7 @@ public abstract class ServerPlayerMixin {
     public void heracles$doTick(CallbackInfo ci) {
         ServerPlayer player = (ServerPlayer) (Object) this;
         QuestsProgress progress = QuestProgressHandler.getProgress(server, player.getUUID());
-        progress.testAndProgressTaskType(player, player, XpTask.TYPE);
+        progress.testAndProgressTaskType(player, Pair.of(player, XpTask.Cause.GAINED_XP), XpTask.TYPE);
     }
 
     @Inject(

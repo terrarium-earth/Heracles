@@ -18,6 +18,7 @@ import earth.terrarium.heracles.common.network.packets.screens.OpenQuestScreenPa
 import earth.terrarium.heracles.common.network.packets.screens.OpenQuestsScreenPacket;
 import earth.terrarium.heracles.common.network.packets.tasks.CheckTaskPacket;
 import earth.terrarium.heracles.common.network.packets.tasks.ManualItemTaskPacket;
+import earth.terrarium.heracles.common.network.packets.tasks.ManualXpTaskPacket;
 
 public class NetworkHandler {
 
@@ -48,5 +49,6 @@ public class NetworkHandler {
         CHANNEL.registerPacket(NetworkDirection.CLIENT_TO_SERVER, DeleteGroupPacket.ID, DeleteGroupPacket.HANDLER, DeleteGroupPacket.class);
         CHANNEL.registerPacket(NetworkDirection.CLIENT_TO_SERVER, CheckTaskPacket.ID, CheckTaskPacket.HANDLER, CheckTaskPacket.class);
         CHANNEL.registerPacket(NetworkDirection.CLIENT_TO_SERVER, ManualItemTaskPacket.ID, ManualItemTaskPacket.HANDLER, ManualItemTaskPacket.class);
+        CHANNEL.registerPacket(NetworkDirection.CLIENT_TO_SERVER, ManualXpTaskPacket.ID, ManualXpTaskPacket.HANDLER, ManualXpTaskPacket.class);
     }
 }

@@ -31,7 +31,7 @@ public final class StructureTaskWidget implements DisplayWidget {
         Font font = Minecraft.getInstance().font;
         WidgetUtils.drawBackground(graphics, x, y, width);
         int iconSize = (int) (width * 0.1f);
-        graphics.renderFakeItem(Items.STRUCTURE_BLOCK.getDefaultInstance(), x + 5 + (int) (iconSize / 2f) - 8, y + 5 + (int) (iconSize / 2f) - 8);
+        WidgetUtils.drawItemIcon(graphics, Items.STRUCTURE_BLOCK.getDefaultInstance(), x, y, iconSize);
         graphics.drawString(
             font,
             DESCRIPTION, x + iconSize + 10, y + 5, 0xFFFFFFFF,

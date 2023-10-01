@@ -55,11 +55,12 @@ public final class ItemTaskWidget implements DisplayWidget {
 
     @Override
     public void render(GuiGraphics graphics, ScissorBoxStack scissor, int x, int y, int width, int mouseX, int mouseY, boolean hovered, float partialTicks) {
-        Font font = Minecraft.getInstance().font;
+        Minecraft minecraft = Minecraft.getInstance();
+        Font font = minecraft.font;
         WidgetUtils.drawBackground(graphics, x, y, width);
         int iconSize = (int) (width * 0.1f);
         ItemStack item = this.getCurrentItem();
-        graphics.renderFakeItem(item, x + 5 + (int) (iconSize / 2f) - 8, y + 5 + (int) (iconSize / 2f) - 8);
+        WidgetUtils.drawItemIconWithTooltip(graphics, item, x, y, iconSize, mouseX, mouseY);
         String title = chooseGatherKey(task, TITLE_ITEM, TITLE_TAG, TITLE_SUBMIT_ITEM, TITLE_SUBMIT_TAG);
         String desc = chooseGatherKey(task, DESC_ITEM, DESC_TAG, DESC_SUBMIT_ITEM, DESC_SUBMIT_TAG);
         graphics.drawString(
@@ -91,7 +92,7 @@ public final class ItemTaskWidget implements DisplayWidget {
     }
 
     private static String chooseGatherKey(GatherItemTask task, String item, String tag, String submitItem, String submitTag) {
-        if (task.collectionType() == GatherItemTask.CollectionType.AUTOMATIC) {
+        if (task.collectionType() == CollectionType.AUTOMATIC) {
             if (task.item().isTag()) {
                 return tag;
             } else {

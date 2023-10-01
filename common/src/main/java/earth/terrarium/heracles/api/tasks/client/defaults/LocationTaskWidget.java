@@ -19,7 +19,7 @@ public record LocationTaskWidget(
         Font font = Minecraft.getInstance().font;
         WidgetUtils.drawBackground(graphics, x, y, width);
         int iconSize = (int) (width * 0.1f);
-        graphics.renderFakeItem(this.task.icon().getDefaultInstance(), x + 5 + (int) (iconSize / 2f) - 8, y + 5 + (int) (iconSize / 2f) - 8);
+        WidgetUtils.drawItemIcon(graphics, this.task.icon().getDefaultInstance(), x, y, iconSize);
         graphics.drawString(font, this.task.title(), x + iconSize + 10, y + 5, 0xFFFFFFFF, false);
         graphics.drawString(font, this.task.desc(), x + iconSize + 10, y + 7 + font.lineHeight, 0xFF808080, false);
         WidgetUtils.drawProgressText(graphics, x, y, width, this.task, this.progress);

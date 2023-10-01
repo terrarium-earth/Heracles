@@ -2,18 +2,25 @@ package earth.terrarium.heracles.api.client;
 
 import com.mojang.math.Axis;
 import com.teamresourceful.resourcefullib.client.CloseablePoseStack;
+import com.teamresourceful.resourcefullib.client.utils.ScreenUtils;
 import earth.terrarium.heracles.api.tasks.QuestTask;
 import earth.terrarium.heracles.api.tasks.QuestTaskDisplayFormatter;
 import earth.terrarium.heracles.common.handlers.progress.TaskProgress;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import net.minecraft.nbt.Tag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.boss.enderdragon.EnderDragon;
+import net.minecraft.world.item.ItemStack;
+
+import java.util.List;
+import java.util.function.Supplier;
 
 public final class WidgetUtils {
 
@@ -75,5 +82,26 @@ public final class WidgetUtils {
             entityRenderer.render(entity, 0, 0, 0.0D, mc.getFrameTime(), 1, pose, buffer, LightTexture.FULL_BRIGHT);
             buffer.endBatch();
         }
+    }
+
+    public static void drawItemIcon(GuiGraphics graphics, ItemStack icon, int x, int y, int iconSize) {
+        graphics.renderFakeItem(icon, x + 5 + (int) (iconSize / 2f) - 8, y + 5 + (int) (iconSize / 2f) - 8);
+    }
+
+    public static void drawItemIconWithTooltip(GuiGraphics graphics, ItemStack icon, int x, int y, int iconSize, Supplier<List<Component>> tooltipCallback, int mouseX, int mouseY) {
+        WidgetUtils.drawItemIcon(graphics, icon, x, y, iconSize);
+        int xMin = x + 5 + (int) (iconSize / 2f) - 8 - 2;
+        int yMin = y + 5 + (int) (iconSize / 2f) - 8 - 2;
+        boolean inBounds = (mouseX >= xMin && mouseX < xMin + 20) && (mouseY >= yMin && mouseY < yMin + 20);
+        if (inBounds) {
+            List<Component> tooltipLines = tooltipCallback.get();
+            if (tooltipLines != null) {
+                ScreenUtils.setTooltip(tooltipLines);
+            }
+        }
+    }
+
+    public static void drawItemIconWithTooltip(GuiGraphics graphics, ItemStack icon, int x, int y, int iconSize, int mouseX, int mouseY) {
+        drawItemIconWithTooltip(graphics, icon, x, y, iconSize, () -> Screen.getTooltipFromItem(Minecraft.getInstance(), icon), mouseX, mouseY);
     }
 }

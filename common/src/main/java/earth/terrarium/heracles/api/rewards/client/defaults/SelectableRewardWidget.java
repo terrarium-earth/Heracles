@@ -46,7 +46,7 @@ public record SelectableRewardWidget(SelectableReward reward, String quest,
         Font font = Minecraft.getInstance().font;
         WidgetUtils.drawBackground(graphics, x, y, width);
         int iconSize = (int) (width * 0.1f);
-        graphics.renderFakeItem(Items.CHEST.getDefaultInstance(), x + 5 + (int) (iconSize / 2f) - 8, y + 5 + (int) (iconSize / 2f) - 8);
+        WidgetUtils.drawItemIcon(graphics, Items.CHEST.getDefaultInstance(), x, y, iconSize);
         String title = this.reward.amount() == 1 ? TITLE_SINGULAR : TITLE_PLURAL;
         String desc = this.reward.amount() == 1 ? DESC_SINGULAR : DESC_PLURAL;
         graphics.drawString(

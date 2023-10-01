@@ -14,7 +14,6 @@ import earth.terrarium.heracles.api.tasks.defaults.XpTask;
 import earth.terrarium.heracles.common.constants.ConstantComponents;
 import earth.terrarium.heracles.common.handlers.progress.TaskProgress;
 import earth.terrarium.heracles.common.network.NetworkHandler;
-import earth.terrarium.heracles.common.network.packets.tasks.ManualItemTaskPacket;
 import earth.terrarium.heracles.common.network.packets.tasks.ManualXpTaskPacket;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
@@ -22,10 +21,7 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.nbt.NumericTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-
-import java.util.Optional;
 
 public record XpTaskWidget(
     String quest, XpTask task, TaskProgress<NumericTag> progress
@@ -39,7 +35,7 @@ public record XpTaskWidget(
         Font font = Minecraft.getInstance().font;
         WidgetUtils.drawBackground(graphics, x, y, width);
         int iconSize = (int) (width * 0.1f);
-        graphics.renderFakeItem(new ItemStack(Items.EXPERIENCE_BOTTLE), x + 5 + (int) (iconSize / 2f) - 8, y + 5 + (int) (iconSize / 2f) - 8);
+        WidgetUtils.drawItemIcon(graphics, Items.EXPERIENCE_BOTTLE.getDefaultInstance(), x, y, iconSize);
 
         String desc = this.task.target() == 1 ? DESC_SINGULAR : DESC_PLURAL;
 

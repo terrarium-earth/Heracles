@@ -24,6 +24,7 @@
     "reward.heracles.loottable": "↔ Loot Table",
     "reward.heracles.loottable.title.singular": "Receive Random Loot",
     "reward.heracles.loottable.desc.singular": "From %s",
+    "reward.heracles.loottable.tooltip.singular": "Loot Table: %s",
     "setting.heracles.loottable.loottable": "Loot Table:",
 
     "reward.heracles.select": "❓ Selection",
@@ -35,5 +36,6 @@
     "reward.heracles.command": "/ Command",
     "reward.heracles.command.title.singular": "Execute a Command",
     "reward.heracles.command.desc.singular": "/%s ...",
+    "reward.heracles.command.tooltip.singular": "Command: /%s",
     "setting.heracles.command.command": "Command:"
 }

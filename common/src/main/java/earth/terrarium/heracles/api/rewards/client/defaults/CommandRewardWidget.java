@@ -1,7 +1,9 @@
 package earth.terrarium.heracles.api.rewards.client.defaults;
 
+import com.google.common.collect.ImmutableList;
 import com.teamresourceful.resourcefullib.client.scissor.ScissorBoxStack;
 import earth.terrarium.heracles.api.rewards.defaults.CommandReward;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
@@ -9,10 +11,13 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 
+import java.util.List;
+
 public record CommandRewardWidget(CommandReward reward) implements BaseItemRewardWidget {
 
     private static final String TITLE_SINGULAR = "reward.heracles.command.title.singular";
     private static final String DESC_SINGULAR = "reward.heracles.command.desc.singular";
+    private static final String TOOLTIP_SINGULAR = "reward.heracles.command.tooltip.singular";
 
     @Override
     public ItemStack getIcon() {
@@ -35,5 +40,11 @@ public record CommandRewardWidget(CommandReward reward) implements BaseItemRewar
             Component.translatable(DESC_SINGULAR, desc), x + (int) (width * 0.1f) + 10, y + 7 + font.lineHeight, 0xFF808080,
             false
         );
+    }
+
+    @Override
+    public List<Component> getTooltip() {
+        return ImmutableList.of(
+            Component.translatable(TOOLTIP_SINGULAR, this.reward.command()).withStyle(ChatFormatting.GREEN));
     }
 }

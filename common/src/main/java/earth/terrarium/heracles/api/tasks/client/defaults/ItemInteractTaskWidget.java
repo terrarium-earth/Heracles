@@ -40,7 +40,7 @@ public record ItemInteractTaskWidget(
         WidgetUtils.drawBackground(graphics, x, y, width);
         int iconSize = (int) (width * 0.1f);
         ItemStack item = this.getCurrentItem();
-        graphics.renderFakeItem(item, x + 5 + (int) (iconSize / 2f) - 8, y + 5 + (int) (iconSize / 2f) - 8);
+        WidgetUtils.drawItemIcon(graphics, item, x, y, iconSize);
         graphics.drawString(
             font,
             TaskTitleFormatter.create(this.task), x + iconSize + 10, y + 5, 0xFFFFFFFF,

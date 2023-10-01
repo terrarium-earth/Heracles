@@ -1,14 +1,22 @@
 package earth.terrarium.heracles.client.utils;
 
 import com.mojang.blaze3d.platform.Window;
+import earth.terrarium.heracles.api.client.WidgetUtils;
 import it.unimi.dsi.fastutil.chars.Char2CharMap;
 import it.unimi.dsi.fastutil.chars.Char2CharOpenHashMap;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.MouseHandler;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
 
 import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
+import java.util.function.Supplier;
 
 public class ClientUtils {
 

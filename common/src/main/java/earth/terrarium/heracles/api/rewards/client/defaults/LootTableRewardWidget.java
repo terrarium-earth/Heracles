@@ -1,7 +1,9 @@
 package earth.terrarium.heracles.api.rewards.client.defaults;
 
+import com.google.common.collect.ImmutableList;
 import com.teamresourceful.resourcefullib.client.scissor.ScissorBoxStack;
 import earth.terrarium.heracles.api.rewards.defaults.LootTableReward;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
@@ -9,10 +11,13 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 
+import java.util.List;
+
 public record LootTableRewardWidget(LootTableReward reward) implements BaseItemRewardWidget {
 
     private static final Component TITLE_SINGULAR = Component.translatable("reward.heracles.loottable.title.singular");
     private static final String DESC_SINGULAR = "reward.heracles.loottable.desc.singular";
+    private static final String TOOLTIP_SINGULAR = "reward.heracles.loottable.tooltip.singular";
 
     @Override
     public ItemStack getIcon() {
@@ -33,5 +38,11 @@ public record LootTableRewardWidget(LootTableReward reward) implements BaseItemR
             Component.translatable(DESC_SINGULAR, this.reward.lootTable()), x + (int) (width * 0.1f) + 10, y + 7 + font.lineHeight, 0xFF808080,
             false
         );
+    }
+
+    @Override
+    public List<Component> getTooltip() {
+        return ImmutableList.of(
+            Component.translatable(TOOLTIP_SINGULAR, this.reward.lootTable()).withStyle(ChatFormatting.GREEN));
     }
 }

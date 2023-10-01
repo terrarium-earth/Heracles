@@ -12,8 +12,14 @@ import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import net.minecraft.nbt.Tag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.boss.enderdragon.EnderDragon;
+import net.minecraft.world.item.ItemStack;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.function.Supplier;
 
 public final class WidgetUtils {
 
@@ -74,6 +80,21 @@ public final class WidgetUtils {
             MultiBufferSource.BufferSource buffer = mc.renderBuffers().bufferSource();
             entityRenderer.render(entity, 0, 0, 0.0D, mc.getFrameTime(), 1, pose, buffer, LightTexture.FULL_BRIGHT);
             buffer.endBatch();
+        }
+    }
+
+    public static void drawItemIcon(GuiGraphics graphics, ItemStack icon, int x, int y, int iconSize) {
+        graphics.renderFakeItem(icon, x + 5 + (int) (iconSize / 2f) - 8, y + 5 + (int) (iconSize / 2f) - 8);
+    }
+
+    public static void drawItemIconWithTooltip(GuiGraphics graphics, ItemStack icon, int x, int y, int iconSize, Font font, Supplier<List<Component>> tooltipCallback, int mouseX, int mouseY) {
+        WidgetUtils.drawItemIcon(graphics, icon, x, y, iconSize);
+        boolean inBounds = (mouseX >= x + 8 && mouseX < x + 24) && (mouseY >= y + 8 && mouseY < y + 24);
+        if (inBounds) {
+            List<Component> tooltipLines = tooltipCallback.get();
+            if (tooltipLines != null) {
+                graphics.renderTooltip(font, tooltipLines, Optional.empty(), mouseX, mouseY);
+            }
         }
     }
 }

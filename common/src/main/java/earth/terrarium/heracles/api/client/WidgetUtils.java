@@ -90,7 +90,9 @@ public final class WidgetUtils {
 
     public static void drawItemIconWithTooltip(GuiGraphics graphics, ItemStack icon, int x, int y, int iconSize, Supplier<List<Component>> tooltipCallback, int mouseX, int mouseY) {
         WidgetUtils.drawItemIcon(graphics, icon, x, y, iconSize);
-        boolean inBounds = (mouseX >= x + 8 && mouseX < x + 24) && (mouseY >= y + 8 && mouseY < y + 24);
+        int xMin = x + 5 + (int) (iconSize / 2f) - 8 - 2;
+        int yMin = y + 5 + (int) (iconSize / 2f) - 8 - 2;
+        boolean inBounds = (mouseX >= xMin && mouseX < xMin + 20) && (mouseY >= yMin && mouseY < yMin + 20);
         if (inBounds) {
             List<Component> tooltipLines = tooltipCallback.get();
             if (tooltipLines != null) {

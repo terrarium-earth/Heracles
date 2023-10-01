@@ -22,7 +22,7 @@ public interface BaseItemRewardWidget extends DisplayWidget {
         WidgetUtils.drawBackground(graphics, x, y, width);
         int iconSize = (int) (width * 0.1f);
         ItemStack icon = getIcon();
-        WidgetUtils.drawItemIconWithTooltip(graphics, icon, x, y, iconSize, font, this::getTooltip, mouseX, mouseY);
+        WidgetUtils.drawItemIconWithTooltip(graphics, icon, x, y, iconSize, this::getTooltip, mouseX, mouseY);
     }
 
     @Override

@@ -18,7 +18,6 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.NumericTag;
 import net.minecraft.network.chat.Component;
@@ -61,7 +60,7 @@ public final class ItemTaskWidget implements DisplayWidget {
         WidgetUtils.drawBackground(graphics, x, y, width);
         int iconSize = (int) (width * 0.1f);
         ItemStack item = this.getCurrentItem();
-        WidgetUtils.drawItemIconWithTooltip(graphics, item, x, y, iconSize, font, mouseX, mouseY);
+        WidgetUtils.drawItemIconWithTooltip(graphics, item, x, y, iconSize, mouseX, mouseY);
         String title = chooseGatherKey(task, TITLE_ITEM, TITLE_TAG, TITLE_SUBMIT_ITEM, TITLE_SUBMIT_TAG);
         String desc = chooseGatherKey(task, DESC_ITEM, DESC_TAG, DESC_SUBMIT_ITEM, DESC_SUBMIT_TAG);
         graphics.drawString(

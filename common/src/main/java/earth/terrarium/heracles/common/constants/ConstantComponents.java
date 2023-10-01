@@ -89,8 +89,8 @@ public final class ConstantComponents {
         @Translate("Tasks")
         public static final Component TITLE = Component.translatable("gui.heracles.tasks.title");
 
-        @Translate("Complete all tasks")
-        public static final Component DESC = Component.translatable("gui.heracles.tasks.description");
+        @Translate("Task Completion")
+        public static final Component PROGRESS = Component.translatable("gui.heracles.tasks.progress");
 
         @Translate("Create Task")
         public static final Component CREATE = Component.translatable("gui.heracles.tasks.create");
@@ -100,6 +100,9 @@ public final class ConstantComponents {
 
         @Translate("Check Task")
         public static final Component CHECK = Component.translatable("gui.heracles.tasks.check");
+
+        @Translate("Submit Items")
+        public static final Component SUBMIT = Component.translatable("gui.heracles.tasks.submit");
     }
 
     public static final class Rewards {

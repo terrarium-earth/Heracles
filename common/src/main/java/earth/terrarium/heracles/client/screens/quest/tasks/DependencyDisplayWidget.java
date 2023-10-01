@@ -11,8 +11,8 @@ import net.minecraft.network.chat.Component;
 
 public record DependencyDisplayWidget(Quest quest) implements DisplayWidget {
 
-    private static final String TITLE = "task.heracles.require_quest.title";
-    private static final Component DESCRIPTION = Component.translatable("task.heracles.require_quest.desc");
+    private static final Component TITLE = Component.translatable("task.heracles.require_quest.title");
+    private static final String DESCRIPTION = "task.heracles.require_quest.desc";
 
     @Override
     public void render(GuiGraphics graphics, ScissorBoxStack scissor, int x, int y, int width, int mouseX, int mouseY, boolean hovered, float partialTicks) {
@@ -22,12 +22,12 @@ public record DependencyDisplayWidget(Quest quest) implements DisplayWidget {
         quest.display().icon().render(graphics, scissor, x + 5, y + 5, iconSize, iconSize);
         graphics.drawString(
             font,
-            Component.translatable(TITLE, this.quest.display().title()), x + iconSize + 10, y + 5, 0xFFFFFFFF,
+            TITLE, x + iconSize + 10, y + 5, 0xFFFFFFFF,
             false
         );
         graphics.drawString(
             font,
-            DESCRIPTION, x + iconSize + 10, y + 7 + font.lineHeight, 0xFF808080,
+            Component.translatable(DESCRIPTION, this.quest.display().title()), x + iconSize + 10, y + 7 + font.lineHeight, 0xFF808080,
             false
         );
     }

@@ -3,6 +3,7 @@ package earth.terrarium.heracles.api.client.settings.tasks;
 import earth.terrarium.heracles.api.client.settings.SettingInitializer;
 import earth.terrarium.heracles.api.client.settings.base.EnumSetting;
 import earth.terrarium.heracles.api.client.settings.base.IntSetting;
+import earth.terrarium.heracles.api.tasks.CollectionType;
 import earth.terrarium.heracles.api.tasks.defaults.XpTask;
 import net.minecraft.Optionull;
 import org.jetbrains.annotations.Nullable;
@@ -18,6 +19,7 @@ public class XpTaskSettings implements SettingInitializer<XpTask> {
         CreationData settings = new CreationData();
         settings.put("type", TYPE, getDefaultType(object));
         settings.put("amount", IntSetting.ONE, getDefaultAmount(object));
+        settings.put("collection", ItemTaskSettings.COLLECTION_TYPE, getDefaultCollectionType(object));
         return settings;
     }
 
@@ -26,7 +28,8 @@ public class XpTaskSettings implements SettingInitializer<XpTask> {
         return new XpTask(
             id,
             data.get("amount", IntSetting.ONE).orElse(getDefaultAmount(object)),
-            data.get("type", TYPE).orElse(getDefaultType(object))
+            data.get("type", TYPE).orElse(getDefaultType(object)),
+            data.get("collection", ItemTaskSettings.COLLECTION_TYPE).orElse(getDefaultCollectionType(object))
         );
     }
 
@@ -36,6 +39,10 @@ public class XpTaskSettings implements SettingInitializer<XpTask> {
 
     private static int getDefaultAmount(XpTask object) {
         return Optionull.mapOrDefault(object, XpTask::target, 1);
+    }
+
+    private static CollectionType getDefaultCollectionType(XpTask object) {
+        return Optionull.mapOrDefault(object, XpTask::collectionType, CollectionType.CONSUME);
     }
 }
 

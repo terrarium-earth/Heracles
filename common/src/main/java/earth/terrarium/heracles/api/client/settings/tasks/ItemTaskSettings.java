@@ -17,7 +17,7 @@ import org.jetbrains.annotations.Nullable;
 public class ItemTaskSettings implements SettingInitializer<GatherItemTask> {
 
     public static final ItemTaskSettings INSTANCE = new ItemTaskSettings();
-    private static final EnumSetting<CollectionType> COLLECTION_TYPE = new EnumSetting<>(CollectionType.class, CollectionType.AUTOMATIC);
+    public static final EnumSetting<CollectionType> COLLECTION_TYPE = new EnumSetting<>(CollectionType.class, CollectionType.AUTOMATIC);
 
     @Override
     public CreationData create(@Nullable GatherItemTask object) {

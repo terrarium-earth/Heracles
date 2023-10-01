@@ -8,6 +8,7 @@ import earth.terrarium.heracles.common.handlers.progress.TaskProgress;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
@@ -96,5 +97,9 @@ public final class WidgetUtils {
                 graphics.renderTooltip(font, tooltipLines, Optional.empty(), mouseX, mouseY);
             }
         }
+    }
+
+    public static void drawItemIconWithTooltip(GuiGraphics graphics, ItemStack icon, int x, int y, int iconSize, Font font, int mouseX, int mouseY) {
+        drawItemIconWithTooltip(graphics, icon, x, y, iconSize, font, () -> Screen.getTooltipFromItem(Minecraft.getInstance(), icon), mouseX, mouseY);
     }
 }

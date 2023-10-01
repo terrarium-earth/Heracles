@@ -91,7 +91,7 @@ public final class ItemTaskWidget implements DisplayWidget {
     }
 
     private static String chooseGatherKey(GatherItemTask task, String item, String tag, String submitItem, String submitTag) {
-        if (task.collectionType() == GatherItemTask.CollectionType.AUTOMATIC) {
+        if (task.collectionType() == CollectionType.AUTOMATIC) {
             if (task.item().isTag()) {
                 return tag;
             } else {

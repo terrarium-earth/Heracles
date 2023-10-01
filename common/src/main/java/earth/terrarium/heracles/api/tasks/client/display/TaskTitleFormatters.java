@@ -1,5 +1,6 @@
 package earth.terrarium.heracles.api.tasks.client.display;
 
+import earth.terrarium.heracles.api.tasks.CollectionType;
 import earth.terrarium.heracles.api.tasks.QuestTask;
 import earth.terrarium.heracles.api.tasks.defaults.*;
 import net.minecraft.Optionull;
@@ -18,7 +19,7 @@ public class TaskTitleFormatters {
 
     public static void init() {
         TaskTitleFormatter.register(KillEntityQuestTask.TYPE, (task) -> Component.translatable(toTranslationKey(task, task.target() == 1), task.entity().entityType().getDescription()));
-        TaskTitleFormatter.register(GatherItemTask.TYPE, (task) -> Component.translatable(toTranslationKey(task, task.collectionType() == GatherItemTask.CollectionType.AUTOMATIC), task.item().getDisplayName(Item::getDescription)));
+        TaskTitleFormatter.register(GatherItemTask.TYPE, (task) -> Component.translatable(toTranslationKey(task, task.collectionType() == CollectionType.AUTOMATIC), task.item().getDisplayName(Item::getDescription)));
         TaskTitleFormatter.register(AdvancementTask.TYPE, (task) -> Component.translatable(toTranslationKey(task, task.advancements().size() == 1)));
         TaskTitleFormatter.register(ChangedDimensionTask.TYPE, (task) -> Component.translatable(toTranslationKey(task, true)));
         TaskTitleFormatter.register(RecipeTask.TYPE, (task) -> Component.translatable(toTranslationKey(task, task.recipes().size() == 1), Optionull.firstOrDefault(task.titles(), CommonComponents.EMPTY)));

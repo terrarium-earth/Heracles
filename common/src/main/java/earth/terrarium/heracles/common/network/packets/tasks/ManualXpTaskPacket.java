@@ -16,7 +16,7 @@ import net.minecraft.world.item.ItemStack;
 import java.util.Optional;
 
 public record ManualXpTaskPacket(String quest, String task) implements Packet<ManualXpTaskPacket> {
-    public static final ResourceLocation ID = new ResourceLocation(Heracles.MOD_ID, "check_item");
+    public static final ResourceLocation ID = new ResourceLocation(Heracles.MOD_ID, "check_xp");
     public static final PacketHandler<ManualXpTaskPacket> HANDLER = new Handler();
 
     @Override
@@ -47,7 +47,7 @@ public record ManualXpTaskPacket(String quest, String task) implements Packet<Ma
             return (player, level) -> {
                 if (player instanceof ServerPlayer serverPlayer) {
                     QuestProgressHandler.getProgress(serverPlayer.getServer(), player.getUUID())
-                        .testAndProgressTask(serverPlayer, message.quest, message.task, player, XpTask.TYPE);
+                        .testAndProgressTask(serverPlayer, message.quest, message.task, Pair.of(player, XpTask.Cause.MANUALLY_COMPLETED), XpTask.TYPE);
                 }
             };
         }

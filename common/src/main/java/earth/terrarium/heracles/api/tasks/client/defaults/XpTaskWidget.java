@@ -84,7 +84,7 @@ public record XpTaskWidget(
                 NetworkHandler.CHANNEL.sendToServer(new ManualXpTaskPacket(this.quest, this.task.id()));
 
                 if (Minecraft.getInstance().player != null) {
-                    this.progress.addProgress(GatherItemTask.TYPE, task, Minecraft.getInstance().player);
+                    this.progress.addProgress(GatherItemTask.TYPE, task, Pair.of(Minecraft.getInstance().player, XpTask.Cause.MANUALLY_COMPLETED));
                 }
                 return true;
             }

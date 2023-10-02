@@ -12,6 +12,7 @@ import earth.terrarium.heracles.client.screens.AbstractQuestScreen;
 import earth.terrarium.heracles.client.screens.quest.AddDisplayWidget;
 import earth.terrarium.heracles.client.screens.quest.HeadingWidget;
 import earth.terrarium.heracles.client.utils.MouseClick;
+import earth.terrarium.heracles.common.handlers.progress.QuestProgress;
 import earth.terrarium.heracles.common.network.packets.quests.data.NetworkQuestData;
 import earth.terrarium.heracles.common.utils.ModUtils;
 import net.minecraft.client.Minecraft;
@@ -31,6 +32,10 @@ import java.util.function.BiConsumer;
 
 public class RewardListWidget extends AbstractContainerEventHandler implements Renderable {
 
+    private static final HeadingWidget LOCKED = new HeadingWidget(Component.translatable("quest.heracles.locked"), 0xFF000080);
+    private static final HeadingWidget AVAILABLE = new HeadingWidget(Component.translatable("quest.heracles.available"), 0xFF5691FF);
+    private static final HeadingWidget CLAIMED = new HeadingWidget(Component.translatable("quest.heracles.claimed"), 0xFF04CB40);
+
     private final List<MutablePair<QuestReward<?>, DisplayWidget>> widgets = new ArrayList<>();
 
     private final int x;
@@ -39,6 +44,7 @@ public class RewardListWidget extends AbstractContainerEventHandler implements R
     private final int height;
 
     private final ClientQuests.QuestEntry entry;
+    private final QuestProgress progress;
 
     private double scrollAmount;
     private int lastFullHeight;
@@ -51,7 +57,9 @@ public class RewardListWidget extends AbstractContainerEventHandler implements R
     public RewardListWidget(
         int x, int y, int width, int height,
         ClientQuests.QuestEntry entry,
-        BiConsumer<QuestReward<?>, Boolean> onClick, Runnable onCreate
+        QuestProgress progress,
+        BiConsumer<QuestReward<?>, Boolean> onClick,
+        Runnable onCreate
     ) {
         this.x = x;
         this.y = y;
@@ -59,19 +67,41 @@ public class RewardListWidget extends AbstractContainerEventHandler implements R
         this.height = height;
         this.lastFullHeight = this.height;
         this.entry = entry;
+        this.progress = progress;
         this.onClick = onClick;
         this.onCreate = onCreate;
     }
 
     public void update(String group, String id, Quest quest) {
-        this.widgets.clear();
-        if (!quest.rewards().isEmpty()) {
-            this.widgets.add(new MutablePair<>(null, new HeadingWidget(Component.nullToEmpty("Rewards"), 0xFF00DD00)));
-            for (QuestReward<?> reward : quest.rewards().values()) {
-                DisplayWidget widget = QuestRewardWidgets.create(reward);
-                if (widget == null) continue;
-                this.widgets.add(new MutablePair<>(reward, widget));
+        List<MutablePair<QuestReward<?>, DisplayWidget>> locked = new ArrayList<>();
+        List<MutablePair<QuestReward<?>, DisplayWidget>> available = new ArrayList<>();
+        List<MutablePair<QuestReward<?>, DisplayWidget>> claimed = new ArrayList<>();
+        for (QuestReward<?> reward : quest.rewards().values()) {
+
+            DisplayWidget widget = QuestRewardWidgets.create(reward);
+            if (widget == null) continue;
+            if (progress.canClaim(reward.id())) {
+                available.add(new MutablePair<>(reward, widget));
+            } else if (progress.isComplete()) {
+                claimed.add(new MutablePair<>(reward, widget));
+            } else {
+                locked.add(new MutablePair<>(reward, widget));
             }
+        }
+
+        this.widgets.clear();
+        this.widgets.add(new MutablePair<>(null, new RewardListHeadingWidget(progress.isComplete(), this.entry.value().rewards().size(), progress.claimedRewards().size())));
+        if (!locked.isEmpty()) {
+            this.widgets.add(new MutablePair<>(null, LOCKED));
+            this.widgets.addAll(locked);
+        }
+        if (!available.isEmpty()) {
+            this.widgets.add(new MutablePair<>(null, AVAILABLE));
+            this.widgets.addAll(available);
+        }
+        if (!claimed.isEmpty()) {
+            this.widgets.add(new MutablePair<>(null, CLAIMED));
+            this.widgets.addAll(claimed);
         }
         ClientQuests.get(id).ifPresent(entry -> {
             List<ClientQuests.QuestEntry> children = new ArrayList<>();

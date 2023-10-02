@@ -1,4 +1,9 @@
 {
+    "reward.heracles.progress.desc.incomplete.singular": "%s reward available",
+    "reward.heracles.progress.desc.incomplete.plural": "%s rewards available",
+    "reward.heracles.progress.desc.locked": "No rewards available",
+    "reward.heracles.progress.desc.complete": "All rewards claimed",
+
     "gui.heracles.rewards.unlocks_quest.title": "Unlocks %s",
     "gui.heracles.rewards.unlocks_quest.desc": "Grants you access to a new quest.",
 

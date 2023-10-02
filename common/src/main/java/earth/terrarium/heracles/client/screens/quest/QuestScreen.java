@@ -41,7 +41,7 @@ public class QuestScreen extends BaseQuestScreen {
         this.taskList = new TaskListWidget(contentX, contentY, contentWidth, contentHeight, this.content.id(), this.entry(), this.content.progress(), this.content.quests(), null, null);
         this.taskList.update(this.quest().tasks().values());
 
-        this.rewardList = new RewardListWidget(contentX, contentY, contentWidth, contentHeight, this.entry(), null, null);
+        this.rewardList = new RewardListWidget(contentX, contentY, contentWidth, contentHeight, this.entry(), this.content.progress(), null, null);
         this.rewardList.update(this.content.fromGroup(), this.content.id(), this.quest());
 
         if (Minecraft.getInstance().player != null && Minecraft.getInstance().player.hasPermissions(2)) {

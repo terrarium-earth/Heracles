@@ -4,6 +4,9 @@
     "quest.heracles.in_progress": "In progress",
     "quest.heracles.completed": "Completed",
     "quest.heracles.dependencies": "Dependencies",
+    "quest.heracles.locked": "Locked",
+    "quest.heracles.available": "Available",
+    "quest.heracles.claimed": "Claimed",
 
     "quest.heracles.toast": "Quest Complete!",
     "quest.heracles.toast.desc": "Press [%s] to open",
@@ -27,6 +30,7 @@
     "gui.heracles.progress.desc.incomplete.plural": "%s Tasks Remaining",
     "gui.heracles.progress.desc.complete": "All Tasks Completed",
     "gui.heracles.rewards.title": "Rewards",
+    "gui.heracles.rewards.status": "Reward Status",
     "gui.heracles.rewards.create": "Create Reward",
     "gui.heracles.rewards.edit": "Edit Reward",
     "gui.heracles.rewards.select_claim": "Claim this Reward",

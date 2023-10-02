@@ -97,7 +97,7 @@ public class QuestEditScreen extends BaseQuestScreen {
 
         this.rewardList = new RewardListWidget(
             contentX, contentY, contentWidth, contentHeight, this.entry(),
-            (reward, isRemoving) -> {
+            this.content.progress(), (reward, isRemoving) -> {
                 if (isRemoving) {
                     ClientQuests.updateQuest(this.entry(), quest -> {
                         quest.rewards().remove(reward.id());

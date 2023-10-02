@@ -110,6 +110,9 @@ public final class ConstantComponents {
         @Translate("Rewards")
         public static final Component TITLE = Component.translatable("gui.heracles.rewards.title");
 
+        @Translate("Reward Status")
+        public static final Component STATUS = Component.translatable("gui.heracles.rewards.status");
+
         @Translate("Create Reward")
         public static final Component CREATE = Component.translatable("gui.heracles.rewards.create");
 

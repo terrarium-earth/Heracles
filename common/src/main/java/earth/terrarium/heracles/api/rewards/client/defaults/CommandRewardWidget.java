@@ -1,6 +1,5 @@
 package earth.terrarium.heracles.api.rewards.client.defaults;
 
-import com.google.common.collect.ImmutableList;
 import com.teamresourceful.resourcefullib.client.scissor.ScissorBoxStack;
 import earth.terrarium.heracles.api.rewards.defaults.CommandReward;
 import net.minecraft.ChatFormatting;

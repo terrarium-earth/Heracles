@@ -35,7 +35,7 @@
 
     "reward.heracles.command": "/ Command",
     "reward.heracles.command.title.singular": "Execute a Command",
-    "reward.heracles.command.desc.singular": "/%s ...",
-    "reward.heracles.command.tooltip.singular": "Command: /%s",
+    "reward.heracles.command.desc.singular": "%s ...",
+    "reward.heracles.command.tooltip.singular": "Command: %s",
     "setting.heracles.command.command": "Command:"
 }

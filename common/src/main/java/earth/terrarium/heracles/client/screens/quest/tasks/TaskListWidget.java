@@ -42,7 +42,7 @@ public class TaskListWidget extends AbstractContainerEventHandler implements Ren
     private final String questId;
     private final ClientQuests.QuestEntry entry;
     private final Map<String, ModUtils.QuestStatus> quests;
-    private final float completion;
+    private final int tasksComplete;
 
     private final int x;
     private final int y;
@@ -63,7 +63,7 @@ public class TaskListWidget extends AbstractContainerEventHandler implements Ren
         Map<String, ModUtils.QuestStatus> quests, BiConsumer<QuestTask<?, ?, ?>, Boolean> onClick, Runnable onCreate
     ) {
         this.progress = progress;
-        this.completion = progress.isComplete() ? 1 : calculationCompletion(entry.value(), progress);
+        this.tasksComplete = (int) entry.value().tasks().values().stream().filter(t -> progress.getTask(t).isComplete()).count();
         this.quests = quests;
         this.questId = questId;
         this.entry = entry;
@@ -99,7 +99,7 @@ public class TaskListWidget extends AbstractContainerEventHandler implements Ren
             }
         }
         this.widgets.clear();
-        this.widgets.add(new MutablePair<>(null, new TaskListHeadingWidget(this.completion, this.quests)));
+        this.widgets.add(new MutablePair<>(null, new TaskListHeadingWidget(this.entry.value().tasks().size(), this.tasksComplete)));
         if (!dependencies.isEmpty()) {
             this.widgets.add(new MutablePair<>(null, DEPENDENCIES));
             this.widgets.addAll(dependencies);
@@ -115,14 +115,6 @@ public class TaskListWidget extends AbstractContainerEventHandler implements Ren
         if (this.onCreate != null) {
             this.widgets.add(new MutablePair<>(null, new AddDisplayWidget(this.onCreate)));
         }
-    }
-
-    private static float calculationCompletion(Quest quest, QuestProgress progress) {
-        float completion = 0;
-        for (var task : quest.tasks().values()) {
-            completion += progress.getTask(task).isComplete() ? 1 : 0;
-        }
-        return completion / quest.tasks().size();
     }
 
     @Override

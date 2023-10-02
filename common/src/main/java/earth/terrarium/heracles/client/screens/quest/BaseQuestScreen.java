@@ -39,7 +39,7 @@ public abstract class BaseQuestScreen extends AbstractQuestScreen<QuestContent> 
     private Button claimRewards;
 
     public BaseQuestScreen(QuestContent content) {
-        super(content, Optionull.mapOrDefault(quest(content), quest -> quest.display().title(), CommonComponents.EMPTY));
+        super(content, Optionull.mapOrDefault(quest(content), quest -> content.progress().isComplete() ? Component.literal("✔ ").append(quest.display().title()).append(Component.literal(" ✔")) : quest.display().title(), CommonComponents.EMPTY));
         ClientQuests.updateProgress(Map.of(content.id(), content.progress()));
     }
 
@@ -69,6 +69,7 @@ public abstract class BaseQuestScreen extends AbstractQuestScreen<QuestContent> 
                 }
             }));
             this.overview.setSelected(true);
+            addRenderableOnly(new QuestProgressWidget(5, this.height - (showRewards ? 60 : 35), buttonWidth, this.quest().tasks().size(), (int) this.quest().tasks().values().stream().filter(t -> this.content.progress().getTask(t).isComplete()).count()));
         }
 
         int buttonY = 45;

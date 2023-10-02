@@ -21,6 +21,11 @@
 
     "gui.heracles.pinned_quests": "Pinned Quests",
     "gui.heracles.pinned_quests.move": "Move Pinned Quests",
+    "gui.heracles.progress.title.incomplete": "Incomplete",
+    "gui.heracles.progress.title.complete": "Complete",
+    "gui.heracles.progress.desc.incomplete.singular": "%s Task Remaining",
+    "gui.heracles.progress.desc.incomplete.plural": "%s Tasks Remaining",
+    "gui.heracles.progress.desc.complete": "All Tasks Completed",
     "gui.heracles.rewards.title": "Rewards",
     "gui.heracles.rewards.create": "Create Reward",
     "gui.heracles.rewards.edit": "Edit Reward",

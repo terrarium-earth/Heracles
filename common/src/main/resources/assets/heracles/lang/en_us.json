@@ -42,6 +42,7 @@
     "gui.heracles.tasks.edit": "Edit Task",
     "gui.heracles.tasks.check": "Complete Task",
     "gui.heracles.tasks.submit": "Submit Items",
+    "gui.heracles.tasks.submit.xp": "Submit XP",
     "gui.heracles.quests.create": "Enter New Quest ID",
     "gui.heracles.quests.import": "Import Quests",
     "gui.heracles.quests.view": "View Quests",

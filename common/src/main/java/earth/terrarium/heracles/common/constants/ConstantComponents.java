@@ -103,6 +103,9 @@ public final class ConstantComponents {
 
         @Translate("Submit Items")
         public static final Component SUBMIT = Component.translatable("gui.heracles.tasks.submit");
+
+        @Translate("Submit XP")
+        public static final Component SUBMIT_XP = Component.translatable("gui.heracles.tasks.submit.xp");
     }
 
     public static final class Rewards {

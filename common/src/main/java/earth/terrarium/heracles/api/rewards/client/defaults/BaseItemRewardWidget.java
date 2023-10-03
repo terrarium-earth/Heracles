@@ -4,7 +4,6 @@ import com.teamresourceful.resourcefullib.client.scissor.ScissorBoxStack;
 import earth.terrarium.heracles.api.client.DisplayWidget;
 import earth.terrarium.heracles.api.client.WidgetUtils;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
@@ -18,16 +17,16 @@ public interface BaseItemRewardWidget extends DisplayWidget {
 
     @Override
     default void render(GuiGraphics graphics, ScissorBoxStack scissor, int x, int y, int width, int mouseX, int mouseY, boolean hovered, float partialTicks) {
-        Font font = Minecraft.getInstance().font;
-        WidgetUtils.drawBackground(graphics, x, y, width);
-        int iconSize = (int) (width * 0.1f);
+        WidgetUtils.drawBackground(graphics, x, y, width, getHeight(width));
+        int iconSize = 32;
         ItemStack icon = getIcon();
         WidgetUtils.drawItemIconWithTooltip(graphics, icon, x, y, iconSize, this::getTooltip, mouseX, mouseY);
+        graphics.fill(x + iconSize + 9, y + 5, x + iconSize + 10, y + getHeight(width) - 5, 0xFF909090);
     }
 
     @Override
     default int getHeight(int width) {
-        return (int) (width * 0.1f) + 10;
+        return 42;
     }
 
     default List<Component> getTooltip() {

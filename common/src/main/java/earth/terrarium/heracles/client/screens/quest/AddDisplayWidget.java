@@ -34,6 +34,6 @@ public record AddDisplayWidget(Runnable onClicked) implements DisplayWidget {
 
     @Override
     public int getHeight(int width) {
-        return 40;
+        return 42;
     }
 }

@@ -49,7 +49,7 @@ public final class CompositeTaskWidget implements DisplayWidget {
         Font font = Minecraft.getInstance().font;
         int start = graphics.drawString(
             font,
-            isOpened ? "▼" : "▶", x + (int) (width * 0.1f) + 10, y + 5, 0xFFFFFFFF,
+            isOpened ? "▼" : "▶", x + 48, y + 5, 0xFFFFFFFF,
             false
         );
         graphics.drawString(
@@ -60,7 +60,7 @@ public final class CompositeTaskWidget implements DisplayWidget {
         String progress = QuestTaskDisplayFormatter.create(this.task, this.progress);
         graphics.drawString(
             font,
-            progress, x + width - 5 - font.width(progress), y + 5, 0xFFFFFFFF,
+            progress, x + width - 5 - font.width(progress), y + 6, 0xFFFFFFFF,
             false
         );
 

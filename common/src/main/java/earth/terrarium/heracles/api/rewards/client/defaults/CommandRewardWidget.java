@@ -31,12 +31,12 @@ public record CommandRewardWidget(CommandReward reward) implements BaseItemRewar
         String desc = firstSpace > 0 ? reward.command().substring(0, reward.command().indexOf(" ")) : reward.command();
         graphics.drawString(
             font,
-            Component.translatable(TITLE_SINGULAR), x + (int) (width * 0.1f) + 10, y + 5, 0xFFFFFFFF,
+            Component.translatable(TITLE_SINGULAR), x + 48, y + 6, 0xFFFFFFFF,
             false
         );
         graphics.drawString(
             font,
-            Component.translatable(DESC_SINGULAR, desc), x + (int) (width * 0.1f) + 10, y + 7 + font.lineHeight, 0xFF808080,
+            Component.translatable(DESC_SINGULAR, desc), x + 48, y + 8 + font.lineHeight, 0xFF808080,
             false
         );
     }

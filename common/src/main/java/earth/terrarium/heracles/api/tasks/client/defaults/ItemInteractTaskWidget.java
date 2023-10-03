@@ -37,23 +37,24 @@ public record ItemInteractTaskWidget(
     @Override
     public void render(GuiGraphics graphics, ScissorBoxStack scissor, int x, int y, int width, int mouseX, int mouseY, boolean hovered, float partialTicks) {
         Font font = Minecraft.getInstance().font;
-        WidgetUtils.drawBackground(graphics, x, y, width);
-        int iconSize = (int) (width * 0.1f);
+        WidgetUtils.drawBackground(graphics, x, y, width, getHeight(width));
+        int iconSize = 32;
         ItemStack item = this.getCurrentItem();
         WidgetUtils.drawItemIconWithTooltip(graphics, item, x, y, iconSize, mouseX, mouseY);
+        graphics.fill(x + iconSize + 9, y + 5, x + iconSize + 10, y + getHeight(width) - 5, 0xFF909090);
         graphics.drawString(
             font,
-            TaskTitleFormatter.create(this.task), x + iconSize + 10, y + 5, 0xFFFFFFFF,
+            TaskTitleFormatter.create(this.task), x + iconSize + 16, y + 6, 0xFFFFFFFF,
             false
         );
         graphics.drawString(
             font,
-            Component.translatable(DESC, Component.keybind("key.use")), x + iconSize + 10, y + 7 + font.lineHeight, 0xFF808080,
+            Component.translatable(DESC, Component.keybind("key.use")), x + iconSize + 16, y + 8 + font.lineHeight, 0xFF808080,
             false
         );
         WidgetUtils.drawProgressText(graphics, x, y, width, this.task, this.progress);
         int height = getHeight(width);
-        WidgetUtils.drawProgressBar(graphics, x + iconSize + 10, y + height - font.lineHeight + 2, x + width - 5, y + height - 2, this.task, this.progress);
+        WidgetUtils.drawProgressBar(graphics, x + iconSize + 16, y + height - font.lineHeight - 5, x + width - 5, y + height - 6, this.task, this.progress);
     }
 
     private ItemStack getCurrentItem() {
@@ -66,6 +67,6 @@ public record ItemInteractTaskWidget(
 
     @Override
     public int getHeight(int width) {
-        return (int) (width * 0.1f) + 10;
+        return 42;
     }
 }

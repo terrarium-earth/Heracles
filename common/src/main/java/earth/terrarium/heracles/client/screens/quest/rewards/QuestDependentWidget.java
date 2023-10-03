@@ -17,23 +17,24 @@ public record QuestDependentWidget(Quest quest) implements DisplayWidget {
     @Override
     public void render(GuiGraphics graphics, ScissorBoxStack scissor, int x, int y, int width, int mouseX, int mouseY, boolean hovered, float partialTicks) {
         Font font = Minecraft.getInstance().font;
-        WidgetUtils.drawBackground(graphics, x, y, width);
-        int iconSize = (int) (width * 0.1f);
+        WidgetUtils.drawBackground(graphics, x, y, width, getHeight(width));
+        int iconSize = 32;
         quest.display().icon().render(graphics, scissor, x + 5, y + 5, iconSize, iconSize);
+        graphics.fill(x + iconSize + 9, y + 5, x + iconSize + 10, y + getHeight(width) - 5, 0xFF909090);
         graphics.drawString(
             font,
-            Component.translatable(TITLE, this.quest.display().title()), x + iconSize + 10, y + 5, 0xFFFFFFFF,
+            Component.translatable(TITLE, this.quest.display().title()), x + iconSize + 16, y + 6, 0xFFFFFFFF,
             false
         );
         graphics.drawString(
             font,
-            DESCRIPTION, x + iconSize + 10, y + 7 + font.lineHeight, 0xFF808080,
+            DESCRIPTION, x + iconSize + 16, y + 8 + font.lineHeight, 0xFF808080,
             false
         );
     }
 
     @Override
     public int getHeight(int width) {
-        return (int) (width * 0.1f) + 10;
+        return 42;
     }
 }

@@ -57,33 +57,33 @@ public final class ItemTaskWidget implements DisplayWidget {
     public void render(GuiGraphics graphics, ScissorBoxStack scissor, int x, int y, int width, int mouseX, int mouseY, boolean hovered, float partialTicks) {
         Minecraft minecraft = Minecraft.getInstance();
         Font font = minecraft.font;
-        WidgetUtils.drawBackground(graphics, x, y, width);
-        int iconSize = (int) (width * 0.1f);
+        WidgetUtils.drawBackground(graphics, x, y, width, getHeight(width));
+        int iconSize = 32;
         ItemStack item = this.getCurrentItem();
         WidgetUtils.drawItemIconWithTooltip(graphics, item, x, y, iconSize, mouseX, mouseY);
+        graphics.fill(x + iconSize + 9, y + 5, x + iconSize + 10, y + getHeight(width) - 5, 0xFF909090);
         String title = chooseGatherKey(task, TITLE_ITEM, TITLE_TAG, TITLE_SUBMIT_ITEM, TITLE_SUBMIT_TAG);
         String desc = chooseGatherKey(task, DESC_ITEM, DESC_TAG, DESC_SUBMIT_ITEM, DESC_SUBMIT_TAG);
         graphics.drawString(
             font,
-            Component.translatable(title, task.item().getDisplayName(Item::getDescription)), x + iconSize + 10, y + 5, 0xFFFFFFFF,
+            Component.translatable(title, task.item().getDisplayName(Item::getDescription)), x + iconSize + 16, y + 6, 0xFFFFFFFF,
             false
         );
         graphics.drawString(
             font,
-            Component.translatable(desc, this.task.target(), task.item().getDisplayName(Item::getDescription)), x + iconSize + 10, y + 7 + font.lineHeight, 0xFF808080,
+            Component.translatable(desc, this.task.target(), task.item().getDisplayName(Item::getDescription)), x + iconSize + 16, y + 8 + font.lineHeight, 0xFF808080,
             false
         );
         WidgetUtils.drawProgressText(graphics, x, y, width, this.task, this.progress);
         int height = getHeight(width);
-        WidgetUtils.drawProgressBar(graphics, x + iconSize + 10, y + height - font.lineHeight + 2, x + width - 5, y + height - 2, this.task, this.progress);
-
+        WidgetUtils.drawProgressBar(graphics, x + iconSize + 16, y + height - font.lineHeight - 5, x + width - 5, y + height - 6, this.task, this.progress);
         if (task.collectionType() == CollectionType.MANUAL) {
-            int buttonY = y + height - font.lineHeight - 10;
+            int buttonY = y + height - font.lineHeight - 16;
             int buttonWidth = font.width(ConstantComponents.Tasks.SUBMIT);
-            boolean buttonHovered = mouseX > x + width - 2 - buttonWidth && mouseX < x + width - 2 && mouseY > buttonY && mouseY < buttonY + font.lineHeight;
+            boolean buttonHovered = mouseX > x + width - 5 - buttonWidth && mouseX < x + width - 5 && mouseY > buttonY && mouseY < buttonY + font.lineHeight;
 
             Component text = buttonHovered ? ConstantComponents.Tasks.SUBMIT.copy().withStyle(ChatFormatting.UNDERLINE) : ConstantComponents.Tasks.SUBMIT;
-            graphics.drawString(font, text, x + width - 2 - buttonWidth, buttonY, progress.isComplete() ? 0xFF707070 : 0xFFD0D0D0, false);
+            graphics.drawString(font, text, x + width - 5 - buttonWidth, buttonY, progress.isComplete() ? 0xFF707070 : 0xFFD0D0D0, false);
             CursorUtils.setCursor(buttonHovered, progress.isComplete() ? CursorScreen.Cursor.DISABLED : CursorScreen.Cursor.POINTER);
             if (buttonHovered) {
                 ScreenUtils.setTooltip(Component.translatable("task.heracles.item.submit.button.tooltip", this.task.target()));
@@ -112,8 +112,9 @@ public final class ItemTaskWidget implements DisplayWidget {
     public boolean mouseClicked(double mouseX, double mouseY, int mouseButton, int width) {
         if (task.collectionType() == CollectionType.MANUAL && !progress.isComplete()) {
             Font font = Minecraft.getInstance().font;
-            int buttonY = getHeight(width) - 19;
-            boolean buttonHovered = mouseX > width - 2 - font.width(ConstantComponents.Tasks.SUBMIT) && mouseX < width - 2 && mouseY > buttonY && mouseY < buttonY + font.lineHeight;
+            int buttonY = getHeight(width) - font.lineHeight - 16;
+            int buttonWidth = font.width(ConstantComponents.Tasks.SUBMIT);
+            boolean buttonHovered = mouseX > width - 5 - buttonWidth && mouseX < width - 5 && mouseY > buttonY && mouseY < buttonY + font.lineHeight;
             if (buttonHovered) {
                 NetworkHandler.CHANNEL.sendToServer(new ManualItemTaskPacket(this.quest, this.task.id()));
 
@@ -136,6 +137,6 @@ public final class ItemTaskWidget implements DisplayWidget {
 
     @Override
     public int getHeight(int width) {
-        return (int) (width * 0.1f) + 10;
+        return 42;
     }
 }

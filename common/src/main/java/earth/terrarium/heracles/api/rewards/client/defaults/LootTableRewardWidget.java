@@ -1,6 +1,5 @@
 package earth.terrarium.heracles.api.rewards.client.defaults;
 
-import com.google.common.collect.ImmutableList;
 import com.teamresourceful.resourcefullib.client.scissor.ScissorBoxStack;
 import earth.terrarium.heracles.api.rewards.defaults.LootTableReward;
 import net.minecraft.ChatFormatting;
@@ -30,12 +29,12 @@ public record LootTableRewardWidget(LootTableReward reward) implements BaseItemR
         BaseItemRewardWidget.super.render(graphics, scissor, x, y, width, mouseX, mouseY, hovered, partialTicks);
         graphics.drawString(
             font,
-            TITLE_SINGULAR, x + (int) (width * 0.1f) + 10, y + 5, 0xFFFFFFFF,
+            TITLE_SINGULAR, x + 48, y + 6, 0xFFFFFFFF,
             false
         );
         graphics.drawString(
             font,
-            Component.translatable(DESC_SINGULAR, this.reward.lootTable()), x + (int) (width * 0.1f) + 10, y + 7 + font.lineHeight, 0xFF808080,
+            Component.translatable(DESC_SINGULAR, this.reward.lootTable()), x + 48, y + 8 + font.lineHeight, 0xFF808080,
             false
         );
     }

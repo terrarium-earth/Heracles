@@ -36,37 +36,38 @@ public record KillEntityTaskWidget(KillEntityQuestTask task, TaskProgress<Numeri
     @Override
     public void render(GuiGraphics graphics, ScissorBoxStack scissor, int x, int y, int width, int mouseX, int mouseY, boolean hovered, float partialTicks) {
         Font font = Minecraft.getInstance().font;
-        WidgetUtils.drawBackground(graphics, x, y, width);
-        int iconSize = (int) (width * 0.1f);
+        WidgetUtils.drawBackground(graphics, x, y, width, getHeight(width));
+        int iconSize = 32;
         Entity entity = factory.apply(this.task.entity().entityType());
         try (var ignored = RenderUtils.createScissorBoxStack(scissor, Minecraft.getInstance(), graphics.pose(), x + 5, y + 5, iconSize, iconSize)) {
             WidgetUtils.drawEntity(graphics, x + 5, y + 5, iconSize, entity);
         }
+        graphics.fill(x + iconSize + 9, y + 5, x + iconSize + 10, y + getHeight(width) - 5, 0xFF909090);
         String desc = this.task.target() == 1 ? DESC_SINGULAR : DESC_PLURAL;
         Component entityName = this.task.entity().entityType().getDescription();
         graphics.drawString(
             font,
-            TaskTitleFormatter.create(this.task), x + iconSize + 10, y + 5, 0xFFFFFFFF,
+            TaskTitleFormatter.create(this.task), x + iconSize + 16, y + 6, 0xFFFFFFFF,
             false
         );
         graphics.drawString(
             font,
-            Component.translatable(desc, this.task.target(), entityName), x + iconSize + 10, y + 7 + font.lineHeight, 0xFF808080,
+            Component.translatable(desc, this.task.target(), entityName), x + iconSize + 16, y + 8 + font.lineHeight, 0xFF808080,
             false
         );
         String progress = QuestTaskDisplayFormatter.create(this.task, this.progress);
         graphics.drawString(
             font,
-            progress, x + width - 5 - font.width(progress), y + 5, 0xFFFFFFFF,
+            progress, x + width - 5 - font.width(progress), y + 6, 0xFFFFFFFF,
             false
         );
 
         int height = getHeight(width);
-        WidgetUtils.drawProgressBar(graphics, x + iconSize + 10, y + height - font.lineHeight + 2, x + width - 5, y + height - 2, this.task, this.progress);
+        WidgetUtils.drawProgressBar(graphics, x + iconSize + 16, y + height - font.lineHeight - 5, x + width - 5, y + height - 6, this.task, this.progress);
     }
 
     @Override
     public int getHeight(int width) {
-        return (int) (width * 0.1f) + 10;
+        return 42;
     }
 }

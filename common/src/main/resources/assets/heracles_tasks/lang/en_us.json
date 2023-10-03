@@ -65,9 +65,12 @@
     "setting.heracles.entity_interaction.entity": "Entity:",
 
     "task.heracles.xp": "⭐ Experience",
-    "task.heracles.xp.title.singular": "Submit XP",
-    "task.heracles.xp.desc.singular": "Submit %s XP %s",
-    "task.heracles.xp.desc.plural": "Submit %s XP %ss",
+    "task.heracles.xp.title.singular": "Gather XP",
+    "task.heracles.xp.title.plural": "Submit XP",
+    "task.heracles.xp.desc.singular": "Gather %s XP %s",
+    "task.heracles.xp.desc.plural": "Gather %s XP %ss",
+    "task.heracles.xp.desc.submit.singular": "Submit %s XP %s",
+    "task.heracles.xp.desc.submit.plural": "Submit %s XP %ss",
 
     "task.heracles.item_interaction": "\uD83C\uDFA3 Item Interaction",
     "task.heracles.item_interaction.title.singular": "Interact: %s",

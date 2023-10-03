@@ -86,13 +86,11 @@ public final class WidgetUtils {
 
     public static void drawItemIcon(GuiGraphics graphics, ItemStack icon, int x, int y, int iconSize) {
         int scale = iconSize / 16;
-        graphics.pose().pushPose();
-        graphics.pose().translate(1, 1, 0);
-        graphics.pose().pushPose();
-        graphics.pose().scale(scale, scale, 1);
-        graphics.renderFakeItem(icon, (x + 5 + (int) ((iconSize / scale) / 2f) - 8) / scale, (y + 5 + (int) ((iconSize / scale) / 2f) - 8) / scale);
-        graphics.pose().popPose();
-        graphics.pose().popPose();
+        try (var pose = new CloseablePoseStack(graphics)) {
+            pose.translate(1, 1, 0);
+            pose.scale(scale, scale, 1);
+            graphics.renderFakeItem(icon, (x + 5 + (int) ((iconSize / scale) / 2f) - 8) / scale, (y + 5 + (int) ((iconSize / scale) / 2f) - 8) / scale);
+        }
     }
 
     public static void drawItemIconWithTooltip(GuiGraphics graphics, ItemStack icon, int x, int y, int iconSize, Supplier<List<Component>> tooltipCallback, int mouseX, int mouseY) {

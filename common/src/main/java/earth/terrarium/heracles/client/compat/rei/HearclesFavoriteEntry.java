@@ -2,6 +2,7 @@ package earth.terrarium.heracles.client.compat.rei;
 
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.Lifecycle;
+import com.teamresourceful.resourcefullib.client.CloseablePoseStack;
 import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.client.HeraclesClient;
 import me.shedaniel.math.Rectangle;
@@ -33,11 +34,11 @@ public class HearclesFavoriteEntry extends FavoriteEntry {
         return new Renderer() {
             @Override
             public void render(GuiGraphics graphics, Rectangle bounds, int mouseX, int mouseY, float delta) {
-                graphics.pose().pushPose();
-                graphics.pose().translate(bounds.getCenterX(), bounds.getCenterY(), 0);
-                graphics.pose().scale(bounds.getWidth() / 16f, bounds.getHeight() / 16f, 1);
-                graphics.blit(TEXTURE, -8, -8, 0, 0, 16, 16, 16, 16);
-                graphics.pose().popPose();
+                try (var pose = new CloseablePoseStack(graphics)) {
+                    pose.translate(bounds.getCenterX(), bounds.getCenterY(), 0);
+                    pose.scale(bounds.getWidth() / 16f, bounds.getHeight() / 16f, 1);
+                    graphics.blit(TEXTURE, -8, -8, 0, 0, 16, 16, 16, 16);
+                }
             }
 
             @Override

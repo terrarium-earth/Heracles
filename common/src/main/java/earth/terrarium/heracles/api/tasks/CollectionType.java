@@ -10,6 +10,6 @@ public enum CollectionType implements StringRepresentable {
 
     @Override
     public @NotNull String getSerializedName() {
-        return name().charAt(0) + name().substring(1).toLowerCase();
+        return "gui.heracles.tasks.collection_type.%s".formatted(name().toLowerCase());
     }
 }

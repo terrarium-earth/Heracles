@@ -10,16 +10,16 @@ import org.jetbrains.annotations.Nullable;
 
 public class XpTaskSettings implements SettingInitializer<XpTask> {
 
-    private static final EnumSetting<XpTask.XpType> TYPE = new EnumSetting<>(XpTask.XpType.class, XpTask.XpType.LEVEL);
-
     public static final XpTaskSettings INSTANCE = new XpTaskSettings();
+    private static final EnumSetting<XpTask.XpType> TYPE = new EnumSetting<>(XpTask.XpType.class, XpTask.XpType.LEVEL);
+    public static final EnumSetting<CollectionType> COLLECTION_TYPE = new EnumSetting<>(CollectionType.class, CollectionType.AUTOMATIC);
 
     @Override
     public CreationData create(@Nullable XpTask object) {
         CreationData settings = new CreationData();
         settings.put("type", TYPE, getDefaultType(object));
         settings.put("amount", IntSetting.ONE, getDefaultAmount(object));
-        settings.put("collection", ItemTaskSettings.COLLECTION_TYPE, getDefaultCollectionType(object));
+        settings.put("collection_type", COLLECTION_TYPE, getDefaultCollectionType(object));
         return settings;
     }
 
@@ -29,7 +29,7 @@ public class XpTaskSettings implements SettingInitializer<XpTask> {
             id,
             data.get("amount", IntSetting.ONE).orElse(getDefaultAmount(object)),
             data.get("type", TYPE).orElse(getDefaultType(object)),
-            data.get("collection", ItemTaskSettings.COLLECTION_TYPE).orElse(getDefaultCollectionType(object))
+            data.get("collection_type", COLLECTION_TYPE).orElse(getDefaultCollectionType(object))
         );
     }
 

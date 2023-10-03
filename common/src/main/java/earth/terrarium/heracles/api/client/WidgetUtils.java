@@ -24,9 +24,9 @@ import java.util.function.Supplier;
 
 public final class WidgetUtils {
 
-    public static void drawBackground(GuiGraphics graphics, int x, int y, int width) {
-        graphics.fill(x, y, x + width, y + (int) (width * 0.1f) + 10, 0x80808080);
-        graphics.renderOutline(x, y, width, (int) (width * 0.1f) + 10, 0xFF909090);
+    public static void drawBackground(GuiGraphics graphics, int x, int y, int width, int height) {
+        graphics.fill(x, y, x + width, y + height, 0x80808080);
+        graphics.renderOutline(x, y, width, height, 0xFF909090);
     }
 
     public static <T extends Tag> void drawProgressBar(GuiGraphics graphics, int minX, int minY, int maxX, int maxY, QuestTask<?, T, ?> task, TaskProgress<T> progress) {
@@ -85,14 +85,21 @@ public final class WidgetUtils {
     }
 
     public static void drawItemIcon(GuiGraphics graphics, ItemStack icon, int x, int y, int iconSize) {
-        graphics.renderFakeItem(icon, x + 5 + (int) (iconSize / 2f) - 8, y + 5 + (int) (iconSize / 2f) - 8);
+        int scale = iconSize / 16;
+        graphics.pose().pushPose();
+        graphics.pose().translate(1, 1, 0);
+        graphics.pose().pushPose();
+        graphics.pose().scale(scale, scale, 1);
+        graphics.renderFakeItem(icon, (x + 5 + (int) ((iconSize / scale) / 2f) - 8) / scale, (y + 5 + (int) ((iconSize / scale) / 2f) - 8) / scale);
+        graphics.pose().popPose();
+        graphics.pose().popPose();
     }
 
     public static void drawItemIconWithTooltip(GuiGraphics graphics, ItemStack icon, int x, int y, int iconSize, Supplier<List<Component>> tooltipCallback, int mouseX, int mouseY) {
         WidgetUtils.drawItemIcon(graphics, icon, x, y, iconSize);
-        int xMin = x + 5 + (int) (iconSize / 2f) - 8 - 2;
-        int yMin = y + 5 + (int) (iconSize / 2f) - 8 - 2;
-        boolean inBounds = (mouseX >= xMin && mouseX < xMin + 20) && (mouseY >= yMin && mouseY < yMin + 20);
+        int xMin = x + 5;
+        int yMin = y + 5;
+        boolean inBounds = (mouseX >= xMin && mouseX < xMin + iconSize) && (mouseY >= yMin && mouseY < yMin + iconSize);
         if (inBounds) {
             List<Component> tooltipLines = tooltipCallback.get();
             if (tooltipLines != null) {

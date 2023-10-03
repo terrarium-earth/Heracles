@@ -28,12 +28,12 @@ public record ItemRewardWidget(ItemReward reward) implements BaseItemRewardWidge
         String desc = getIcon().getCount() == 1 ? DESC_SINGULAR : DESC_PLURAL;
         graphics.drawString(
             font,
-            Component.translatable(title, getIcon().getHoverName()), x + (int) (width * 0.1f) + 10, y + 5, 0xFFFFFFFF,
+            Component.translatable(title, getIcon().getHoverName()), x + 48, y + 5, 0xFFFFFFFF,
             false
         );
         graphics.drawString(
             font,
-            Component.translatable(desc, getIcon().getCount(), getIcon().getHoverName()), x + (int) (width * 0.1f) + 10, y + 7 + font.lineHeight, 0xFF808080,
+            Component.translatable(desc, getIcon().getCount(), getIcon().getHoverName()), x + 48, y + 7 + font.lineHeight, 0xFF808080,
             false
         );
     }

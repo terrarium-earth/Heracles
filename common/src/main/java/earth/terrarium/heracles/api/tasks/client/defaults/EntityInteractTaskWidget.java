@@ -40,8 +40,8 @@ public record EntityInteractTaskWidget(
     @Override
     public void render(GuiGraphics graphics, ScissorBoxStack scissor, int x, int y, int width, int mouseX, int mouseY, boolean hovered, float partialTicks) {
         Font font = Minecraft.getInstance().font;
-        WidgetUtils.drawBackground(graphics, x, y, width);
-        int iconSize = (int) (width * 0.1f);
+        WidgetUtils.drawBackground(graphics, x, y, width, getHeight(width));
+        int iconSize = 32;
         EntityType<?> type = getType();
         if (type != null) {
             Entity entity = factory.apply(type);
@@ -49,14 +49,15 @@ public record EntityInteractTaskWidget(
                 WidgetUtils.drawEntity(graphics, x + 5, y + 5, iconSize, entity);
             }
         }
+        graphics.fill(x + iconSize + 9, y + 5, x + iconSize + 10, y + getHeight(width) - 5, 0xFF909090);
         graphics.drawString(
             font,
-            TaskTitleFormatter.create(this.task), x + iconSize + 10, y + 5, 0xFFFFFFFF,
+            TaskTitleFormatter.create(this.task), x + iconSize + 16, y + 5, 0xFFFFFFFF,
             false
         );
         graphics.drawString(
             font,
-            Component.translatable(DESC, Component.keybind("key.use")), x + iconSize + 10, y + 7 + font.lineHeight, 0xFF808080,
+            Component.translatable(DESC, Component.keybind("key.use")), x + iconSize + 16, y + 7 + font.lineHeight, 0xFF808080,
             false
         );
         String progress = QuestTaskDisplayFormatter.create(this.task, this.progress);
@@ -67,12 +68,12 @@ public record EntityInteractTaskWidget(
         );
 
         int height = getHeight(width);
-        WidgetUtils.drawProgressBar(graphics, x + iconSize + 10, y + height - font.lineHeight + 2, x + width - 5, y + height - 2, this.task, this.progress);
+        WidgetUtils.drawProgressBar(graphics, x + iconSize + 16, y + height - font.lineHeight - 6, x + width - 5, y + height - 5, this.task, this.progress);
     }
 
     @Override
     public int getHeight(int width) {
-        return (int) (width * 0.1f) + 10;
+        return 42;
     }
 
     private EntityType<?> getType() {

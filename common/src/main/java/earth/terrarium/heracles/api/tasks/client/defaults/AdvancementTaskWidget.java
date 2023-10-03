@@ -65,18 +65,19 @@ public final class AdvancementTaskWidget implements DisplayWidget {
         graphics.fill(x, y, x + width, y + height, 0x80808080);
         graphics.renderOutline(x, y, width, height, 0xFF909090);
 
-        int iconSize = (int) (width * 0.1f);
+        int iconSize = 32;
         WidgetUtils.drawItemIcon(graphics, getCurrentItem(), x, y, iconSize);
+        graphics.fill(x + iconSize + 9, y + 5, x + iconSize + 10, y + getHeight(width) - 5, 0xFF909090);
         String desc = this.task.advancements().size() == 1 ? DESC_SINGULAR : DESC_PLURAL;
         Object text = this.task.advancements().size() == 1 ? this.titles.isEmpty() ? "" : this.titles.get(0) : isOpened ? "▼" : "▶";
         graphics.drawString(
             font,
-            this.title, x + iconSize + 10, y + 5, 0xFFFFFFFF,
+            this.title, x + iconSize + 16, y + 5, 0xFFFFFFFF,
             false
         );
         graphics.drawString(
             font,
-            Component.translatable(desc, text), x + iconSize + 10, y + 7 + font.lineHeight, 0xFF808080,
+            Component.translatable(desc, text), x + iconSize + 16, y + 7 + font.lineHeight, 0xFF808080,
             false
         );
         String progress = QuestTaskDisplayFormatter.create(this.task, this.progress);
@@ -103,7 +104,7 @@ public final class AdvancementTaskWidget implements DisplayWidget {
             }
         }
 
-        WidgetUtils.drawProgressBar(graphics, x + iconSize + 10, actualY + height - font.lineHeight + 2, x + width - 5, actualY + height - 2, this.task, this.progress);
+        WidgetUtils.drawProgressBar(graphics, x + iconSize + 16, actualY + height - font.lineHeight - 6, x + width - 5, actualY + height - 5, this.task, this.progress);
     }
 
     @Override
@@ -123,9 +124,9 @@ public final class AdvancementTaskWidget implements DisplayWidget {
     @Override
     public int getHeight(int width) {
         if (isOpened) {
-            return (int) (width * 0.1f) + 10 + (Minecraft.getInstance().font.lineHeight + 2) * (this.titles.size());
+            return 42 + (Minecraft.getInstance().font.lineHeight + 2) * (this.titles.size());
         }
-        return (int) (width * 0.1f) + 10;
+        return 42;
     }
 
     private ItemStack getCurrentItem() {

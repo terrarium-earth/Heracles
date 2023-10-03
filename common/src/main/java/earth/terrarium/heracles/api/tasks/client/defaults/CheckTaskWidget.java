@@ -32,17 +32,18 @@ public record CheckTaskWidget(
     @Override
     public void render(GuiGraphics graphics, ScissorBoxStack scissor, int x, int y, int width, int mouseX, int mouseY, boolean hovered, float partialTicks) {
         Font font = Minecraft.getInstance().font;
-        WidgetUtils.drawBackground(graphics, x, y, width);
-        int iconSize = (int) (width * 0.1f);
-        graphics.blit(CHECK_TEXTURE, x + 5 + (int) (iconSize / 2f) - 8, y + 5 + (int) (iconSize / 2f) - 8, 0, 0, 16, 16, 16, 16);
+        WidgetUtils.drawBackground(graphics, x, y, width, getHeight(width));
+        int iconSize = 32;
+        graphics.blit(CHECK_TEXTURE, x + 5, y + 5, 0, 0, 32, 32, 32, 32);
+        graphics.fill(x + iconSize + 9, y + 5, x + iconSize + 10, y + getHeight(width) - 5, 0xFF909090);
         graphics.drawString(
             font,
-            TaskTitleFormatter.create(task), x + iconSize + 10, y + 5, 0xFFFFFFFF,
+            TaskTitleFormatter.create(task), x + iconSize + 16, y + 5, 0xFFFFFFFF,
             false
         );
         graphics.drawString(
             font,
-            Component.translatable(DESC_SINGULAR), x + iconSize + 10, y + 7 + font.lineHeight, 0xFF808080,
+            Component.translatable(DESC_SINGULAR), x + iconSize + 16, y + 7 + font.lineHeight, 0xFF808080,
             false
         );
 
@@ -73,6 +74,6 @@ public record CheckTaskWidget(
 
     @Override
     public int getHeight(int width) {
-        return (int) (width * 0.1f) + 10;
+        return 42;
     }
 }

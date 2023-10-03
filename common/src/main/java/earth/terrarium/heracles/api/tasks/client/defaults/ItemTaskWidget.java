@@ -66,19 +66,19 @@ public final class ItemTaskWidget implements DisplayWidget {
         String desc = chooseGatherKey(task, DESC_ITEM, DESC_TAG, DESC_SUBMIT_ITEM, DESC_SUBMIT_TAG);
         graphics.drawString(
             font,
-            Component.translatable(title, task.item().getDisplayName(Item::getDescription)), x + iconSize + 16, y + 5, 0xFFFFFFFF,
+            Component.translatable(title, task.item().getDisplayName(Item::getDescription)), x + iconSize + 16, y + 6, 0xFFFFFFFF,
             false
         );
         graphics.drawString(
             font,
-            Component.translatable(desc, this.task.target(), task.item().getDisplayName(Item::getDescription)), x + iconSize + 16, y + 7 + font.lineHeight, 0xFF808080,
+            Component.translatable(desc, this.task.target(), task.item().getDisplayName(Item::getDescription)), x + iconSize + 16, y + 8 + font.lineHeight, 0xFF808080,
             false
         );
         WidgetUtils.drawProgressText(graphics, x, y, width, this.task, this.progress);
         int height = getHeight(width);
-        WidgetUtils.drawProgressBar(graphics, x + iconSize + 16, y + height - font.lineHeight - 6, x + width - 5, y + height - 5, this.task, this.progress);
+        WidgetUtils.drawProgressBar(graphics, x + iconSize + 16, y + height - font.lineHeight - 5, x + width - 5, y + height - 6, this.task, this.progress);
         if (task.collectionType() == CollectionType.MANUAL) {
-            int buttonY = y + height - font.lineHeight - 17;
+            int buttonY = y + height - font.lineHeight - 16;
             int buttonWidth = font.width(ConstantComponents.Tasks.SUBMIT);
             boolean buttonHovered = mouseX > x + width - 5 - buttonWidth && mouseX < x + width - 5 && mouseY > buttonY && mouseY < buttonY + font.lineHeight;
 
@@ -112,7 +112,7 @@ public final class ItemTaskWidget implements DisplayWidget {
     public boolean mouseClicked(double mouseX, double mouseY, int mouseButton, int width) {
         if (task.collectionType() == CollectionType.MANUAL && !progress.isComplete()) {
             Font font = Minecraft.getInstance().font;
-            int buttonY = getHeight(width) - font.lineHeight - 17;
+            int buttonY = getHeight(width) - font.lineHeight - 16;
             int buttonWidth = font.width(ConstantComponents.Tasks.SUBMIT);
             boolean buttonHovered = mouseX > width - 5 - buttonWidth && mouseX < width - 5 && mouseY > buttonY && mouseY < buttonY + font.lineHeight;
             if (buttonHovered) {

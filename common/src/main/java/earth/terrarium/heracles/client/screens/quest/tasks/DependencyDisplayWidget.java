@@ -23,12 +23,12 @@ public record DependencyDisplayWidget(Quest quest) implements DisplayWidget {
         graphics.fill(x + iconSize + 9, y + 5, x + iconSize + 10, y + getHeight(width) - 5, 0xFF909090);
         graphics.drawString(
             font,
-            TITLE, x + iconSize + 16, y + 5, 0xFFFFFFFF,
+            TITLE, x + iconSize + 16, y + 6, 0xFFFFFFFF,
             false
         );
         graphics.drawString(
             font,
-            Component.translatable(DESCRIPTION, this.quest.display().title()), x + iconSize + 16, y + 7 + font.lineHeight, 0xFF808080,
+            Component.translatable(DESCRIPTION, this.quest.display().title()), x + iconSize + 16, y + 8 + font.lineHeight, 0xFF808080,
             false
         );
     }

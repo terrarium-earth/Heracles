@@ -72,18 +72,18 @@ public final class AdvancementTaskWidget implements DisplayWidget {
         Object text = this.task.advancements().size() == 1 ? this.titles.isEmpty() ? "" : this.titles.get(0) : isOpened ? "▼" : "▶";
         graphics.drawString(
             font,
-            this.title, x + iconSize + 16, y + 5, 0xFFFFFFFF,
+            this.title, x + iconSize + 16, y + 6, 0xFFFFFFFF,
             false
         );
         graphics.drawString(
             font,
-            Component.translatable(desc, text), x + iconSize + 16, y + 7 + font.lineHeight, 0xFF808080,
+            Component.translatable(desc, text), x + iconSize + 16, y + 8 + font.lineHeight, 0xFF808080,
             false
         );
         String progress = QuestTaskDisplayFormatter.create(this.task, this.progress);
         graphics.drawString(
             font,
-            progress, x + width - 5 - font.width(progress), y + 5, 0xFFFFFFFF,
+            progress, x + width - 5 - font.width(progress), y + 6, 0xFFFFFFFF,
             false
         );
 
@@ -104,7 +104,7 @@ public final class AdvancementTaskWidget implements DisplayWidget {
             }
         }
 
-        WidgetUtils.drawProgressBar(graphics, x + iconSize + 16, actualY + height - font.lineHeight - 6, x + width - 5, actualY + height - 5, this.task, this.progress);
+        WidgetUtils.drawProgressBar(graphics, x + iconSize + 16, actualY + height - font.lineHeight - 5, x + width - 5, actualY + height - 6, this.task, this.progress);
     }
 
     @Override

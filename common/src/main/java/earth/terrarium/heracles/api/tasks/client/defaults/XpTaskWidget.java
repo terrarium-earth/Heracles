@@ -43,26 +43,26 @@ public record XpTaskWidget(
 
         graphics.drawString(
             font,
-            TaskTitleFormatter.create(this.task), x + iconSize + 16, y + 5, 0xFFFFFFFF,
+            TaskTitleFormatter.create(this.task), x + iconSize + 16, y + 6, 0xFFFFFFFF,
             false
         );
         graphics.drawString(
             font,
-            Component.translatable(desc, this.task.target(), this.task.xpType().text()), x + iconSize + 16, y + 7 + font.lineHeight, 0xFF808080,
+            Component.translatable(desc, this.task.target(), this.task.xpType().text()), x + iconSize + 16, y + 8 + font.lineHeight, 0xFF808080,
             false
         );
         String progress = QuestTaskDisplayFormatter.create(this.task, this.progress);
         graphics.drawString(
             font,
-            progress, x + width - 5 - font.width(progress), y + 5, 0xFFFFFFFF,
+            progress, x + width - 5 - font.width(progress), y + 6, 0xFFFFFFFF,
             false
         );
 
         int height = getHeight(width);
-        WidgetUtils.drawProgressBar(graphics, x + iconSize + 16, y + height - font.lineHeight - 6, x + width - 5, y + height - 5, this.task, this.progress);
+        WidgetUtils.drawProgressBar(graphics, x + iconSize + 16, y + height - font.lineHeight - 5, x + width - 5, y + height - 6, this.task, this.progress);
 
         if (task.collectionType() == CollectionType.MANUAL) {
-            int buttonY = y + height - font.lineHeight - 17;
+            int buttonY = y + height - font.lineHeight - 16;
             int buttonWidth = font.width(ConstantComponents.Tasks.SUBMIT_XP);
             boolean buttonHovered = mouseX > x + width - 5 - buttonWidth && mouseX < x + width - 5 && mouseY > buttonY && mouseY < buttonY + font.lineHeight;
 
@@ -76,7 +76,7 @@ public record XpTaskWidget(
     public boolean mouseClicked(double mouseX, double mouseY, int mouseButton, int width) {
         if (task.collectionType() == CollectionType.MANUAL && !progress.isComplete()) {
             Font font = Minecraft.getInstance().font;
-            int buttonY = getHeight(width) - font.lineHeight - 17;
+            int buttonY = getHeight(width) - font.lineHeight - 16;
             int buttonWidth = font.width(ConstantComponents.Tasks.SUBMIT_XP);
             boolean buttonHovered = mouseX > width - 5 - buttonWidth && mouseX < width - 5 && mouseY > buttonY && mouseY < buttonY + font.lineHeight;
             if (buttonHovered) {

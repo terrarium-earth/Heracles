@@ -21,11 +21,11 @@ public record LocationTaskWidget(
         int iconSize = 32;
         WidgetUtils.drawItemIcon(graphics, this.task.icon().getDefaultInstance(), x, y, iconSize);
         graphics.fill(x + iconSize + 9, y + 5, x + iconSize + 10, y + getHeight(width) - 5, 0xFF909090);
-        graphics.drawString(font, this.task.title(), x + iconSize + 16, y + 5, 0xFFFFFFFF, false);
-        graphics.drawString(font, this.task.desc(), x + iconSize + 16, y + 7 + font.lineHeight, 0xFF808080, false);
+        graphics.drawString(font, this.task.title(), x + iconSize + 16, y + 6, 0xFFFFFFFF, false);
+        graphics.drawString(font, this.task.desc(), x + iconSize + 16, y + 8 + font.lineHeight, 0xFF808080, false);
         WidgetUtils.drawProgressText(graphics, x, y, width, this.task, this.progress);
         int height = getHeight(width);
-        WidgetUtils.drawProgressBar(graphics, x + iconSize + 16, y + height - font.lineHeight - 6, x + width - 5, y + height - 5, this.task, this.progress);
+        WidgetUtils.drawProgressBar(graphics, x + iconSize + 16, y + height - font.lineHeight - 5, x + width - 5, y + height - 6, this.task, this.progress);
     }
 
     @Override

@@ -42,7 +42,7 @@ public final class WidgetUtils {
         String text = QuestTaskDisplayFormatter.create(task, progress);
         graphics.drawString(
             font,
-            text, x + width - 5 - font.width(text), y + 5, 0xFFFFFFFF,
+            text, x + width - 5 - font.width(text), y + 6, 0xFFFFFFFF,
             false
         );
     }

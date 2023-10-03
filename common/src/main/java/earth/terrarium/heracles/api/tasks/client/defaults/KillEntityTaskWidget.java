@@ -47,23 +47,23 @@ public record KillEntityTaskWidget(KillEntityQuestTask task, TaskProgress<Numeri
         Component entityName = this.task.entity().entityType().getDescription();
         graphics.drawString(
             font,
-            TaskTitleFormatter.create(this.task), x + iconSize + 16, y + 5, 0xFFFFFFFF,
+            TaskTitleFormatter.create(this.task), x + iconSize + 16, y + 6, 0xFFFFFFFF,
             false
         );
         graphics.drawString(
             font,
-            Component.translatable(desc, this.task.target(), entityName), x + iconSize + 16, y + 7 + font.lineHeight, 0xFF808080,
+            Component.translatable(desc, this.task.target(), entityName), x + iconSize + 16, y + 8 + font.lineHeight, 0xFF808080,
             false
         );
         String progress = QuestTaskDisplayFormatter.create(this.task, this.progress);
         graphics.drawString(
             font,
-            progress, x + width - 5 - font.width(progress), y + 5, 0xFFFFFFFF,
+            progress, x + width - 5 - font.width(progress), y + 6, 0xFFFFFFFF,
             false
         );
 
         int height = getHeight(width);
-        WidgetUtils.drawProgressBar(graphics, x + iconSize + 16, y + height - font.lineHeight - 6, x + width - 5, y + height - 5, this.task, this.progress);
+        WidgetUtils.drawProgressBar(graphics, x + iconSize + 16, y + height - font.lineHeight - 5, x + width - 5, y + height - 6, this.task, this.progress);
     }
 
     @Override

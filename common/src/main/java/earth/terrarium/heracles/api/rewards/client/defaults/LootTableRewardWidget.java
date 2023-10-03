@@ -29,12 +29,12 @@ public record LootTableRewardWidget(LootTableReward reward) implements BaseItemR
         BaseItemRewardWidget.super.render(graphics, scissor, x, y, width, mouseX, mouseY, hovered, partialTicks);
         graphics.drawString(
             font,
-            TITLE_SINGULAR, x + 48, y + 5, 0xFFFFFFFF,
+            TITLE_SINGULAR, x + 48, y + 6, 0xFFFFFFFF,
             false
         );
         graphics.drawString(
             font,
-            Component.translatable(DESC_SINGULAR, this.reward.lootTable()), x + 48, y + 7 + font.lineHeight, 0xFF808080,
+            Component.translatable(DESC_SINGULAR, this.reward.lootTable()), x + 48, y + 8 + font.lineHeight, 0xFF808080,
             false
         );
     }

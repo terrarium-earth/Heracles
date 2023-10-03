@@ -51,12 +51,12 @@ public record SelectableRewardWidget(SelectableReward reward, String quest,
         String desc = this.reward.amount() == 1 ? DESC_SINGULAR : DESC_PLURAL;
         graphics.drawString(
             font,
-            Component.translatable(title), x + iconSize + 16, y + 5, 0xFFFFFFFF,
+            Component.translatable(title), x + iconSize + 16, y + 6, 0xFFFFFFFF,
             false
         );
         graphics.drawString(
             font,
-            Component.translatable(desc, this.reward.amount()), x + iconSize + 16, y + 7 + font.lineHeight, 0xFF808080,
+            Component.translatable(desc, this.reward.amount()), x + iconSize + 16, y + 8 + font.lineHeight, 0xFF808080,
             false
         );
 

@@ -8,7 +8,8 @@
         "common.InventoryMixin",
         "common.PlayerListMixin",
         "common.ReloadableServerResourcesMixin",
-        "common.ServerPlayerMixin"
+        "common.ServerPlayerMixin",
+        "common.SlotMixin"
     ],
     "client": [
         "client.FontManagerAccessor",

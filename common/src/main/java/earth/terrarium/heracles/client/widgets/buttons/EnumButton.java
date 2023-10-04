@@ -28,7 +28,7 @@ public class EnumButton<T extends Enum<T> & StringRepresentable> extends Button 
 
     @Override
     public @NotNull Component getMessage() {
-        return Component.literal(this.value.getSerializedName());
+        return Component.translatable(this.value.getSerializedName(), this.value.name().charAt(0) + this.value.name().substring(1).toLowerCase());
     }
 
     public T value() {

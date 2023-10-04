@@ -42,7 +42,7 @@ public class IconModal extends BaseModal {
     private final EditBox search;
 
     public IconModal(int screenWidth, int screenHeight) {
-        super(screenWidth, screenHeight, WIDTH, HEIGHT);
+        super(screenWidth, screenHeight, WIDTH, HEIGHT, 2);
 
         addChild(new ToggleImageButton(x + 7, y + 5, 11, 11, 168, 0, 11, TEXTURE, 256, 256, (b) -> {
             if (b) {

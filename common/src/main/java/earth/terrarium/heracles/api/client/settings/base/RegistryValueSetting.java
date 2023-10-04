@@ -52,6 +52,7 @@ public record RegistryValueSetting<T>(
 
     @Override
     public RegistryValue<T> getValue(AutocompleteEditBox<String> widget) {
+        if (widget.getValue().isBlank()) return null;
         if (widget.getValue().startsWith("#")) {
             ResourceLocation id = ResourceLocation.tryParse(widget.getValue().substring(1));
             return id == null ? null : new RegistryValue<>(Either.right(TagKey.create(key, id)));

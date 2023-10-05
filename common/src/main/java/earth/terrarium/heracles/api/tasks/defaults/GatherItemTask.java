@@ -68,7 +68,7 @@ public record GatherItemTask(
             }
             return storage().set(target());
         }
-        return progress;
+        return storage().set(amount);
     }
 
     private NumericTag manual(NumericTag progress, Container input) {

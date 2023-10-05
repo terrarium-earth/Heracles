@@ -14,6 +14,7 @@
     "reward.heracles.xp.desc.plural": "Receive %s XP %ss",
     "setting.heracles.xp.type": "Experience Type:",
     "setting.heracles.xp.amount": "Experience Amount:",
+    "setting.heracles.xp.collection_type": "Collection Type:",
 
     "reward.heracles.xp.type.point": "point",
     "reward.heracles.xp.type.level": "level",
@@ -25,6 +26,7 @@
     "reward.heracles.item.desc.plural": "Receive %sx %s",
     "setting.heracles.item.item": "Item:",
     "setting.heracles.item.count": "Amount:",
+    "setting.heracles.item.collection_type": "Collection Type:",
 
     "reward.heracles.loottable": "↔ Loot Table",
     "reward.heracles.loottable.title.singular": "Receive Random Loot",

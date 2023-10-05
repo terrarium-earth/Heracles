@@ -35,7 +35,7 @@ public record LootTableRewardWidget(LootTableReward reward) implements BaseItemR
         BaseItemRewardWidget.super.render(graphics, scissor, x, y, width, mouseX, mouseY, hovered, partialTicks);
         graphics.drawString(
             font,
-            !reward.title().isEmpty() ? Component.translatable(reward.title()) : TITLE_SINGULAR, x + 48, y + 6, 0xFFFFFFFF,
+             TITLE_SINGULAR, x + 48, y + 6, 0xFFFFFFFF,
             false
         );
         graphics.drawString(

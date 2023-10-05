@@ -31,15 +31,11 @@ public final class StructureTaskWidget implements DisplayWidget {
         Font font = Minecraft.getInstance().font;
         WidgetUtils.drawBackground(graphics, x, y, width, getHeight(width));
         int iconSize = 32;
-        if (this.task.icon().isVisible()) {
-            this.task.icon().render(graphics, scissor, x, y, iconSize, iconSize);
-        } else {
-            WidgetUtils.drawItemIcon(graphics, Items.STRUCTURE_BLOCK.getDefaultInstance(), x, y, iconSize);
-        }
+        this.task.icon().renderOverrideOrStack(Items.STRUCTURE_BLOCK.getDefaultInstance(), graphics, scissor, x, y, iconSize);
         graphics.fill(x + iconSize + 9, y + 5, x + iconSize + 10, y + getHeight(width) - 5, 0xFF909090);
         graphics.drawString(
             font,
-            !task.title().isEmpty() ? Component.translatable(task.title()) : DESCRIPTION, x + iconSize + 16, y + 6, 0xFFFFFFFF,
+            task.titleOr(DESCRIPTION), x + iconSize + 16, y + 6, 0xFFFFFFFF,
             false
         );
         graphics.drawString(

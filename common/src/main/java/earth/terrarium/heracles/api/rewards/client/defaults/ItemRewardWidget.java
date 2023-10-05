@@ -34,7 +34,7 @@ public record ItemRewardWidget(ItemReward reward) implements BaseItemRewardWidge
         String desc = getIcon().getCount() == 1 ? DESC_SINGULAR : DESC_PLURAL;
         graphics.drawString(
             font,
-            !reward.title().isEmpty() ? Component.translatable(reward.title()) : Component.translatable(title, getIcon().getHoverName()), x + 48, y + 6, 0xFFFFFFFF,
+            reward.titleOr(Component.translatable(title, getIcon().getHoverName())), x + 48, y + 6, 0xFFFFFFFF,
             false
         );
         graphics.drawString(

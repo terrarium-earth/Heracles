@@ -59,18 +59,13 @@ public final class ItemTaskWidget implements DisplayWidget {
         Font font = minecraft.font;
         WidgetUtils.drawBackground(graphics, x, y, width, getHeight(width));
         int iconSize = 32;
-        if (this.task.icon().isVisible()) {
-            this.task.icon().render(graphics, scissor, x, y, iconSize, iconSize);
-        } else {
-            ItemStack item = this.getCurrentItem();
-            WidgetUtils.drawItemIconWithTooltip(graphics, item, x, y, iconSize, mouseX, mouseY);
-        }
+        this.task.icon().renderOverrideOrStack(this.getCurrentItem(), graphics, scissor, x, y, iconSize, mouseX, mouseY);
         graphics.fill(x + iconSize + 9, y + 5, x + iconSize + 10, y + getHeight(width) - 5, 0xFF909090);
         String title = chooseGatherKey(task, TITLE_ITEM, TITLE_TAG, TITLE_SUBMIT_ITEM, TITLE_SUBMIT_TAG);
         String desc = chooseGatherKey(task, DESC_ITEM, DESC_TAG, DESC_SUBMIT_ITEM, DESC_SUBMIT_TAG);
         graphics.drawString(
             font,
-            !task.title().isEmpty() ? Component.translatable(task.title()) : Component.translatable(title, task.item().getDisplayName(Item::getDescription)), x + iconSize + 16, y + 6, 0xFFFFFFFF,
+            task.titleOr(Component.translatable(title, task.item().getDisplayName(Item::getDescription))), x + iconSize + 16, y + 6, 0xFFFFFFFF,
             false
         );
         graphics.drawString(

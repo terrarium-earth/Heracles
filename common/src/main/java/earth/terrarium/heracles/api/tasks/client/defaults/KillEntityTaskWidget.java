@@ -38,9 +38,7 @@ public record KillEntityTaskWidget(KillEntityQuestTask task, TaskProgress<Numeri
         Font font = Minecraft.getInstance().font;
         WidgetUtils.drawBackground(graphics, x, y, width, getHeight(width));
         int iconSize = 32;
-        if (this.task.icon().isVisible()) {
-            this.task.icon().render(graphics, scissor, x, y, iconSize, iconSize);
-        } else {
+        if (!task.icon().renderOverride(graphics, scissor, x, y, iconSize)) {
             Entity entity = factory.apply(this.task.entity().entityType());
             try (var ignored = RenderUtils.createScissorBoxStack(scissor, Minecraft.getInstance(), graphics.pose(), x + 5, y + 5, iconSize, iconSize)) {
                 WidgetUtils.drawEntity(graphics, x + 5, y + 5, iconSize, entity);
@@ -51,7 +49,7 @@ public record KillEntityTaskWidget(KillEntityQuestTask task, TaskProgress<Numeri
         Component entityName = this.task.entity().entityType().getDescription();
         graphics.drawString(
             font,
-            !task.title().isEmpty() ? Component.translatable(task.title()) : TaskTitleFormatter.create(this.task), x + iconSize + 16, y + 6, 0xFFFFFFFF,
+            task.titleOr(TaskTitleFormatter.create(this.task)), x + iconSize + 16, y + 6, 0xFFFFFFFF,
             false
         );
         graphics.drawString(

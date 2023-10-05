@@ -22,17 +22,13 @@ public record XpRewardWidget(XpQuestReward reward) implements DisplayWidget {
         Font font = Minecraft.getInstance().font;
         WidgetUtils.drawBackground(graphics, x, y, width, getHeight(width));
         int iconSize = 32;
-        if (this.reward.icon().isVisible()) {
-            this.reward.icon().render(graphics, scissor, x, y, iconSize, iconSize);
-        } else {
-            WidgetUtils.drawItemIcon(graphics, Items.EXPERIENCE_BOTTLE.getDefaultInstance(), x, y, iconSize);
-        }
+        this.reward.icon().renderOverrideOrStack(Items.EXPERIENCE_BOTTLE.getDefaultInstance(), graphics, scissor, x, y, iconSize, mouseX, mouseY);
         graphics.fill(x + iconSize + 9, y + 5, x + iconSize + 10, y + getHeight(width) - 5, 0xFF909090);
         String title = this.reward.amount() == 1 ? TITLE_SINGULAR : TITLE_PLURAL;
         String desc = this.reward.amount() == 1 ? DESC_SINGULAR : DESC_PLURAL;
         graphics.drawString(
             font,
-            !reward.title().isEmpty() ? Component.translatable(reward.title()) : Component.translatable(title, this.reward.amount()), x + iconSize + 16, y + 6, 0xFFFFFFFF,
+            reward.titleOr(Component.translatable(title, this.reward.amount())), x + iconSize + 16, y + 6, 0xFFFFFFFF,
             false
         );
         graphics.drawString(

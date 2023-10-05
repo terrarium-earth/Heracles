@@ -37,7 +37,7 @@ public record CommandRewardWidget(CommandReward reward) implements BaseItemRewar
         String desc = firstSpace > 0 ? reward.command().substring(0, reward.command().indexOf(" ")) : reward.command();
         graphics.drawString(
             font,
-            !reward.title().isEmpty() ? Component.translatable(reward.title()) : Component.translatable(TITLE_SINGULAR), x + 48, y + 6, 0xFFFFFFFF,
+            reward.titleOr(Component.translatable(TITLE_SINGULAR)), x + 48, y + 6, 0xFFFFFFFF,
             false
         );
         graphics.drawString(

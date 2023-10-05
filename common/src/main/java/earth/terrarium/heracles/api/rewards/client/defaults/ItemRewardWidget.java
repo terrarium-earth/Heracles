@@ -1,6 +1,7 @@
 package earth.terrarium.heracles.api.rewards.client.defaults;
 
 import com.teamresourceful.resourcefullib.client.scissor.ScissorBoxStack;
+import earth.terrarium.heracles.api.quests.QuestIcon;
 import earth.terrarium.heracles.api.rewards.defaults.ItemReward;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -16,6 +17,11 @@ public record ItemRewardWidget(ItemReward reward) implements BaseItemRewardWidge
     private static final String DESC_PLURAL = "reward.heracles.item.desc.plural";
 
     @Override
+    public QuestIcon<?> getIconOverride() {
+        return reward.icon();
+    }
+
+    @Override
     public ItemStack getIcon() {
         return this.reward.stack();
     }
@@ -28,7 +34,7 @@ public record ItemRewardWidget(ItemReward reward) implements BaseItemRewardWidge
         String desc = getIcon().getCount() == 1 ? DESC_SINGULAR : DESC_PLURAL;
         graphics.drawString(
             font,
-            Component.translatable(title, getIcon().getHoverName()), x + 48, y + 6, 0xFFFFFFFF,
+            !reward.title().isEmpty() ? Component.translatable(reward.title()) : Component.translatable(title, getIcon().getHoverName()), x + 48, y + 6, 0xFFFFFFFF,
             false
         );
         graphics.drawString(

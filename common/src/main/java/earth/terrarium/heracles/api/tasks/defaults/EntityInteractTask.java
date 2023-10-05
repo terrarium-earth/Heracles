@@ -4,6 +4,10 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.teamresourceful.resourcefullib.common.codecs.predicates.NbtPredicate;
 import earth.terrarium.heracles.Heracles;
+import earth.terrarium.heracles.api.CustomizableQuestElement;
+import earth.terrarium.heracles.api.quests.QuestIcon;
+import earth.terrarium.heracles.api.quests.QuestIcons;
+import earth.terrarium.heracles.api.quests.defaults.ItemQuestIcon;
 import earth.terrarium.heracles.api.tasks.QuestTask;
 import earth.terrarium.heracles.api.tasks.QuestTaskType;
 import earth.terrarium.heracles.api.tasks.storage.defaults.BooleanTaskStorage;
@@ -13,10 +17,11 @@ import net.minecraft.nbt.ByteTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.item.Items;
 
 public record EntityInteractTask(
-    String id, RegistryValue<EntityType<?>> entity, NbtPredicate nbt
-) implements QuestTask<Entity, ByteTag, EntityInteractTask> {
+    String id, String title, QuestIcon<?> icon, RegistryValue<EntityType<?>> entity, NbtPredicate nbt
+) implements QuestTask<Entity, ByteTag, EntityInteractTask>, CustomizableQuestElement {
     public static final QuestTaskType<EntityInteractTask> TYPE = new Type();
 
     @Override
@@ -49,6 +54,8 @@ public record EntityInteractTask(
         public Codec<EntityInteractTask> codec(String id) {
             return RecordCodecBuilder.create(instance -> instance.group(
                 RecordCodecBuilder.point(id),
+                Codec.STRING.fieldOf("title").orElse("").forGetter(EntityInteractTask::title),
+                QuestIcons.CODEC.fieldOf("icon").orElse(new ItemQuestIcon(Items.AIR)).forGetter(EntityInteractTask::icon),
                 RegistryValue.codec(Registries.ENTITY_TYPE).fieldOf("entity").forGetter(EntityInteractTask::entity),
                 NbtPredicate.CODEC.fieldOf("nbt").orElse(NbtPredicate.ANY).forGetter(EntityInteractTask::nbt)
             ).apply(instance, EntityInteractTask::new));

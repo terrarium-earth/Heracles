@@ -1,6 +1,7 @@
 package earth.terrarium.heracles.api.rewards.client.defaults;
 
 import com.teamresourceful.resourcefullib.client.scissor.ScissorBoxStack;
+import earth.terrarium.heracles.api.quests.QuestIcon;
 import earth.terrarium.heracles.api.rewards.defaults.LootTableReward;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
@@ -19,6 +20,11 @@ public record LootTableRewardWidget(LootTableReward reward) implements BaseItemR
     private static final String TOOLTIP_SINGULAR = "reward.heracles.loottable.tooltip.singular";
 
     @Override
+    public QuestIcon<?> getIconOverride() {
+        return reward.icon();
+    }
+
+    @Override
     public ItemStack getIcon() {
         return Items.CHEST.getDefaultInstance();
     }
@@ -29,7 +35,7 @@ public record LootTableRewardWidget(LootTableReward reward) implements BaseItemR
         BaseItemRewardWidget.super.render(graphics, scissor, x, y, width, mouseX, mouseY, hovered, partialTicks);
         graphics.drawString(
             font,
-            TITLE_SINGULAR, x + 48, y + 6, 0xFFFFFFFF,
+            !reward.title().isEmpty() ? Component.translatable(reward.title()) : TITLE_SINGULAR, x + 48, y + 6, 0xFFFFFFFF,
             false
         );
         graphics.drawString(

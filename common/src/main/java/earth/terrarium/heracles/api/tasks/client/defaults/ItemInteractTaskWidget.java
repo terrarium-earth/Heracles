@@ -39,12 +39,16 @@ public record ItemInteractTaskWidget(
         Font font = Minecraft.getInstance().font;
         WidgetUtils.drawBackground(graphics, x, y, width, getHeight(width));
         int iconSize = 32;
-        ItemStack item = this.getCurrentItem();
-        WidgetUtils.drawItemIconWithTooltip(graphics, item, x, y, iconSize, mouseX, mouseY);
+        if (this.task.icon().isVisible()) {
+            this.task.icon().render(graphics, scissor, x, y, iconSize, iconSize);
+        } else {
+            ItemStack item = this.getCurrentItem();
+            WidgetUtils.drawItemIconWithTooltip(graphics, item, x, y, iconSize, mouseX, mouseY);
+        }
         graphics.fill(x + iconSize + 9, y + 5, x + iconSize + 10, y + getHeight(width) - 5, 0xFF909090);
         graphics.drawString(
             font,
-            TaskTitleFormatter.create(this.task), x + iconSize + 16, y + 6, 0xFFFFFFFF,
+            !task.title().isEmpty() ? Component.translatable(task.title()) : TaskTitleFormatter.create(this.task), x + iconSize + 16, y + 6, 0xFFFFFFFF,
             false
         );
         graphics.drawString(

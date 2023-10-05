@@ -4,6 +4,10 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.teamresourceful.resourcefullib.common.codecs.EnumCodec;
 import earth.terrarium.heracles.Heracles;
+import earth.terrarium.heracles.api.CustomizableQuestElement;
+import earth.terrarium.heracles.api.quests.QuestIcon;
+import earth.terrarium.heracles.api.quests.QuestIcons;
+import earth.terrarium.heracles.api.quests.defaults.ItemQuestIcon;
 import earth.terrarium.heracles.api.rewards.QuestReward;
 import earth.terrarium.heracles.api.rewards.QuestRewardType;
 import net.minecraft.network.chat.Component;
@@ -11,11 +15,12 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.stream.Stream;
 
-public record XpQuestReward(String id, XpType xpType, int amount) implements QuestReward<XpQuestReward> {
+public record XpQuestReward(String id, String title, QuestIcon<?> icon, XpType xpType, int amount) implements QuestReward<XpQuestReward>, CustomizableQuestElement {
 
     public static final QuestRewardType<XpQuestReward> TYPE = new Type();
 
@@ -49,6 +54,8 @@ public record XpQuestReward(String id, XpType xpType, int amount) implements Que
         public Codec<XpQuestReward> codec(String id) {
             return RecordCodecBuilder.create(instance -> instance.group(
                 RecordCodecBuilder.point(id),
+                Codec.STRING.fieldOf("title").orElse("").forGetter(XpQuestReward::title),
+                QuestIcons.CODEC.fieldOf("icon").orElse(new ItemQuestIcon(Items.AIR)).forGetter(XpQuestReward::icon),
                 EnumCodec.of(XpType.class).fieldOf("xptype").orElse(XpType.LEVEL).forGetter(XpQuestReward::xpType),
                 Codec.INT.fieldOf("amount").orElse(1).forGetter(XpQuestReward::amount)
             ).apply(instance, XpQuestReward::new));

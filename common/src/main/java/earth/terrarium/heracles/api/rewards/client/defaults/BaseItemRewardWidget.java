@@ -3,6 +3,7 @@ package earth.terrarium.heracles.api.rewards.client.defaults;
 import com.teamresourceful.resourcefullib.client.scissor.ScissorBoxStack;
 import earth.terrarium.heracles.api.client.DisplayWidget;
 import earth.terrarium.heracles.api.client.WidgetUtils;
+import earth.terrarium.heracles.api.quests.QuestIcon;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
@@ -13,14 +14,20 @@ import java.util.List;
 
 public interface BaseItemRewardWidget extends DisplayWidget {
 
+    QuestIcon<?> getIconOverride();
+
     ItemStack getIcon();
 
     @Override
     default void render(GuiGraphics graphics, ScissorBoxStack scissor, int x, int y, int width, int mouseX, int mouseY, boolean hovered, float partialTicks) {
         WidgetUtils.drawBackground(graphics, x, y, width, getHeight(width));
         int iconSize = 32;
-        ItemStack icon = getIcon();
-        WidgetUtils.drawItemIconWithTooltip(graphics, icon, x, y, iconSize, this::getTooltip, mouseX, mouseY);
+        if (getIconOverride().isVisible()) {
+            getIconOverride().render(graphics, scissor, x, y, iconSize, iconSize);
+        } else {
+            ItemStack icon = getIcon();
+            WidgetUtils.drawItemIconWithTooltip(graphics, icon, x, y, iconSize, this::getTooltip, mouseX, mouseY);
+        }
         graphics.fill(x + iconSize + 9, y + 5, x + iconSize + 10, y + getHeight(width) - 5, 0xFF909090);
     }
 

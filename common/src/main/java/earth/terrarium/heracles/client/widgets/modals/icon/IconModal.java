@@ -153,7 +153,6 @@ public class IconModal extends BaseModal {
         List<Item> filteredItems = new ArrayList<>();
         for (Item item : items) {
             if (filteredItems.size() >= ITEM_COLUMNS * ITEM_ROWS) break;
-            // if (item == Items.AIR) continue;
             Component text = ModUtils.throwStackoverflow(item, Item::getDescription);
             if (text.getString().toLowerCase(Locale.ROOT).contains(search)) {
                 filteredItems.add(item);

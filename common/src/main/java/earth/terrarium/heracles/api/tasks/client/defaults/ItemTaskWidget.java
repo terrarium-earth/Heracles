@@ -70,7 +70,7 @@ public final class ItemTaskWidget implements DisplayWidget {
         String desc = chooseGatherKey(task, DESC_ITEM, DESC_TAG, DESC_SUBMIT_ITEM, DESC_SUBMIT_TAG);
         graphics.drawString(
             font,
-            task.title().isEmpty() ? Component.translatable(title, task.item().getDisplayName(Item::getDescription)) : Component.translatable(task.title()), x + iconSize + 16, y + 6, 0xFFFFFFFF,
+            !task.title().isEmpty() ? Component.translatable(task.title()) : Component.translatable(title, task.item().getDisplayName(Item::getDescription)), x + iconSize + 16, y + 6, 0xFFFFFFFF,
             false
         );
         graphics.drawString(

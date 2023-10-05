@@ -6,6 +6,7 @@ import com.teamresourceful.resourcefullib.common.codecs.CodecExtras;
 import com.teamresourceful.resourcefullib.common.codecs.EnumCodec;
 import com.teamresourceful.resourcefullib.common.codecs.predicates.NbtPredicate;
 import earth.terrarium.heracles.Heracles;
+import earth.terrarium.heracles.api.CustomizableQuestElement;
 import earth.terrarium.heracles.api.quests.QuestIcon;
 import earth.terrarium.heracles.api.quests.QuestIcons;
 import earth.terrarium.heracles.api.quests.defaults.ItemQuestIcon;
@@ -28,7 +29,7 @@ import java.util.Optional;
 
 public record GatherItemTask(
     String id, String title, QuestIcon<?> icon, RegistryValue<Item> item, NbtPredicate nbt, int target, CollectionType collectionType
-) implements PairQuestTask<Optional<ItemStack>, Container, NumericTag, GatherItemTask> {
+) implements PairQuestTask<Optional<ItemStack>, Container, NumericTag, GatherItemTask>, CustomizableQuestElement {
 
     public static final QuestTaskType<GatherItemTask> TYPE = new Type();
 

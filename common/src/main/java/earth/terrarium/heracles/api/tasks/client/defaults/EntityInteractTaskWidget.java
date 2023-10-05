@@ -42,17 +42,21 @@ public record EntityInteractTaskWidget(
         Font font = Minecraft.getInstance().font;
         WidgetUtils.drawBackground(graphics, x, y, width, getHeight(width));
         int iconSize = 32;
-        EntityType<?> type = getType();
-        if (type != null) {
-            Entity entity = factory.apply(type);
-            try (var ignored = RenderUtils.createScissorBoxStack(scissor, Minecraft.getInstance(), graphics.pose(), x + 5, y + 5, iconSize, iconSize)) {
-                WidgetUtils.drawEntity(graphics, x + 5, y + 5, iconSize, entity);
+        if (this.task.icon().isVisible()) {
+            this.task.icon().render(graphics, scissor, x, y, iconSize, iconSize);
+        } else {
+            EntityType<?> type = getType();
+            if (type != null) {
+                Entity entity = factory.apply(type);
+                try (var ignored = RenderUtils.createScissorBoxStack(scissor, Minecraft.getInstance(), graphics.pose(), x + 5, y + 5, iconSize, iconSize)) {
+                    WidgetUtils.drawEntity(graphics, x + 5, y + 5, iconSize, entity);
+                }
             }
         }
         graphics.fill(x + iconSize + 9, y + 5, x + iconSize + 10, y + getHeight(width) - 5, 0xFF909090);
         graphics.drawString(
             font,
-            TaskTitleFormatter.create(this.task), x + iconSize + 16, y + 6, 0xFFFFFFFF,
+            !task.title().isEmpty() ? Component.translatable(task.title()) : TaskTitleFormatter.create(this.task), x + iconSize + 16, y + 6, 0xFFFFFFFF,
             false
         );
         graphics.drawString(

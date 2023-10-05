@@ -27,8 +27,8 @@
     "task.heracles.item.submit.desc.item": "Submit %sx %s",
     "task.heracles.item.submit.desc.tag": "Submit %sx of any %s",
     "task.heracles.item.submit.button.tooltip": "Consumes %s Items",
-    "setting.heracles.item.title": "Task Title:",
-    "setting.heracles.item.icon": "Task Icon:",
+    "setting.heracles.item.title": "Title Override:",
+    "setting.heracles.item.icon": "Icon Override:",
     "setting.heracles.item.amount": "Amount: ",
     "setting.heracles.item.manual": "Manual Check: ",
 

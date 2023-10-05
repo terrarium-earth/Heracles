@@ -59,8 +59,8 @@ public final class ItemTaskWidget implements DisplayWidget {
         Font font = minecraft.font;
         WidgetUtils.drawBackground(graphics, x, y, width, getHeight(width));
         int iconSize = 32;
-        if (this.task.icon() != null) {
-            this.task.icon().render(graphics, scissor, x + 5, y + 5, iconSize, iconSize);
+        if (this.task.icon().isVisible()) {
+            this.task.icon().render(graphics, scissor, x, y, iconSize, iconSize);
         } else {
             ItemStack item = this.getCurrentItem();
             WidgetUtils.drawItemIconWithTooltip(graphics, item, x, y, iconSize, mouseX, mouseY);

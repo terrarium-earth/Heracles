@@ -125,7 +125,7 @@ public record GatherItemTask(
             Codec<GatherItemTask> newCodec = RecordCodecBuilder.create(instance -> instance.group(
                 RecordCodecBuilder.point(id),
                 Codec.STRING.fieldOf("title").orElse("").forGetter(GatherItemTask::title),
-                QuestIcons.CODEC.fieldOf("icon").orElse(new ItemQuestIcon(Items.MAP)).forGetter(GatherItemTask::icon),
+                QuestIcons.CODEC.fieldOf("icon").orElse(new ItemQuestIcon(Items.AIR)).forGetter(GatherItemTask::icon),
                 RegistryValue.codec(Registries.ITEM).fieldOf("item").forGetter(GatherItemTask::item),
                 NbtPredicate.CODEC.fieldOf("nbt").orElse(NbtPredicate.ANY).forGetter(GatherItemTask::nbt),
                 Codec.INT.fieldOf("amount").orElse(1).forGetter(GatherItemTask::target),
@@ -142,7 +142,7 @@ public record GatherItemTask(
                 NbtPredicate.CODEC.fieldOf("nbt").orElse(NbtPredicate.ANY).forGetter(GatherItemTask::nbt),
                 Codec.INT.fieldOf("amount").orElse(1).forGetter(GatherItemTask::target),
                 Codec.BOOL.fieldOf("manual").orElse(false).forGetter(task -> task.collectionType == CollectionType.MANUAL)
-            ).apply(instance, (i, item, nbt, amount, manual) -> new GatherItemTask(i, "", new ItemQuestIcon(Items.MAP), item, nbt, amount, manual ? CollectionType.MANUAL : CollectionType.CONSUME)));
+            ).apply(instance, (i, item, nbt, amount, manual) -> new GatherItemTask(i, "", new ItemQuestIcon(Items.AIR), item, nbt, amount, manual ? CollectionType.MANUAL : CollectionType.CONSUME)));
         }
     }
 

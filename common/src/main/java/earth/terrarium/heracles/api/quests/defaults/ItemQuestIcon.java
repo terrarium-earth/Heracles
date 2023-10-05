@@ -4,12 +4,14 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.teamresourceful.resourcefullib.client.scissor.ScissorBoxStack;
 import earth.terrarium.heracles.Heracles;
+import earth.terrarium.heracles.api.client.WidgetUtils;
 import earth.terrarium.heracles.api.quests.QuestIcon;
 import earth.terrarium.heracles.api.quests.QuestIconType;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Items;
 
 public record ItemQuestIcon(Item item) implements QuestIcon<ItemQuestIcon> {
 
@@ -17,12 +19,21 @@ public record ItemQuestIcon(Item item) implements QuestIcon<ItemQuestIcon> {
 
     @Override
     public void render(GuiGraphics graphics, ScissorBoxStack scissor, int x, int y, int width, int height) {
-        graphics.renderFakeItem(item.getDefaultInstance(), x + (width - 16) / 2, y + (height - 16) / 2);
+        if (height == 32 && width == 32) { // Blatant ugly workaround. Centering should be handled better in both cases.
+            WidgetUtils.drawItemIcon(graphics, item.getDefaultInstance(), x, y, width);
+        } else {
+            graphics.renderFakeItem(item.getDefaultInstance(), x + (width - 16) / 2, y + (height - 16) / 2);
+        }
     }
 
     @Override
     public QuestIconType<ItemQuestIcon> type() {
         return TYPE;
+    }
+
+    @Override
+    public boolean isVisible() {
+        return item != null && item != Items.AIR;
     }
 
     private static class Type implements QuestIconType<ItemQuestIcon> {

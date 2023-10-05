@@ -6,6 +6,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.Items;
 import org.jetbrains.annotations.NotNull;
 
 public class IconButton extends Button {
@@ -30,7 +31,7 @@ public class IconButton extends Button {
 
     @Override
     public @NotNull Component getMessage() {
-        return Component.literal(this.value.item().toString());
+        return this.value.item() == Items.AIR ? Component.literal("") : this.value.item().getDescription();
     }
 
     public ItemQuestIcon value() {

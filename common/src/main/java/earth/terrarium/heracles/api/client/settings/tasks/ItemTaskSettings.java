@@ -48,8 +48,8 @@ public class ItemTaskSettings implements SettingInitializer<GatherItemTask> {
     private ItemQuestIcon getDefaultIcon(GatherItemTask object) {
         return Optionull.mapOrDefault(object, obj -> {
             if (obj.icon() instanceof ItemQuestIcon questIcon) return questIcon;
-            return new ItemQuestIcon(Items.MAP);
-        }, new ItemQuestIcon(Items.MAP));
+            return new ItemQuestIcon(Items.AIR);
+        }, new ItemQuestIcon(Items.AIR));
     }
 
     private static RegistryValue<Item> getDefaultItem(GatherItemTask object) {

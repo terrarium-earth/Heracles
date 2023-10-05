@@ -18,22 +18,21 @@ public record ItemQuestIcon(Item item) implements QuestIcon<ItemQuestIcon> {
     public static final QuestIconType<ItemQuestIcon> TYPE = new Type();
 
     @Override
-    public void render(GuiGraphics graphics, ScissorBoxStack scissor, int x, int y, int width, int height) {
-        if (height == 32 && width == 32) { // Blatant ugly workaround. Centering should be handled better in both cases.
-            WidgetUtils.drawItemIcon(graphics, item.getDefaultInstance(), x, y, width);
-        } else {
-            graphics.renderFakeItem(item.getDefaultInstance(), x + (width - 16) / 2, y + (height - 16) / 2);
+    public boolean render(GuiGraphics graphics, ScissorBoxStack scissor, int x, int y, int width, int height) {
+        if (item != null && item != Items.AIR) {
+            if (height == 32 && width == 32) { // Blatant ugly workaround. Centering should be handled better in both cases.
+                WidgetUtils.drawItemIcon(graphics, item.getDefaultInstance(), x, y, width);
+            } else {
+                graphics.renderFakeItem(item.getDefaultInstance(), x + (width - 16) / 2, y + (height - 16) / 2);
+            }
+            return true;
         }
+        return false;
     }
 
     @Override
     public QuestIconType<ItemQuestIcon> type() {
         return TYPE;
-    }
-
-    @Override
-    public boolean isVisible() {
-        return item != null && item != Items.AIR;
     }
 
     private static class Type implements QuestIconType<ItemQuestIcon> {

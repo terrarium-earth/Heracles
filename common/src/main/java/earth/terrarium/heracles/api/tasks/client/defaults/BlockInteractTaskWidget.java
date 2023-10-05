@@ -36,7 +36,7 @@ public record BlockInteractTaskWidget(
         Font font = Minecraft.getInstance().font;
         WidgetUtils.drawBackground(graphics, x, y, width, getHeight(width));
         int iconSize = 32;
-        this.task.icon().renderOverrideOrStack(this.getCurrentItem(), graphics, scissor, x, y, iconSize, mouseX, mouseY);
+        this.task.icon().renderOrStack(this.getCurrentItem(), graphics, scissor, x, y, iconSize, mouseX, mouseY);
         graphics.fill(x + iconSize + 9, y + 5, x + iconSize + 10, y + getHeight(width) - 5, 0xFF909090);
         graphics.drawString(
             font,

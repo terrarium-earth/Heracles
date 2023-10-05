@@ -42,7 +42,7 @@ public record EntityInteractTaskWidget(
         Font font = Minecraft.getInstance().font;
         WidgetUtils.drawBackground(graphics, x, y, width, getHeight(width));
         int iconSize = 32;
-        if (!task.icon().renderOverride(graphics, scissor, x, y, iconSize)) {
+        if (!task.icon().render(graphics, scissor, x, y, iconSize, iconSize)) {
             EntityType<?> type = getType();
             if (type != null) {
                 Entity entity = factory.apply(type);

@@ -22,7 +22,7 @@ public interface BaseItemRewardWidget extends DisplayWidget {
     default void render(GuiGraphics graphics, ScissorBoxStack scissor, int x, int y, int width, int mouseX, int mouseY, boolean hovered, float partialTicks) {
         WidgetUtils.drawBackground(graphics, x, y, width, getHeight(width));
         int iconSize = 32;
-        if (!getIconOverride().renderOverride(graphics, scissor, x, y, iconSize)) {
+        if (!getIconOverride().render(graphics, scissor, x, y, iconSize, iconSize)) {
             WidgetUtils.drawItemIconWithTooltip(graphics, getIcon(), x, y, iconSize, this::getTooltip, mouseX, mouseY);
         }
         graphics.fill(x + iconSize + 9, y + 5, x + iconSize + 10, y + getHeight(width) - 5, 0xFF909090);

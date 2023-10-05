@@ -7,34 +7,18 @@ import net.minecraft.world.item.ItemStack;
 
 public interface QuestIcon<T extends QuestIcon<T>> {
 
-    void render(GuiGraphics graphics, ScissorBoxStack scissor, int x, int y, int width, int height);
+    boolean render(GuiGraphics graphics, ScissorBoxStack scissor, int x, int y, int width, int height);
 
     QuestIconType<T> type();
 
-    default boolean isVisible() {
-        return false;
-    }
-
-    default boolean renderOverride(GuiGraphics graphics, ScissorBoxStack scissor, int x, int y, int size) {
-        if (isVisible()) {
-            render(graphics, scissor, x, y, size, size);
-            return true;
-        }
-        return false;
-    }
-
-    default void renderOverrideOrStack(ItemStack stack, GuiGraphics graphics, ScissorBoxStack scissor, int x, int y, int size, int mouseX, int mouseY) {
-        if (isVisible()) {
-            render(graphics, scissor, x, y, size, size);
-        } else {
+    default void renderOrStack(ItemStack stack, GuiGraphics graphics, ScissorBoxStack scissor, int x, int y, int size, int mouseX, int mouseY) {
+        if (!render(graphics, scissor, x, y, size, size)) {
             WidgetUtils.drawItemIconWithTooltip(graphics, stack, x, y, size, mouseX, mouseY);
         }
     }
 
-    default void renderOverrideOrStack(ItemStack stack, GuiGraphics graphics, ScissorBoxStack scissor, int x, int y, int size) {
-        if (isVisible()) {
-            render(graphics, scissor, x, y, size, size);
-        } else {
+    default void renderOrStack(ItemStack stack, GuiGraphics graphics, ScissorBoxStack scissor, int x, int y, int size) {
+        if (!render(graphics, scissor, x, y, size, size)) {
             WidgetUtils.drawItemIcon(graphics, stack, x, y, size);
         }
     }

@@ -38,7 +38,7 @@ public record KillEntityTaskWidget(KillEntityQuestTask task, TaskProgress<Numeri
         Font font = Minecraft.getInstance().font;
         WidgetUtils.drawBackground(graphics, x, y, width, getHeight(width));
         int iconSize = 32;
-        if (!task.icon().renderOverride(graphics, scissor, x, y, iconSize)) {
+        if (!task.icon().render(graphics, scissor, x, y, iconSize, iconSize)) {
             Entity entity = factory.apply(this.task.entity().entityType());
             try (var ignored = RenderUtils.createScissorBoxStack(scissor, Minecraft.getInstance(), graphics.pose(), x + 5, y + 5, iconSize, iconSize)) {
                 WidgetUtils.drawEntity(graphics, x + 5, y + 5, iconSize, entity);

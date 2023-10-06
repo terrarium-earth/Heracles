@@ -1,16 +1,16 @@
 package earth.terrarium.heracles.api.rewards.client.defaults;
 
 import com.teamresourceful.resourcefullib.client.scissor.ScissorBoxStack;
-import earth.terrarium.heracles.api.client.DisplayWidget;
-import earth.terrarium.heracles.api.client.WidgetUtils;
+import earth.terrarium.heracles.api.quests.QuestIcon;
 import earth.terrarium.heracles.api.rewards.defaults.XpQuestReward;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 
-public record XpRewardWidget(XpQuestReward reward) implements DisplayWidget {
+public record XpRewardWidget(XpQuestReward reward) implements BaseItemRewardWidget {
 
     private static final String TITLE_SINGULAR = "reward.heracles.xp.title.singular";
     private static final String TITLE_PLURAL = "reward.heracles.xp.title.plural";
@@ -18,22 +18,29 @@ public record XpRewardWidget(XpQuestReward reward) implements DisplayWidget {
     private static final String DESC_PLURAL = "reward.heracles.xp.desc.plural";
 
     @Override
+    public QuestIcon<?> getIconOverride() {
+        return reward.icon();
+    }
+
+    @Override
+    public ItemStack getIcon() {
+        return Items.EXPERIENCE_BOTTLE.getDefaultInstance();
+    }
+
+    @Override
     public void render(GuiGraphics graphics, ScissorBoxStack scissor, int x, int y, int width, int mouseX, int mouseY, boolean hovered, float partialTicks) {
         Font font = Minecraft.getInstance().font;
-        WidgetUtils.drawBackground(graphics, x, y, width, getHeight(width));
-        int iconSize = 32;
-        this.reward.icon().renderOrStack(Items.EXPERIENCE_BOTTLE.getDefaultInstance(), graphics, scissor, x, y, iconSize, mouseX, mouseY);
-        graphics.fill(x + iconSize + 9, y + 5, x + iconSize + 10, y + getHeight(width) - 5, 0xFF909090);
+        BaseItemRewardWidget.super.render(graphics, scissor, x, y, width, mouseX, mouseY, hovered, partialTicks);
         String title = this.reward.amount() == 1 ? TITLE_SINGULAR : TITLE_PLURAL;
         String desc = this.reward.amount() == 1 ? DESC_SINGULAR : DESC_PLURAL;
         graphics.drawString(
             font,
-            reward.titleOr(Component.translatable(title, this.reward.amount())), x + iconSize + 16, y + 6, 0xFFFFFFFF,
+            reward.titleOr(Component.translatable(title, this.reward.amount())), x + 48, y + 6, 0xFFFFFFFF,
             false
         );
         graphics.drawString(
             font,
-            Component.translatable(desc, this.reward.amount(), this.reward.xpType().text()), x + iconSize + 16, y + 8 + font.lineHeight, 0xFF808080,
+            Component.translatable(desc, this.reward.amount(), this.reward.xpType().text()), x + 48, y + 8 + font.lineHeight, 0xFF808080,
             false
         );
     }

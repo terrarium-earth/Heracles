@@ -38,7 +38,7 @@ public class QuestWidget {
         if (hovered) {
             graphics.fill(x + x(), y + y(), x + x() + 24, y + y() + 24, 0x50FFFFFF);
         }
-        quest.display().icon().render(graphics, scissor, x + x(), y + y(), 24, 24);
+        quest.display().icon().render(graphics, scissor, x + x() + 4, y + y() + 4, 24, 24);
         CursorUtils.setCursor(hovered, CursorScreen.Cursor.POINTER);
         if (hovered && (!(ClientUtils.screen() instanceof QuestsScreen screen) || !screen.isTemporaryWidgetVisible())) {
             String subtitleText = quest.display().subtitle().getString().trim();

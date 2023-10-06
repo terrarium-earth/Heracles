@@ -11,7 +11,6 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.Items;
 
 public record ItemQuestIcon(Item item) implements QuestIcon<ItemQuestIcon> {
 
@@ -19,15 +18,7 @@ public record ItemQuestIcon(Item item) implements QuestIcon<ItemQuestIcon> {
 
     @Override
     public boolean render(GuiGraphics graphics, ScissorBoxStack scissor, int x, int y, int width, int height) {
-        if (item != null && item != Items.AIR) {
-            if (height == 32 && width == 32) { // Blatant ugly workaround. Centering should be handled better in both cases.
-                WidgetUtils.drawItemIcon(graphics, item.getDefaultInstance(), x, y, width);
-            } else {
-                graphics.renderFakeItem(item.getDefaultInstance(), x + (width - 16) / 2, y + (height - 16) / 2);
-            }
-            return true;
-        }
-        return false;
+        return WidgetUtils.drawItemIcon(graphics, item.getDefaultInstance(), x, y, width);
     }
 
     @Override

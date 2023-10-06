@@ -66,7 +66,7 @@ public final class AdvancementTaskWidget implements DisplayWidget {
         graphics.renderOutline(x, y, width, height, 0xFF909090);
 
         int iconSize = 32;
-        this.task.icon().renderOrStack(this.getCurrentItem(), graphics, scissor, x, y, iconSize);
+        this.task.icon().renderOrStack(this.getCurrentItem(), graphics, scissor, x + 5, y + 5, iconSize);
         graphics.fill(x + iconSize + 9, y + 5, x + iconSize + 10, y + getHeight(width) - 5, 0xFF909090);
         String desc = this.task.advancements().size() == 1 ? DESC_SINGULAR : DESC_PLURAL;
         Object text = this.task.advancements().size() == 1 ? this.titles.isEmpty() ? "" : this.titles.get(0) : isOpened ? "▼" : "▶";

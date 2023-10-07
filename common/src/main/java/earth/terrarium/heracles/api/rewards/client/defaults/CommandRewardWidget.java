@@ -1,6 +1,7 @@
 package earth.terrarium.heracles.api.rewards.client.defaults;
 
 import com.teamresourceful.resourcefullib.client.scissor.ScissorBoxStack;
+import earth.terrarium.heracles.api.quests.QuestIcon;
 import earth.terrarium.heracles.api.rewards.defaults.CommandReward;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
@@ -19,6 +20,11 @@ public record CommandRewardWidget(CommandReward reward) implements BaseItemRewar
     private static final String TOOLTIP_SINGULAR = "reward.heracles.command.tooltip.singular";
 
     @Override
+    public QuestIcon<?> getIconOverride() {
+        return reward.icon();
+    }
+
+    @Override
     public ItemStack getIcon() {
         return new ItemStack(Items.COMMAND_BLOCK);
     }
@@ -31,7 +37,7 @@ public record CommandRewardWidget(CommandReward reward) implements BaseItemRewar
         String desc = firstSpace > 0 ? reward.command().substring(0, reward.command().indexOf(" ")) : reward.command();
         graphics.drawString(
             font,
-            Component.translatable(TITLE_SINGULAR), x + 48, y + 6, 0xFFFFFFFF,
+            reward.titleOr(Component.translatable(TITLE_SINGULAR)), x + 48, y + 6, 0xFFFFFFFF,
             false
         );
         graphics.drawString(

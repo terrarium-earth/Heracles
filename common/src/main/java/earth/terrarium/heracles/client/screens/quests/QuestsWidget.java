@@ -272,7 +272,7 @@ public class QuestsWidget extends BaseWidget {
         } else {
             offset.add(0, (int) scrollAmount * 10);
         }
-        offset.set(Mth.clamp(offset.x(), minX, maxX), Mth.clamp(offset.y(), minY, maxY));
+        offset.set(-Mth.clamp(-offset.x(), minX, maxX), -Mth.clamp(-offset.y(), minY, maxY)); // Flip offset to use bounds properly (fix offset itself eventually)
         return true;
     }
 
@@ -312,7 +312,7 @@ public class QuestsWidget extends BaseWidget {
         if (mode.canDrag() || button == InputConstants.MOUSE_BUTTON_MIDDLE) {
             int newX = (int) (mouseX - start.x() + startOffset.x());
             int newY = (int) (mouseY - start.y() + startOffset.y());
-            offset.set(Mth.clamp(newX, minX, maxX), Mth.clamp(newY, minY, maxY));
+            offset.set(-Mth.clamp(-newX, minX, maxX), -Mth.clamp(-newY, minY, maxY)); // Flip offset to use bounds properly (fix offset itself eventually)
         } else if (mode.canDragSelection()) {
             this.selectHandler.onDrag((int) mouseX, (int) mouseY);
         }

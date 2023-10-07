@@ -18,6 +18,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.boss.enderdragon.EnderDragon;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 
 import java.util.List;
 import java.util.function.Supplier;
@@ -84,20 +85,22 @@ public final class WidgetUtils {
         }
     }
 
-    public static void drawItemIcon(GuiGraphics graphics, ItemStack icon, int x, int y, int iconSize) {
-        int scale = iconSize / 16;
-        try (var pose = new CloseablePoseStack(graphics)) {
-            pose.translate(1, 1, 0);
-            pose.scale(scale, scale, 1);
-            graphics.renderFakeItem(icon, (x + 5 + (int) ((iconSize / scale) / 2f) - 8) / scale, (y + 5 + (int) ((iconSize / scale) / 2f) - 8) / scale);
+    public static boolean drawItemIcon(GuiGraphics graphics, ItemStack stack, int x, int y, int size) {
+        if (stack != null && !stack.is(Items.AIR)) {
+            int scale = size / 16;
+            try (var pose = new CloseablePoseStack(graphics)) {
+                pose.translate(x, y, 0);
+                pose.scale(scale, scale, 1);
+                graphics.renderFakeItem(stack, 0, 0);
+            }
+            return true;
         }
+        return false;
     }
 
-    public static void drawItemIconWithTooltip(GuiGraphics graphics, ItemStack icon, int x, int y, int iconSize, Supplier<List<Component>> tooltipCallback, int mouseX, int mouseY) {
-        WidgetUtils.drawItemIcon(graphics, icon, x, y, iconSize);
-        int xMin = x + 5;
-        int yMin = y + 5;
-        boolean inBounds = (mouseX >= xMin && mouseX < xMin + iconSize) && (mouseY >= yMin && mouseY < yMin + iconSize);
+    public static void drawItemIconWithTooltip(GuiGraphics graphics, ItemStack icon, int x, int y, int size, Supplier<List<Component>> tooltipCallback, int mouseX, int mouseY) {
+        WidgetUtils.drawItemIcon(graphics, icon, x, y, size);
+        boolean inBounds = (mouseX >= x && mouseX < x + size) && (mouseY >= y && mouseY < y + size);
         if (inBounds) {
             List<Component> tooltipLines = tooltipCallback.get();
             if (tooltipLines != null) {

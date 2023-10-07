@@ -66,13 +66,13 @@ public final class AdvancementTaskWidget implements DisplayWidget {
         graphics.renderOutline(x, y, width, height, 0xFF909090);
 
         int iconSize = 32;
-        WidgetUtils.drawItemIcon(graphics, getCurrentItem(), x, y, iconSize);
+        this.task.icon().renderOrStack(this.getCurrentItem(), graphics, scissor, x + 5, y + 5, iconSize);
         graphics.fill(x + iconSize + 9, y + 5, x + iconSize + 10, y + getHeight(width) - 5, 0xFF909090);
         String desc = this.task.advancements().size() == 1 ? DESC_SINGULAR : DESC_PLURAL;
         Object text = this.task.advancements().size() == 1 ? this.titles.isEmpty() ? "" : this.titles.get(0) : isOpened ? "▼" : "▶";
         graphics.drawString(
             font,
-            this.title, x + iconSize + 16, y + 6, 0xFFFFFFFF,
+            task.titleOr(this.title), x + iconSize + 16, y + 6, 0xFFFFFFFF,
             false
         );
         graphics.drawString(
@@ -110,7 +110,7 @@ public final class AdvancementTaskWidget implements DisplayWidget {
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int mouseButton, int width) {
         if (mouseY < 0 || mouseY > getHeight(width)) return false;
-        if (mouseX < (int) (width * 0.1f) || mouseX > width) return false;
+        if (mouseX < 42 || mouseX > width) return false;
         if (mouseButton != 0) return false;
         if (this.titles.size() <= 1) return false;
         Font font = Minecraft.getInstance().font;

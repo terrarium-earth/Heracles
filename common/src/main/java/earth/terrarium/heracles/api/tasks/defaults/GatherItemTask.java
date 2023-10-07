@@ -6,6 +6,10 @@ import com.teamresourceful.resourcefullib.common.codecs.CodecExtras;
 import com.teamresourceful.resourcefullib.common.codecs.EnumCodec;
 import com.teamresourceful.resourcefullib.common.codecs.predicates.NbtPredicate;
 import earth.terrarium.heracles.Heracles;
+import earth.terrarium.heracles.api.CustomizableQuestElement;
+import earth.terrarium.heracles.api.quests.QuestIcon;
+import earth.terrarium.heracles.api.quests.QuestIcons;
+import earth.terrarium.heracles.api.quests.defaults.ItemQuestIcon;
 import earth.terrarium.heracles.api.tasks.CollectionType;
 import earth.terrarium.heracles.api.tasks.PairQuestTask;
 import earth.terrarium.heracles.api.tasks.QuestTaskType;
@@ -17,14 +21,15 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 public record GatherItemTask(
-    String id, RegistryValue<Item> item, NbtPredicate nbt, int target, CollectionType collectionType
-) implements PairQuestTask<Optional<ItemStack>, Container, NumericTag, GatherItemTask> {
+    String id, String title, QuestIcon<?> icon, RegistryValue<Item> item, NbtPredicate nbt, int target, CollectionType collectionType
+) implements PairQuestTask<Optional<ItemStack>, Container, NumericTag, GatherItemTask>, CustomizableQuestElement {
 
     public static final QuestTaskType<GatherItemTask> TYPE = new Type();
 
@@ -120,6 +125,8 @@ public record GatherItemTask(
         public Codec<GatherItemTask> codec(String id) {
             Codec<GatherItemTask> newCodec = RecordCodecBuilder.create(instance -> instance.group(
                 RecordCodecBuilder.point(id),
+                Codec.STRING.fieldOf("title").orElse("").forGetter(GatherItemTask::title),
+                QuestIcons.CODEC.fieldOf("icon").orElse(new ItemQuestIcon(Items.AIR)).forGetter(GatherItemTask::icon),
                 RegistryValue.codec(Registries.ITEM).fieldOf("item").forGetter(GatherItemTask::item),
                 NbtPredicate.CODEC.fieldOf("nbt").orElse(NbtPredicate.ANY).forGetter(GatherItemTask::nbt),
                 Codec.INT.fieldOf("amount").orElse(1).forGetter(GatherItemTask::target),
@@ -136,7 +143,7 @@ public record GatherItemTask(
                 NbtPredicate.CODEC.fieldOf("nbt").orElse(NbtPredicate.ANY).forGetter(GatherItemTask::nbt),
                 Codec.INT.fieldOf("amount").orElse(1).forGetter(GatherItemTask::target),
                 Codec.BOOL.fieldOf("manual").orElse(false).forGetter(task -> task.collectionType == CollectionType.MANUAL)
-            ).apply(instance, (i, item, nbt, amount, manual) -> new GatherItemTask(i, item, nbt, amount, manual ? CollectionType.MANUAL : CollectionType.CONSUME)));
+            ).apply(instance, (i, item, nbt, amount, manual) -> new GatherItemTask(i, "", new ItemQuestIcon(Items.AIR), item, nbt, amount, manual ? CollectionType.MANUAL : CollectionType.CONSUME)));
         }
     }
 

@@ -19,7 +19,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,7 +41,7 @@ public class IconModal extends BaseModal {
     private final EditBox search;
 
     public IconModal(int screenWidth, int screenHeight) {
-        super(screenWidth, screenHeight, WIDTH, HEIGHT);
+        super(screenWidth, screenHeight, WIDTH, HEIGHT, 2);
 
         addChild(new ToggleImageButton(x + 7, y + 5, 11, 11, 168, 0, 11, TEXTURE, 256, 256, (b) -> {
             if (b) {
@@ -154,7 +153,6 @@ public class IconModal extends BaseModal {
         List<Item> filteredItems = new ArrayList<>();
         for (Item item : items) {
             if (filteredItems.size() >= ITEM_COLUMNS * ITEM_ROWS) break;
-            if (item == Items.AIR) continue;
             Component text = ModUtils.throwStackoverflow(item, Item::getDescription);
             if (text.getString().toLowerCase(Locale.ROOT).contains(search)) {
                 filteredItems.add(item);

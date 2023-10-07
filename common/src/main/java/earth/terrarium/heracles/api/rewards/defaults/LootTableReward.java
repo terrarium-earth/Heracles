@@ -3,6 +3,10 @@ package earth.terrarium.heracles.api.rewards.defaults;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import earth.terrarium.heracles.Heracles;
+import earth.terrarium.heracles.api.CustomizableQuestElement;
+import earth.terrarium.heracles.api.quests.QuestIcon;
+import earth.terrarium.heracles.api.quests.QuestIcons;
+import earth.terrarium.heracles.api.quests.defaults.ItemQuestIcon;
 import earth.terrarium.heracles.api.rewards.QuestReward;
 import earth.terrarium.heracles.api.rewards.QuestRewardType;
 import net.minecraft.network.chat.Component;
@@ -12,6 +16,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
@@ -22,8 +27,8 @@ import java.util.List;
 import java.util.stream.Stream;
 
 public record LootTableReward(
-    String id, ResourceLocation lootTable
-) implements QuestReward<LootTableReward> {
+    String id, String title, QuestIcon<?> icon, ResourceLocation lootTable
+) implements QuestReward<LootTableReward>, CustomizableQuestElement {
 
     public static final QuestRewardType<LootTableReward> TYPE = new Type();
 
@@ -80,6 +85,8 @@ public record LootTableReward(
         public Codec<LootTableReward> codec(String id) {
             return RecordCodecBuilder.create(instance -> instance.group(
                 RecordCodecBuilder.point(id),
+                Codec.STRING.fieldOf("title").orElse("").forGetter(LootTableReward::title),
+                QuestIcons.CODEC.fieldOf("icon").orElse(new ItemQuestIcon(Items.AIR)).forGetter(LootTableReward::icon),
                 ResourceLocation.CODEC.fieldOf("loot_table").forGetter(LootTableReward::lootTable)
             ).apply(instance, LootTableReward::new));
         }

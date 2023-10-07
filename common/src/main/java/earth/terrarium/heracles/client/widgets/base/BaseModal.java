@@ -24,23 +24,29 @@ public abstract class BaseModal extends BaseWidget implements TemporyWidget {
 
     protected final int width;
     protected final int height;
+    protected final int depth;
 
     protected final int x;
     protected final int y;
 
     protected boolean visible = false;
 
-    public BaseModal(int screenWidth, int screenHeight, int width, int height) {
+    public BaseModal(int screenWidth, int screenHeight, int width, int height, int depth) {
         this.screenWidth = screenWidth;
         this.screenHeight = screenHeight;
         this.width = width;
         this.height = height;
+        this.depth = depth;
         this.x = (screenWidth / 2) - (width / 2);
         this.y = (screenHeight / 2) - (height / 2);
 
         addChild(new ImageButton(this.x + width - 18, this.y + 5, 11, 11, 11, 15, 11, AbstractQuestScreen.HEADING, 256, 256, b ->
             setVisible(false)
         )).setTooltip(Tooltip.create(ConstantComponents.CLOSE));
+    }
+
+    public BaseModal(int screenWidth, int screenHeight, int width, int height) {
+        this(screenWidth, screenHeight, width, height, 1);
     }
 
     @Override
@@ -72,7 +78,7 @@ public abstract class BaseModal extends BaseWidget implements TemporyWidget {
 
         RenderSystem.disableDepthTest();
         try (var pose = new CloseablePoseStack(graphics)) {
-            pose.translate(0, 0, 300);
+            pose.translate(0, 0, 300 * depth);
             graphics.fill(0, 15, this.screenWidth, this.screenHeight, 0x80000000);
             renderBackground(graphics, mouseX, mouseY, partialTick);
 

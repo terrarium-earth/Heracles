@@ -38,16 +38,18 @@ public record KillEntityTaskWidget(KillEntityQuestTask task, TaskProgress<Numeri
         Font font = Minecraft.getInstance().font;
         WidgetUtils.drawBackground(graphics, x, y, width, getHeight(width));
         int iconSize = 32;
-        Entity entity = factory.apply(this.task.entity().entityType());
-        try (var ignored = RenderUtils.createScissorBoxStack(scissor, Minecraft.getInstance(), graphics.pose(), x + 5, y + 5, iconSize, iconSize)) {
-            WidgetUtils.drawEntity(graphics, x + 5, y + 5, iconSize, entity);
+        if (!task.icon().render(graphics, scissor, x + 5, y + 5, iconSize, iconSize)) {
+            Entity entity = factory.apply(this.task.entity().entityType());
+            try (var ignored = RenderUtils.createScissorBoxStack(scissor, Minecraft.getInstance(), graphics.pose(), x + 5, y + 5, iconSize, iconSize)) {
+                WidgetUtils.drawEntity(graphics, x + 5, y + 5, iconSize, entity);
+            }
         }
         graphics.fill(x + iconSize + 9, y + 5, x + iconSize + 10, y + getHeight(width) - 5, 0xFF909090);
         String desc = this.task.target() == 1 ? DESC_SINGULAR : DESC_PLURAL;
         Component entityName = this.task.entity().entityType().getDescription();
         graphics.drawString(
             font,
-            TaskTitleFormatter.create(this.task), x + iconSize + 16, y + 6, 0xFFFFFFFF,
+            task.titleOr(TaskTitleFormatter.create(this.task)), x + iconSize + 16, y + 6, 0xFFFFFFFF,
             false
         );
         graphics.drawString(

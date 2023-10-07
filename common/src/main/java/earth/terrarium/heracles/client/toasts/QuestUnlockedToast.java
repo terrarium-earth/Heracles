@@ -35,7 +35,7 @@ public record QuestUnlockedToast(Quest quest) implements Toast {
             false
         );
 
-        quest.display().icon().render(graphics, new ScissorBoxStack(), 0, 0, height(), height());
+        quest.display().icon().render(graphics, new ScissorBoxStack(), 8, 8, height() / 2, height() / 2);
 
         return timeSinceLastVisible >= DISPLAY_TIME * toastComponent.getNotificationDisplayTimeMultiplier() ? Visibility.HIDE : Visibility.SHOW;
     }

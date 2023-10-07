@@ -29,9 +29,9 @@ public class TaskTitleFormatters {
         TaskTitleFormatter.register(ItemInteractTask.TYPE, (task) -> Component.translatable(toTranslationKey(task, true), task.item().getDisplayName(Item::getDescription)));
         TaskTitleFormatter.register(EntityInteractTask.TYPE, (task) -> Component.translatable(toTranslationKey(task, true), task.entity().getDisplayName(EntityType::getDescription)));
         TaskTitleFormatter.register(CheckTask.TYPE, (task) -> Component.translatable(toTranslationKey(task, true)));
-        TaskTitleFormatter.register(DummyTask.TYPE, (task) -> task.title() == null ? CommonComponents.EMPTY : task.title());
+        TaskTitleFormatter.register(DummyTask.TYPE, (task) -> Component.translatable(task.title()));
         TaskTitleFormatter.register(XpTask.TYPE, (task) -> Component.translatable(toTranslationKey(task, task.collectionType() == CollectionType.AUTOMATIC)));
-        TaskTitleFormatter.register(LocationTask.TYPE, LocationTask::title);
+        TaskTitleFormatter.register(LocationTask.TYPE, (task) -> Component.translatable(task.title()));
         TaskTitleFormatter.register(StatTask.TYPE, (task) -> Component.translatable(toTranslationKey(task, true), Component.translatable(task.stat().toLanguageKey("stat")), task.target()));
         TaskTitleFormatter.register(CompositeTask.TYPE, (task) -> {
             List<Component> titles = new ArrayList<>();

@@ -3,6 +3,10 @@ package earth.terrarium.heracles.api.tasks.defaults;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import earth.terrarium.heracles.Heracles;
+import earth.terrarium.heracles.api.CustomizableQuestElement;
+import earth.terrarium.heracles.api.quests.QuestIcon;
+import earth.terrarium.heracles.api.quests.QuestIcons;
+import earth.terrarium.heracles.api.quests.defaults.ItemQuestIcon;
 import earth.terrarium.heracles.api.tasks.QuestTask;
 import earth.terrarium.heracles.api.tasks.QuestTaskType;
 import earth.terrarium.heracles.api.tasks.storage.defaults.BooleanTaskStorage;
@@ -12,13 +16,14 @@ import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.ByteTag;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.levelgen.structure.Structure;
 
 import java.util.Collection;
 
 public record StructureTask(
-    String id, RegistryValue<Structure> structures
-) implements QuestTask<Collection<Structure>, ByteTag, StructureTask> {
+    String id, String title, QuestIcon<?> icon, RegistryValue<Structure> structures
+) implements QuestTask<Collection<Structure>, ByteTag, StructureTask>, CustomizableQuestElement {
 
     public static final QuestTaskType<StructureTask> TYPE = new Type();
 
@@ -62,6 +67,8 @@ public record StructureTask(
         public Codec<StructureTask> codec(String id) {
             return RecordCodecBuilder.create(instance -> instance.group(
                 RecordCodecBuilder.point(id),
+                Codec.STRING.fieldOf("title").orElse("").forGetter(StructureTask::title),
+                QuestIcons.CODEC.fieldOf("icon").orElse(new ItemQuestIcon(Items.AIR)).forGetter(StructureTask::icon),
                 RegistryValue.codec(Registries.STRUCTURE).fieldOf("structures").forGetter(StructureTask::structures)
             ).apply(instance, StructureTask::new));
         }

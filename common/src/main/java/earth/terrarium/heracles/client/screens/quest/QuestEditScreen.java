@@ -14,6 +14,7 @@ import earth.terrarium.heracles.client.screens.quest.rewards.RewardListWidget;
 import earth.terrarium.heracles.client.screens.quest.tasks.TaskListWidget;
 import earth.terrarium.heracles.client.widgets.modals.CreateObjectModal;
 import earth.terrarium.heracles.client.widgets.modals.EditObjectModal;
+import earth.terrarium.heracles.client.widgets.modals.icon.IconModal;
 import earth.terrarium.heracles.common.constants.ConstantComponents;
 import earth.terrarium.heracles.common.handlers.quests.QuestHandler;
 import earth.terrarium.heracles.common.menus.quest.QuestContent;
@@ -43,6 +44,7 @@ public class QuestEditScreen extends BaseQuestScreen {
     private QuestTextEditor descriptionBox;
 
     private CreateObjectModal createModal;
+    private IconModal iconModal;
 
     public QuestEditScreen(QuestContent content) {
         super(content);
@@ -150,6 +152,8 @@ public class QuestEditScreen extends BaseQuestScreen {
                 }
             })).setTooltip(Tooltip.create(ConstantComponents.OPEN_QUEST_FILE));
         }
+
+        this.iconModal = addTemporary(new IconModal(this.width, this.height));
     }
 
     private <T extends QuestTask<?, ?, T>> void taskPopup(QuestTaskType<T> type, String id, @Nullable T task, Consumer<T> consumer) {
@@ -225,5 +229,9 @@ public class QuestEditScreen extends BaseQuestScreen {
             .append(" - [")
             .append(Component.literal(this.getQuestId() + ".json").withStyle(ChatFormatting.BLACK))
             .append("]");
+    }
+
+    public IconModal iconModal() {
+        return this.iconModal;
     }
 }

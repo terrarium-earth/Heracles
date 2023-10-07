@@ -33,11 +33,11 @@ public final class BiomeTaskWidget implements DisplayWidget {
         Font font = Minecraft.getInstance().font;
         WidgetUtils.drawBackground(graphics, x, y, width, getHeight(width));
         int iconSize = 32;
-        WidgetUtils.drawItemIcon(graphics, getIcon(), x, y, iconSize);
+        this.task.icon().renderOrStack(getIcon(), graphics, scissor, x + 5, y + 5, iconSize);
         graphics.fill(x + iconSize + 9, y + 5, x + iconSize + 10, y + getHeight(width) - 5, 0xFF909090);
         graphics.drawString(
             font,
-            DESCRIPTION, x + iconSize + 16, y + 6, 0xFFFFFFFF,
+            task.titleOr(DESCRIPTION), x + iconSize + 16, y + 6, 0xFFFFFFFF,
             false
         );
         graphics.drawString(

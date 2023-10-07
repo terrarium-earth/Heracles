@@ -4,6 +4,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.teamresourceful.resourcefullib.client.scissor.ScissorBoxStack;
 import earth.terrarium.heracles.Heracles;
+import earth.terrarium.heracles.api.client.WidgetUtils;
 import earth.terrarium.heracles.api.quests.QuestIcon;
 import earth.terrarium.heracles.api.quests.QuestIconType;
 import net.minecraft.client.gui.GuiGraphics;
@@ -16,8 +17,8 @@ public record ItemQuestIcon(Item item) implements QuestIcon<ItemQuestIcon> {
     public static final QuestIconType<ItemQuestIcon> TYPE = new Type();
 
     @Override
-    public void render(GuiGraphics graphics, ScissorBoxStack scissor, int x, int y, int width, int height) {
-        graphics.renderFakeItem(item.getDefaultInstance(), x + (width - 16) / 2, y + (height - 16) / 2);
+    public boolean render(GuiGraphics graphics, ScissorBoxStack scissor, int x, int y, int width, int height) {
+        return WidgetUtils.drawItemIcon(graphics, item.getDefaultInstance(), x, y, width);
     }
 
     @Override

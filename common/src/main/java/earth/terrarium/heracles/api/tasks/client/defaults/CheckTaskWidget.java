@@ -34,11 +34,13 @@ public record CheckTaskWidget(
         Font font = Minecraft.getInstance().font;
         WidgetUtils.drawBackground(graphics, x, y, width, getHeight(width));
         int iconSize = 32;
-        graphics.blit(CHECK_TEXTURE, x + 5, y + 5, 0, 0, 32, 32, 32, 32);
+        if (!task.icon().render(graphics, scissor, x + 5, y + 5, iconSize, iconSize)) {
+            graphics.blit(CHECK_TEXTURE, x + 5, y + 5, 0, 0, 32, 32, 32, 32);
+        }
         graphics.fill(x + iconSize + 9, y + 5, x + iconSize + 10, y + getHeight(width) - 5, 0xFF909090);
         graphics.drawString(
             font,
-            TaskTitleFormatter.create(task), x + iconSize + 16, y + 6, 0xFFFFFFFF,
+            task.titleOr(TaskTitleFormatter.create(task)), x + iconSize + 16, y + 6, 0xFFFFFFFF,
             false
         );
         graphics.drawString(
@@ -47,7 +49,7 @@ public record CheckTaskWidget(
             false
         );
 
-        int buttonY = y + (iconSize - 10) / 2;
+        int buttonY = y + 11;
         boolean buttonHovered = mouseX > x + width - 30 && mouseX < x + width - 10 && mouseY > buttonY && mouseY < buttonY + 20;
         int v = progress == null || progress.isComplete() ? 46 : buttonHovered ? 86 : 66;
         graphics.blitNineSliced(BUTTON_TEXTURE, x + width - 30, buttonY, 20, 20, 3, 3, 3, 3, 200, 20, 0, v);
@@ -62,7 +64,7 @@ public record CheckTaskWidget(
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int mouseButton, int width) {
-        int buttonY = ((int) (width * 0.1f) - 10) / 2;
+        int buttonY = 11;
         boolean buttonHovered = mouseX > width - 30 && mouseX < width - 10 && mouseY > buttonY && mouseY < buttonY + 20;
         if (buttonHovered && progress != null && !progress.isComplete()) {
             this.progress.setComplete(true);

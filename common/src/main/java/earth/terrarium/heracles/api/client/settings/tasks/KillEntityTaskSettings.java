@@ -2,6 +2,7 @@ package earth.terrarium.heracles.api.client.settings.tasks;
 
 import com.teamresourceful.resourcefullib.common.codecs.predicates.NbtPredicate;
 import com.teamresourceful.resourcefullib.common.codecs.predicates.RestrictedEntityPredicate;
+import earth.terrarium.heracles.api.client.settings.CustomizableQuestElementSettings;
 import earth.terrarium.heracles.api.client.settings.SettingInitializer;
 import earth.terrarium.heracles.api.client.settings.base.IntSetting;
 import earth.terrarium.heracles.api.client.settings.base.RegistrySetting;
@@ -14,13 +15,13 @@ import net.minecraft.advancements.critereon.MobEffectsPredicate;
 import net.minecraft.world.entity.EntityType;
 import org.jetbrains.annotations.Nullable;
 
-public class KillEntityTaskSettings implements SettingInitializer<KillEntityQuestTask> {
+public class KillEntityTaskSettings implements SettingInitializer<KillEntityQuestTask>, CustomizableQuestElementSettings<KillEntityQuestTask> {
 
     public static final KillEntityTaskSettings INSTANCE = new KillEntityTaskSettings();
 
     @Override
     public CreationData create(@Nullable KillEntityQuestTask object) {
-        CreationData settings = new CreationData();
+        CreationData settings = CustomizableQuestElementSettings.super.create(object);
         settings.put("entity", RegistrySetting.ENTITY, getDefaultEntity(object));
         settings.put("amount", IntSetting.ONE, getDefaultAmount(object));
         return settings;
@@ -40,7 +41,13 @@ public class KillEntityTaskSettings implements SettingInitializer<KillEntityQues
             Optionull.mapOrDefault(old, RestrictedEntityPredicate::targetedEntity, EntityPredicate.ANY)
         );
 
-        return new KillEntityQuestTask(id, entity, data.get("amount", IntSetting.ONE).orElse(1));
+        return create(object, data, (title, icon) -> new KillEntityQuestTask(
+            id,
+            title,
+            icon,
+            entity,
+            data.get("amount", IntSetting.ONE).orElse(1)
+        ));
     }
 
     private static EntityType<?> getDefaultEntity(KillEntityQuestTask object) {

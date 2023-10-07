@@ -36,14 +36,14 @@ public record XpTaskWidget(
         Font font = Minecraft.getInstance().font;
         WidgetUtils.drawBackground(graphics, x, y, width, getHeight(width));
         int iconSize = 32;
-        WidgetUtils.drawItemIcon(graphics, Items.EXPERIENCE_BOTTLE.getDefaultInstance(), x, y, iconSize);
+        this.task.icon().renderOrStack(Items.EXPERIENCE_BOTTLE.getDefaultInstance(), graphics, scissor, x + 5, y + 5, iconSize);
         graphics.fill(x + iconSize + 9, y + 5, x + iconSize + 10, y + getHeight(width) - 5, 0xFF909090);
 
         String desc = task.collectionType() == CollectionType.AUTOMATIC ? (this.task.target() == 1 ? DESC_SINGULAR : DESC_PLURAL) : (this.task.target() == 1 ? DESC_SUBMIT_SINGULAR : DESC_SUBMIT_PLURAL);
 
         graphics.drawString(
             font,
-            TaskTitleFormatter.create(this.task), x + iconSize + 16, y + 6, 0xFFFFFFFF,
+            task.titleOr(TaskTitleFormatter.create(this.task)), x + iconSize + 16, y + 6, 0xFFFFFFFF,
             false
         );
         graphics.drawString(

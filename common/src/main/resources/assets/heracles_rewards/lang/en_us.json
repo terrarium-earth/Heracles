@@ -12,9 +12,6 @@
     "reward.heracles.xp.title.plural": "Receive: XP",
     "reward.heracles.xp.desc.singular": "Receive %s XP %s",
     "reward.heracles.xp.desc.plural": "Receive %s XP %ss",
-    "setting.heracles.xp.type": "Experience Type:",
-    "setting.heracles.xp.amount": "Experience Amount:",
-    "setting.heracles.xp.collection_type": "Collection Type:",
 
     "reward.heracles.xp.type.point": "point",
     "reward.heracles.xp.type.level": "level",
@@ -24,14 +21,13 @@
     "reward.heracles.item.title.plural": "Receive: %s",
     "reward.heracles.item.desc.singular": "Receive %sx %s",
     "reward.heracles.item.desc.plural": "Receive %sx %s",
-    "setting.heracles.item.item": "Item:",
-    "setting.heracles.item.count": "Amount:",
-    "setting.heracles.item.collection_type": "Collection Type:",
 
     "reward.heracles.loottable": "↔ Loot Table",
     "reward.heracles.loottable.title.singular": "Receive Random Loot",
     "reward.heracles.loottable.desc.singular": "From %s",
     "reward.heracles.loottable.tooltip.singular": "Loot Table: %s",
+    "setting.heracles.loottable.title": "Title Override:",
+    "setting.heracles.loottable.icon": "Icon Override:",
     "setting.heracles.loottable.loottable": "Loot Table:",
 
     "reward.heracles.select": "❓ Selection",
@@ -44,5 +40,7 @@
     "reward.heracles.command.title.singular": "Execute a Command",
     "reward.heracles.command.desc.singular": "%s ...",
     "reward.heracles.command.tooltip.singular": "Command: %s",
+    "setting.heracles.command.title": "Title Override:",
+    "setting.heracles.command.icon": "Icon Override:",
     "setting.heracles.command.command": "Command:"
 }

@@ -10,7 +10,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.nbt.ByteTag;
-import net.minecraft.network.chat.CommonComponents;
+import net.minecraft.network.chat.Component;
 
 public record DummyTaskWidget(
     DummyTask task, TaskProgress<ByteTag> progress
@@ -21,16 +21,16 @@ public record DummyTaskWidget(
         Font font = Minecraft.getInstance().font;
         WidgetUtils.drawBackground(graphics, x, y, width, getHeight(width));
         int iconSize = 32;
-        WidgetUtils.drawItemIcon(graphics, task.icon().getDefaultInstance(), x, y, iconSize);
+        this.task.icon().render(graphics, scissor, x + 5, y + 5, iconSize, iconSize);
         graphics.fill(x + iconSize + 9, y + 5, x + iconSize + 10, y + getHeight(width) - 5, 0xFF909090);
         graphics.drawString(
             font,
-            TaskTitleFormatter.create(this.task), x + iconSize + 16, y + 6, 0xFFFFFFFF,
+            task.titleOr(TaskTitleFormatter.create(this.task)), x + iconSize + 16, y + 6, 0xFFFFFFFF,
             false
         );
         graphics.drawString(
             font,
-            this.task.description() == null ? CommonComponents.EMPTY : this.task.description(), x + iconSize + 16, y + 8 + font.lineHeight, 0xFF808080,
+            Component.translatable(task.description()), x + iconSize + 16, y + 8 + font.lineHeight, 0xFF808080,
             false
         );
         WidgetUtils.drawProgressText(graphics, x, y, width, this.task, this.progress);

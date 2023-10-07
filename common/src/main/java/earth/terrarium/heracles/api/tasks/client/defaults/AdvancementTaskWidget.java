@@ -110,7 +110,7 @@ public final class AdvancementTaskWidget implements DisplayWidget {
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int mouseButton, int width) {
         if (mouseY < 0 || mouseY > getHeight(width)) return false;
-        if (mouseX < (int) (width * 0.1f) || mouseX > width) return false;
+        if (mouseX < 42 || mouseX > width) return false;
         if (mouseButton != 0) return false;
         if (this.titles.size() <= 1) return false;
         Font font = Minecraft.getInstance().font;

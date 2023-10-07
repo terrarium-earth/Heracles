@@ -60,7 +60,7 @@ public record SelectableRewardWidget(SelectableReward reward, String quest,
             false
         );
 
-        int buttonY = y + (iconSize - 10) / 2;
+        int buttonY = y + 11;
         boolean buttonHovered = mouseX > x + width - 30 && mouseX < x + width - 10 && mouseY > buttonY && mouseY < buttonY + 20;
         int v = progress == null || !progress.canClaim(reward.id()) ? 46 : buttonHovered ? 86 : 66;
         graphics.blitNineSliced(BUTTON_TEXTURE, x + width - 30, buttonY, 20, 20, 3, 3, 3, 3, 200, 20, 0, v);
@@ -75,7 +75,7 @@ public record SelectableRewardWidget(SelectableReward reward, String quest,
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int mouseButton, int width) {
-        int buttonY = ((int) (width * 0.1f) - 10) / 2;
+        int buttonY = 11;
         boolean buttonHovered = mouseX > width - 30 && mouseX < width - 10 && mouseY > buttonY && mouseY < buttonY + 20;
         if (buttonHovered && progress != null && progress.canClaim(reward.id())) {
             if (Minecraft.getInstance().screen instanceof BaseQuestScreen screen) {

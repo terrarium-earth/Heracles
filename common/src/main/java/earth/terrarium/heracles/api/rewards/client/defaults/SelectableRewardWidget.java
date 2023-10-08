@@ -69,7 +69,7 @@ public record SelectableRewardWidget(SelectableReward reward, String quest,
 
         if (buttonHovered) {
             CursorUtils.setCursor(true, progress != null && progress.canClaim(reward.id()) ? CursorScreen.Cursor.POINTER : CursorScreen.Cursor.DISABLED);
-            ScreenUtils.setTooltip(ConstantComponents.Rewards.SELECT_CLAIM);
+            if (progress != null && progress.canClaim(reward.id())) ScreenUtils.setTooltip(ConstantComponents.Rewards.SELECT_CLAIM);
         }
     }
 

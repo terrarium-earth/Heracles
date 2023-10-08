@@ -58,7 +58,7 @@ public record CheckTaskWidget(
 
         if (buttonHovered) {
             CursorUtils.setCursor(true, progress != null && !progress.isComplete() ? CursorScreen.Cursor.POINTER : CursorScreen.Cursor.DISABLED);
-            ScreenUtils.setTooltip(ConstantComponents.Tasks.CHECK);
+            if (progress != null && !progress.isComplete()) ScreenUtils.setTooltip(ConstantComponents.Tasks.CHECK);
         }
     }
 

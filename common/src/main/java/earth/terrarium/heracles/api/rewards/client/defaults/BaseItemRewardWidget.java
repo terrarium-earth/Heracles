@@ -47,7 +47,7 @@ public interface BaseItemRewardWidget extends DisplayWidget {
         graphics.blit(LOOTBAG_TEXTURE, x + width - 30 + 2, buttonY + 2, 0, 0, 16, 16, 16, 16);
         if (buttonHovered) {
             CursorUtils.setCursor(true, canClaim() ? CursorScreen.Cursor.POINTER : CursorScreen.Cursor.DISABLED);
-            ScreenUtils.setTooltip(ConstantComponents.Rewards.SELECT_CLAIM);
+            if (canClaim()) ScreenUtils.setTooltip(ConstantComponents.Rewards.SELECT_CLAIM);
         }
     }
 

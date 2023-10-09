@@ -5,10 +5,13 @@ import com.teamresourceful.resourcefullib.common.networking.base.PacketContext;
 import com.teamresourceful.resourcefullib.common.networking.base.PacketHandler;
 import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.api.quests.Quest;
+import earth.terrarium.heracles.common.handlers.progress.QuestProgressHandler;
 import earth.terrarium.heracles.common.handlers.quests.QuestHandler;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
+
+import java.util.Set;
 
 public record ClaimRewardsPacket(String quest, String reward) implements Packet<ClaimRewardsPacket> {
     public static final ResourceLocation ID = new ResourceLocation(Heracles.MOD_ID, "claim_rewards");
@@ -51,6 +54,7 @@ public record ClaimRewardsPacket(String quest, String reward) implements Packet<
                     } else {
                         quest.claimAllowedReward((ServerPlayer) player, message.quest, message.reward);
                     }
+                    QuestProgressHandler.sync((ServerPlayer) player, Set.of(message.quest));
                 }
             };
         }

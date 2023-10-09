@@ -10,6 +10,8 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 
+import java.util.Set;
+
 public record CheckTaskPacket(String quest, String task) implements Packet<CheckTaskPacket> {
     public static final ResourceLocation ID = new ResourceLocation(Heracles.MOD_ID, "check_task");
     public static final PacketHandler<CheckTaskPacket> HANDLER = new Handler();
@@ -43,6 +45,7 @@ public record CheckTaskPacket(String quest, String task) implements Packet<Check
                 if (player instanceof ServerPlayer serverPlayer) {
                     QuestProgressHandler.getProgress(serverPlayer.getServer(), player.getUUID())
                         .testAndProgressTask(serverPlayer, message.quest, message.task, null, CheckTask.TYPE);
+                    QuestProgressHandler.sync(serverPlayer, Set.of(message.quest));
                 }
             };
         }

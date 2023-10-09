@@ -18,6 +18,7 @@ import net.minecraft.server.level.ServerPlayer;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Objects;
+import java.util.Set;
 
 public record ClaimSelectableRewardsPacket(
     String quest, String reward, Collection<String> rewards
@@ -74,6 +75,7 @@ public record ClaimSelectableRewardsPacket(
                                         .map(selectableReward.rewards()::get)
                                         .filter(Objects::nonNull)
                                 );
+                                QuestProgressHandler.sync((ServerPlayer) player, Set.of(message.quest));
                             }
                         }
                     }

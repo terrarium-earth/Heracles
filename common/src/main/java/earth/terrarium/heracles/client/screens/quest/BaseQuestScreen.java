@@ -7,6 +7,7 @@ import earth.terrarium.heracles.client.screens.AbstractQuestScreen;
 import earth.terrarium.heracles.client.widgets.SelectableTabButton;
 import earth.terrarium.heracles.client.widgets.base.TemporyWidget;
 import earth.terrarium.heracles.common.constants.ConstantComponents;
+import earth.terrarium.heracles.common.handlers.progress.QuestProgress;
 import earth.terrarium.heracles.common.menus.quest.QuestContent;
 import earth.terrarium.heracles.common.network.NetworkHandler;
 import earth.terrarium.heracles.common.network.packets.groups.OpenGroupPacket;
@@ -37,10 +38,26 @@ public abstract class BaseQuestScreen extends AbstractQuestScreen<QuestContent> 
     private SelectableTabButton rewards;
     @Nullable
     private Button claimRewards;
+    @Nullable
+    private QuestProgressWidget progressWidget;
 
     public BaseQuestScreen(QuestContent content) {
-        super(content, Optionull.mapOrDefault(quest(content), quest -> content.progress().isComplete() ? Component.literal("✔ ").append(quest.display().title()).append(Component.literal(" ✔")) : quest.display().title(), CommonComponents.EMPTY));
+        super(content, Optionull.mapOrDefault(quest(content), quest -> quest.display().title(), CommonComponents.EMPTY));
         ClientQuests.updateProgress(Map.of(content.id(), content.progress()));
+    }
+
+    public void updateProgress(@Nullable QuestProgress newProgress) {
+        if (newProgress != null) {
+            newProgress.claimedRewards().forEach(this.content.progress()::claimReward);
+            newProgress.tasks().forEach((id, taskProgress) -> this.content.progress().tasks().put(id, taskProgress));
+            this.content.progress().checkComplete();
+        }
+        if (this.claimRewards != null) {
+            this.claimRewards.active = this.content.progress().isComplete() && this.content.progress().claimedRewards().size() < this.quest().rewards().size();
+        }
+        if (this.progressWidget != null) {
+            this.progressWidget.update(this.quest().tasks().size(), (int) this.quest().tasks().values().stream().filter(t -> this.content.progress().getTask(t).isComplete()).count());
+        }
     }
 
     @Override
@@ -69,7 +86,7 @@ public abstract class BaseQuestScreen extends AbstractQuestScreen<QuestContent> 
                 }
             }));
             this.overview.setSelected(true);
-            addRenderableOnly(new QuestProgressWidget(5, this.height - (showRewards ? 60 : 35), buttonWidth, this.quest().tasks().size(), (int) this.quest().tasks().values().stream().filter(t -> this.content.progress().getTask(t).isComplete()).count()));
+            this.progressWidget = addRenderableOnly(new QuestProgressWidget(5, this.height - (showRewards ? 60 : 35), buttonWidth));
         }
 
         int buttonY = 45;
@@ -98,8 +115,6 @@ public abstract class BaseQuestScreen extends AbstractQuestScreen<QuestContent> 
                     this.claimRewards.active = false;
                 }
             }).bounds(5, this.height - 25, buttonWidth, 20).build());
-            this.claimRewards.active = this.content.progress().isComplete() && this.content.progress().claimedRewards().size() < this.quest().rewards().size();
-            this.claimRewards.active |= !showTasks;
         }
     }
 
@@ -174,6 +189,11 @@ public abstract class BaseQuestScreen extends AbstractQuestScreen<QuestContent> 
         }
         children.addAll(super.children());
         return children;
+    }
+
+    @Override
+    public @NotNull Component getTitle() {
+        return content.progress().isComplete() ? Component.literal("✔ ").append(super.getTitle()).append(Component.literal(" ✔")) : super.getTitle();
     }
 
     public Quest quest() {

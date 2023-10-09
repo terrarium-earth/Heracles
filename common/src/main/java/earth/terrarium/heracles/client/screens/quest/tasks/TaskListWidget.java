@@ -42,7 +42,6 @@ public class TaskListWidget extends AbstractContainerEventHandler implements Ren
     private final String questId;
     private final ClientQuests.QuestEntry entry;
     private final Map<String, ModUtils.QuestStatus> quests;
-    private final int tasksComplete;
 
     private final int x;
     private final int y;
@@ -63,7 +62,6 @@ public class TaskListWidget extends AbstractContainerEventHandler implements Ren
         Map<String, ModUtils.QuestStatus> quests, BiConsumer<QuestTask<?, ?, ?>, Boolean> onClick, Runnable onCreate
     ) {
         this.progress = progress;
-        this.tasksComplete = (int) entry.value().tasks().values().stream().filter(t -> progress.getTask(t).isComplete()).count();
         this.quests = quests;
         this.questId = questId;
         this.entry = entry;
@@ -99,7 +97,7 @@ public class TaskListWidget extends AbstractContainerEventHandler implements Ren
             }
         }
         this.widgets.clear();
-        this.widgets.add(new MutablePair<>(null, new TaskListHeadingWidget(this.entry.value().tasks().size(), this.tasksComplete)));
+        this.widgets.add(new MutablePair<>(null, new TaskListHeadingWidget(this.entry.value().tasks().size(), (int) entry.value().tasks().values().stream().filter(t -> progress.getTask(t).isComplete()).count())));
         if (!dependencies.isEmpty()) {
             this.widgets.add(new MutablePair<>(null, DEPENDENCIES));
             this.widgets.addAll(dependencies);

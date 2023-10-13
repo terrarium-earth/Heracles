@@ -47,6 +47,8 @@ public class TaskListWidget extends AbstractContainerEventHandler implements Ren
     private final int y;
     private final int width;
     private final int height;
+    private final double overscrollTop;
+    private final double overscrollBottom;
 
     private double scrollAmount;
     private int lastFullHeight;
@@ -57,21 +59,32 @@ public class TaskListWidget extends AbstractContainerEventHandler implements Ren
     private final Runnable onCreate;
 
     public TaskListWidget(
-        int x, int y, int width, int height,
+        int x, int y, int width, int height, double overscrollTop, double overscrollBottom,
         String questId, ClientQuests.QuestEntry entry, QuestProgress progress,
         Map<String, ModUtils.QuestStatus> quests, BiConsumer<QuestTask<?, ?, ?>, Boolean> onClick, Runnable onCreate
     ) {
-        this.progress = progress;
-        this.quests = quests;
-        this.questId = questId;
-        this.entry = entry;
         this.x = x;
         this.y = y;
         this.width = width;
         this.height = height;
+        this.overscrollTop = overscrollTop;
+        this.overscrollBottom = overscrollBottom;
         this.lastFullHeight = this.height;
+        this.questId = questId;
+        this.entry = entry;
+        this.progress = progress;
+        this.quests = quests;
         this.onClick = onClick;
         this.onCreate = onCreate;
+        this.scrollAmount = -overscrollTop;
+    }
+
+    public TaskListWidget(
+        int x, int y, int width, int height,
+        String questId, ClientQuests.QuestEntry entry, QuestProgress progress,
+        Map<String, ModUtils.QuestStatus> quests, BiConsumer<QuestTask<?, ?, ?>, Boolean> onClick, Runnable onCreate
+    ) {
+        this(x, y, width, height, 0.0D, 0.0D, questId, entry, progress, quests, onClick, onCreate);
     }
 
     public void update(Collection<QuestTask<?, ?, ?>> tasks) {
@@ -162,12 +175,11 @@ public class TaskListWidget extends AbstractContainerEventHandler implements Ren
             this.mouse = null;
             this.lastFullHeight = fullHeight;
         }
-        this.scrollAmount = Mth.clamp(this.scrollAmount, 0.0D, Math.max(0, this.lastFullHeight - this.height));
     }
 
     @Override
     public boolean mouseScrolled(double mouseX, double mouseY, double scrollAmount) {
-        this.scrollAmount = Mth.clamp(this.scrollAmount - scrollAmount * 10, 0.0D, Math.max(0, this.lastFullHeight - this.height));
+        this.scrollAmount = Mth.clamp(this.scrollAmount - scrollAmount * 10, -overscrollTop, Math.max(-overscrollTop, this.lastFullHeight - this.height + overscrollBottom));
         return true;
     }
 

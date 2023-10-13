@@ -64,12 +64,12 @@ public class QuestEditScreen extends BaseQuestScreen {
 
         this.createModal = addTemporary(new CreateObjectModal(this.width, this.height));
 
-        int contentX = (int) (this.width * 0.31f);
-        int contentY = 30;
         int contentWidth = (int) (this.width * 0.63f);
-        int contentHeight = this.height - 45;
+        int contentHeight = this.height - 15;
+        int contentX = (int) (this.width * 0.31f);
+        int contentY = 15;
 
-        this.taskList = new TaskListWidget(contentX, contentY, contentWidth, contentHeight,
+        this.taskList = new TaskListWidget(contentX, contentY, contentWidth, contentHeight, 5.0D, 5.0D,
             this.content.id(), this.entry(), this.content.progress(), this.content.quests(), (task, isRemoving) -> {
             if (isRemoving) {
                 ClientQuests.updateQuest(this.entry(), quest -> {
@@ -105,7 +105,7 @@ public class QuestEditScreen extends BaseQuestScreen {
         });
 
         this.rewardList = new RewardListWidget(
-            contentX, contentY, contentWidth, contentHeight, this.entry(),
+            contentX, contentY, contentWidth, contentHeight, 5.0D, 5.0D, this.entry(),
             this.content.progress(), (reward, isRemoving) -> {
                 if (isRemoving) {
                     ClientQuests.updateQuest(this.entry(), quest -> {

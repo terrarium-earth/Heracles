@@ -12,6 +12,7 @@ import com.teamresourceful.resourcefullib.client.CloseablePoseStack;
 import com.teamresourceful.resourcefullib.client.utils.RenderUtils;
 import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.api.quests.Quest;
+import earth.terrarium.heracles.client.HeraclesClient;
 import earth.terrarium.heracles.client.handlers.ClientQuests;
 import earth.terrarium.heracles.client.screens.mousemode.MouseMode;
 import earth.terrarium.heracles.client.utils.ClientUtils;
@@ -59,6 +60,7 @@ public class QuestsWidget extends BaseWidget {
 
     private final Vector2i start = new Vector2i();
     private final Vector2i startOffset = new Vector2i();
+    private final Vector2i centreOffset = new Vector2i();
 
     private Vector2i lastClick = null;
 
@@ -115,27 +117,33 @@ public class QuestsWidget extends BaseWidget {
             this.visibleQuests.add(quest.getFirst().key());
         }
 
+        int[] xs = this.entries.stream()
+            .map(ClientQuests.QuestEntry::value)
+            .map(Quest::display)
+            .map(display -> display.groups().get(this.group))
+            .mapToInt(display -> display.position().x).toArray();
+        int[] ys = this.entries.stream()
+            .map(ClientQuests.QuestEntry::value)
+            .map(Quest::display)
+            .map(display -> display.groups().get(this.group))
+            .mapToInt(display -> display.position().y).toArray();
+
+        this.minX = Arrays.stream(xs).min().orElse(0) - 100;
+        this.minY = Arrays.stream(ys).min().orElse(0) - 100;
+        this.maxX = Arrays.stream(xs).max().orElse(0) + 100;
+        this.maxY = Arrays.stream(ys).max().orElse(0) + 100;
+        centreOffset.set(-((maxX + minX) / 2), -((maxY + minY) / 2));
+
+        if (!HeraclesClient.lastGroup.equalsIgnoreCase(content.group())) {
+            offset.set(centreOffset);
+        }
+
         if (isEditing) {
             this.minX = MIN.x();
             this.minY = MIN.y();
             this.maxX = MAX.x();
             this.maxY = MAX.y();
-        } else {
-            int[] xs = this.entries.stream()
-                .map(ClientQuests.QuestEntry::value)
-                .map(Quest::display)
-                .map(display -> display.groups().get(this.group))
-                .mapToInt(display -> display.position().x).toArray();
-            int[] ys = this.entries.stream()
-                .map(ClientQuests.QuestEntry::value)
-                .map(Quest::display)
-                .map(display -> display.groups().get(this.group))
-                .mapToInt(display -> display.position().y).toArray();
-
-            this.minX = Arrays.stream(xs).min().orElse(0) - 100;
-            this.minY = Arrays.stream(ys).min().orElse(0) - 100;
-            this.maxX = Arrays.stream(xs).max().orElse(0) + 100;
-            this.maxY = Arrays.stream(ys).max().orElse(0) + 100;
+            centreOffset.set(0, 0);
         }
     }
 
@@ -248,19 +256,20 @@ public class QuestsWidget extends BaseWidget {
 
         try (var pose = new CloseablePoseStack(graphics)) {
             pose.translate(0, 0, 300);
-            int width = (int) ((this.width - 10) * (offset.x / (float)Math.max(this.minX, this.maxX)));
-            int height = (int) ((this.height - 10) * (offset.y / (float)Math.max(this.minY, this.maxY)));
-
-            if (offset.x > this.width / 4) {
-                graphics.fill(this.x + 1 + width, this.y + this.height - 4, this.x - 6 + this.width, this.y + this.height - 2, 0xFFFFFFFF);
-            } else if (offset.x < -this.width / 4) {
-                graphics.fill(this.x + 1, this.y + this.height - 4, this.x - 6 + this.width + width, this.y + this.height - 2, 0xFFFFFFFF);
+            int xFromCentre = centreOffset.x - offset.x;
+            if (xFromCentre > this.width / 4 || xFromCentre < -this.width / 4) {
+                int canvasWidth = this.maxX - this.minX;
+                int width = (this.width - 10) * (this.width - 10) / (canvasWidth + this.width - 10);
+                int barX = this.x + 5 + (this.width - 10 - width) / 2 + (this.width - 10 - width) * xFromCentre / canvasWidth;
+                graphics.fill(barX, this.y + this.height - 4, barX + width, this.y + this.height - 2, 0xFFFFFFFF);
             }
 
-            if (offset.y > this.height / 4) {
-                graphics.fill(this.x + this.width - 4, this.y + 1 + height, this.x + this.width - 2, this.y - 6 + this.height, 0xFFFFFFFF);
-            } else if (offset.y < -this.height / 4) {
-                graphics.fill(this.x + this.width - 4, this.y + 1, this.x + this.width - 2, this.y - 6 + this.height + height, 0xFFFFFFFF);
+            int yFromCentre = centreOffset.y - offset.y;
+            if (yFromCentre > this.height / 4 || yFromCentre < -this.height / 4) {
+                int canvasHeight = this.maxY - this.minY;
+                int height = (this.height - 10) * (this.height - 10) / (canvasHeight + this.height - 10);
+                int barY = this.y + 5 + (this.height - 10 - height) / 2 + (this.height - 10 - height) * yFromCentre / canvasHeight;
+                graphics.fill(this.x + this.width - 4, barY, this.x + this.width - 2, barY + height, 0xFFFFFFFF);
             }
         }
     }

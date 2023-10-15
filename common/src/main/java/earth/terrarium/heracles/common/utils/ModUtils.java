@@ -25,6 +25,8 @@ import net.minecraft.resources.RegistryOps;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.TagKey;
+import net.minecraft.util.StringRepresentable;
+import org.jetbrains.annotations.NotNull;
 import org.joml.Vector2i;
 
 import java.util.HashMap;
@@ -125,10 +127,15 @@ public class ModUtils {
         return quests;
     }
 
-    public enum QuestStatus {
+    public enum QuestStatus implements StringRepresentable {
         COMPLETED,
         IN_PROGRESS,
-        LOCKED
+        LOCKED;
+
+        @Override
+        public @NotNull String getSerializedName() {
+            return this.name();
+        }
     }
 
     public static String findAvailableFolderName(String folderName) {

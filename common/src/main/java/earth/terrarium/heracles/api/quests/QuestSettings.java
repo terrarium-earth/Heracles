@@ -2,40 +2,46 @@ package earth.terrarium.heracles.api.quests;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import com.teamresourceful.resourcefullib.common.codecs.CodecExtras;
+import com.teamresourceful.resourcefullib.common.codecs.EnumCodec;
+import earth.terrarium.heracles.common.utils.ModUtils;
 
 import java.util.Objects;
 
 public final class QuestSettings {
+    private static final Codec<ModUtils.QuestStatus> LEGACY_HIDDEN_CODEC = Codec.BOOL.orElse(false).xmap(b -> b ? ModUtils.QuestStatus.IN_PROGRESS : ModUtils.QuestStatus.LOCKED, s -> s != ModUtils.QuestStatus.IN_PROGRESS);
+    private static final Codec<ModUtils.QuestStatus> HIDDEN_CODEC = CodecExtras.eitherLeft(Codec.either(EnumCodec.of(ModUtils.QuestStatus.class).orElse(ModUtils.QuestStatus.LOCKED), LEGACY_HIDDEN_CODEC));
+
 
     public static final Codec<QuestSettings> CODEC = RecordCodecBuilder.create(instance -> instance.group(
         Codec.BOOL.fieldOf("individual_progress").orElse(false).forGetter(QuestSettings::individualProgress),
-        Codec.BOOL.fieldOf("hidden").orElse(false).forGetter(QuestSettings::hidden),
+        HIDDEN_CODEC.fieldOf("hidden").orElse(ModUtils.QuestStatus.LOCKED).forGetter(QuestSettings::hiddenUntil),
         Codec.BOOL.fieldOf("unlockNotification").orElse(false).forGetter(QuestSettings::unlockNotification),
         Codec.BOOL.fieldOf("showDependencyArrow").orElse(true).forGetter(QuestSettings::showDependencyArrow)
     ).apply(instance, QuestSettings::new));
 
     private boolean individualProgress;
-    private boolean hidden;
+    private ModUtils.QuestStatus hiddenUntil;
     private boolean unlockNotification;
     private boolean showDependencyArrow;
 
-    public QuestSettings(boolean individualProgress, boolean hidden, boolean unlockNotification, boolean showDependencyArrow) {
+    public QuestSettings(boolean individualProgress, ModUtils.QuestStatus hiddenUntil, boolean unlockNotification, boolean showDependencyArrow) {
         this.individualProgress = individualProgress;
-        this.hidden = hidden;
+        this.hiddenUntil = hiddenUntil;
         this.unlockNotification = unlockNotification;
         this.showDependencyArrow = showDependencyArrow;
     }
 
     public static QuestSettings createDefault() {
-        return new QuestSettings(false, false, false, true);
+        return new QuestSettings(false, ModUtils.QuestStatus.LOCKED, false, true);
     }
 
     public boolean individualProgress() {
         return individualProgress;
     }
 
-    public boolean hidden() {
-        return hidden;
+    public ModUtils.QuestStatus hiddenUntil() {
+        return hiddenUntil;
     }
 
     public boolean unlockNotification() {
@@ -53,19 +59,19 @@ public final class QuestSettings {
         var that = (QuestSettings) obj;
         return
             this.individualProgress == that.individualProgress &&
-            this.hidden == that.hidden &&
+            this.hiddenUntil == that.hiddenUntil &&
             this.unlockNotification == that.unlockNotification &&
             this.showDependencyArrow == that.showDependencyArrow;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(individualProgress, hidden, unlockNotification, showDependencyArrow);
+        return Objects.hash(individualProgress, hiddenUntil, unlockNotification, showDependencyArrow);
     }
 
     public void update(QuestSettings newSettings) {
         this.individualProgress = newSettings.individualProgress;
-        this.hidden = newSettings.hidden;
+        this.hiddenUntil = newSettings.hiddenUntil;
         this.unlockNotification = newSettings.unlockNotification;
         this.showDependencyArrow = newSettings.showDependencyArrow;
     }
@@ -74,8 +80,8 @@ public final class QuestSettings {
         this.individualProgress = individualProgress;
     }
 
-    public void setHidden(boolean hidden) {
-        this.hidden = hidden;
+    public void setHiddenUntil(ModUtils.QuestStatus hiddenUntil) {
+        this.hiddenUntil = hiddenUntil;
     }
 
     public void setUnlockNotification(boolean unlockNotification) {

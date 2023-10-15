@@ -143,7 +143,9 @@ public class QuestsWidget extends BaseWidget {
         var value = quest.value();
         boolean inGroup = value.display().groups().containsKey(group);
         if (!inGroup) return true;
-        if (value.settings().hidden()) {
+        if (value.settings().hiddenUntil() == ModUtils.QuestStatus.COMPLETED) {
+            return !statuses.getBoolean(quest.key());
+        } else if (value.settings().hiddenUntil() == ModUtils.QuestStatus.IN_PROGRESS) {
             for (var dependency : quest.dependencies()) {
                 if (!statuses.getBoolean(dependency.key())) {
                     return true;

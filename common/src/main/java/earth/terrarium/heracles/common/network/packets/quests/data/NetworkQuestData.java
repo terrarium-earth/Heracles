@@ -10,6 +10,7 @@ import earth.terrarium.heracles.api.rewards.QuestReward;
 import earth.terrarium.heracles.api.rewards.QuestRewards;
 import earth.terrarium.heracles.api.tasks.QuestTask;
 import earth.terrarium.heracles.api.tasks.QuestTasks;
+import earth.terrarium.heracles.common.utils.ModUtils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import org.joml.Vector2i;
@@ -64,7 +65,7 @@ public record NetworkQuestData(
         private List<String> description;
         private Map<String, GroupDisplay> groups;
         private TriState individualProgress = TriState.UNDEFINED;
-        private TriState hidden = TriState.UNDEFINED;
+        private ModUtils.QuestStatus hiddenUntil = null;
         private TriState unlockNotification = TriState.UNDEFINED;
         private TriState showDependencyArrow = TriState.UNDEFINED;
         private Set<String> dependencies;
@@ -116,8 +117,8 @@ public record NetworkQuestData(
             return this;
         }
 
-        public Builder hidden(boolean hidden) {
-            this.hidden = TriState.of(hidden);
+        public Builder hiddenUntil(ModUtils.QuestStatus hiddenUntil) {
+            this.hiddenUntil = hiddenUntil;
             return this;
         }
 
@@ -159,10 +160,10 @@ public record NetworkQuestData(
                 );
             }
             NetworkQuestSettingsData settings = null;
-            if (individualProgress != TriState.UNDEFINED || hidden != TriState.UNDEFINED || unlockNotification != TriState.UNDEFINED) {
+            if (individualProgress != TriState.UNDEFINED || hiddenUntil != null || unlockNotification != TriState.UNDEFINED) {
                 settings = new NetworkQuestSettingsData(
                     Optional.ofNullable(individualProgress.isUndefined() ? null : individualProgress.isTrue()),
-                    Optional.ofNullable(hidden.isUndefined() ? null : hidden.isTrue()),
+                    Optional.ofNullable(hiddenUntil),
                     Optional.ofNullable(unlockNotification.isUndefined() ? null : unlockNotification.isTrue()),
                     Optional.ofNullable(showDependencyArrow.isUndefined() ? null : showDependencyArrow.isTrue())
                 );

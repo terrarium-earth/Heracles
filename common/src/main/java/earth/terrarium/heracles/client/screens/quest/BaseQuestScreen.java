@@ -69,7 +69,7 @@ public abstract class BaseQuestScreen extends AbstractQuestScreen<QuestContent> 
                 }
             }));
             this.overview.setSelected(true);
-            addRenderableOnly(new QuestProgressWidget(5, this.height - (showRewards ? 60 : 35), buttonWidth, this.quest().tasks().size(), (int) this.quest().tasks().values().stream().filter(t -> this.content.progress().getTask(t).isComplete()).count()));
+            addRenderableOnly(new QuestProgressWidget(5, this.height - (showRewards ? 60 : 35), buttonWidth, this.quest().tasks().size(), (int) this.quest().tasks().values().stream().filter(t -> this.content.progress().getTask(t).isComplete()).count(), this.quest().rewards().size(), this.content.progress().claimedRewards().size()));
         }
 
         int buttonY = 45;

@@ -117,18 +117,23 @@ public class ModUtils {
         for (String quest : progress.completableQuests().getQuests(progress)) {
             quests.put(quest, QuestStatus.IN_PROGRESS);
         }
-        for (String quest : QuestHandler.quests().keySet()) {
-            if (!quests.containsKey(quest)) {
-                quests.put(quest, progress.isComplete(quest) ? QuestStatus.COMPLETED : QuestStatus.LOCKED);
+        QuestHandler.quests().forEach((id, quest) -> {
+            if (!quests.containsKey(id)) {
+                quests.put(id, progress.isComplete(id) ? (progress.isClaimed(id, quest) ? QuestStatus.COMPLETED_CLAIMED : QuestStatus.COMPLETED) : QuestStatus.LOCKED);
             }
-        }
+        });
         return quests;
     }
 
     public enum QuestStatus {
+        COMPLETED_CLAIMED,
         COMPLETED,
         IN_PROGRESS,
-        LOCKED
+        LOCKED;
+
+        public boolean isComplete() {
+            return this == COMPLETED || this == COMPLETED_CLAIMED;
+        }
     }
 
     public static String findAvailableFolderName(String folderName) {

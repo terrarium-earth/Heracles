@@ -97,7 +97,7 @@ public class QuestsWidget extends BaseWidget {
 
         Object2BooleanMap<String> statuses = new Object2BooleanOpenHashMap<>();
         statuses.defaultReturnValue(true);
-        quests.forEach(quest -> statuses.put(quest.getFirst().key(), quest.getSecond() == ModUtils.QuestStatus.COMPLETED));
+        quests.forEach(quest -> statuses.put(quest.getFirst().key(), quest.getSecond().isComplete()));
 
         List<Pair<ClientQuests.QuestEntry, ModUtils.QuestStatus>> visibleQuests = new ArrayList<>();
 

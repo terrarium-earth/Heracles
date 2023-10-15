@@ -94,7 +94,7 @@ public class TaskListWidget extends AbstractContainerEventHandler implements Ren
         for (String dependency : entry.value().dependencies()) {
             ModUtils.QuestStatus status = this.quests.get(dependency);
             Quest questDependency = ClientQuests.get(dependency).map(ClientQuests.QuestEntry::value).orElse(null);
-            if (status != ModUtils.QuestStatus.COMPLETED && questDependency != null) {
+            if (!status.isComplete() && questDependency != null) {
                 dependencies.add(new MutablePair<>(null, new DependencyDisplayWidget(questDependency)));
             }
         }

@@ -7,10 +7,13 @@ import com.teamresourceful.resourcefullib.client.utils.ScreenUtils;
 import earth.terrarium.heracles.api.quests.Quest;
 import earth.terrarium.heracles.client.handlers.ClientQuests;
 import earth.terrarium.heracles.client.utils.ClientUtils;
+import earth.terrarium.heracles.common.constants.ConstantComponents;
 import earth.terrarium.heracles.common.utils.ModUtils;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.network.chat.Component;
 import org.joml.Vector2i;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class QuestWidget {
@@ -29,12 +32,13 @@ public class QuestWidget {
 
     public void render(GuiGraphics graphics, ScissorBoxStack scissor, int x, int y, int mouseX, int mouseY, boolean hovered, float ignoredPartialTicks) {
         int offset = switch (status) {
-            case COMPLETED -> 24;
-            case LOCKED -> 48;
+            case COMPLETED_CLAIMED -> 24;
+            case COMPLETED -> 48;
+            case LOCKED -> 72;
             default -> 0;
         };
         hovered = hovered && isMouseOver(mouseX - x, mouseY - y);
-        graphics.blit(quest.display().iconBackground(), x + x(), y + y(), offset, 0, 24, 24, 72, 24);
+        graphics.blit(quest.display().iconBackground(), x + x(), y + y(), offset, 0, 24, 24, 96, 24);
         if (hovered) {
             graphics.fill(x + x(), y + y(), x + x() + 24, y + y() + 24, 0x50FFFFFF);
         }
@@ -45,10 +49,12 @@ public class QuestWidget {
             if (subtitleText.isBlank()) {
                 ScreenUtils.setTooltip(quest.display().title().copy().withStyle(style -> style.withBold(true)), false);
             } else {
-                ScreenUtils.setTooltip(List.of(
+                List<Component> lines = new ArrayList<>(List.of(
                     quest.display().title().copy().withStyle(style -> style.withBold(true)),
                     quest.display().subtitle()
-                ), false);
+                ));
+                if (status == ModUtils.QuestStatus.COMPLETED) lines.add(ConstantComponents.Quests.CLAIMABLE);
+                ScreenUtils.setTooltip(lines, false);
             }
         }
     }

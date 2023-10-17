@@ -31,11 +31,6 @@ public class QuestsScreen extends AbstractQuestScreen<QuestsContent> {
     public QuestsScreen(QuestsContent content) {
         super(content, CommonComponents.EMPTY);
         this.hasBackButton = false;
-        if (!HeraclesClient.lastGroup.equalsIgnoreCase(content.group())) {
-            QuestsWidget.offset.set(0, 0);
-        }
-
-        HeraclesClient.lastGroup = content.group();
     }
 
     @Override
@@ -74,6 +69,7 @@ public class QuestsScreen extends AbstractQuestScreen<QuestsContent> {
             }
         ));
         questsWidget.update(this.content, quests);
+        HeraclesClient.lastGroup = content.group();
 
         this.groupsList = addRenderableWidget(new GroupsList(
             0,

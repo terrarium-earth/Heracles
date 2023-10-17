@@ -1,6 +1,7 @@
 package earth.terrarium.heracles.common.handlers.progress;
 
 import com.google.common.collect.Maps;
+import earth.terrarium.heracles.api.events.QuestEvents;
 import earth.terrarium.heracles.api.quests.Quest;
 import earth.terrarium.heracles.api.quests.QuestEntry;
 import earth.terrarium.heracles.api.tasks.QuestTask;
@@ -107,6 +108,7 @@ public record QuestsProgress(Map<String, QuestProgress> progress, CompletableQue
     private static void sendOutQuestComplete(QuestEntry entry, ServerPlayer player) {
         player.level().playSound(null, player.blockPosition(), SoundEvents.UI_TOAST_CHALLENGE_COMPLETE, SoundSource.MASTER, 0.25f, 2f);
         NetworkHandler.CHANNEL.sendToPlayer(new QuestCompletedPacket(entry.id()), player);
+        QuestEvents.fireQuestCompleted(entry, player);
     }
 
     private Map<String, TaskProgress<?>> copyTasks(Map<String, TaskProgress<?>> tasks) {

@@ -5,16 +5,14 @@ import earth.terrarium.heracles.api.quests.QuestEntry;
 import net.minecraft.server.level.ServerPlayer;
 import org.jetbrains.annotations.ApiStatus;
 
-import java.util.UUID;
-
 /**
- * (Unstable API) An immutable {@link Quest}-like object for event handlers.
+ * (Unstable API) A target for event handlers.
  *
  * @apiNote This API comes with no support nor stability guarantees whatsoever. Use at your own risk.
  */
 @ApiStatus.Experimental
-public record QuestEvent(String questId, UUID playerId) {
-    public static QuestEvent create(QuestEntry entry, ServerPlayer player) {
-        return new QuestEvent(entry.id(), player.getUUID());
+public record QuestEventTarget(String id, Quest quest, ServerPlayer player) {
+    public static QuestEventTarget create(QuestEntry entry, ServerPlayer player) {
+        return new QuestEventTarget(entry.id(), entry.quest(), player);
     }
 }

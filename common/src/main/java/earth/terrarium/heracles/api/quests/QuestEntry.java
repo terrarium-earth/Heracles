@@ -1,7 +1,5 @@
 package earth.terrarium.heracles.api.quests;
 
-import earth.terrarium.heracles.common.handlers.progress.QuestsProgress;
-
 /**
  * A {@link Quest} and associated ID.
  */

@@ -15,27 +15,23 @@ public class WrappingHintToast implements Toast {
     List<FormattedCharSequence> lines;
     List<FormattedCharSequence> hints;
     private final long duration;
+    private final int height;
 
     public WrappingHintToast(Component title, List<Component> lines, List<Component> hints, long duration) {
         this.title = title;
         this.lines = wrap(lines);
         this.hints = wrap(hints);
         this.duration = duration;
+        this.height = 32 + Math.max(0, Math.max(this.lines.size(), this.hints.size()) - 1) * 11;
     }
 
     @Override
     public Visibility render(GuiGraphics graphics, ToastComponent toastComponent, long timeSinceLastVisible) {
-        int lineHeight = Math.max(lines.size(), hints.size());
-
-        graphics.blit(TEXTURE, 0, 0, 0, 0, width(), 16);
-        for (int i = 0; i < lineHeight - 1; i++) {
-            graphics.blit(TEXTURE, 0, 16 + 11 * i, 0, 8, width(), 11);
-        }
-        graphics.blit(TEXTURE, 0, 16 + 11 * (lineHeight - 1), 0, 16, width(), 16);
+        graphics.blitNineSliced(TEXTURE, 0, 0, width(), height(), 4, 160, 32, 0, 0);
 
         graphics.drawString(
             toastComponent.getMinecraft().font,
-            title, 32, 7, 0xFF800080,
+            title, 32, 7, 0xFFAC43CC,
             false
         );
 
@@ -58,6 +54,6 @@ public class WrappingHintToast implements Toast {
 
     @Override
     public int height() {
-        return 32 + Math.max(0, lines.size() - 1) * 11;
+        return height;
     }
 }

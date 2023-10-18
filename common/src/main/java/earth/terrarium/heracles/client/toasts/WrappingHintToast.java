@@ -31,7 +31,7 @@ public class WrappingHintToast implements Toast {
 
         graphics.drawString(
             toastComponent.getMinecraft().font,
-            title, 32, 7, 0xFFAC43CC,
+            title, 32, 7, 0xFFB52CC8,
             false
         );
 

@@ -1,9 +1,6 @@
 package earth.terrarium.heracles.api.events;
 
 import earth.terrarium.heracles.api.quests.Quest;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.sounds.SoundEvents;
-import net.minecraft.sounds.SoundSource;
 import org.jetbrains.annotations.ApiStatus;
 
 import java.util.ArrayList;
@@ -16,20 +13,11 @@ import java.util.List;
  */
 @ApiStatus.Experimental
 public final class HeraclesEvents {
-    static final List<QuestCompleteListener> QUEST_PROGRESS = new ArrayList<>();
-    static final List<TaskCompleteListener> TASK_PROGRESS = new ArrayList<>();
-
-    static {
-        QuestCompleteListener.register(HeraclesEvents::playQuestCompleteSound);
-    }
+    private static final List<QuestCompleteListener> QUEST_PROGRESS = new ArrayList<>();
+    private static final List<TaskCompleteListener> TASK_PROGRESS = new ArrayList<>();
 
     private HeraclesEvents() {
         throw new UnsupportedOperationException();
-    }
-
-    private static void playQuestCompleteSound(QuestEventTarget event) {
-        ServerPlayer player = event.player();
-        player.level().playSound(null, player.blockPosition(), SoundEvents.UI_TOAST_CHALLENGE_COMPLETE, SoundSource.MASTER, 0.25f, 2f);
     }
 
     /**

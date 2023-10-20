@@ -1,7 +1,5 @@
 package earth.terrarium.heracles.common.handlers.progress;
 
-import earth.terrarium.heracles.api.events.HeraclesEvents;
-import earth.terrarium.heracles.api.events.TaskEventTarget;
 import earth.terrarium.heracles.api.tasks.QuestTask;
 import earth.terrarium.heracles.api.tasks.QuestTaskType;
 import net.minecraft.nbt.Tag;

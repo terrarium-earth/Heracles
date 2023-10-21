@@ -7,7 +7,7 @@ import earth.terrarium.heracles.client.handlers.ClientQuests;
 import earth.terrarium.heracles.client.screens.quest.BaseQuestScreen;
 import earth.terrarium.heracles.common.handlers.progress.QuestProgress;
 import earth.terrarium.heracles.common.network.NetworkHandler;
-import earth.terrarium.heracles.common.network.packets.rewards.ClaimRewardPacket;
+import earth.terrarium.heracles.common.network.packets.rewards.ClaimRewardsPacket;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
@@ -47,7 +47,7 @@ public record XpRewardWidget(XpQuestReward reward, String quest, QuestProgress p
     @Override
     public void claimReward() {
         this.progress.claimReward(this.reward.id());
-        NetworkHandler.CHANNEL.sendToServer(new ClaimRewardPacket(this.quest, this.reward.id()));
+        NetworkHandler.CHANNEL.sendToServer(new ClaimRewardsPacket(this.quest, this.reward.id()));
     }
 
     @Override

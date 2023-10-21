@@ -12,7 +12,6 @@ import earth.terrarium.heracles.common.network.packets.groups.OpenGroupPacket;
 import earth.terrarium.heracles.common.network.packets.pinned.SetPinnedQuestPacket;
 import earth.terrarium.heracles.common.network.packets.pinned.SyncPinnedQuestsPacket;
 import earth.terrarium.heracles.common.network.packets.quests.*;
-import earth.terrarium.heracles.common.network.packets.rewards.ClaimRewardPacket;
 import earth.terrarium.heracles.common.network.packets.rewards.ClaimRewardsPacket;
 import earth.terrarium.heracles.common.network.packets.rewards.ClaimSelectableRewardsPacket;
 import earth.terrarium.heracles.common.network.packets.screens.OpenQuestScreenPacket;
@@ -44,7 +43,6 @@ public class NetworkHandler {
         CHANNEL.registerPacket(NetworkDirection.CLIENT_TO_SERVER, ServerboundAddQuestPacket.ID, ServerboundAddQuestPacket.HANDLER, ServerboundAddQuestPacket.class);
         CHANNEL.registerPacket(NetworkDirection.CLIENT_TO_SERVER, ServerboundRemoveQuestPacket.ID, ServerboundRemoveQuestPacket.HANDLER, ServerboundRemoveQuestPacket.class);
         CHANNEL.registerPacket(NetworkDirection.CLIENT_TO_SERVER, CreateGroupPacket.ID, CreateGroupPacket.HANDLER, CreateGroupPacket.class);
-        CHANNEL.registerPacket(NetworkDirection.CLIENT_TO_SERVER, ClaimRewardPacket.ID, ClaimRewardPacket.HANDLER, ClaimRewardPacket.class);
         CHANNEL.registerPacket(NetworkDirection.CLIENT_TO_SERVER, ClaimRewardsPacket.ID, ClaimRewardsPacket.HANDLER, ClaimRewardsPacket.class);
         CHANNEL.registerPacket(NetworkDirection.CLIENT_TO_SERVER, SetPinnedQuestPacket.ID, SetPinnedQuestPacket.HANDLER, SetPinnedQuestPacket.class);
         CHANNEL.registerPacket(NetworkDirection.CLIENT_TO_SERVER, ClaimSelectableRewardsPacket.ID, ClaimSelectableRewardsPacket.HANDLER, ClaimSelectableRewardsPacket.class);

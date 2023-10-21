@@ -3,18 +3,29 @@ package earth.terrarium.heracles.api.rewards.client.defaults;
 import com.teamresourceful.resourcefullib.client.scissor.ScissorBoxStack;
 import earth.terrarium.heracles.api.quests.QuestIcon;
 import earth.terrarium.heracles.api.rewards.defaults.ItemReward;
+import earth.terrarium.heracles.client.handlers.ClientQuests;
+import earth.terrarium.heracles.client.screens.quest.BaseQuestScreen;
+import earth.terrarium.heracles.common.handlers.progress.QuestProgress;
+import earth.terrarium.heracles.common.network.NetworkHandler;
+import earth.terrarium.heracles.common.network.packets.rewards.ClaimRewardsPacket;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 
-public record ItemRewardWidget(ItemReward reward) implements BaseItemRewardWidget {
+public record ItemRewardWidget(ItemReward reward, String quest, QuestProgress progress) implements BaseItemRewardWidget {
 
     private static final String TITLE_SINGULAR = "reward.heracles.item.title.singular";
     private static final String TITLE_PLURAL = "reward.heracles.item.title.plural";
     private static final String DESC_SINGULAR = "reward.heracles.item.desc.singular";
     private static final String DESC_PLURAL = "reward.heracles.item.desc.plural";
+    public static ItemRewardWidget of(ItemReward reward) {
+        if (Minecraft.getInstance().screen instanceof BaseQuestScreen screen) {
+            return new ItemRewardWidget(reward, screen.getQuestId(), ClientQuests.getProgress(screen.getQuestId()));
+        }
+        return new ItemRewardWidget(reward, "", null);
+    }
 
     @Override
     public QuestIcon<?> getIconOverride() {
@@ -24,6 +35,17 @@ public record ItemRewardWidget(ItemReward reward) implements BaseItemRewardWidge
     @Override
     public ItemStack getIcon() {
         return this.reward.stack();
+    }
+
+    @Override
+    public boolean canClaim() {
+        return progress != null && progress.canClaim(reward.id());
+    }
+
+    @Override
+    public void claimReward() {
+        this.progress.claimReward(this.reward.id());
+        NetworkHandler.CHANNEL.sendToServer(new ClaimRewardsPacket(this.quest, this.reward.id()));
     }
 
     @Override

@@ -63,6 +63,26 @@ public record Quest(
         );
     }
 
+    public void claimAllowedReward(ServerPlayer player, String id, String rewardId) {
+        QuestsProgress progress = QuestProgressHandler.getProgress(player.server, player.getUUID());
+        if (!progress.isComplete(id) && !this.tasks.isEmpty()) return;
+        if (progress.isClaimed(id, this)) return;
+
+        var questProgress = progress.getProgress(id);
+
+        if (rewards.containsKey(rewardId) && !questProgress.claimedRewards().contains(rewardId)) {
+            var reward = rewards.get(rewardId);
+            if (reward.canBeMassClaimed()) {
+                questProgress.claimReward(rewardId);
+                claimRewards(
+                    id,
+                    player,
+                    Set.of(reward).stream()
+                );
+            }
+        }
+    }
+
     public void claimRewards(String questId, ServerPlayer player, Stream<? extends QuestReward<?>> rewards) {
         List<Item> items = rewards
             .flatMap(reward -> reward.reward(player))

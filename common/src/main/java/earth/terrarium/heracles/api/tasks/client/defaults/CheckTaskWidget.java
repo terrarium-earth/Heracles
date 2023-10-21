@@ -13,6 +13,7 @@ import earth.terrarium.heracles.common.constants.ConstantComponents;
 import earth.terrarium.heracles.common.handlers.progress.TaskProgress;
 import earth.terrarium.heracles.common.network.NetworkHandler;
 import earth.terrarium.heracles.common.network.packets.tasks.CheckTaskPacket;
+import earth.terrarium.heracles.common.utils.ModUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
@@ -21,7 +22,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
 public record CheckTaskWidget(
-    String questId, CheckTask task, TaskProgress<ByteTag> progress
+    String questId, CheckTask task, TaskProgress<ByteTag> progress, ModUtils.QuestStatus status
 ) implements DisplayWidget {
 
     private static final ResourceLocation BUTTON_TEXTURE = new ResourceLocation("textures/gui/widgets.png");
@@ -51,22 +52,26 @@ public record CheckTaskWidget(
 
         int buttonY = y + 11;
         boolean buttonHovered = mouseX > x + width - 30 && mouseX < x + width - 10 && mouseY > buttonY && mouseY < buttonY + 20;
-        int v = progress == null || progress.isComplete() ? 46 : buttonHovered ? 86 : 66;
+        int v = !isCompletable() ? 46 : buttonHovered ? 86 : 66;
         graphics.blitNineSliced(BUTTON_TEXTURE, x + width - 30, buttonY, 20, 20, 3, 3, 3, 3, 200, 20, 0, v);
 
         graphics.blit(CHECK_TEXTURE, x + width - 30 + 2, buttonY + 2, 0, 0, 16, 16, 16, 16);
 
         if (buttonHovered) {
-            CursorUtils.setCursor(true, progress != null && !progress.isComplete() ? CursorScreen.Cursor.POINTER : CursorScreen.Cursor.DISABLED);
-            if (progress != null && !progress.isComplete()) ScreenUtils.setTooltip(ConstantComponents.Tasks.CHECK);
+            CursorUtils.setCursor(true, isCompletable() ? CursorScreen.Cursor.POINTER : CursorScreen.Cursor.DISABLED);
+            if (isCompletable()) ScreenUtils.setTooltip(ConstantComponents.Tasks.CHECK);
         }
+    }
+
+    private boolean isCompletable() {
+        return status != ModUtils.QuestStatus.LOCKED && progress != null && !progress.isComplete();
     }
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int mouseButton, int width) {
         int buttonY = 11;
         boolean buttonHovered = mouseX > width - 30 && mouseX < width - 10 && mouseY > buttonY && mouseY < buttonY + 20;
-        if (buttonHovered && progress != null && !progress.isComplete()) {
+        if (buttonHovered && isCompletable()) {
             this.progress.setComplete(true);
             NetworkHandler.CHANNEL.sendToServer(new CheckTaskPacket(this.questId, this.task.id()));
             return true;

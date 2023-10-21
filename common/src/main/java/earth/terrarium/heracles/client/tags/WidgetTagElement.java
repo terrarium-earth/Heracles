@@ -23,7 +23,8 @@ public record WidgetTagElement(DisplayWidget widget) implements TagElement {
         var task = quest.tasks().get(parameters.get("task"));
         if (task == null) return new WidgetTagElement(null);
         QuestProgress progress = ClientQuests.getProgress(questId);
-        return new WidgetTagElement(QuestTaskWidgets.create(questId, ModUtils.cast(task), progress.getTask(task)));
+        ModUtils.QuestStatus status = ClientQuests.getStatus(questId).orElse(ModUtils.QuestStatus.LOCKED);
+        return new WidgetTagElement(QuestTaskWidgets.create(questId, ModUtils.cast(task), progress.getTask(task), status));
     }
 
     public static WidgetTagElement ofReward(Map<String, String> parameters) {

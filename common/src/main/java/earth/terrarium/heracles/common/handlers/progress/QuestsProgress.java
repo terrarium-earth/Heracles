@@ -1,8 +1,11 @@
 package earth.terrarium.heracles.common.handlers.progress;
 
 import com.google.common.collect.Maps;
-import com.mojang.datafixers.util.Pair;
+import earth.terrarium.heracles.api.events.HeraclesEvents;
+import earth.terrarium.heracles.api.events.QuestEventTarget;
+import earth.terrarium.heracles.api.events.TaskEventTarget;
 import earth.terrarium.heracles.api.quests.Quest;
+import earth.terrarium.heracles.api.quests.QuestEntry;
 import earth.terrarium.heracles.api.tasks.QuestTask;
 import earth.terrarium.heracles.api.tasks.QuestTaskType;
 import earth.terrarium.heracles.api.teams.TeamProviders;
@@ -15,8 +18,6 @@ import earth.terrarium.heracles.common.utils.ModUtils;
 import net.minecraft.Optionull;
 import net.minecraft.nbt.Tag;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.sounds.SoundEvents;
-import net.minecraft.sounds.SoundSource;
 
 import java.util.*;
 
@@ -27,30 +28,35 @@ public record QuestsProgress(Map<String, QuestProgress> progress, CompletableQue
     }
 
     public <I, T extends QuestTask<I, ?, T>> void testAndProgressTaskType(ServerPlayer player, I input, QuestTaskType<T> taskType) {
-        List<Pair<String, Quest>> editedQuests = new ArrayList<>();
+        List<QuestEntry> editedQuests = new ArrayList<>();
         for (String id : this.completableQuests.getQuests(this)) {
             QuestProgress questProgress = getProgress(id);
             Quest quest = QuestHandler.get(id);
+            QuestEntry entry = QuestEntry.of(id, quest);
             for (QuestTask<?, ?, ?> task : quest.tasks().values()) {
                 if (task.isCompatibleWith(taskType)) {
                     TaskProgress<?> progress = questProgress.getTask(task);
                     Tag before = progress.progress();
                     if (progress.isComplete()) continue;
                     progress.addProgress(taskType, ModUtils.cast(task), input);
+                    if (progress.isComplete()) {
+                        HeraclesEvents.TaskCompleteListener.fire(TaskEventTarget.create(task, player));
+                    }
+
                     Tag after = progress.progress();
                     if (task.storage().same(before, after)) continue;
-                    editedQuests.add(Pair.of(id, quest));
+                    editedQuests.add(entry);
                 }
             }
             questProgress.update(quest);
             this.progress.put(id, questProgress);
             if (questProgress.isComplete()) {
-                sendOutQuestComplete(player, id);
+                sendOutQuestComplete(entry, player);
             }
         }
         if (editedQuests.isEmpty()) return;
         Set<String> updatedQuests = new HashSet<>();
-        editedQuests.forEach(pair -> updatedQuests.add(pair.getFirst()));
+        editedQuests.forEach(pair -> updatedQuests.add(pair.id()));
         PinnedQuestHandler.syncIfChanged(player, updatedQuests);
 
 
@@ -72,41 +78,40 @@ public record QuestsProgress(Map<String, QuestProgress> progress, CompletableQue
         progress.addProgress(taskType, ModUtils.cast(questTask), input);
         questProgress.update(quest);
         this.progress.put(id, questProgress);
+
+        QuestEntry entry = QuestEntry.of(id, quest);
         if (questProgress.isComplete()) {
-            sendOutQuestComplete(player, id);
+            sendOutQuestComplete(entry, player);
         }
         PinnedQuestHandler.syncIfChanged(player, List.of(id));
         this.completableQuests.updateCompleteQuests(this, player);
-        syncToTeam(player, List.of(Pair.of(id, quest)));
+        syncToTeam(player, List.of(entry));
         return true;
     }
 
-    private void syncToTeam(ServerPlayer player, List<Pair<String, Quest>> quests) {
+    private void syncToTeam(ServerPlayer player, List<QuestEntry> quests) {
         TeamProviders.getMembers(player)
             .forEach(member -> {
                 QuestsProgress memberProgress = QuestProgressHandler.getProgress(player.server, member);
                 ServerPlayer serverPlayer = player.server.getPlayerList().getPlayer(member);
-                for (var quest : quests) {
-                    if (quest.getSecond().settings().individualProgress()) continue;
-                    boolean wasComplete = memberProgress.isComplete(quest.getFirst());
-                    var currentProgress = memberProgress.progress().get(quest.getFirst());
-                    var questProgress = progress.get(quest.getFirst());
+                for (var entry : quests) {
+                    if (entry.quest().settings().individualProgress()) continue;
+                    boolean wasComplete = memberProgress.isComplete(entry.id());
+                    var currentProgress = memberProgress.progress().get(entry.id());
+                    var questProgress = progress.get(entry.id());
                     var newTasks = copyTasks(questProgress.tasks());
-                    memberProgress.progress.put(quest.getFirst(), new QuestProgress(questProgress.isComplete(), Set.copyOf(Optionull.mapOrDefault(currentProgress, QuestProgress::claimedRewards, new HashSet<>())), newTasks));
+                    memberProgress.progress.put(entry.id(), new QuestProgress(questProgress.isComplete(), Set.copyOf(Optionull.mapOrDefault(currentProgress, QuestProgress::claimedRewards, new HashSet<>())), newTasks));
                     if (serverPlayer != null && (questProgress.isComplete() && !wasComplete)) {
-                        sendOutQuestComplete(serverPlayer, quest.getFirst());
+                        sendOutQuestComplete(entry, player);
                     }
                 }
                 memberProgress.completableQuests.updateCompleteQuests(memberProgress, serverPlayer);
             });
     }
 
-    private void sendOutQuestComplete(ServerPlayer player, String quest) {
-        player.level().playSound(null,
-            player.blockPosition(),
-            SoundEvents.UI_TOAST_CHALLENGE_COMPLETE,
-            SoundSource.MASTER, 0.25f, 2f);
-        NetworkHandler.CHANNEL.sendToPlayer(new QuestCompletedPacket(quest), player);
+    private static void sendOutQuestComplete(QuestEntry entry, ServerPlayer player) {
+        NetworkHandler.CHANNEL.sendToPlayer(new QuestCompletedPacket(entry.id()), player);
+        HeraclesEvents.QuestCompleteListener.fire(QuestEventTarget.create(entry, player));
     }
 
     private Map<String, TaskProgress<?>> copyTasks(Map<String, TaskProgress<?>> tasks) {

@@ -2,15 +2,18 @@ package earth.terrarium.heracles.client.handlers;
 
 import earth.terrarium.heracles.api.quests.Quest;
 import earth.terrarium.heracles.common.handlers.progress.QuestProgress;
+import earth.terrarium.heracles.common.menus.quests.QuestsContent;
 import earth.terrarium.heracles.common.network.NetworkHandler;
 import earth.terrarium.heracles.common.network.packets.quests.ServerboundUpdateQuestPacket;
 import earth.terrarium.heracles.common.network.packets.quests.data.NetworkQuestData;
+import earth.terrarium.heracles.common.utils.ModUtils;
 
 import java.util.*;
 import java.util.function.Function;
 
 public class ClientQuests {
     private static final Map<String, QuestEntry> ENTRIES = new HashMap<>();
+    private static final Map<String, ModUtils.QuestStatus> STATUS = new HashMap<>();
     private static final Map<String, List<QuestEntry>> BY_GROUPS = new HashMap<>();
     private static final List<String> GROUPS = new ArrayList<>();
 
@@ -26,8 +29,8 @@ public class ClientQuests {
 
     public static void sync(Map<String, Quest> quests, List<String> groups) {
         ENTRIES.clear();
-        GROUPS.clear();
         BY_GROUPS.clear();
+        GROUPS.clear();
 
         for (Map.Entry<String, Quest> entry : quests.entrySet()) {
             addEntry(entry.getKey(), entry.getValue(), quests);
@@ -123,6 +126,10 @@ public class ClientQuests {
         return PROGRESS.get(id);
     }
 
+    public static Optional<ModUtils.QuestStatus> getStatus(String id) {
+        return Optional.ofNullable(STATUS.get(id));
+    }
+
     public static List<QuestEntry> byGroup(String group) {
         return BY_GROUPS.getOrDefault(group, List.of());
     }
@@ -136,6 +143,10 @@ public class ClientQuests {
         NetworkQuestData data = builder.build();
         data.update(entry.value());
         NetworkHandler.CHANNEL.sendToServer(new ServerboundUpdateQuestPacket(entry.key(), data));
+    }
+
+    public static void syncGroup(QuestsContent content) {
+        STATUS.putAll(content.quests());
     }
 
     public record QuestEntry(List<QuestEntry> dependencies, String key, Quest value, List<QuestEntry> children) {

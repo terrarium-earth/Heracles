@@ -13,6 +13,9 @@ dependencies {
     val forgeVersion: String by project
 
     forge(group = "net.minecraftforge", name = "forge", version = "$minecraftVersion-$forgeVersion")
+
+    forgeRuntimeLibrary("com.teamresourceful:yabn:1.0.3")
+    forgeRuntimeLibrary("com.teamresourceful:bytecodecs:1.0.2")
 }
 
 tasks.processResources {

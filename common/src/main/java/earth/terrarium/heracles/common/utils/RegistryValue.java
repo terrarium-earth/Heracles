@@ -19,6 +19,10 @@ public record RegistryValue<T>(Either<Holder<T>, TagKey<T>> value) {
         this(Either.left(value));
     }
 
+    public RegistryValue(TagKey<T> value) {
+        this(Either.right(value));
+    }
+
     public static <T> Codec<RegistryValue<T>> codec(ResourceKey<? extends Registry<T>> registry) {
         return Codec.either(RegistryFixedCodec.create(registry), TagKey.hashedCodec(registry))
             .xmap(RegistryValue::new, RegistryValue::value);
@@ -43,7 +47,7 @@ public record RegistryValue<T>(Either<Holder<T>, TagKey<T>> value) {
         );
     }
 
-    private static Component getDisplayName(TagKey<?> tag) {
+    public static Component getDisplayName(TagKey<?> tag) {
         String namespace = tag.registry().location().getNamespace();
         String path = tag.registry().location().getPath();
 

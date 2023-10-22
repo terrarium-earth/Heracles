@@ -31,6 +31,7 @@
     "task.heracles.item.submit.button.tooltip": "Consumes %s Items",
     "setting.heracles.item.title": "Title Override:",
     "setting.heracles.item.icon": "Icon Override:",
+    "setting.heracles.item.item": "Item:",
     "setting.heracles.item.amount": "Amount:",
     "setting.heracles.item.collection_type": "Collection Type:",
 

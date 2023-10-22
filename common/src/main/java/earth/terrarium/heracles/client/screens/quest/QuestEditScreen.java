@@ -14,6 +14,7 @@ import earth.terrarium.heracles.client.screens.quest.rewards.RewardListWidget;
 import earth.terrarium.heracles.client.screens.quest.tasks.TaskListWidget;
 import earth.terrarium.heracles.client.widgets.modals.CreateObjectModal;
 import earth.terrarium.heracles.client.widgets.modals.EditObjectModal;
+import earth.terrarium.heracles.client.widgets.modals.ItemModal;
 import earth.terrarium.heracles.client.widgets.modals.icon.IconModal;
 import earth.terrarium.heracles.common.constants.ConstantComponents;
 import earth.terrarium.heracles.common.handlers.quests.QuestHandler;
@@ -45,6 +46,7 @@ public class QuestEditScreen extends BaseQuestScreen {
 
     private CreateObjectModal createModal;
     private IconModal iconModal;
+    private ItemModal itemModal;
 
     public QuestEditScreen(QuestContent content) {
         super(content);
@@ -154,6 +156,7 @@ public class QuestEditScreen extends BaseQuestScreen {
         }
 
         this.iconModal = addTemporary(new IconModal(this.width, this.height));
+        this.itemModal = addTemporary(new ItemModal(this.width, this.height));
     }
 
     private <T extends QuestTask<?, ?, T>> void taskPopup(QuestTaskType<T> type, String id, @Nullable T task, Consumer<T> consumer) {
@@ -233,5 +236,9 @@ public class QuestEditScreen extends BaseQuestScreen {
 
     public IconModal iconModal() {
         return this.iconModal;
+    }
+
+    public ItemModal itemModal() {
+        return this.itemModal;
     }
 }

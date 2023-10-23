@@ -193,7 +193,7 @@ public abstract class BaseQuestScreen extends AbstractQuestScreen<QuestContent> 
 
     @Override
     public @NotNull Component getTitle() {
-        return content.progress().isComplete() ? Component.literal("✔ ").append(super.getTitle()).append(Component.literal(" ✔")) : super.getTitle();
+        return content.progress().isComplete() ? Component.translatable("gui.heracles.quest.title.complete", super.getTitle()) : super.getTitle();
     }
 
     public Quest quest() {

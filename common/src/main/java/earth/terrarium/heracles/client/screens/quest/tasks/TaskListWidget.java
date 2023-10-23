@@ -97,7 +97,7 @@ public class TaskListWidget extends AbstractContainerEventHandler implements Ren
             }
         }
         this.widgets.clear();
-        this.widgets.add(new MutablePair<>(null, new TaskListHeadingWidget(this.entry.value().tasks().size(), (int) entry.value().tasks().values().stream().filter(t -> progress.getTask(t).isComplete()).count())));
+        this.widgets.add(new MutablePair<>(null, new TaskListHeadingWidget(tasks.size(), (int) tasks.stream().filter(t -> progress.getTask(t).isComplete()).count())));
         if (!dependencies.isEmpty()) {
             this.widgets.add(new MutablePair<>(null, DEPENDENCIES));
             this.widgets.addAll(dependencies);

@@ -8,6 +8,12 @@ loom {
     }
 }
 
+val common: Configuration by configurations.creating {
+    configurations.compileClasspath.get().extendsFrom(this)
+    configurations.runtimeClasspath.get().extendsFrom(this)
+    configurations["developmentForge"].extendsFrom(this)
+}
+
 dependencies {
     val minecraftVersion: String by project
     val forgeVersion: String by project
@@ -16,6 +22,13 @@ dependencies {
 
     forgeRuntimeLibrary("com.teamresourceful:yabn:1.0.3")
     forgeRuntimeLibrary("com.teamresourceful:bytecodecs:1.0.2")
+
+    common(project(":common", configuration = "namedElements")) {
+        isTransitive = false
+    }
+    shadowCommon(project(path = ":common", configuration = "transformProductionForge")) {
+        isTransitive = false
+    }
 }
 
 tasks.processResources {

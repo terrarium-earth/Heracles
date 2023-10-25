@@ -9,7 +9,9 @@ import earth.terrarium.heracles.client.widgets.StateImageButton;
 import earth.terrarium.heracles.client.widgets.base.BaseModal;
 import earth.terrarium.heracles.common.constants.ConstantComponents;
 import earth.terrarium.heracles.common.utils.ModUtils;
+import earth.terrarium.heracles.common.utils.PlatformUtils;
 import earth.terrarium.heracles.common.utils.RegistryValue;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
@@ -19,8 +21,8 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
@@ -30,6 +32,7 @@ import net.minecraft.world.item.Items;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Optional;
 import java.util.function.Consumer;
 
 public class ItemModal extends BaseModal {
@@ -107,7 +110,7 @@ public class ItemModal extends BaseModal {
 
         List<Value> values = updateItems(this.search.getValue());
 
-        Component tooltip = CommonComponents.EMPTY;
+        List<Component> tooltip = new ArrayList<>();
 
         int max = Math.min(values.size(), 48);
         for (int i = 0; i < max; i++) {
@@ -123,15 +126,16 @@ public class ItemModal extends BaseModal {
             if (mouseX >= itemX && mouseX < itemX + ITEM_SIZE && mouseY >= itemY && mouseY < itemY + ITEM_SIZE) {
                 graphics.fill(itemX + 1, itemY + 1, itemX + ITEM_SIZE - 1, itemY + ITEM_SIZE - 1, 0x80A0A0A0);
                 CursorUtils.setCursor(true, CursorScreen.Cursor.POINTER);
-                tooltip = value.getDescription();
+                tooltip.add(value.getDescription());
+                tooltip.add(value.getNamespace());
             }
             try (var pose = new CloseablePoseStack(graphics)) {
                 pose.translate(0, 0, -100);
                 graphics.renderFakeItem(value.getDefaultInstance(), itemX + 2, itemY + 1);
             }
         }
-        if (!tooltip.getString().isBlank()) {
-            graphics.renderTooltip(font, tooltip, mouseX, mouseY);
+        if (!tooltip.isEmpty()) {
+            graphics.renderTooltip(font, tooltip, Optional.empty(), mouseX, mouseY);
         }
     }
 
@@ -181,8 +185,9 @@ public class ItemModal extends BaseModal {
         List<Value> filteredItems = new ArrayList<>();
         for (Value item : items) {
             if (filteredItems.size() >= ITEM_COLUMNS * ITEM_ROWS) break;
-            Component text = ModUtils.throwStackoverflow(item, Value::getDescription);
-            if (text.getString().toLowerCase(Locale.ROOT).contains(search)) {
+            Component desc = ModUtils.throwStackoverflow(item, Value::getDescription);
+            Component namespace = ModUtils.throwStackoverflow(item, Value::getNamespace);
+            if (desc.getString().toLowerCase(Locale.ROOT).contains(search) || namespace.getString().toLowerCase(Locale.ROOT).contains(search) || item.getId().toString().startsWith(search) || item.getId().getPath().startsWith(search)) {
                 filteredItems.add(item);
             }
         }
@@ -220,8 +225,19 @@ public class ItemModal extends BaseModal {
         public Component getDescription() {
             return this.item.map(
                 ItemStack::getHoverName,
-                RegistryValue::getDisplayName
+                RegistryValue::getShortDisplayName
             );
+        }
+
+        public ResourceLocation getId() {
+            return this.item.map(
+                i -> BuiltInRegistries.ITEM.getKey(i.getItem()),
+                TagKey::location
+            );
+        }
+
+        public Component getNamespace() {
+            return Component.literal(PlatformUtils.guessModTitle(getId().getNamespace())).withStyle(Style.EMPTY.withColor(ChatFormatting.BLUE).withItalic(true));
         }
 
         public ItemStack getDefaultInstance() {

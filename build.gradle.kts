@@ -1,3 +1,4 @@
+import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 import dev.architectury.plugin.ArchitectPluginExtension
 import groovy.json.StringEscapeUtils
 import net.fabricmc.loom.api.LoomGradleExtensionAPI
@@ -8,8 +9,9 @@ plugins {
     id("maven-publish")
     id("com.teamresourceful.resourcefulgradle") version "0.0.+"
     id("dev.architectury.loom") version "1.2-SNAPSHOT" apply false
-    id("architectury-plugin") version "3.4-SNAPSHOT" apply false
+    id("architectury-plugin") version "3.4-SNAPSHOT"
     id("io.github.juuxel.loom-quiltflower") version "1.8.0" apply false
+    id("com.github.johnrengelman.shadow") version "7.1.2" apply false
 }
 
 subprojects {
@@ -17,6 +19,7 @@ subprojects {
     apply(plugin = "dev.architectury.loom")
     apply(plugin = "architectury-plugin")
     apply(plugin = "io.github.juuxel.loom-quiltflower")
+    apply(plugin = "com.github.johnrengelman.shadow")
 
     val minecraftVersion: String by project
     val modLoader = project.name
@@ -89,17 +92,21 @@ subprojects {
             platformSetupLoomIde()
         }
 
-        sourceSets.main {
-            val main = this
-
-            rootProject.projects.common.dependencyProject.sourceSets.main {
-                main.java.source(java)
-                main.resources.source(resources)
-            }
+        val shadowCommon by configurations.creating {
+            isCanBeConsumed = false
+            isCanBeResolved = true
         }
 
-        dependencies {
-            compileOnly(rootProject.projects.common)
+        tasks {
+            "shadowJar"(ShadowJar::class) {
+                archiveClassifier.set("dev-shadow")
+                configurations = listOf(shadowCommon)
+            }
+
+            "remapJar"(RemapJarTask::class) {
+                dependsOn("shadowJar")
+                inputFile.set(named<ShadowJar>("shadowJar").flatMap { it.archiveFile })
+            }
         }
     }
 

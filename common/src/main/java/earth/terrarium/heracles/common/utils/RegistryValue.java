@@ -47,7 +47,7 @@ public record RegistryValue<T>(Either<Holder<T>, TagKey<T>> value) {
         );
     }
 
-    public static Component getDisplayName(TagKey<?> tag) {
+    private static Component getDisplayName(TagKey<?> tag, boolean pathOnlyFallback) {
         String namespace = tag.registry().location().getNamespace();
         String path = tag.registry().location().getPath();
 
@@ -57,7 +57,15 @@ public record RegistryValue<T>(Either<Holder<T>, TagKey<T>> value) {
         } else {
             translationKey = "tag." + namespace + "." + path + "." + tag.location().getNamespace() + "." + tag.location().getPath();
         }
-        return Component.translatableWithFallback(translationKey, "#" + tag.location());
+        return Component.translatableWithFallback(translationKey, "#" + (pathOnlyFallback ? tag.location().getPath() : tag.location()));
+    }
+
+    public static Component getShortDisplayName(TagKey<?> tag) {
+        return getDisplayName(tag, true);
+    }
+
+    public static Component getDisplayName(TagKey<?> tag) {
+        return getDisplayName(tag, false);
     }
 
     public String toRegistryString() {

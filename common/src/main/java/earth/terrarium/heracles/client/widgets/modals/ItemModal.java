@@ -225,6 +225,7 @@ public class ItemModal extends BaseModal {
         }
 
         public ItemStack getDefaultInstance() {
+            if (this.values.isEmpty()) return Items.AIR.getDefaultInstance();
             int index = (int) (System.currentTimeMillis() / 2000) % this.values.size();
             return this.values.get(index);
         }

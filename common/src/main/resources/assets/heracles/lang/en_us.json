@@ -3,6 +3,7 @@
 
     "quest.heracles.in_progress": "In progress",
     "quest.heracles.completed": "Completed",
+    "quest.heracles.completed_claimed": "Claimed",
     "quest.heracles.dependencies": "Dependencies",
     "quest.heracles.locked": "Locked",
     "quest.heracles.available": "Available",

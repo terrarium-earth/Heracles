@@ -70,12 +70,12 @@ public final class ItemTaskWidget implements DisplayWidget {
         String desc = chooseGatherKey(task, DESC_ITEM, DESC_TAG, DESC_SUBMIT_ITEM, DESC_SUBMIT_TAG);
         graphics.drawString(
             font,
-            task.titleOr(Component.translatable(title, task.item().getDisplayName(Item::getDescription))), x + iconSize + 16, y + 6, 0xFFFFFFFF,
+            task.titleOr(Component.translatable(title, task.item().getDisplayName(stacks.size() == 1 ? i -> stacks.get(0).getHoverName() : Item::getDescription))), x + iconSize + 16, y + 6, 0xFFFFFFFF,
             false
         );
         graphics.drawString(
             font,
-            Component.translatable(desc, this.task.target(), task.item().getDisplayName(Item::getDescription)), x + iconSize + 16, y + 8 + font.lineHeight, 0xFF808080,
+            Component.translatable(desc, this.task.target(), task.item().getDisplayName(stacks.size() == 1 ? i -> stacks.get(0).getHoverName() : Item::getDescription)), x + iconSize + 16, y + 8 + font.lineHeight, 0xFF808080,
             false
         );
         WidgetUtils.drawProgressText(graphics, x, y, width, this.task, this.progress);

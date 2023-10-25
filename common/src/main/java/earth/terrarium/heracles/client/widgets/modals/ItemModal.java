@@ -8,21 +8,16 @@ import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.client.widgets.StateImageButton;
 import earth.terrarium.heracles.client.widgets.base.BaseModal;
 import earth.terrarium.heracles.common.constants.ConstantComponents;
+import earth.terrarium.heracles.common.utils.ItemValue;
 import earth.terrarium.heracles.common.utils.ModUtils;
-import earth.terrarium.heracles.common.utils.PlatformUtils;
-import earth.terrarium.heracles.common.utils.RegistryValue;
-import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.Tooltip;
-import net.minecraft.core.Holder;
-import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
@@ -45,7 +40,7 @@ public class ItemModal extends BaseModal {
     private static final int ITEM_COLUMNS = 8;
     private static final int ITEM_ROWS = 6;
 
-    private final List<Value> items = new ArrayList<>();
+    private final List<ItemValue> items = new ArrayList<>();
     private Consumer<Either<ItemStack, TagKey<Item>>> callback;
     private Either<ItemStack, TagKey<Item>> current = null;
     private boolean tagsAllowed = true;
@@ -66,15 +61,15 @@ public class ItemModal extends BaseModal {
             case 0 -> {
                 if (current != null && current.map(stack -> !stack.is(Items.AIR), tag -> true)) {
                     Heracles.getRegistryAccess().registry(Registries.ITEM)
-                        .ifPresent(registry -> items.add(Value.of(registry, current)));
+                        .ifPresent(registry -> items.add(ItemValue.of(registry, current)));
                 }
-                BuiltInRegistries.ITEM.stream().map(Value::new).forEach(items::add);
+                BuiltInRegistries.ITEM.stream().map(ItemValue::new).forEach(items::add);
             }
             case 1 -> {
                 if (Minecraft.getInstance().player != null) {
                     for (ItemStack item : Minecraft.getInstance().player.inventoryMenu.getItems()) {
                         if (item.isEmpty()) continue;
-                        items.add(new Value(item));
+                        items.add(new ItemValue(item));
                     }
                 }
             }
@@ -82,7 +77,7 @@ public class ItemModal extends BaseModal {
                 if (tagsAllowed) {
                     Heracles.getRegistryAccess().registry(Registries.ITEM)
                         .ifPresent(registry ->
-                            registry.getTagNames().map(key -> new Value(registry, key)).forEach(items::add)
+                            registry.getTagNames().map(key -> new ItemValue(registry, key)).forEach(items::add)
                         );
                 }
             }
@@ -108,7 +103,7 @@ public class ItemModal extends BaseModal {
         int y = this.y + 43;
         int x = this.x + 8;
 
-        List<Value> values = updateItems(this.search.getValue());
+        List<ItemValue> values = updateItems(this.search.getValue());
 
         List<Component> tooltip = new ArrayList<>();
 
@@ -120,13 +115,13 @@ public class ItemModal extends BaseModal {
             int itemX = x + (column * ITEM_SIZE);
             int itemY = y + (row * ITEM_SIZE);
 
-            Value value = values.get(i);
+            ItemValue value = values.get(i);
 
             graphics.blit(TEXTURE, itemX, itemY, 168, 22, ITEM_SIZE, ITEM_SIZE, 256, 256);
             if (mouseX >= itemX && mouseX < itemX + ITEM_SIZE && mouseY >= itemY && mouseY < itemY + ITEM_SIZE) {
                 graphics.fill(itemX + 1, itemY + 1, itemX + ITEM_SIZE - 1, itemY + ITEM_SIZE - 1, 0x80A0A0A0);
                 CursorUtils.setCursor(true, CursorScreen.Cursor.POINTER);
-                tooltip.add(value.getDescription());
+                tooltip.add(value.getDisplayName());
                 tooltip.add(value.getNamespace());
             }
             try (var pose = new CloseablePoseStack(graphics)) {
@@ -153,7 +148,7 @@ public class ItemModal extends BaseModal {
 
         if (callback == null) return true;
 
-        List<Value> values = updateItems(this.search.getValue());
+        List<ItemValue> values = updateItems(this.search.getValue());
 
         int max = Math.min(values.size(), 48);
 
@@ -179,14 +174,14 @@ public class ItemModal extends BaseModal {
         }
     }
 
-    private List<Value> updateItems(String search) {
+    private List<ItemValue> updateItems(String search) {
         search = search.toLowerCase(Locale.ROOT).trim();
 
-        List<Value> filteredItems = new ArrayList<>();
-        for (Value item : items) {
+        List<ItemValue> filteredItems = new ArrayList<>();
+        for (ItemValue item : items) {
             if (filteredItems.size() >= ITEM_COLUMNS * ITEM_ROWS) break;
-            Component desc = ModUtils.throwStackoverflow(item, Value::getDescription);
-            Component namespace = ModUtils.throwStackoverflow(item, Value::getNamespace);
+            Component desc = ModUtils.throwStackoverflow(item, ItemValue::getDisplayName);
+            Component namespace = ModUtils.throwStackoverflow(item, ItemValue::getNamespace);
             if (desc.getString().toLowerCase(Locale.ROOT).contains(search) || namespace.getString().toLowerCase(Locale.ROOT).contains(search) || item.getId().toString().startsWith(search) || item.getId().getPath().startsWith(search)) {
                 filteredItems.add(item);
             }
@@ -204,50 +199,5 @@ public class ItemModal extends BaseModal {
 
     public void setTagsAllowed(boolean tagsAllowed) {
         this.tagsAllowed = tagsAllowed;
-    }
-
-    private record Value(Either<ItemStack, TagKey<Item>> item, List<ItemStack> values) {
-
-        public Value(Registry<Item> registry, TagKey<Item> key) {
-            this(Either.right(key), registry.getTag(key)
-                .map(tag -> tag.stream().map(Holder::value).map(ItemStack::new).toList())
-                .orElse(List.of()));
-        }
-
-        public Value(Item item) {
-            this(Either.left(new ItemStack(item)), List.of(new ItemStack(item)));
-        }
-
-        public Value(ItemStack item) {
-            this(Either.left(item.copy()), List.of(item.copy()));
-        }
-
-        public Component getDescription() {
-            return this.item.map(
-                ItemStack::getHoverName,
-                RegistryValue::getShortDisplayName
-            );
-        }
-
-        public ResourceLocation getId() {
-            return this.item.map(
-                i -> BuiltInRegistries.ITEM.getKey(i.getItem()),
-                TagKey::location
-            );
-        }
-
-        public Component getNamespace() {
-            return Component.literal(PlatformUtils.guessModTitle(getId().getNamespace())).withStyle(Style.EMPTY.withColor(ChatFormatting.BLUE).withItalic(true));
-        }
-
-        public ItemStack getDefaultInstance() {
-            if (this.values.isEmpty()) return Items.AIR.getDefaultInstance();
-            int index = (int) (System.currentTimeMillis() / 2000) % this.values.size();
-            return this.values.get(index);
-        }
-
-        public static Value of(Registry<Item> registry, Either<ItemStack, TagKey<Item>> value) {
-            return value.map(Value::new, key -> new Value(registry, key));
-        }
     }
 }

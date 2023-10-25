@@ -22,7 +22,7 @@ import net.minecraft.world.item.Items;
 public record LocationTask(
     String id, String title, QuestIcon<?> icon, Component desc, LocationPredicate predicate
 ) implements QuestTask<ServerPlayer, ByteTag, LocationTask> {
-    private static final Codec<QuestIcon<?>> LEGACY_ICON_CODEC = BuiltInRegistries.ITEM.byNameCodec().xmap(ItemQuestIcon::new, icon -> icon instanceof ItemQuestIcon itemIcon ? itemIcon.item() : Items.BARRIER);
+    private static final Codec<QuestIcon<?>> LEGACY_ICON_CODEC = BuiltInRegistries.ITEM.byNameCodec().xmap(ItemQuestIcon::new, icon -> icon instanceof ItemQuestIcon itemIcon ? itemIcon.item().getDefaultInstance().getItem() : Items.BARRIER);
     private static final Codec<QuestIcon<?>> DUMMY_TASK_ICON_CODEC = CodecExtras.eitherLeft(Codec.either(QuestIcons.CODEC, LEGACY_ICON_CODEC));
 
     public static final QuestTaskType<LocationTask> TYPE = new Type();

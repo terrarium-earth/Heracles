@@ -13,7 +13,12 @@ import net.minecraft.tags.TagKey;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
-public record RegistryValue<T>(Either<Holder<T>, TagKey<T>> value) {
+public class RegistryValue<T> {
+    private final Either<Holder<T>, TagKey<T>> value;
+
+    public RegistryValue(Either<Holder<T>, TagKey<T>> value) {
+        this.value = value;
+    }
 
     public RegistryValue(Holder<T> value) {
         this(Either.left(value));
@@ -81,5 +86,9 @@ public record RegistryValue<T>(Either<Holder<T>, TagKey<T>> value) {
 
     public boolean is(Holder<T> value) {
         return this.value.map((v) -> v.equals(value), value::is);
+    }
+
+    public Either<Holder<T>, TagKey<T>> value() {
+        return value;
     }
 }

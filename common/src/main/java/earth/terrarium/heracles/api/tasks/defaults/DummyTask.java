@@ -19,7 +19,7 @@ import net.minecraft.world.item.Items;
 public record DummyTask(
     String id, String title, QuestIcon<?> icon, String dummyId, String description
 ) implements QuestTask<String, ByteTag, DummyTask>, CustomizableQuestElement {
-    private static final Codec<QuestIcon<?>> LEGACY_ICON_CODEC = BuiltInRegistries.ITEM.byNameCodec().xmap(ItemQuestIcon::new, icon -> icon instanceof ItemQuestIcon itemIcon ? itemIcon.item() : Items.BARRIER);
+    private static final Codec<QuestIcon<?>> LEGACY_ICON_CODEC = BuiltInRegistries.ITEM.byNameCodec().xmap(ItemQuestIcon::new, icon -> icon instanceof ItemQuestIcon itemIcon ? itemIcon.item().getDefaultInstance().getItem() : Items.BARRIER);
     private static final Codec<QuestIcon<?>> DUMMY_TASK_ICON_CODEC = CodecExtras.eitherLeft(Codec.either(QuestIcons.CODEC, LEGACY_ICON_CODEC));
 
     public static final QuestTaskType<DummyTask> TYPE = new Type();

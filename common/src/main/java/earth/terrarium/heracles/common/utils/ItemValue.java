@@ -72,7 +72,7 @@ public class ItemValue extends RegistryValue<Item> {
     }
 
     public Component getNamespace() {
-        return Component.literal(PlatformUtils.guessModTitle(getId().getNamespace())).withStyle(Style.EMPTY.withColor(ChatFormatting.BLUE).withItalic(true));
+        return Component.literal(CompatUtils.guessModTitle(getId().getNamespace())).withStyle(Style.EMPTY.withColor(ChatFormatting.BLUE).withItalic(true));
     }
 
     public ItemStack getDefaultInstance() {

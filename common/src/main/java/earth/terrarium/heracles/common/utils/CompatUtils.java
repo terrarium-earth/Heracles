@@ -1,9 +1,12 @@
 package earth.terrarium.heracles.common.utils;
 
-import dev.architectury.injectables.annotations.ExpectPlatform;
+import com.teamresourceful.resourcefullib.common.utils.modinfo.ModInfo;
+import com.teamresourceful.resourcefullib.common.utils.modinfo.ModInfoUtils;
+import org.apache.commons.lang3.StringUtils;
 
-public class PlatformUtils {
-    @ExpectPlatform
+import java.util.Optional;
+
+public class CompatUtils {
     public static String guessModTitle(String namespace) {
         Optional<ModInfo> info = Optional.ofNullable(ModInfoUtils.getModInfo(namespace))
             .or(() -> Optional.ofNullable(ModInfoUtils.getModInfo(namespace.replace("_", "-"))));
@@ -13,9 +16,5 @@ public class PlatformUtils {
         String prettifiedNamespace = StringUtils.capitalize(namespace.replace("_", " ").replace("/", " 🡲 "));
         if (prettifiedNamespace.equals("C")) prettifiedNamespace = "Common";
         return prettifiedNamespace;
-    }
-    ```
-    This would also mean that you can remove the dependency on arch expect platform again.
-        throw new AssertionError("Not implemented");
     }
 }

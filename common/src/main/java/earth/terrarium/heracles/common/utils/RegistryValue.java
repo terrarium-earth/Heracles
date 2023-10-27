@@ -13,7 +13,7 @@ import net.minecraft.tags.TagKey;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
-public class RegistryValue<T> {
+public sealed class RegistryValue<T> permits ItemValue {
     private final Either<Holder<T>, TagKey<T>> value;
 
     public RegistryValue(Either<Holder<T>, TagKey<T>> value) {

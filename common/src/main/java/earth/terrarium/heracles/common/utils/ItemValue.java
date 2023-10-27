@@ -19,7 +19,7 @@ import net.minecraft.world.item.Items;
 
 import java.util.List;
 
-public class ItemValue extends RegistryValue<Item> {
+public final class ItemValue extends RegistryValue<Item> {
     private final Either<ItemStack, TagKey<Item>> item;
     private final List<ItemStack> values;
 

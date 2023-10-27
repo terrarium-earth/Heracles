@@ -20,6 +20,11 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 
 public final class ItemValue extends RegistryValue<Item> {
+    public static Codec<ItemValue> CODEC = Codec.either(
+        ItemStackCodec.CODEC,
+        TagKey.hashedCodec(Registries.ITEM)
+    ).xmap(ItemValue::new, ItemValue::item);
+
     private final Either<ItemStack, TagKey<Item>> item;
     private @Nullable List<ItemStack> values;
 
@@ -44,11 +49,6 @@ public final class ItemValue extends RegistryValue<Item> {
     public ItemValue(ItemStack stack) {
         this(Either.left(stack.copy()));
     }
-
-    public static Codec<ItemValue> CODEC = Codec.either(
-        ItemStackCodec.CODEC,
-        TagKey.hashedCodec(Registries.ITEM)
-        ).xmap(ItemValue::new, ItemValue::item);
 
     public Component getDisplayName() {
         return this.item.map(

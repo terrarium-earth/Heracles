@@ -35,7 +35,7 @@ public final class ItemValue extends RegistryValue<Item> {
     }
 
     public ItemValue(Either<ItemStack, TagKey<Item>> item) {
-        this(item, item.map(s -> List.of(s.copy()), null));
+        this(item, item.map(s -> List.of(s.copy()), t -> null));
     }
 
     public ItemValue(TagKey<Item> key) {

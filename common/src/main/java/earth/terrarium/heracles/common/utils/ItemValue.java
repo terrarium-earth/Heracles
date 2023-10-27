@@ -6,7 +6,6 @@ import com.teamresourceful.resourcefullib.common.codecs.recipes.ItemStackCodec;
 import earth.terrarium.heracles.Heracles;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.Holder;
-import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
@@ -16,40 +15,34 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
 public final class ItemValue extends RegistryValue<Item> {
     private final Either<ItemStack, TagKey<Item>> item;
-    private final List<ItemStack> values;
+    private @Nullable List<ItemStack> values;
 
-    public ItemValue(Either<ItemStack, TagKey<Item>> item, List<ItemStack> values) {
+    public ItemValue(Either<ItemStack, TagKey<Item>> item, @Nullable List<ItemStack> values) {
         super(item.mapLeft(i -> i.getItem().builtInRegistryHolder()));
         this.item = item;
         this.values = values;
     }
 
     public ItemValue(Either<ItemStack, TagKey<Item>> item) {
-        this(item, item.map(
-            stack -> List.of(stack.copy()),
-            key -> Heracles.getRegistryAccess().registry(Registries.ITEM).map(registry -> registry.getTag(key)
-                .map(tag -> tag.stream().map(Holder::value).map(ItemStack::new).toList())
-                .orElse(List.of())
-        ).orElse(List.of())));
+        this(item, item.map(s -> List.of(s.copy()), null));
     }
 
-    public ItemValue(Registry<Item> registry, TagKey<Item> key) {
-        this(Either.right(key), registry.getTag(key)
-            .map(tag -> tag.stream().map(Holder::value).map(ItemStack::new).toList())
-            .orElse(List.of()));
+    public ItemValue(TagKey<Item> key) {
+        this(Either.right(key));
     }
 
     public ItemValue(Item item) {
-        this(Either.left(new ItemStack(item)), List.of(new ItemStack(item)));
+        this(Either.left(item.getDefaultInstance()));
     }
 
     public ItemValue(ItemStack stack) {
-        this(Either.left(stack.copy()), List.of(stack.copy()));
+        this(Either.left(stack.copy()));
     }
 
     public static Codec<ItemValue> CODEC = Codec.either(
@@ -76,13 +69,9 @@ public final class ItemValue extends RegistryValue<Item> {
     }
 
     public ItemStack getDefaultInstance() {
-        if (this.values.isEmpty()) return Items.AIR.getDefaultInstance();
-        int index = (int) (System.currentTimeMillis() / 2000) % this.values.size();
-        return this.values.get(index);
-    }
-
-    public static ItemValue of(Registry<Item> registry, Either<ItemStack, TagKey<Item>> value) {
-        return value.map(ItemValue::new, key -> new ItemValue(registry, key));
+        if (this.values().isEmpty()) return Items.AIR.getDefaultInstance();
+        int index = (int) (System.currentTimeMillis() / 2000) % this.values().size();
+        return this.values().get(index);
     }
 
     public Either<ItemStack, TagKey<Item>> item() {
@@ -90,6 +79,14 @@ public final class ItemValue extends RegistryValue<Item> {
     }
 
     public List<ItemStack> values() {
+        if (values == null) {
+            values = item.map(
+                stack -> List.of(stack.copy()),
+                key -> Heracles.getRegistryAccess().registry(Registries.ITEM).map(registry -> registry.getTag(key)
+                    .map(tag -> tag.stream().map(Holder::value).map(ItemStack::new).toList())
+                    .orElse(List.of())
+                ).orElse(List.of()));
+        }
         return values;
     }
 }

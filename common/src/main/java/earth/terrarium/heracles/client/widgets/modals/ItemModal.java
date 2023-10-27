@@ -61,7 +61,7 @@ public class ItemModal extends BaseModal {
             case 0 -> {
                 if (current != null && current.map(stack -> !stack.is(Items.AIR), tag -> true)) {
                     Heracles.getRegistryAccess().registry(Registries.ITEM)
-                        .ifPresent(registry -> items.add(ItemValue.of(registry, current)));
+                        .ifPresent(registry -> items.add(new ItemValue(current)));
                 }
                 BuiltInRegistries.ITEM.stream().map(ItemValue::new).forEach(items::add);
             }
@@ -77,7 +77,7 @@ public class ItemModal extends BaseModal {
                 if (tagsAllowed) {
                     Heracles.getRegistryAccess().registry(Registries.ITEM)
                         .ifPresent(registry ->
-                            registry.getTagNames().map(key -> new ItemValue(registry, key)).forEach(items::add)
+                            registry.getTagNames().map(ItemValue::new).forEach(items::add)
                         );
                 }
             }

@@ -29,6 +29,7 @@ public class NetworkHandler {
         CHANNEL.registerPacket(NetworkDirection.SERVER_TO_CLIENT, SyncQuestsPacket.ID, SyncQuestsPacket.HANDLER, SyncQuestsPacket.class);
         CHANNEL.registerPacket(NetworkDirection.SERVER_TO_CLIENT, QuestCompletedPacket.ID, QuestCompletedPacket.HANDLER, QuestCompletedPacket.class);
         CHANNEL.registerPacket(NetworkDirection.SERVER_TO_CLIENT, SyncPinnedQuestsPacket.ID, SyncPinnedQuestsPacket.HANDLER, SyncPinnedQuestsPacket.class);
+        CHANNEL.registerPacket(NetworkDirection.SERVER_TO_CLIENT, SyncQuestProgressPacket.ID, SyncQuestProgressPacket.HANDLER, SyncQuestProgressPacket.class);
         CHANNEL.registerPacket(NetworkDirection.SERVER_TO_CLIENT, SyncDescriptionsPacket.ID, SyncDescriptionsPacket.HANDLER, SyncDescriptionsPacket.class);
         CHANNEL.registerPacket(NetworkDirection.SERVER_TO_CLIENT, OpenQuestScreenPacket.ID, OpenQuestScreenPacket.HANDLER, OpenQuestScreenPacket.class);
         CHANNEL.registerPacket(NetworkDirection.SERVER_TO_CLIENT, OpenQuestsScreenPacket.ID, OpenQuestsScreenPacket.HANDLER, OpenQuestsScreenPacket.class);

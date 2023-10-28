@@ -16,6 +16,7 @@ import earth.terrarium.heracles.client.widgets.modals.CreateObjectModal;
 import earth.terrarium.heracles.client.widgets.modals.EditObjectModal;
 import earth.terrarium.heracles.client.widgets.modals.ItemModal;
 import earth.terrarium.heracles.common.constants.ConstantComponents;
+import earth.terrarium.heracles.common.handlers.progress.QuestProgress;
 import earth.terrarium.heracles.common.handlers.quests.QuestHandler;
 import earth.terrarium.heracles.common.menus.quest.QuestContent;
 import earth.terrarium.heracles.common.network.NetworkHandler;
@@ -48,6 +49,13 @@ public class QuestEditScreen extends BaseQuestScreen {
 
     public QuestEditScreen(QuestContent content) {
         super(content);
+    }
+
+    @Override
+    public void updateProgress(@Nullable QuestProgress newProgress) {
+        super.updateProgress(newProgress);
+        this.taskList.update(this.quest().tasks().values());
+        this.rewardList.update(this.content.fromGroup(), this.content.id(), this.quest());
     }
 
     @Override
@@ -95,7 +103,6 @@ public class QuestEditScreen extends BaseQuestScreen {
                     .toList()
             );
         });
-        this.taskList.update(this.quest().tasks().values());
 
         this.rewardList = new RewardListWidget(
             contentX, contentY, contentWidth, contentHeight, this.entry(),
@@ -133,7 +140,6 @@ public class QuestEditScreen extends BaseQuestScreen {
             );
         }
         );
-        this.rewardList.update(this.content.fromGroup(), this.content.id(), this.quest());
 
         if (Minecraft.getInstance().player != null && Minecraft.getInstance().player.hasPermissions(2)) {
             addRenderableWidget(new ImageButton(this.width - 24, 1, 11, 11, 33, 15, 11, HEADING, 256, 256, (button) ->
@@ -154,6 +160,7 @@ public class QuestEditScreen extends BaseQuestScreen {
         }
 
         this.itemModal = addTemporary(new ItemModal(this.width, this.height));
+        updateProgress(null);
     }
 
     private <T extends QuestTask<?, ?, T>> void taskPopup(QuestTaskType<T> type, String id, @Nullable T task, Consumer<T> consumer) {

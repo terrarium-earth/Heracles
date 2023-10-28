@@ -1,10 +1,14 @@
 package earth.terrarium.heracles.common.handlers.progress;
 
+import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.api.quests.Quest;
 import earth.terrarium.heracles.api.teams.TeamProviders;
 import earth.terrarium.heracles.common.handlers.quests.QuestHandler;
+import earth.terrarium.heracles.common.network.NetworkHandler;
+import earth.terrarium.heracles.common.network.packets.quests.SyncQuestProgressPacket;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.saveddata.SavedData;
 import org.jetbrains.annotations.NotNull;
 
@@ -38,6 +42,16 @@ public class QuestProgressHandler extends SavedData {
         });
     }
 
+    public static void sync(ServerPlayer player, Collection<String> quests) {
+        Map<String, QuestProgress> progress = new LinkedHashMap<>();
+        quests.forEach(id -> {
+            Quest quest = QuestHandler.get(id);
+            if (quest == null) return;
+            progress.put(id, QuestProgressHandler.getProgress(player.server, player.getUUID()).getProgress(id));
+        });
+        NetworkHandler.CHANNEL.sendToPlayer(new SyncQuestProgressPacket(progress), player);
+    }
+
     private static QuestsProgress findFirstPerson(MinecraftServer server, List<UUID> members) {
         for (UUID member : members) {
             QuestsProgress progress = getProgress(server, member);
@@ -54,8 +68,7 @@ public class QuestProgressHandler extends SavedData {
             try {
                 to.progress().put(id, new QuestProgress(quest, progress.save()));
             } catch (Exception e) {
-                System.err.println("Failed to copy quest progress for player " + id);
-                e.printStackTrace();
+                Heracles.LOGGER.error("Failed to copy quest progress for player {}", id, e);
             }
         });
     }
@@ -79,8 +92,7 @@ public class QuestProgressHandler extends SavedData {
                 try {
                     progressTag.put(id, progress.save());
                 } catch (Exception e) {
-                    System.err.println("Failed to save quest progress for player " + id);
-                    e.printStackTrace();
+                    Heracles.LOGGER.error("Failed to save quest progress for player {}", id, e);
                 }
             });
             tag.put(entry.getKey().toString(), progressTag);
@@ -104,14 +116,13 @@ public class QuestProgressHandler extends SavedData {
                     QuestProgress progressObj = new QuestProgress(questObj, progress.getCompound(quest));
                     questProgress.put(quest, progressObj);
                 } catch (Exception e) {
-                    System.err.println("Failed to load quest progress for player " + player);
-                    e.printStackTrace();
+                    Heracles.LOGGER.error("Failed to load quest progress for player {}", player, e);
                 }
                 this.progress.put(UUID.fromString(player), new QuestsProgress(questProgress));
             }
         }
         if (!badQuests.isEmpty()) {
-            System.err.println("Failed to load quest progress for quests: " + String.join(", ", badQuests));
+            Heracles.LOGGER.error("Failed to load quest progress for quests: {}", String.join(", ", badQuests));
         }
     }
 

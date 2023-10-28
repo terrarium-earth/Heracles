@@ -5,13 +5,28 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.network.chat.Component;
 
-public record QuestProgressWidget(int x, int y, int width, int tasks, int completed) implements Renderable {
-
-    private static final String TITLE_INCOMPLETE =  "gui.heracles.progress.title.incomplete";
-    private static final String TITLE_COMPLETE =  "gui.heracles.progress.title.complete";
+public final class QuestProgressWidget implements Renderable {
+    private static final String TITLE_INCOMPLETE = "gui.heracles.progress.title.incomplete";
+    private static final String TITLE_COMPLETE = "gui.heracles.progress.title.complete";
     private static final String DESC_SINGULAR = "gui.heracles.progress.desc.incomplete.singular";
     private static final String DESC_PLURAL = "gui.heracles.progress.desc.incomplete.plural";
     private static final String DESC_COMPLETE = "gui.heracles.progress.desc.complete";
+    private final int x;
+    private final int y;
+    private final int width;
+    private int tasks = 0;
+    private int completed = 0;
+
+    public QuestProgressWidget(int x, int y, int width) {
+        this.x = x;
+        this.y = y;
+        this.width = width;
+    }
+
+    public void update(int tasks, int completed) {
+        this.tasks = tasks;
+        this.completed = completed;
+    }
 
     @Override
     public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {

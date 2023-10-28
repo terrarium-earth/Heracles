@@ -58,6 +58,10 @@ public class ClientQuests {
         PROGRESS.putAll(progress);
     }
 
+    public static void mergeProgress(Map<String, QuestProgress> progress) {
+        PROGRESS.putAll(progress);
+    }
+
     private static QuestEntry addEntry(
         String key,
         Quest quest,

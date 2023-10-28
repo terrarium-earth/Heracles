@@ -55,6 +55,8 @@ subprojects {
         })
 
         compileOnly(group = "org.jetbrains", name = "annotations", version = "24.0.1")
+        compileOnly(group = "com.teamresourceful", name = "bytecodecs", version = "1.0.2")
+        compileOnly(group = "com.teamresourceful", name = "yabn", version = "1.0.3")
         "modImplementation"(group = "com.teamresourceful.resourcefullib", name = "resourcefullib-$modLoader-$minecraftVersion", version = resourcefulLibVersion)
         val hermes = "modImplementation"(group = "earth.terrarium.hermes", name = "hermes-$modLoader-1.20", version = hermesLibVersion) {
             isTransitive = false

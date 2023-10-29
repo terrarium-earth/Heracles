@@ -8,6 +8,9 @@ dependencies {
 
     modImplementation(group = "net.fabricmc", name = "fabric-loader", version = fabricLoaderVersion)
     modApi(group = "net.fabricmc.fabric-api", name = "fabric-api", version = fabricApiVersion)
+
+    compileOnly("com.teamresourceful:yabn:1.0.3")
+    compileOnly("com.teamresourceful:bytecodecs:1.0.2")
 }
 
 tasks.processResources {

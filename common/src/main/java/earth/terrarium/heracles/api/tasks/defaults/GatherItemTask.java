@@ -40,7 +40,7 @@ public record GatherItemTask(
                 return manual(progress, container);
             }
         } else if (stack.isPresent()) {
-            if (this.item.is(stack.get().getItemHolder()) && nbt.matches(stack.get())) {
+            if (this.item.is(stack.get().getItemHolder()) && nbt.matches(stack.get().getTag(), false)) {
                 return automatic(progress, container);
             }
         }
@@ -52,7 +52,7 @@ public record GatherItemTask(
         int amount = 0;
         for (int i = 0; i < container.getContainerSize(); i++) {
             ItemStack itemStack = container.getItem(i);
-            if (this.item.is(itemStack.getItemHolder()) && nbt.matches(itemStack)) {
+            if (this.item.is(itemStack.getItemHolder()) && nbt.matches(itemStack.getTag(), false)) {
                 amount += itemStack.getCount();
                 list.add(itemStack);
             }
@@ -81,7 +81,7 @@ public record GatherItemTask(
         List<ItemStack> list = new ArrayList<>();
         for (int i = 0; i < input.getContainerSize(); i++) {
             ItemStack itemStack = input.getItem(i);
-            if (this.item.is(itemStack.getItemHolder()) && nbt.matches(itemStack)) {
+            if (this.item.is(itemStack.getItemHolder()) && nbt.matches(itemStack.getTag(), false)) {
                 amountFound += itemStack.getCount();
                 list.add(itemStack);
                 if (amountFound >= shrink) break;

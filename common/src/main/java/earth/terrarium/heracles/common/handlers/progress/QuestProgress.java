@@ -44,6 +44,10 @@ public class QuestProgress {
                 tasks.put(task.id(), new TaskProgress<>(task));
             }
         }
+        checkComplete();
+    }
+
+    public void checkComplete() {
         for (TaskProgress<?> task : tasks.values()) {
             if (!task.isComplete()) {
                 return;

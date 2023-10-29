@@ -84,7 +84,7 @@ public final class ItemTaskWidget implements DisplayWidget {
             Component text = buttonHovered ? ConstantComponents.Tasks.SUBMIT.copy().withStyle(ChatFormatting.UNDERLINE) : ConstantComponents.Tasks.SUBMIT;
             graphics.drawString(font, text, x + width - 5 - buttonWidth, buttonY, progress.isComplete() ? 0xFF707070 : 0xFFD0D0D0, false);
             CursorUtils.setCursor(buttonHovered, progress.isComplete() ? CursorScreen.Cursor.DISABLED : CursorScreen.Cursor.POINTER);
-            if (buttonHovered) {
+            if (buttonHovered && !progress.isComplete()) {
                 ScreenUtils.setTooltip(Component.translatable("task.heracles.item.submit.button.tooltip", this.task.target()));
             }
         }

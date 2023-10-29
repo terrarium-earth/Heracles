@@ -6,6 +6,7 @@ import earth.terrarium.heracles.api.tasks.QuestTaskType;
 import earth.terrarium.heracles.api.tasks.client.defaults.*;
 import earth.terrarium.heracles.api.tasks.defaults.*;
 import earth.terrarium.heracles.common.handlers.progress.TaskProgress;
+import earth.terrarium.heracles.common.utils.ModUtils;
 import net.minecraft.Optionull;
 import net.minecraft.nbt.Tag;
 import org.jetbrains.annotations.Nullable;
@@ -17,7 +18,11 @@ public final class QuestTaskWidgets {
 
     private static final Map<QuestTaskType<?>, QuestTaskWidgetFactory<?, ?, ?>> FACTORIES = new IdentityHashMap<>();
 
-    public static <I, S extends Tag, T extends QuestTask<I, S, T>> void register(QuestTaskType<T> type, QuestTaskWidgetSimpleFactory<I, S, T> factory) {
+    public static <I, S extends Tag, T extends QuestTask<I, S, T>> void registerSimple(QuestTaskType<T> type, QuestTaskWidgetSimpleFactory<I, S, T> factory) {
+        FACTORIES.put(type, factory);
+    }
+
+    public static <I, S extends Tag, T extends QuestTask<I, S, T>> void register(QuestTaskType<T> type, QuestTaskWidgetBasicFactory<I, S, T> factory) {
         FACTORIES.put(type, factory);
     }
 
@@ -34,35 +39,44 @@ public final class QuestTaskWidgets {
     }
 
     @Nullable
-    public static <T extends Tag> DisplayWidget create(String quest, QuestTask<?, T, ?> task, TaskProgress<T> progress) {
-        return Optionull.map(getFactory(task.type()), factory -> factory.createAndCast(quest, task, progress));
+    public static <T extends Tag> DisplayWidget create(String quest, QuestTask<?, T, ?> task, TaskProgress<T> progress, ModUtils.QuestStatus status) {
+        return Optionull.map(getFactory(task.type()), factory -> factory.createAndCast(quest, task, progress, status));
     }
 
     static {
-        register(KillEntityQuestTask.TYPE, KillEntityTaskWidget::new);
+        registerSimple(KillEntityQuestTask.TYPE, KillEntityTaskWidget::new);
         register(GatherItemTask.TYPE, ItemTaskWidget::new);
-        register(AdvancementTask.TYPE, AdvancementTaskWidget::new);
-        register(RecipeTask.TYPE, RecipeTaskWidget::new);
-        register(StructureTask.TYPE, StructureTaskWidget::new);
-        register(BiomeTask.TYPE, BiomeTaskWidget::new);
-        register(BlockInteractTask.TYPE, BlockInteractTaskWidget::new);
-        register(ItemInteractTask.TYPE, ItemInteractTaskWidget::new);
-        register(ChangedDimensionTask.TYPE, DimensionTaskWidget::new);
+        registerSimple(AdvancementTask.TYPE, AdvancementTaskWidget::new);
+        registerSimple(RecipeTask.TYPE, RecipeTaskWidget::new);
+        registerSimple(StructureTask.TYPE, StructureTaskWidget::new);
+        registerSimple(BiomeTask.TYPE, BiomeTaskWidget::new);
+        registerSimple(BlockInteractTask.TYPE, BlockInteractTaskWidget::new);
+        registerSimple(ItemInteractTask.TYPE, ItemInteractTaskWidget::new);
+        registerSimple(ChangedDimensionTask.TYPE, DimensionTaskWidget::new);
         register(CompositeTask.TYPE, CompositeTaskWidget::new);
         register(CheckTask.TYPE, CheckTaskWidget::new);
-        register(DummyTask.TYPE, DummyTaskWidget::new);
-        register(EntityInteractTask.TYPE, EntityInteractTaskWidget::new);
+        registerSimple(DummyTask.TYPE, DummyTaskWidget::new);
+        registerSimple(EntityInteractTask.TYPE, EntityInteractTaskWidget::new);
         register(XpTask.TYPE, XpTaskWidget::new);
-        register(LocationTask.TYPE, LocationTaskWidget::new);
-        register(StatTask.TYPE, StatTaskWidget::new);
+        registerSimple(LocationTask.TYPE, LocationTaskWidget::new);
+        registerSimple(StatTask.TYPE, StatTaskWidget::new);
     }
 
     public interface QuestTaskWidgetSimpleFactory<I, S extends Tag, T extends QuestTask<I, S, T>> extends QuestTaskWidgetFactory<I, S, T> {
         DisplayWidget create(T task, TaskProgress<S> progress);
 
         @Override
-        default DisplayWidget create(String quest, T task, TaskProgress<S> progress) {
+        default DisplayWidget create(String quest, T task, TaskProgress<S> progress, ModUtils.QuestStatus status) {
             return create(task, progress);
+        }
+    }
+
+    public interface QuestTaskWidgetBasicFactory<I, S extends Tag, T extends QuestTask<I, S, T>> extends QuestTaskWidgetFactory<I, S, T> {
+        DisplayWidget create(String quest, T task, TaskProgress<S> progress);
+
+        @Override
+        default DisplayWidget create(String quest, T task, TaskProgress<S> progress, ModUtils.QuestStatus status) {
+            return create(quest, task, progress);
         }
     }
 }

@@ -4,17 +4,16 @@ import com.google.common.collect.HashBiMap;
 import com.google.common.collect.Sets;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.mojang.logging.LogUtils;
 import com.mojang.serialization.JsonOps;
 import com.teamresourceful.resourcefullib.common.lib.Constants;
 import com.teamresourceful.resourcefullib.common.utils.FileUtils;
 import com.teamresourceful.resourcefullib.common.utils.Scheduling;
 import earth.terrarium.heracles.Heracles;
+import static earth.terrarium.heracles.Heracles.LOGGER;
 import earth.terrarium.heracles.api.quests.Quest;
 import earth.terrarium.heracles.common.utils.ModUtils;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.RegistryOps;
-import org.slf4j.Logger;
 
 import java.io.File;
 import java.io.Reader;
@@ -31,7 +30,6 @@ public class QuestHandler {
     private static final Map<String, Quest> QUESTS = HashBiMap.create();
     private static final Set<String> QUEST_KEYS = Sets.newConcurrentHashSet();
     private static final List<String> GROUPS = new ArrayList<>();
-    private static final Logger LOGGER = LogUtils.getLogger();
     private static Path lastPath;
 
     private static final Map<String, ScheduledFuture<?>> SAVING_FUTURES = new HashMap<>();

@@ -48,6 +48,7 @@ public class IconModal extends BaseModal {
                 items.clear();
                 if (Minecraft.getInstance().player != null) {
                     for (ItemStack item : Minecraft.getInstance().player.inventoryMenu.getItems()) {
+                        if (item.isEmpty()) continue;
                         items.add(item.getItem());
                     }
                 }

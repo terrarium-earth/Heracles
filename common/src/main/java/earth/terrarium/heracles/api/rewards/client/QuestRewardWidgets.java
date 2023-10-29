@@ -33,10 +33,10 @@ public final class QuestRewardWidgets {
     }
 
     static {
-        register(XpQuestReward.TYPE, XpRewardWidget::new);
-        register(ItemReward.TYPE, ItemRewardWidget::new);
-        register(LootTableReward.TYPE, LootTableRewardWidget::new);
+        register(XpQuestReward.TYPE, XpRewardWidget::of);
+        register(ItemReward.TYPE, ItemRewardWidget::of);
+        register(LootTableReward.TYPE, LootTableRewardWidget::of);
         register(SelectableReward.TYPE, SelectableRewardWidget::of);
-        register(CommandReward.TYPE, CommandRewardWidget::new);
+        register(CommandReward.TYPE, CommandRewardWidget::of);
     }
 }

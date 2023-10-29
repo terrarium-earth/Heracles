@@ -54,8 +54,8 @@ subprojects {
             parchment(create(group = "org.parchmentmc.data", name = "parchment-$minecraftVersion", version = parchmentVersion))
         })
 
-        compileOnly(group = "com.teamresourceful", name = "yabn", version = "1.0.3")
-        "modApi"(group = "com.teamresourceful.resourcefullib", name = "resourcefullib-$modLoader-$minecraftVersion", version = resourcefulLibVersion)
+        compileOnly(group = "org.jetbrains", name = "annotations", version = "24.0.1")
+        "modImplementation"(group = "com.teamresourceful.resourcefullib", name = "resourcefullib-$modLoader-$minecraftVersion", version = resourcefulLibVersion)
         val hermes = "modImplementation"(group = "earth.terrarium.hermes", name = "hermes-$modLoader-1.20", version = hermesLibVersion) {
             isTransitive = false
         }

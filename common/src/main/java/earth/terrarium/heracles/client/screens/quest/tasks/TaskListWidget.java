@@ -42,7 +42,6 @@ public class TaskListWidget extends AbstractContainerEventHandler implements Ren
     private final String questId;
     private final ClientQuests.QuestEntry entry;
     private final Map<String, ModUtils.QuestStatus> quests;
-    private final int tasksComplete;
 
     private final int x;
     private final int y;
@@ -63,7 +62,6 @@ public class TaskListWidget extends AbstractContainerEventHandler implements Ren
         Map<String, ModUtils.QuestStatus> quests, BiConsumer<QuestTask<?, ?, ?>, Boolean> onClick, Runnable onCreate
     ) {
         this.progress = progress;
-        this.tasksComplete = (int) entry.value().tasks().values().stream().filter(t -> progress.getTask(t).isComplete()).count();
         this.quests = quests;
         this.questId = questId;
         this.entry = entry;
@@ -82,7 +80,7 @@ public class TaskListWidget extends AbstractContainerEventHandler implements Ren
         List<MutablePair<QuestTask<?, ?, ?>, DisplayWidget>> completed = new ArrayList<>();
         for (var task : tasks) {
             TaskProgress<?> taskProgress = this.progress.getTask(task);
-            DisplayWidget widget = QuestTaskWidgets.create(this.questId, ModUtils.cast(task), taskProgress);
+            DisplayWidget widget = QuestTaskWidgets.create(this.questId, ModUtils.cast(task), taskProgress, this.quests.get(questId));
             if (widget != null) {
                 if (taskProgress.isComplete()) {
                     completed.add(new MutablePair<>(task, widget));
@@ -99,7 +97,7 @@ public class TaskListWidget extends AbstractContainerEventHandler implements Ren
             }
         }
         this.widgets.clear();
-        this.widgets.add(new MutablePair<>(null, new TaskListHeadingWidget(this.entry.value().tasks().size(), this.tasksComplete)));
+        this.widgets.add(new MutablePair<>(null, new TaskListHeadingWidget(tasks.size(), (int) tasks.stream().filter(t -> progress.getTask(t).isComplete()).count())));
         if (!dependencies.isEmpty()) {
             this.widgets.add(new MutablePair<>(null, DEPENDENCIES));
             this.widgets.addAll(dependencies);
@@ -194,7 +192,7 @@ public class TaskListWidget extends AbstractContainerEventHandler implements Ren
     public void updateTask(QuestTask<?, ?, ?> task) {
         for (var pair : this.widgets) {
             if (pair.left != null && pair.left.id().equals(task.id())) {
-                var widget = QuestTaskWidgets.create(this.questId, ModUtils.cast(task), this.progress.getTask(task));
+                var widget = QuestTaskWidgets.create(this.questId, ModUtils.cast(task), this.progress.getTask(task), this.quests.get(questId));
                 if (widget != null) {
                     pair.left = task;
                     pair.right = widget;

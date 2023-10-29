@@ -5,6 +5,7 @@ import com.teamresourceful.resourcefullib.common.networking.base.PacketContext;
 import com.teamresourceful.resourcefullib.common.networking.base.PacketHandler;
 import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.client.ModScreens;
+import earth.terrarium.heracles.client.handlers.ClientQuests;
 import earth.terrarium.heracles.common.handlers.quests.QuestHandler;
 import earth.terrarium.heracles.common.menus.quests.QuestsContent;
 import net.minecraft.network.FriendlyByteBuf;
@@ -49,6 +50,7 @@ public record OpenQuestsScreenPacket(boolean editing, QuestsContent content) imp
                     player.sendSystemMessage(Component.literal("Manually fix and reload the quests by running /reload"));
                     return;
                 }
+                ClientQuests.syncGroup(message.content);
                 if (message.editing) {
                     ModScreens.openEditQuestsScreen(message.content);
                 } else {

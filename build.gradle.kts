@@ -32,6 +32,7 @@ subprojects {
     }
 
     repositories {
+        mavenLocal()
         maven(url = "https://maven.architectury.dev/")
         maven(url = "https://maven.minecraftforge.net/")
         maven(url = "https://maven.msrandom.net/repository/root")

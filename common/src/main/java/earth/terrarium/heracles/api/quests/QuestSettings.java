@@ -2,20 +2,15 @@ package earth.terrarium.heracles.api.quests;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import com.teamresourceful.resourcefullib.common.codecs.CodecExtras;
 import com.teamresourceful.resourcefullib.common.codecs.EnumCodec;
 import earth.terrarium.heracles.common.utils.ModUtils;
 
 import java.util.Objects;
 
 public final class QuestSettings {
-    private static final Codec<ModUtils.QuestStatus> LEGACY_HIDDEN_CODEC = Codec.BOOL.orElse(false).xmap(b -> b ? ModUtils.QuestStatus.IN_PROGRESS : ModUtils.QuestStatus.LOCKED, s -> s != ModUtils.QuestStatus.IN_PROGRESS);
-    private static final Codec<ModUtils.QuestStatus> HIDDEN_CODEC = CodecExtras.eitherLeft(Codec.either(EnumCodec.of(ModUtils.QuestStatus.class).orElse(ModUtils.QuestStatus.LOCKED), LEGACY_HIDDEN_CODEC));
-
-
     public static final Codec<QuestSettings> CODEC = RecordCodecBuilder.create(instance -> instance.group(
         Codec.BOOL.fieldOf("individual_progress").orElse(false).forGetter(QuestSettings::individualProgress),
-        HIDDEN_CODEC.fieldOf("hidden").orElse(ModUtils.QuestStatus.LOCKED).forGetter(QuestSettings::hiddenUntil),
+        EnumCodec.of(ModUtils.QuestStatus.class).orElse(ModUtils.QuestStatus.LOCKED).fieldOf("hidden").forGetter(QuestSettings::hiddenUntil),
         Codec.BOOL.fieldOf("unlockNotification").orElse(false).forGetter(QuestSettings::unlockNotification),
         Codec.BOOL.fieldOf("showDependencyArrow").orElse(true).forGetter(QuestSettings::showDependencyArrow)
     ).apply(instance, QuestSettings::new));

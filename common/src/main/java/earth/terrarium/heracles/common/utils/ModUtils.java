@@ -129,9 +129,9 @@ public class ModUtils {
     }
 
     public enum QuestStatus implements StringRepresentable {
-        COMPLETED,
+        LOCKED,
         IN_PROGRESS,
-        LOCKED;
+        COMPLETED;
 
         @Override
         public @NotNull String getSerializedName() {

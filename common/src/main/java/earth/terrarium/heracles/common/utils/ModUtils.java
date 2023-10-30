@@ -126,10 +126,10 @@ public class ModUtils {
     }
 
     public enum QuestStatus {
-        COMPLETED_CLAIMED,
-        COMPLETED,
+        LOCKED,
         IN_PROGRESS,
-        LOCKED;
+        COMPLETED,
+        COMPLETED_CLAIMED;
 
         public boolean isComplete() {
             return this == COMPLETED || this == COMPLETED_CLAIMED;

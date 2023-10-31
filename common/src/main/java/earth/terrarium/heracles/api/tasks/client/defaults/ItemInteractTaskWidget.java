@@ -1,6 +1,7 @@
 package earth.terrarium.heracles.api.tasks.client.defaults;
 
 import com.teamresourceful.resourcefullib.client.scissor.ScissorBoxStack;
+import com.teamresourceful.resourcefullib.common.codecs.predicates.NbtPredicate;
 import earth.terrarium.heracles.api.client.DisplayWidget;
 import earth.terrarium.heracles.api.client.WidgetUtils;
 import earth.terrarium.heracles.api.tasks.client.display.TaskTitleFormatter;
@@ -28,7 +29,11 @@ public record ItemInteractTaskWidget(
             task,
             progress,
             task.item().getValue().map(
-                item -> List.of(item.getDefaultInstance()),
+                item -> {
+                    ItemStack stack = item.getDefaultInstance();
+                    if (!NbtPredicate.isEmpty(task.nbt().tag())) stack.getOrCreateTag().merge(task.nbt().tag());
+                    return List.of(stack);
+                },
                 tag -> ModUtils.getValue(Registries.ITEM, tag).stream().map(ItemStack::new).toList()
             )
         );

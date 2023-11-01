@@ -7,14 +7,17 @@ import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.api.client.WidgetUtils;
 import earth.terrarium.heracles.api.quests.QuestIcon;
 import earth.terrarium.heracles.api.quests.QuestIconType;
+import earth.terrarium.heracles.common.utils.ItemValue;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 
-public record ItemQuestIcon(Item item) implements QuestIcon<ItemQuestIcon> {
-
+public record ItemQuestIcon(ItemValue item) implements QuestIcon<ItemQuestIcon> {
     public static final QuestIconType<ItemQuestIcon> TYPE = new Type();
+
+    public ItemQuestIcon(Item item) {
+        this(new ItemValue(item));
+    }
 
     @Override
     public boolean render(GuiGraphics graphics, ScissorBoxStack scissor, int x, int y, int width, int height) {
@@ -36,7 +39,7 @@ public record ItemQuestIcon(Item item) implements QuestIcon<ItemQuestIcon> {
         @Override
         public Codec<ItemQuestIcon> codec() {
             return RecordCodecBuilder.create(instance -> instance.group(
-                BuiltInRegistries.ITEM.byNameCodec().fieldOf("item").forGetter(ItemQuestIcon::item)
+                ItemValue.CODEC.fieldOf("item").forGetter(ItemQuestIcon::item)
             ).apply(instance, ItemQuestIcon::new));
         }
     }

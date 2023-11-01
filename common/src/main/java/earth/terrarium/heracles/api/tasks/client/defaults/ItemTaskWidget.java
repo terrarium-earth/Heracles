@@ -5,6 +5,7 @@ import com.teamresourceful.resourcefullib.client.scissor.ScissorBoxStack;
 import com.teamresourceful.resourcefullib.client.screens.CursorScreen;
 import com.teamresourceful.resourcefullib.client.utils.CursorUtils;
 import com.teamresourceful.resourcefullib.client.utils.ScreenUtils;
+import com.teamresourceful.resourcefullib.common.codecs.predicates.NbtPredicate;
 import earth.terrarium.heracles.api.client.DisplayWidget;
 import earth.terrarium.heracles.api.client.WidgetUtils;
 import earth.terrarium.heracles.api.tasks.CollectionType;
@@ -48,7 +49,11 @@ public final class ItemTaskWidget implements DisplayWidget {
         this.task = task;
         this.progress = progress;
         this.stacks = task.item().getValue().map(
-            item -> List.of(item.getDefaultInstance()),
+            item -> {
+                ItemStack stack = item.getDefaultInstance();
+                if (!NbtPredicate.isEmpty(task.nbt().tag())) stack.getOrCreateTag().merge(task.nbt().tag());
+                return List.of(stack);
+            },
             tag -> ModUtils.getValue(Registries.ITEM, tag).stream().map(ItemStack::new).toList()
         );
     }
@@ -65,12 +70,12 @@ public final class ItemTaskWidget implements DisplayWidget {
         String desc = chooseGatherKey(task, DESC_ITEM, DESC_TAG, DESC_SUBMIT_ITEM, DESC_SUBMIT_TAG);
         graphics.drawString(
             font,
-            task.titleOr(Component.translatable(title, task.item().getDisplayName(Item::getDescription))), x + iconSize + 16, y + 6, 0xFFFFFFFF,
+            task.titleOr(Component.translatable(title, task.item().getDisplayName(stacks.size() == 1 ? i -> stacks.get(0).getHoverName() : Item::getDescription))), x + iconSize + 16, y + 6, 0xFFFFFFFF,
             false
         );
         graphics.drawString(
             font,
-            Component.translatable(desc, this.task.target(), task.item().getDisplayName(Item::getDescription)), x + iconSize + 16, y + 8 + font.lineHeight, 0xFF808080,
+            Component.translatable(desc, this.task.target(), task.item().getDisplayName(stacks.size() == 1 ? i -> stacks.get(0).getHoverName() : Item::getDescription)), x + iconSize + 16, y + 8 + font.lineHeight, 0xFF808080,
             false
         );
         WidgetUtils.drawProgressText(graphics, x, y, width, this.task, this.progress);

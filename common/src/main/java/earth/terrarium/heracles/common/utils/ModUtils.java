@@ -25,10 +25,13 @@ import net.minecraft.resources.RegistryOps;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.TagKey;
+import net.minecraft.util.StringRepresentable;
+import org.jetbrains.annotations.NotNull;
 import org.joml.Vector2i;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
@@ -125,7 +128,7 @@ public class ModUtils {
         return quests;
     }
 
-    public enum QuestStatus {
+    public enum QuestStatus implements StringRepresentable {
         LOCKED,
         IN_PROGRESS,
         COMPLETED,
@@ -133,6 +136,11 @@ public class ModUtils {
 
         public boolean isComplete() {
             return this == COMPLETED || this == COMPLETED_CLAIMED;
+        }
+
+        @Override
+        public @NotNull String getSerializedName() {
+            return "quest.heracles.%s".formatted(name().toLowerCase(Locale.ROOT));
         }
     }
 

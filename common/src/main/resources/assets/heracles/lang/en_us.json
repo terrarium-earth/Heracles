@@ -67,7 +67,7 @@
     "gui.heracles.open_quest_file": "Open Quest File",
 
     "setting.heracles.quest.individual_progress": "Individual Progress",
-    "setting.heracles.quest.hidden": "Prerequisite Hidden",
+    "setting.heracles.quest.hidden": "Hidden Until",
     "setting.heracles.quest.unlock_notification": "Unlock Notification",
     "setting.heracles.quest.show_dependency_arrow": "Show Dependency Arrow",
 

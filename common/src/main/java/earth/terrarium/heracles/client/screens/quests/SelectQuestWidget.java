@@ -146,7 +146,7 @@ public class SelectQuestWidget extends BaseWidget {
                             QuestSettings questSettings = QuestSettingsInitalizer.INSTANCE.create("quest", settings, data);
                             return NetworkQuestData.builder()
                                 .individualProgress(questSettings.individualProgress())
-                                .hidden(questSettings.hidden())
+                                .hiddenUntil(questSettings.hiddenUntil())
                                 .unlockNotification(questSettings.unlockNotification())
                                 .showDependencyArrow(questSettings.showDependencyArrow());
                         })

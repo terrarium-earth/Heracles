@@ -13,8 +13,8 @@ import earth.terrarium.heracles.client.screens.mousemode.MouseModeButton;
 import earth.terrarium.heracles.client.utils.MouseClick;
 import earth.terrarium.heracles.client.widgets.SelectableImageButton;
 import earth.terrarium.heracles.client.widgets.modals.AddDependencyModal;
+import earth.terrarium.heracles.client.widgets.modals.ItemModal;
 import earth.terrarium.heracles.client.widgets.modals.TextInputModal;
-import earth.terrarium.heracles.client.widgets.modals.icon.IconModal;
 import earth.terrarium.heracles.client.widgets.modals.icon.background.IconBackgroundModal;
 import earth.terrarium.heracles.client.widgets.modals.upload.UploadModal;
 import earth.terrarium.heracles.common.constants.ConstantComponents;
@@ -43,7 +43,7 @@ public class QuestsEditScreen extends QuestsScreen {
     private UploadModal uploadModal;
     private TextInputModal<Unit> groupModal;
     private IconBackgroundModal iconBackgroundModal;
-    private IconModal iconModal;
+    private ItemModal itemModal;
     private AddDependencyModal dependencyModal;
     private TextInputModal<MouseClick> questModal;
 
@@ -103,7 +103,7 @@ public class QuestsEditScreen extends QuestsScreen {
             }
         }, text -> !ClientQuests.groups().contains(text.trim())));
         this.iconBackgroundModal = addTemporary(new IconBackgroundModal(this.width, this.height));
-        this.iconModal = addTemporary(new IconModal(this.width, this.height));
+        this.itemModal = addTemporary(new ItemModal(this.width, this.height));
         this.dependencyModal = addTemporary(new AddDependencyModal(this.width, this.height));
         this.questModal = addTemporary(new TextInputModal<>(this.width, this.height, ConstantComponents.Quests.CREATE, (position, text) -> {
             MouseClick local = this.questsWidget.getLocal(position);
@@ -203,8 +203,8 @@ public class QuestsEditScreen extends QuestsScreen {
         return this.iconBackgroundModal;
     }
 
-    public IconModal iconModal() {
-        return this.iconModal;
+    public ItemModal itemModal() {
+        return this.itemModal;
     }
 
     public AddDependencyModal dependencyModal() {

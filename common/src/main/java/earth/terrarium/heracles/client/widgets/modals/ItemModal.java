@@ -1,13 +1,14 @@
-package earth.terrarium.heracles.client.widgets.modals.icon;
+package earth.terrarium.heracles.client.widgets.modals;
 
+import com.mojang.datafixers.util.Either;
 import com.teamresourceful.resourcefullib.client.CloseablePoseStack;
 import com.teamresourceful.resourcefullib.client.screens.CursorScreen;
 import com.teamresourceful.resourcefullib.client.utils.CursorUtils;
-import com.teamresourceful.resourcefullib.client.utils.ScreenUtils;
 import earth.terrarium.heracles.Heracles;
-import earth.terrarium.heracles.client.widgets.ToggleImageButton;
+import earth.terrarium.heracles.client.widgets.StateImageButton;
 import earth.terrarium.heracles.client.widgets.base.BaseModal;
 import earth.terrarium.heracles.common.constants.ConstantComponents;
+import earth.terrarium.heracles.common.utils.ItemValue;
 import earth.terrarium.heracles.common.utils.ModUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -15,17 +16,21 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Optional;
 import java.util.function.Consumer;
 
-public class IconModal extends BaseModal {
+public class ItemModal extends BaseModal {
 
     public static final ResourceLocation TEXTURE = new ResourceLocation(Heracles.MOD_ID, "textures/gui/icons.png");
     private static final int WIDTH = 168;
@@ -35,30 +40,48 @@ public class IconModal extends BaseModal {
     private static final int ITEM_COLUMNS = 8;
     private static final int ITEM_ROWS = 6;
 
-    private final List<Item> items = new ArrayList<>();
-    private Consumer<Item> callback;
+    private final List<ItemValue> items = new ArrayList<>();
+    private Consumer<Either<ItemStack, TagKey<Item>>> callback;
+    private Either<ItemStack, TagKey<Item>> current = null;
+    private boolean tagsAllowed = true;
 
     private final EditBox search;
+    private final StateImageButton modeButton;
 
-    public IconModal(int screenWidth, int screenHeight) {
+    public ItemModal(int screenWidth, int screenHeight) {
         super(screenWidth, screenHeight, WIDTH, HEIGHT, 2);
+        this.modeButton = addChild(new StateImageButton(x + 7, y + 5, 11, 11, 168, 0, 11, TEXTURE, 256, 256, 3, this::update));
+        this.modeButton.setTooltip(Tooltip.create(Component.literal("Switch Mode")));
+        this.search = addChild(new EditBox(Minecraft.getInstance().font, x + 8, y + 19, 152, 14, ConstantComponents.SEARCH));
+    }
 
-        addChild(new ToggleImageButton(x + 7, y + 5, 11, 11, 168, 0, 11, TEXTURE, 256, 256, (b) -> {
-            if (b) {
-                items.clear();
+    public void update(int state) {
+        items.clear();
+        switch (state) {
+            case 0 -> {
+                if (current != null && current.map(stack -> !stack.is(Items.AIR), tag -> true)) {
+                    Heracles.getRegistryAccess().registry(Registries.ITEM)
+                        .ifPresent(registry -> items.add(new ItemValue(current)));
+                }
+                BuiltInRegistries.ITEM.stream().map(ItemValue::new).forEach(items::add);
+            }
+            case 1 -> {
                 if (Minecraft.getInstance().player != null) {
                     for (ItemStack item : Minecraft.getInstance().player.inventoryMenu.getItems()) {
                         if (item.isEmpty()) continue;
-                        items.add(item.getItem());
+                        items.add(new ItemValue(item));
                     }
                 }
-            } else {
-                items.clear();
-                BuiltInRegistries.ITEM.iterator().forEachRemaining(items::add);
             }
-        })).setTooltip(Tooltip.create(Component.literal("Switch Mode")));
-
-        this.search = addChild(new EditBox(Minecraft.getInstance().font, x + 8, y + 19, 152, 14, ConstantComponents.SEARCH));
+            case 2 ->  {
+                if (tagsAllowed) {
+                    Heracles.getRegistryAccess().registry(Registries.ITEM)
+                        .ifPresent(registry ->
+                            registry.getTagNames().map(ItemValue::new).forEach(items::add)
+                        );
+                }
+            }
+        }
     }
 
     @Override
@@ -70,19 +93,21 @@ public class IconModal extends BaseModal {
     @Override
     protected void renderForeground(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
         Font font = Minecraft.getInstance().font;
-        int textX = (WIDTH - font.width("Choose Icon")) / 2;
+        int textX = (WIDTH - font.width("Choose Item")) / 2;
         graphics.drawString(
             font,
-            "Choose Icon", x + textX, y + 6, 0x404040,
+            "Choose Item", x + textX, y + 6, 0x404040,
             false
         );
 
         int y = this.y + 43;
         int x = this.x + 8;
 
-        List<Item> items = updateItems(this.search.getValue());
+        List<ItemValue> values = updateItems(this.search.getValue());
 
-        int max = Math.min(items.size(), 48);
+        List<Component> tooltip = new ArrayList<>();
+
+        int max = Math.min(values.size(), 48);
         for (int i = 0; i < max; i++) {
             int row = i / ITEM_COLUMNS;
             int column = i % ITEM_COLUMNS;
@@ -90,18 +115,22 @@ public class IconModal extends BaseModal {
             int itemX = x + (column * ITEM_SIZE);
             int itemY = y + (row * ITEM_SIZE);
 
-            Item item = items.get(i);
+            ItemValue value = values.get(i);
 
             graphics.blit(TEXTURE, itemX, itemY, 168, 22, ITEM_SIZE, ITEM_SIZE, 256, 256);
             if (mouseX >= itemX && mouseX < itemX + ITEM_SIZE && mouseY >= itemY && mouseY < itemY + ITEM_SIZE) {
                 graphics.fill(itemX + 1, itemY + 1, itemX + ITEM_SIZE - 1, itemY + ITEM_SIZE - 1, 0x80A0A0A0);
                 CursorUtils.setCursor(true, CursorScreen.Cursor.POINTER);
-                ScreenUtils.setTooltip(item.getDescription());
+                tooltip.add(value.getDisplayName());
+                tooltip.add(value.getNamespace());
             }
             try (var pose = new CloseablePoseStack(graphics)) {
                 pose.translate(0, 0, -100);
-                graphics.renderFakeItem(item.getDefaultInstance(), itemX + 2, itemY + 1);
+                graphics.renderFakeItem(value.getDefaultInstance(), itemX + 2, itemY + 1);
             }
+        }
+        if (!tooltip.isEmpty()) {
+            graphics.renderTooltip(font, tooltip, Optional.empty(), mouseX, mouseY);
         }
     }
 
@@ -119,9 +148,9 @@ public class IconModal extends BaseModal {
 
         if (callback == null) return true;
 
-        List<Item> items = updateItems(this.search.getValue());
+        List<ItemValue> values = updateItems(this.search.getValue());
 
-        int max = Math.min(items.size(), 48);
+        int max = Math.min(values.size(), 48);
 
         for (int i = 0; i < max; i++) {
             int row = i / ITEM_COLUMNS;
@@ -130,10 +159,8 @@ public class IconModal extends BaseModal {
             int itemX = x + (column * ITEM_SIZE);
             int itemY = y + (row * ITEM_SIZE);
 
-            Item item = items.get(i);
-
             if (mouseX >= itemX && mouseX < itemX + ITEM_SIZE && mouseY >= itemY && mouseY < itemY + ITEM_SIZE) {
-                callback.accept(item);
+                callback.accept(values.get(i).item());
             }
         }
         return true;
@@ -143,26 +170,34 @@ public class IconModal extends BaseModal {
     public void setVisible(boolean visible) {
         super.setVisible(visible);
         if (visible) {
-            items.clear();
-            BuiltInRegistries.ITEM.iterator().forEachRemaining(items::add);
+            update(this.modeButton.state());
         }
     }
 
-    private List<Item> updateItems(String search) {
+    private List<ItemValue> updateItems(String search) {
         search = search.toLowerCase(Locale.ROOT).trim();
 
-        List<Item> filteredItems = new ArrayList<>();
-        for (Item item : items) {
+        List<ItemValue> filteredItems = new ArrayList<>();
+        for (ItemValue item : items) {
             if (filteredItems.size() >= ITEM_COLUMNS * ITEM_ROWS) break;
-            Component text = ModUtils.throwStackoverflow(item, Item::getDescription);
-            if (text.getString().toLowerCase(Locale.ROOT).contains(search)) {
+            Component desc = ModUtils.throwStackoverflow(item, ItemValue::getDisplayName);
+            Component namespace = ModUtils.throwStackoverflow(item, ItemValue::getNamespace);
+            if (desc.getString().toLowerCase(Locale.ROOT).contains(search) || namespace.getString().toLowerCase(Locale.ROOT).contains(search) || item.getId().toString().startsWith(search) || item.getId().getPath().startsWith(search)) {
                 filteredItems.add(item);
             }
         }
         return filteredItems;
     }
 
-    public void setCallback(Consumer<Item> callback) {
+    public void setCallback(Consumer<Either<ItemStack, TagKey<Item>>> callback) {
         this.callback = callback;
+    }
+
+    public void setCurrent(Either<ItemStack, TagKey<Item>> current) {
+        this.current = current;
+    }
+
+    public void setTagsAllowed(boolean tagsAllowed) {
+        this.tagsAllowed = tagsAllowed;
     }
 }

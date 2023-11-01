@@ -14,6 +14,7 @@ import earth.terrarium.heracles.client.widgets.boxes.IntEditBox;
 import earth.terrarium.heracles.client.widgets.modals.EditObjectModal;
 import earth.terrarium.heracles.common.constants.ConstantComponents;
 import earth.terrarium.heracles.common.network.packets.quests.data.NetworkQuestData;
+import earth.terrarium.heracles.common.utils.ItemValue;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
@@ -79,10 +80,10 @@ public class SelectQuestWidget extends BaseWidget {
 
         addChild(Button.builder(Component.literal("ℹ"), b -> {
                 if (Minecraft.getInstance().screen instanceof QuestsEditScreen screen) {
-                    screen.iconModal().setVisible(true);
-                    screen.iconModal().setCallback(item -> {
-                        updateQuest(quest -> NetworkQuestData.builder().icon(new ItemQuestIcon(item)));
-                        screen.iconModal().setVisible(false);
+                    screen.itemModal().setVisible(true);
+                    screen.itemModal().setCallback(item -> {
+                        updateQuest(quest -> NetworkQuestData.builder().icon(new ItemQuestIcon(new ItemValue(item))));
+                        screen.itemModal().setVisible(false);
                     });
                 }
                 loseFocusListener = b;
@@ -145,7 +146,7 @@ public class SelectQuestWidget extends BaseWidget {
                             QuestSettings questSettings = QuestSettingsInitalizer.INSTANCE.create("quest", settings, data);
                             return NetworkQuestData.builder()
                                 .individualProgress(questSettings.individualProgress())
-                                .hidden(questSettings.hidden())
+                                .hiddenUntil(questSettings.hiddenUntil())
                                 .unlockNotification(questSettings.unlockNotification())
                                 .showDependencyArrow(questSettings.showDependencyArrow());
                         })

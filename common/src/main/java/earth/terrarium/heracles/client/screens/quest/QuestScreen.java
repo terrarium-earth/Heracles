@@ -35,32 +35,23 @@ public class QuestScreen extends BaseQuestScreen {
         super.updateProgress(newProgress);
         this.taskList.update(this.quest().tasks().values());
         this.rewardList.update(this.content.fromGroup(), this.content.id(), this.quest());
-        // Completely recreate description in case of task/reward tags
-        // Can't touch hermes to make a better solution
-        int contentX = (int) (this.width * 0.31f);
-        int contentY = 30;
         int contentWidth = (int) (this.width * 0.63f);
-        int contentHeight = this.height - 45;
-        if (this.overview == null) {
-            contentX = (int) ((this.width - contentWidth) / 2f);
-        }
+        int contentHeight = this.height - 15;
+        int contentX = this.overview == null ? (int) ((this.width - contentWidth) / 2f) : (int) (this.width * 0.31f);
+        int contentY = 15;
         TagProvider provider = new QuestTagProvider();
-        this.description = new DocumentWidget(contentX, contentY, contentWidth, contentHeight, new DefaultTheme(), provider.parse(desc));
+        this.description = new DocumentWidget(contentX, contentY, contentWidth + 6, contentHeight + 6,5.0D, 5.0D, new DefaultTheme(), provider.parse(desc));
     }
 
     @Override
     protected void init() {
         super.init();
-        int contentX = (int) (this.width * 0.31f);
-        int contentY = 30;
         int contentWidth = (int) (this.width * 0.63f);
-        int contentHeight = this.height - 45;
-
-        if (this.overview == null) {
-            contentX = (int) ((this.width - contentWidth) / 2f);
-        }
-        this.taskList = new TaskListWidget(contentX, contentY, contentWidth, contentHeight, this.content.id(), this.entry(), this.content.progress(), this.content.quests(), null, null);
-        this.rewardList = new RewardListWidget(contentX, contentY, contentWidth, contentHeight, this.entry(), this.content.progress(), null, null);
+        int contentHeight = this.height - 15;
+        int contentX = this.overview == null ? (int) ((this.width - contentWidth) / 2f) : (int) (this.width * 0.31f);
+        int contentY = 15;
+        this.taskList = new TaskListWidget(contentX, contentY, contentWidth, contentHeight, 5.0D, 5.0D, this.content.id(), this.entry(), this.content.progress(), this.content.quests(), null, null);
+        this.rewardList = new RewardListWidget(contentX, contentY, contentWidth, contentHeight, 5.0D, 5.0D, this.entry(), this.content.progress(), null, null);
         try {
             this.descriptionError = null;
             this.desc = String.join("", MarkdownParser.parse(this.quest().display().description()));

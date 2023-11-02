@@ -27,7 +27,7 @@ public class QuestProgress {
         for (String taskKey : compound.getAllKeys()) {
             if (!quest.tasks().containsKey(taskKey)) continue;
             CompoundTag task = compound.getCompound(taskKey);
-            tasks.put(taskKey, new TaskProgress<>(task.get("progress"), task.getBoolean("complete")));
+            tasks.put(taskKey, new TaskProgress<>(task.get("progress"), quest.tasks().get(taskKey).storage()::createDefault, task.getBoolean("complete")));
         }
     }
 
@@ -62,6 +62,14 @@ public class QuestProgress {
 
     public void claimReward(String reward) {
         claimed.add(reward);
+    }
+
+    public void reset() {
+        for (TaskProgress<?> taskProgress : tasks.values()) {
+            taskProgress.resetProgress();
+        }
+        claimed.clear();
+        complete = false;
     }
 
     public Set<String> claimedRewards() {

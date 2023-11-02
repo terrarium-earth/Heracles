@@ -78,8 +78,8 @@ public abstract class AbstractQuestScreen<T> extends BaseCursorScreen {
     }
 
     protected void renderBg(GuiGraphics graphics, float partialTick, int mouseX, int mouseY) {
-    		RenderSystem.enableBlend();
-				RenderSystem.defaultBlendFunc();
+        RenderSystem.enableBlend();
+        RenderSystem.defaultBlendFunc();
         graphics.blitRepeating(HEADING, 0, 0, width, height,0, 128, 128, 128);
         RenderSystem.disableBlend();
         graphics.blitRepeating(HEADING, 0, 0, this.width, 15, 0, 0, 128, 15);

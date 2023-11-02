@@ -80,11 +80,20 @@ public abstract class AbstractQuestScreen<T> extends BaseCursorScreen {
     protected void renderBg(GuiGraphics graphics, float partialTick, int mouseX, int mouseY) {
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
-        graphics.blitRepeating(HEADING, 0, 0, width, height,0, 128, 128, 128);
-        RenderSystem.disableBlend();
-        graphics.blitRepeating(HEADING, 0, 0, this.width, 15, 0, 0, 128, 15);
         if (drawSidebar()) {
             int sidebarWidth = (int) (this.width * 0.25f) - 2;
+            graphics.blitRepeating(HEADING, 0, 15, sidebarWidth, height - 15,0, 128, 128, 128); // Side Background
+            graphics.blitRepeating(HEADING, sidebarWidth + 2, 15, width - sidebarWidth, height - 15,128, 128, 128, 128); // Main Background
+            graphics.blitRepeating(HEADING, 0, 0, sidebarWidth, 15, 0, 0, 128, 15); // Side Header
+            graphics.blitRepeating(HEADING, sidebarWidth + 2, 0, width - sidebarWidth, 15, 130, 0, 126, 15); // Main Header
+            graphics.blitRepeating(HEADING, sidebarWidth, 0, 2, 15, 128, 0, 2, 15); // Header Separator
+            graphics.blitRepeating(HEADING, sidebarWidth, 15, 2, height - 15, 128, 15, 2, 113); // Body Separator
+        } else {
+            graphics.blitRepeating(HEADING, 15, 0, width, height - 15,128, 128, 128, 128); // Main Background
+            graphics.blitRepeating(HEADING, 0, 0, width, 15, 130, 0, 126, 15); // Main Header
+        }
+        RenderSystem.disableBlend();
+        if (false) {
             graphics.blitRepeating(HEADING, sidebarWidth, 15, 2, this.height - 15, 128, 0, 2, 256);
             graphics.fill(sidebarWidth, 0, sidebarWidth + 2, 13, 0x80808080);
         }

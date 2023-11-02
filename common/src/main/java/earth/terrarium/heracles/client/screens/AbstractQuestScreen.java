@@ -1,5 +1,6 @@
 package earth.terrarium.heracles.client.screens;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.teamresourceful.resourcefullib.client.screens.BaseCursorScreen;
 import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.client.widgets.base.TemporyWidget;
@@ -77,7 +78,10 @@ public abstract class AbstractQuestScreen<T> extends BaseCursorScreen {
     }
 
     protected void renderBg(GuiGraphics graphics, float partialTick, int mouseX, int mouseY) {
+    		RenderSystem.enableBlend();
+				RenderSystem.defaultBlendFunc();
         graphics.blitRepeating(HEADING, 0, 0, width, height,0, 128, 128, 128);
+        RenderSystem.disableBlend();
         graphics.blitRepeating(HEADING, 0, 0, this.width, 15, 0, 0, 128, 15);
         if (drawSidebar()) {
             int sidebarWidth = (int) (this.width * 0.25f) - 2;

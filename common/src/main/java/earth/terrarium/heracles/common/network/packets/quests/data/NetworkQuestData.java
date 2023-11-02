@@ -68,6 +68,7 @@ public record NetworkQuestData(
         private ModUtils.QuestStatus hiddenUntil = null;
         private TriState unlockNotification = TriState.UNDEFINED;
         private TriState showDependencyArrow = TriState.UNDEFINED;
+        private TriState repeatable = TriState.UNDEFINED;
         private Set<String> dependencies;
         private Map<String, QuestTask<?, ?, ?>> tasks;
         private Map<String, QuestReward<?>> rewards;
@@ -132,6 +133,11 @@ public record NetworkQuestData(
             return this;
         }
 
+        public Builder repeatable(boolean repeatable) {
+            this.repeatable = TriState.of(repeatable);
+            return this;
+        }
+
         public Builder dependencies(Set<String> dependencies) {
             this.dependencies = new HashSet<>(dependencies);
             return this;
@@ -165,7 +171,8 @@ public record NetworkQuestData(
                     Optional.ofNullable(individualProgress.isUndefined() ? null : individualProgress.isTrue()),
                     Optional.ofNullable(hiddenUntil),
                     Optional.ofNullable(unlockNotification.isUndefined() ? null : unlockNotification.isTrue()),
-                    Optional.ofNullable(showDependencyArrow.isUndefined() ? null : showDependencyArrow.isTrue())
+                    Optional.ofNullable(showDependencyArrow.isUndefined() ? null : showDependencyArrow.isTrue()),
+                    Optional.ofNullable(repeatable.isUndefined() ? null : repeatable.isTrue())
                 );
             }
 

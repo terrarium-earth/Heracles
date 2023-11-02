@@ -74,6 +74,7 @@
     "setting.heracles.quest.hidden": "Hidden Until",
     "setting.heracles.quest.unlock_notification": "Unlock Notification",
     "setting.heracles.quest.show_dependency_arrow": "Show Dependency Arrow",
+    "setting.heracles.quest.repeatable": "Repeatable",
 
     "rei.sections.odyssey": "Project Odyssey",
     "rei.heracles.heracles.tooltip": "Open Quests",

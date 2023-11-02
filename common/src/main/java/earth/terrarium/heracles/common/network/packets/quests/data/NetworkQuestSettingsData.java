@@ -12,7 +12,8 @@ public record NetworkQuestSettingsData(
     Optional<Boolean> individualProgress,
     Optional<ModUtils.QuestStatus> hiddenUntil,
     Optional<Boolean> unlockNotification,
-    Optional<Boolean> showDependencyArrow
+    Optional<Boolean> showDependencyArrow,
+    Optional<Boolean> repeatable
 ) {
 
     public static final ByteCodec<NetworkQuestSettingsData> CODEC = ObjectByteCodec.create(
@@ -20,6 +21,7 @@ public record NetworkQuestSettingsData(
         ByteCodec.ofEnum(ModUtils.QuestStatus.class).optionalFieldOf(NetworkQuestSettingsData::hiddenUntil),
         ByteCodec.BOOLEAN.optionalFieldOf(NetworkQuestSettingsData::unlockNotification),
         ByteCodec.BOOLEAN.optionalFieldOf(NetworkQuestSettingsData::showDependencyArrow),
+        ByteCodec.BOOLEAN.optionalFieldOf(NetworkQuestSettingsData::repeatable),
         NetworkQuestSettingsData::new
     );
 
@@ -29,5 +31,6 @@ public record NetworkQuestSettingsData(
         hiddenUntil.ifPresent(settings::setHiddenUntil);
         unlockNotification.ifPresent(settings::setUnlockNotification);
         showDependencyArrow.ifPresent(settings::setShowDependencyArrow);
+        repeatable.ifPresent(settings::setRepeatable);
     }
 }

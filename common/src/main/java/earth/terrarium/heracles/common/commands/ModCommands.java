@@ -10,6 +10,8 @@ import earth.terrarium.heracles.common.handlers.quests.QuestHandler;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.SharedSuggestionProvider;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
 
 public class ModCommands {
 
@@ -17,21 +19,23 @@ public class ModCommands {
         dispatcher.register(Commands.literal(Heracles.MOD_ID)
             .then(Commands.literal("pin")
                 .then(Commands.argument("quest", StringArgumentType.string())
-                .suggests(((context, builder) -> {
-                    SharedSuggestionProvider.suggest(QuestHandler.quests().keySet(), builder);
-                    return builder.buildFuture();
-                }))
-                .executes(context1 -> {
-                String quest = StringArgumentType.getString(context1, "quest");
-                var pinned = PinnedQuestHandler.getPinned(context1.getSource().getPlayerOrException());
-                if (pinned.contains(quest)) {
-                    pinned.remove(quest);
-                } else {
-                    pinned.add(quest);
-                }
-                PinnedQuestHandler.sync(context1.getSource().getPlayerOrException());
-                return 1;
-            })))
+                    .suggests(((context, builder) -> {
+                        SharedSuggestionProvider.suggest(QuestHandler.quests().keySet(), builder);
+                        return builder.buildFuture();
+                    }))
+                    .executes(context -> {
+                        CommandSourceStack source = context.getSource();
+                        ServerPlayer player = source.getPlayerOrException();
+                        String quest = StringArgumentType.getString(context, "quest");
+                        var pinned = PinnedQuestHandler.getPinned(player);
+                        if (pinned.contains(quest)) {
+                            pinned.remove(quest);
+                        } else {
+                            pinned.add(quest);
+                        }
+                        PinnedQuestHandler.sync(player);
+                        return 1;
+                    })))
             .then(Commands.literal("reset")
                 .requires(source -> source.hasPermission(2))
                 .then(Commands.argument("quest", StringArgumentType.string())
@@ -39,18 +43,22 @@ public class ModCommands {
                         SharedSuggestionProvider.suggest(QuestHandler.quests().keySet(), builder);
                         return builder.buildFuture();
                     }))
-                .executes(context1 -> {
-                String quest = StringArgumentType.getString(context1, "quest");
-                QuestProgressHandler.getProgress(context1.getSource().getServer(), context1.getSource().getPlayerOrException().getUUID()).getProgress(quest).reset();
-                return 1;
-            })))
+                    .executes(context -> {
+                        CommandSourceStack source = context.getSource();
+                        ServerPlayer player = source.getPlayerOrException();
+                        String quest = StringArgumentType.getString(context, "quest");
+                        QuestProgressHandler.getProgress(source.getServer(), player.getUUID()).resetQuest(quest, player);
+                        source.sendSystemMessage(Component.translatable("commands.heracles.reset.success", quest));
+                        return 1;
+                    })))
             .then(Commands.literal("dummy")
                 .requires(source -> source.hasPermission(2))
                 .then(Commands.argument("id", StringArgumentType.string())
-                    .executes(context1 -> {
-                        String quest = StringArgumentType.getString(context1, "id");
-                        QuestProgressHandler.getProgress(context1.getSource().getServer(), context1.getSource().getPlayerOrException().getUUID())
-                            .testAndProgressTaskType(context1.getSource().getPlayerOrException(), quest, DummyTask.TYPE);
+                    .executes(context -> {
+                        CommandSourceStack source = context.getSource();
+                        ServerPlayer player = source.getPlayerOrException();
+                        String quest = StringArgumentType.getString(context, "id");
+                        QuestProgressHandler.getProgress(source.getServer(), player.getUUID()).testAndProgressTaskType(player, quest, DummyTask.TYPE);
                         return 1;
                     })
                 )

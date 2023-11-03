@@ -90,7 +90,7 @@ public abstract class AbstractQuestScreen<T> extends BaseCursorScreen {
             WidgetUtils.blitTiling(graphics, HEADING, sidebarWidth, 0, 2, 15, 128, 0, 2, 15); // Header Separator
             WidgetUtils.blitTiling(graphics, HEADING, sidebarWidth, 15, 2, height - 15, 128, 15, 2, 113); // Body Separator
         } else {
-            WidgetUtils.blitTiling(graphics, HEADING, 15, 0, width, height - 15, 128, 128, 128, 128); // Main Background
+            WidgetUtils.blitTiling(graphics, HEADING, 0, 15, width, height - 15, 128, 128, 128, 128); // Main Background
             WidgetUtils.blitTiling(graphics, HEADING, 0, 0, width, 15, 130, 0, 126, 15); // Main Header
         }
         RenderSystem.disableBlend();

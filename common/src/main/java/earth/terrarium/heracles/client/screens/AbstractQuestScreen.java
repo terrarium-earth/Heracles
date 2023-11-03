@@ -3,6 +3,7 @@ package earth.terrarium.heracles.client.screens;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.teamresourceful.resourcefullib.client.screens.BaseCursorScreen;
 import earth.terrarium.heracles.Heracles;
+import earth.terrarium.heracles.api.client.WidgetUtils;
 import earth.terrarium.heracles.client.widgets.base.TemporyWidget;
 import earth.terrarium.heracles.client.widgets.modals.EditObjectModal;
 import earth.terrarium.heracles.common.constants.ConstantComponents;
@@ -82,21 +83,17 @@ public abstract class AbstractQuestScreen<T> extends BaseCursorScreen {
         RenderSystem.defaultBlendFunc();
         if (drawSidebar()) {
             int sidebarWidth = (int) (this.width * 0.25f) - 2;
-            graphics.blitRepeating(HEADING, 0, 15, sidebarWidth, height - 15,0, 128, 128, 128); // Side Background
-            graphics.blitRepeating(HEADING, sidebarWidth + 2, 15, width - sidebarWidth, height - 15,128, 128, 128, 128); // Main Background
-            graphics.blitRepeating(HEADING, 0, 0, sidebarWidth, 15, 0, 0, 128, 15); // Side Header
-            graphics.blitRepeating(HEADING, sidebarWidth + 2, 0, width - sidebarWidth, 15, 130, 0, 126, 15); // Main Header
-            graphics.blitRepeating(HEADING, sidebarWidth, 0, 2, 15, 128, 0, 2, 15); // Header Separator
-            graphics.blitRepeating(HEADING, sidebarWidth, 15, 2, height - 15, 128, 15, 2, 113); // Body Separator
+            WidgetUtils.blitTiling(graphics, HEADING, 0, 15, sidebarWidth, height - 15, 0, 128, 128, 128); // Side Background
+            WidgetUtils.blitTiling(graphics, HEADING, sidebarWidth + 2, 15, width - sidebarWidth, height - 15, 128, 128, 128, 128); // Main Background
+            WidgetUtils.blitTiling(graphics, HEADING, 0, 0, sidebarWidth, 15, 0, 0, 128, 15); // Side Header
+            WidgetUtils.blitTiling(graphics, HEADING, sidebarWidth + 2, 0, width - sidebarWidth, 15, 130, 0, 126, 15); // Main Header
+            WidgetUtils.blitTiling(graphics, HEADING, sidebarWidth, 0, 2, 15, 128, 0, 2, 15); // Header Separator
+            WidgetUtils.blitTiling(graphics, HEADING, sidebarWidth, 15, 2, height - 15, 128, 15, 2, 113); // Body Separator
         } else {
-            graphics.blitRepeating(HEADING, 15, 0, width, height - 15,128, 128, 128, 128); // Main Background
-            graphics.blitRepeating(HEADING, 0, 0, width, 15, 130, 0, 126, 15); // Main Header
+            WidgetUtils.blitTiling(graphics, HEADING, 15, 0, width, height - 15, 128, 128, 128, 128); // Main Background
+            WidgetUtils.blitTiling(graphics, HEADING, 0, 0, width, 15, 130, 0, 126, 15); // Main Header
         }
         RenderSystem.disableBlend();
-        if (false) {
-            graphics.blitRepeating(HEADING, sidebarWidth, 15, 2, this.height - 15, 128, 0, 2, 256);
-            graphics.fill(sidebarWidth, 0, sidebarWidth + 2, 13, 0x80808080);
-        }
     }
 
     protected void renderLabels(GuiGraphics graphics, int mouseX, int mouseY) {

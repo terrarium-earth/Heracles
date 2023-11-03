@@ -1,5 +1,7 @@
 package earth.terrarium.heracles.api.client;
 
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.*;
 import com.mojang.math.Axis;
 import com.teamresourceful.resourcefullib.client.CloseablePoseStack;
 import com.teamresourceful.resourcefullib.client.utils.ScreenUtils;
@@ -10,15 +12,18 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.boss.enderdragon.EnderDragon;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import org.joml.Matrix4f;
 
 import java.util.List;
 import java.util.function.Supplier;
@@ -111,5 +116,55 @@ public final class WidgetUtils {
 
     public static void drawItemIconWithTooltip(GuiGraphics graphics, ItemStack icon, int x, int y, int iconSize, int mouseX, int mouseY) {
         drawItemIconWithTooltip(graphics, icon, x, y, iconSize, () -> Screen.getTooltipFromItem(Minecraft.getInstance(), icon), mouseX, mouseY);
+    }
+
+    public static void blitTiling(GuiGraphics graphics, ResourceLocation atlasLocation, int targetX, int targetY, int targetWidth, int targetHeight, int sourceX, int sourceY, int sourceWidth, int sourceHeight) {
+        try (BlitBatcher batcher = new BlitBatcher(graphics, atlasLocation)) {
+            int xOffset = 0;
+            while (xOffset < targetWidth) {
+                int width = Math.min(targetWidth - xOffset, sourceWidth);
+                int yOffset = 0;
+                while (yOffset < targetHeight) {
+                    int height = Math.min(targetHeight - yOffset, sourceHeight);
+                    batcher.addBlit(targetX + xOffset, targetY + yOffset, sourceX, sourceY, width, height);
+                    yOffset += height;
+                }
+                xOffset += width;
+            }
+        }
+    }
+
+    public static final class BlitBatcher implements AutoCloseable {
+        private final BufferBuilder bufferBuilder;
+        private final Matrix4f matrix4f;
+
+        public BlitBatcher(GuiGraphics graphics, ResourceLocation atlasLocation) {
+            RenderSystem.setShaderTexture(0, atlasLocation);
+            RenderSystem.setShader(GameRenderer::getPositionTexShader);
+            this.matrix4f = graphics.pose().last().pose();
+            this.bufferBuilder = Tesselator.getInstance().getBuilder();
+            bufferBuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
+        }
+
+        public void addBlit(int x, int y, int uOffset, int vOffset, int uWidth, int vHeight) {
+            this.innerAddBlit(x, x + uWidth, y, y + vHeight,
+                uOffset / (float) 256,
+                (uOffset + uWidth) / (float) 256,
+                (vOffset) / (float) 256,
+                (vOffset + vHeight) / (float) 256
+            );
+        }
+
+        private void innerAddBlit(int x1, int x2, int y1, int y2, float minU, float maxU, float minV, float maxV) {
+            bufferBuilder.vertex(matrix4f, x1, y1, 0).uv(minU, minV).endVertex();
+            bufferBuilder.vertex(matrix4f, x1, y2, 0).uv(minU, maxV).endVertex();
+            bufferBuilder.vertex(matrix4f, x2, y2, 0).uv(maxU, maxV).endVertex();
+            bufferBuilder.vertex(matrix4f, x2, y1, 0).uv(maxU, minV).endVertex();
+        }
+
+        @Override
+        public void close() {
+            BufferUploader.drawWithShader(bufferBuilder.end());
+        }
     }
 }

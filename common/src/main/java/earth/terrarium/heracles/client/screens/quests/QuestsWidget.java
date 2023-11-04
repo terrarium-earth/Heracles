@@ -223,10 +223,10 @@ public class QuestsWidget extends BaseWidget {
                     if (lines.contains(new Pair<>(position, childPosition))) continue;
                     lines.add(new Pair<>(position, childPosition));
 
-                    float px = position.x() + 10.5f;
-                    float py = position.y() + 9.5f;
-                    float cx = childPosition.x() + 10.5f;
-                    float cy = childPosition.y() + 9.5f;
+                    float px = position.x() + 10f;
+                    float py = position.y() + 10f;
+                    float cx = childPosition.x() + 10f;
+                    float cy = childPosition.y() + 10f;
 
                     float length = Mth.sqrt(Mth.square(cx - px) + Mth.square(cy - py));
 

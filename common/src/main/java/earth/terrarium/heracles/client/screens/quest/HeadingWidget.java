@@ -19,8 +19,8 @@ public record HeadingWidget(Component title, ModUtils.QuestStatus status) implem
         int titleWidth = Minecraft.getInstance().font.width(title);
 
         RenderSystem.enableBlend();
-        graphics.blitNineSliced(TEXTURE, x, y, titleWidth + 6, Minecraft.getInstance().font.lineHeight + 4, 3, 64, 13, 0, 42 + status.ordinal() * 13);
-        graphics.blitNineSliced(TEXTURE, x + titleWidth + 6, y, width - titleWidth - 6, Minecraft.getInstance().font.lineHeight + 4, 4, 64, 13, 64, 42 + status.ordinal() * 13);
+        graphics.blitNineSliced(TEXTURE, x, y, titleWidth + 6, Minecraft.getInstance().font.lineHeight + 4, 3, 64, 13, 0, 84 + status.ordinal() * 13);
+        graphics.blitNineSliced(TEXTURE, x + titleWidth + 6, y, width - titleWidth - 6, Minecraft.getInstance().font.lineHeight + 4, 4, 64, 13, 64, 84 + status.ordinal() * 13);
         RenderSystem.disableBlend();
 
         graphics.drawString(

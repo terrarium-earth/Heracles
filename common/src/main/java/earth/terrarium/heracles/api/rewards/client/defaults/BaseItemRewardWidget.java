@@ -30,6 +30,8 @@ public interface BaseItemRewardWidget extends DisplayWidget {
 
     void claimReward();
 
+    boolean isInteractive();
+
     @Override
     default void render(GuiGraphics graphics, ScissorBoxStack scissor, int x, int y, int width, int mouseX, int mouseY, boolean hovered, float partialTicks) {
         WidgetUtils.drawBackground(graphics, x, y, width, getHeight(width));
@@ -37,24 +39,28 @@ public interface BaseItemRewardWidget extends DisplayWidget {
         if (!getIconOverride().render(graphics, scissor, x + 5, y + 5, iconSize, iconSize)) {
             WidgetUtils.drawItemIconWithTooltip(graphics, getIcon(), x + 5, y + 5, iconSize, this::getTooltip, mouseX, mouseY);
         }
-        int buttonY = y + 11;
-        boolean buttonHovered = mouseX > x + width - 30 && mouseX < x + width - 10 && mouseY > buttonY && mouseY < buttonY + 20;
-        int v = canClaim() ? buttonHovered ? 86 : 66 : 46;
-        graphics.blitNineSliced(BUTTON_TEXTURE, x + width - 30, buttonY, 20, 20, 3, 3, 3, 3, 200, 20, 0, v);
-        graphics.blit(LOOTBAG_TEXTURE, x + width - 30 + 2, buttonY + 2, 0, 0, 16, 16, 16, 16);
-        if (buttonHovered) {
-            CursorUtils.setCursor(true, canClaim() ? CursorScreen.Cursor.POINTER : CursorScreen.Cursor.DISABLED);
-            if (canClaim()) ScreenUtils.setTooltip(ConstantComponents.Rewards.SELECT_CLAIM);
+        if (isInteractive()) {
+            int buttonY = y + 11;
+            boolean buttonHovered = mouseX > x + width - 30 && mouseX < x + width - 10 && mouseY > buttonY && mouseY < buttonY + 20;
+            int v = canClaim() ? buttonHovered ? 86 : 66 : 46;
+            graphics.blitNineSliced(BUTTON_TEXTURE, x + width - 30, buttonY, 20, 20, 3, 3, 3, 3, 200, 20, 0, v);
+            graphics.blit(LOOTBAG_TEXTURE, x + width - 30 + 2, buttonY + 2, 0, 0, 16, 16, 16, 16);
+            if (buttonHovered) {
+                CursorUtils.setCursor(true, canClaim() ? CursorScreen.Cursor.POINTER : CursorScreen.Cursor.DISABLED);
+                if (canClaim()) ScreenUtils.setTooltip(ConstantComponents.Rewards.SELECT_CLAIM);
+            }
         }
     }
 
     @Override
     default boolean mouseClicked(double mouseX, double mouseY, int mouseButton, int width) {
-        int buttonY = 11;
-        boolean buttonHovered = mouseX > width - 30 && mouseX < width - 10 && mouseY > buttonY && mouseY < buttonY + 20;
-        if (buttonHovered && canClaim()) {
-            claimReward();
-            return true;
+        if (isInteractive()) {
+            int buttonY = 11;
+            boolean buttonHovered = mouseX > width - 30 && mouseX < width - 10 && mouseY > buttonY && mouseY < buttonY + 20;
+            if (buttonHovered && canClaim()) {
+                claimReward();
+                return true;
+            }
         }
         return false;
     }

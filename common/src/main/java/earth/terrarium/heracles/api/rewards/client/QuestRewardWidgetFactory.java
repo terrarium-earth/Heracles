@@ -5,10 +5,10 @@ import earth.terrarium.heracles.api.rewards.QuestReward;
 
 public interface QuestRewardWidgetFactory<T extends QuestReward<T>> {
 
-    DisplayWidget create(T task);
+    DisplayWidget create(T task, boolean interactive);
 
-    default DisplayWidget createAndCast(QuestReward<?> task) {
-        return create(this.cast(task));
+    default DisplayWidget createAndCast(QuestReward<?> task, boolean interactive) {
+        return create(this.cast(task), interactive);
     }
 
     @SuppressWarnings("unchecked")

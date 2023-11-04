@@ -18,17 +18,17 @@ import net.minecraft.world.item.Items;
 
 import java.util.List;
 
-public record LootTableRewardWidget(LootTableReward reward, String quest, QuestProgress progress) implements BaseItemRewardWidget {
+public record LootTableRewardWidget(LootTableReward reward, String quest, QuestProgress progress, boolean interactive) implements BaseItemRewardWidget {
 
     private static final Component TITLE_SINGULAR = Component.translatable("reward.heracles.loottable.title.singular");
     private static final String DESC_SINGULAR = "reward.heracles.loottable.desc.singular";
     private static final String TOOLTIP_SINGULAR = "reward.heracles.loottable.tooltip.singular";
 
-    public static LootTableRewardWidget of(LootTableReward reward) {
+    public static LootTableRewardWidget of(LootTableReward reward, boolean interactive) {
         if (Minecraft.getInstance().screen instanceof BaseQuestScreen screen) {
-            return new LootTableRewardWidget(reward, screen.getQuestId(), ClientQuests.getProgress(screen.getQuestId()));
+            return new LootTableRewardWidget(reward, screen.getQuestId(), ClientQuests.getProgress(screen.getQuestId()), interactive);
         }
-        return new LootTableRewardWidget(reward, "", null);
+        return new LootTableRewardWidget(reward, "", null, interactive);
     }
 
     @Override
@@ -44,6 +44,11 @@ public record LootTableRewardWidget(LootTableReward reward, String quest, QuestP
     @Override
     public boolean canClaim() {
         return progress != null && progress.canClaim(reward.id());
+    }
+
+    @Override
+    public boolean isInteractive() {
+        return interactive;
     }
 
     @Override

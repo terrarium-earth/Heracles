@@ -14,17 +14,17 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 
-public record ItemRewardWidget(ItemReward reward, String quest, QuestProgress progress) implements BaseItemRewardWidget {
+public record ItemRewardWidget(ItemReward reward, String quest, QuestProgress progress, boolean interactive) implements BaseItemRewardWidget {
 
     private static final String TITLE_SINGULAR = "reward.heracles.item.title.singular";
     private static final String TITLE_PLURAL = "reward.heracles.item.title.plural";
     private static final String DESC_SINGULAR = "reward.heracles.item.desc.singular";
     private static final String DESC_PLURAL = "reward.heracles.item.desc.plural";
-    public static ItemRewardWidget of(ItemReward reward) {
+    public static ItemRewardWidget of(ItemReward reward, boolean interactive) {
         if (Minecraft.getInstance().screen instanceof BaseQuestScreen screen) {
-            return new ItemRewardWidget(reward, screen.getQuestId(), ClientQuests.getProgress(screen.getQuestId()));
+            return new ItemRewardWidget(reward, screen.getQuestId(), ClientQuests.getProgress(screen.getQuestId()), interactive);
         }
-        return new ItemRewardWidget(reward, "", null);
+        return new ItemRewardWidget(reward, "", null, interactive);
     }
 
     @Override
@@ -40,6 +40,11 @@ public record ItemRewardWidget(ItemReward reward, String quest, QuestProgress pr
     @Override
     public boolean canClaim() {
         return progress != null && progress.canClaim(reward.id());
+    }
+
+    @Override
+    public boolean isInteractive() {
+        return interactive;
     }
 
     @Override

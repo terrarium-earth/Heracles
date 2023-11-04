@@ -189,4 +189,17 @@ public class ModUtils {
             throw new RuntimeException("Stackoverflow error while parsing: " + t);
         }
     }
+
+    public static String safeSubstring(String string, int start, int end) {
+        if (string == null || string.isEmpty()) {
+            return "";
+        }
+        if (start < 0) {
+            start = 0;
+        }
+        if (end > string.length()) {
+            end = string.length();
+        }
+        return string.substring(start, end);
+    }
 }

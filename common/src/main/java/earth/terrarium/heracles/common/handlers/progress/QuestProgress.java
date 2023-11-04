@@ -64,9 +64,9 @@ public class QuestProgress {
         claimed.add(reward);
     }
 
-    void reset() {
+    public void reset() {
         for (TaskProgress<?> taskProgress : tasks.values()) {
-            taskProgress.resetProgress();
+            taskProgress.reset();
         }
         claimed.clear();
         complete = false;

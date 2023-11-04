@@ -59,7 +59,7 @@ public class ClientUtils {
         return builder.toString();
     }
 
-        public static void blitTiling(GuiGraphics graphics, ResourceLocation atlasLocation, int targetX, int targetY, int targetWidth, int targetHeight, int sourceX, int sourceY, int sourceWidth, int sourceHeight) {
+    public static void blitTiling(GuiGraphics graphics, ResourceLocation atlasLocation, int targetX, int targetY, int targetWidth, int targetHeight, int sourceX, int sourceY, int sourceWidth, int sourceHeight) {
         try (BlitBatcher batcher = new BlitBatcher(graphics, atlasLocation)) {
             int xOffset = 0;
             while (xOffset < targetWidth) {
@@ -89,10 +89,10 @@ public class ClientUtils {
 
         public void addBlit(int x, int y, int uOffset, int vOffset, int uWidth, int vHeight) {
             this.innerAddBlit(x, x + uWidth, y, y + vHeight,
-                uOffset / (float) 256,
-                (uOffset + uWidth) / (float) 256,
-                (vOffset) / (float) 256,
-                (vOffset + vHeight) / (float) 256
+                uOffset / 256f,
+                (uOffset + uWidth) / 256f,
+                (vOffset) / 256f,
+                (vOffset + vHeight) / 256f
             );
         }
 

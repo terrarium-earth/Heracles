@@ -18,6 +18,7 @@ import net.minecraft.network.chat.Component;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public final class CompositeTaskWidget implements DisplayWidget {
 
@@ -32,8 +33,9 @@ public final class CompositeTaskWidget implements DisplayWidget {
         this.progress = progress;
         this.widgets = new ArrayList<>();
         int i = 0;
-        for (QuestTask<?, ?, ?> value : task.tasks().values()) {
-            TaskProgress<?> valueProgress = new TaskProgress<>(progress.progress().get(i), false);
+        for (Map.Entry<String, QuestTask<?, ?, ?>> entry : task.tasks().entrySet()) {
+            QuestTask<?, ?, ?> value = entry.getValue();
+            TaskProgress<?> valueProgress = new TaskProgress<>(progress.progress().get(i), task.tasks().get(entry.getKey()).storage()::createDefault, false);
             valueProgress.updateComplete(ModUtils.cast(value));
             this.widgets.add(QuestTaskWidgets.create(quest, ModUtils.cast(value), valueProgress, status));
             i++;

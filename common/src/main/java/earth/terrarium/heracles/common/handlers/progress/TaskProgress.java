@@ -4,18 +4,23 @@ import earth.terrarium.heracles.api.tasks.QuestTask;
 import earth.terrarium.heracles.api.tasks.QuestTaskType;
 import net.minecraft.nbt.Tag;
 
+import java.util.function.Supplier;
+
 public class TaskProgress<S extends Tag> {
 
     private S progress;
+    private final Supplier<S> defaultProgress;
     private boolean complete;
 
     public TaskProgress(QuestTask<?, S, ?> task) {
         this.progress = task.storage().createDefault();
+        this.defaultProgress = task.storage()::createDefault;
         this.complete = false;
     }
 
-    public TaskProgress(S progress, boolean complete) {
+    public TaskProgress(S progress, Supplier<S> defaultProgress, boolean complete) {
         this.progress = progress;
+        this.defaultProgress = defaultProgress;
         this.complete = complete;
     }
 
@@ -23,6 +28,11 @@ public class TaskProgress<S extends Tag> {
         if (complete) return;
         progress = task.test(type, progress, input);
         updateComplete(task);
+    }
+
+    public void reset() {
+        progress = defaultProgress.get();
+        setComplete(false);
     }
 
     public boolean isComplete() {
@@ -45,6 +55,6 @@ public class TaskProgress<S extends Tag> {
     }
 
     public TaskProgress<S> copy() {
-        return new TaskProgress<>(progress, complete);
+        return new TaskProgress<>(progress, defaultProgress, complete);
     }
 }

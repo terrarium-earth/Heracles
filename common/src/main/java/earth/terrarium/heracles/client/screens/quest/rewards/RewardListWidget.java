@@ -42,6 +42,8 @@ public class RewardListWidget extends AbstractContainerEventHandler implements R
     private final int y;
     private final int width;
     private final int height;
+    private final double overscrollTop;
+    private final double overscrollBottom;
 
     private final ClientQuests.QuestEntry entry;
     private final QuestProgress progress;
@@ -55,7 +57,7 @@ public class RewardListWidget extends AbstractContainerEventHandler implements R
     private final Runnable onCreate;
 
     public RewardListWidget(
-        int x, int y, int width, int height,
+        int x, int y, int width, int height, double overscrollTop, double overscrollBottom,
         ClientQuests.QuestEntry entry,
         QuestProgress progress,
         BiConsumer<QuestReward<?>, Boolean> onClick,
@@ -65,11 +67,24 @@ public class RewardListWidget extends AbstractContainerEventHandler implements R
         this.y = y;
         this.width = width;
         this.height = height;
+        this.overscrollTop = overscrollTop;
+        this.overscrollBottom = overscrollBottom;
         this.lastFullHeight = this.height;
         this.entry = entry;
         this.progress = progress;
         this.onClick = onClick;
         this.onCreate = onCreate;
+        this.scrollAmount = -overscrollTop;
+    }
+
+    public RewardListWidget(
+        int x, int y, int width, int height,
+        ClientQuests.QuestEntry entry,
+        QuestProgress progress,
+        BiConsumer<QuestReward<?>, Boolean> onClick,
+        Runnable onCreate
+    ) {
+        this(x, y, width, height, 0.0D, 0.0D, entry, progress, onClick, onCreate);
     }
 
     public void update(String group, String id, Quest quest) {
@@ -170,12 +185,11 @@ public class RewardListWidget extends AbstractContainerEventHandler implements R
             this.mouse = null;
             this.lastFullHeight = fullHeight;
         }
-        this.scrollAmount = Mth.clamp(this.scrollAmount, 0.0D, Math.max(0, this.lastFullHeight - this.height));
     }
 
     @Override
     public boolean mouseScrolled(double mouseX, double mouseY, double scrollAmount) {
-        this.scrollAmount = Mth.clamp(this.scrollAmount - scrollAmount * 10, 0.0D, Math.max(0, this.lastFullHeight - this.height));
+        this.scrollAmount = Mth.clamp(this.scrollAmount - scrollAmount * 10, -overscrollTop, Math.max(-overscrollTop, this.lastFullHeight - this.height + overscrollBottom));
         return true;
     }
 

@@ -17,6 +17,7 @@ import earth.terrarium.heracles.client.handlers.ClientQuests;
 import earth.terrarium.heracles.client.screens.mousemode.MouseMode;
 import earth.terrarium.heracles.client.utils.ClientUtils;
 import earth.terrarium.heracles.client.utils.MouseClick;
+import earth.terrarium.heracles.client.utils.TexturePlacements;
 import earth.terrarium.heracles.client.widgets.base.BaseWidget;
 import earth.terrarium.heracles.common.menus.quests.QuestsContent;
 import earth.terrarium.heracles.common.network.NetworkHandler;
@@ -223,10 +224,10 @@ public class QuestsWidget extends BaseWidget {
                     if (lines.contains(new Pair<>(position, childPosition))) continue;
                     lines.add(new Pair<>(position, childPosition));
 
-                    float px = position.x() + 9f;
-                    float py = position.y() + 9f;
-                    float cx = childPosition.x() + 9f;
-                    float cy = childPosition.y() + 9f;
+                    float px = position.x() + 10f;
+                    float py = position.y() + 10f;
+                    float cx = childPosition.x() + 10f;
+                    float cy = childPosition.y() + 10f;
 
                     float length = Mth.sqrt(Mth.square(cx - px) + Mth.square(cy - py));
 
@@ -251,7 +252,12 @@ public class QuestsWidget extends BaseWidget {
             for (QuestWidget widget : this.widgets) {
                 widget.render(graphics, scissor.stack(), x + offset.x(), y + offset.y(), mouseX, mouseY, isMouseOver(mouseX, mouseY), partialTick);
                 if (mouseMode.get().canSelect() && widget == this.selectHandler.selectedQuest()) {
-                    graphics.renderOutline(x + offset.x() + widget.x() - 2, y + offset.y() + widget.y() - 2, 28, 28, 0xFFA8EFF0);
+                    TexturePlacements.Info info = widget.getTextureInfo();
+                    graphics.renderOutline(
+                        x + offset.x() + widget.x() + info.xOffset() - 2, y + offset.y() + widget.y() + info.yOffset() - 2,
+                        info.width() + 4, info.height() + 4,
+                        0xFFA8EFF0
+                    );
                 }
             }
         }

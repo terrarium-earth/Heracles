@@ -44,7 +44,7 @@ public class QuestTutorialScreen extends BaseCursorScreen {
             e1.setContent("Error parsing tutorial text: " + e.getMessage());
             elements.add(e1);
         }
-        this.document = addRenderableOnly(new DocumentWidget(widgetWidth / 2, 20, widgetWidth, height - 60, new DefaultTheme(), elements));
+        this.document = addRenderableOnly(new DocumentWidget(widgetWidth / 2, 0, widgetWidth, height - 30, new DefaultTheme(), elements));
         int buttonX = (this.width - 150) / 2;
         addRenderableWidget(Button.builder(ConstantComponents.Quests.VIEW, button -> {
             DisplayConfig.save();

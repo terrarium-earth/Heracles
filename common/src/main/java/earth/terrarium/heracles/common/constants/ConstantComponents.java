@@ -2,8 +2,10 @@ package earth.terrarium.heracles.common.constants;
 
 import com.teamresourceful.resourcefullib.common.exceptions.UtilityClassException;
 import earth.terrarium.heracles.common.annotations.Translate;
+import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.contents.TranslatableContents;
 
 import java.lang.reflect.Field;
@@ -82,6 +84,9 @@ public final class ConstantComponents {
 
         @Translate("Overview")
         public static final Component OVERVIEW = Component.translatable("gui.heracles.quests.overview");
+
+        @Translate("Unclaimed Rewards")
+        public static final Component CLAIMABLE = Component.translatable("gui.heracles.quests.claimable").setStyle(Style.EMPTY.withColor(ChatFormatting.GOLD));
     }
 
     public static final class Tasks {

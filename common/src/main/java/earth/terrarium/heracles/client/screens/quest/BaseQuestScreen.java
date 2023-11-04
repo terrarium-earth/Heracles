@@ -56,7 +56,7 @@ public abstract class BaseQuestScreen extends AbstractQuestScreen<QuestContent> 
             this.claimRewards.active = this.content.progress().isComplete() && this.content.progress().claimedRewards().size() < this.quest().rewards().size();
         }
         if (this.progressWidget != null) {
-            this.progressWidget.update(this.quest().tasks().size(), (int) this.quest().tasks().values().stream().filter(t -> this.content.progress().getTask(t).isComplete()).count());
+            this.progressWidget.update(this.quest().tasks().size(), (int) this.quest().tasks().values().stream().filter(t -> this.content.progress().getTask(t).isComplete()).count(), this.quest().rewards().size(), this.content.progress().claimedRewards().size());
         }
     }
 

@@ -25,15 +25,15 @@ public record BackgroundModalItem(ResourceLocation texture) {
 
         Matrix4f matrix = graphics.pose().last().pose();
 
-        int xStart = (WIDTH - 72) / 2;
+        int xStart = (WIDTH - 96) / 2;
 
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         BufferBuilder bufferBuilder = Tesselator.getInstance().getBuilder();
         bufferBuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
         bufferBuilder.vertex(matrix, x + xStart, y + 2, 0).uv(0, 0).endVertex();
         bufferBuilder.vertex(matrix, x + xStart, y + 26, 0).uv(0, 1).endVertex();
-        bufferBuilder.vertex(matrix, x + xStart + 72, y + 26, 0).uv(1, 1).endVertex();
-        bufferBuilder.vertex(matrix, x + xStart + 72, y + 2, 0).uv(1, 0).endVertex();
+        bufferBuilder.vertex(matrix, x + xStart + 96, y + 26, 0).uv(1, 1).endVertex();
+        bufferBuilder.vertex(matrix, x + xStart + 96, y + 2, 0).uv(1, 0).endVertex();
         BufferUploader.drawWithShader(bufferBuilder.end());
 
         if (hovering && mouseX >= x && mouseX <= x + WIDTH && mouseY >= y && mouseY <= y + HEIGHT) {

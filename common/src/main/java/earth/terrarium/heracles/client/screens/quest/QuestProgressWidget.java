@@ -10,12 +10,16 @@ public final class QuestProgressWidget implements Renderable {
     private static final String TITLE_COMPLETE = "gui.heracles.progress.title.complete";
     private static final String DESC_SINGULAR = "gui.heracles.progress.desc.incomplete.singular";
     private static final String DESC_PLURAL = "gui.heracles.progress.desc.incomplete.plural";
-    private static final String DESC_COMPLETE = "gui.heracles.progress.desc.complete";
+    private static final String DESC_COMPLETE_SINGULAR = "gui.heracles.progress.desc.complete.singular";
+    private static final String DESC_COMPLETE_PLURAL = "gui.heracles.progress.desc.complete.plural";
+    private static final String DESC_COMPLETE_CLAIMED = "gui.heracles.progress.desc.complete_claimed";
     private final int x;
     private final int y;
     private final int width;
     private int tasks = 0;
     private int completed = 0;
+    private int rewards = 0;
+    private int claimed = 0;
 
     public QuestProgressWidget(int x, int y, int width) {
         this.x = x;
@@ -23,18 +27,20 @@ public final class QuestProgressWidget implements Renderable {
         this.width = width;
     }
 
-    public void update(int tasks, int completed) {
+    public void update(int tasks, int completed, int rewards, int claimed) {
         this.tasks = tasks;
         this.completed = completed;
+        this.rewards = rewards;
+        this.claimed = claimed;
     }
 
     @Override
     public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
         graphics.fill(x, y, x + width, y + 30, 0xD0000000);
-        graphics.renderOutline(x, y, width, 30, 0xFFFFFFFF);
+        graphics.renderOutline(x, y, width, 30, tasks == completed ? (rewards == claimed ? 0xFF32C143 : 0xFFC7C700) : 0xFFFFFFFF);
 
         String title = tasks == completed ? TITLE_COMPLETE : TITLE_INCOMPLETE;
-        String desc = tasks == completed ? DESC_COMPLETE : (tasks - completed > 1 ? DESC_PLURAL : DESC_SINGULAR);
+        String desc = tasks == completed ? (rewards == claimed ? DESC_COMPLETE_CLAIMED : (rewards - claimed > 1 ? DESC_COMPLETE_PLURAL : DESC_COMPLETE_SINGULAR)) : (tasks - completed > 1 ? DESC_PLURAL : DESC_SINGULAR);
         String completion = String.format("%.0f%%", this.completed * 100 / (double) tasks);
 
         graphics.drawString(
@@ -49,7 +55,7 @@ public final class QuestProgressWidget implements Renderable {
         );
         graphics.drawString(
             Minecraft.getInstance().font,
-            Component.translatable(desc, tasks - completed), x + 5, y + 25 - Minecraft.getInstance().font.lineHeight, 0xFF696969,
+            Component.translatable(desc, tasks == completed ? rewards - claimed : tasks - completed), x + 5, y + 25 - Minecraft.getInstance().font.lineHeight, 0xFF696969,
             false
         );
     }

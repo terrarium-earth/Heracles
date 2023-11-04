@@ -7,11 +7,14 @@ import com.teamresourceful.resourcefullib.client.utils.ScreenUtils;
 import earth.terrarium.heracles.api.quests.Quest;
 import earth.terrarium.heracles.client.handlers.ClientQuests;
 import earth.terrarium.heracles.client.utils.ClientUtils;
+import earth.terrarium.heracles.common.constants.ConstantComponents;
 import earth.terrarium.heracles.client.utils.TexturePlacements;
 import earth.terrarium.heracles.common.utils.ModUtils;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.network.chat.Component;
 import org.joml.Vector2i;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class QuestWidget {
@@ -32,8 +35,9 @@ public class QuestWidget {
 
     public void render(GuiGraphics graphics, ScissorBoxStack scissor, int x, int y, int mouseX, int mouseY, boolean hovered, float ignoredPartialTicks) {
         int offset = switch (status) {
-            case COMPLETED -> 1;
-            case LOCKED -> 2;
+            case COMPLETED_CLAIMED -> 1;
+            case COMPLETED -> 2;
+            case LOCKED -> 3;
             default -> 0;
         };
         hovered = hovered && isMouseOver(mouseX - x, mouseY - y);
@@ -44,8 +48,9 @@ public class QuestWidget {
             x + x() + info.xOffset(), y + y() + info.yOffset(),
             offset * info.width(), 0,
             info.width(), info.height(),
-            info.width() * 3, info.height()
+            info.width() * 4, info.height()
         );
+
         if (hovered) {
             graphics.fill(
                 x + x() + info.xOffset(), y + y() + info.yOffset(),
@@ -60,10 +65,12 @@ public class QuestWidget {
             if (subtitleText.isBlank()) {
                 ScreenUtils.setTooltip(quest.display().title().copy().withStyle(style -> style.withBold(true)), false);
             } else {
-                ScreenUtils.setTooltip(List.of(
+                List<Component> lines = new ArrayList<>(List.of(
                     quest.display().title().copy().withStyle(style -> style.withBold(true)),
                     quest.display().subtitle()
-                ), false);
+                ));
+                if (status == ModUtils.QuestStatus.COMPLETED) lines.add(ConstantComponents.Quests.CLAIMABLE);
+                ScreenUtils.setTooltip(lines, false);
             }
         }
     }

@@ -64,6 +64,11 @@ public record QuestsProgress(Map<String, QuestProgress> progress, CompletableQue
         syncToTeam(player, editedQuests);
     }
 
+    public void resetQuest(String quest, ServerPlayer player) {
+        progress.get(quest).reset();
+        this.completableQuests.updateCompleteQuests(this, player);
+    }
+
     public <I, T extends QuestTask<I, ?, T>> boolean testAndProgressTask(ServerPlayer player, String id, String task, I input, QuestTaskType<T> taskType) {
         List<String> completableQuests = this.completableQuests.getQuests(this);
         if (!completableQuests.contains(id)) return false;

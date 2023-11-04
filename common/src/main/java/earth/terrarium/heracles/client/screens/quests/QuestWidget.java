@@ -7,6 +7,7 @@ import com.teamresourceful.resourcefullib.client.utils.ScreenUtils;
 import earth.terrarium.heracles.api.quests.Quest;
 import earth.terrarium.heracles.client.handlers.ClientQuests;
 import earth.terrarium.heracles.client.utils.ClientUtils;
+import earth.terrarium.heracles.client.utils.TexturePlacements;
 import earth.terrarium.heracles.common.utils.ModUtils;
 import net.minecraft.client.gui.GuiGraphics;
 import org.joml.Vector2i;
@@ -20,6 +21,8 @@ public class QuestWidget {
     private final ModUtils.QuestStatus status;
     private final String id;
 
+    private TexturePlacements.Info info = TexturePlacements.NO_OFFSET_24X;
+
     public QuestWidget(ClientQuests.QuestEntry entry, ModUtils.QuestStatus status) {
         this.entry = entry;
         this.quest = entry.value();
@@ -29,14 +32,26 @@ public class QuestWidget {
 
     public void render(GuiGraphics graphics, ScissorBoxStack scissor, int x, int y, int mouseX, int mouseY, boolean hovered, float ignoredPartialTicks) {
         int offset = switch (status) {
-            case COMPLETED -> 24;
-            case LOCKED -> 48;
+            case COMPLETED -> 1;
+            case LOCKED -> 2;
             default -> 0;
         };
         hovered = hovered && isMouseOver(mouseX - x, mouseY - y);
-        graphics.blit(quest.display().iconBackground(), x + x(), y + y(), offset, 0, 24, 24, 72, 24);
+
+        info = TexturePlacements.getOrDefault(quest.display().iconBackground(), TexturePlacements.NO_OFFSET_24X);
+
+        graphics.blit(quest.display().iconBackground(),
+            x + x() + info.xOffset(), y + y() + info.yOffset(),
+            offset * info.width(), 0,
+            info.width(), info.height(),
+            info.width() * 3, info.height()
+        );
         if (hovered) {
-            graphics.fill(x + x(), y + y(), x + x() + 24, y + y() + 24, 0x50FFFFFF);
+            graphics.fill(
+                x + x() + info.xOffset(), y + y() + info.yOffset(),
+                x + x() + info.xOffset() + info.width(), y + y() + info.yOffset() + info.height(),
+                0x50FFFFFF
+            );
         }
         quest.display().icon().render(graphics, scissor, x + x() + 4, y + y() + 4, 24, 24);
         CursorUtils.setCursor(hovered, CursorScreen.Cursor.POINTER);
@@ -89,5 +104,9 @@ public class QuestWidget {
 
     public String id() {
         return this.id;
+    }
+
+    public TexturePlacements.Info getTextureInfo() {
+        return this.info;
     }
 }

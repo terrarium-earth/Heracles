@@ -34,19 +34,13 @@ public class QuestWidget {
     }
 
     public void render(GuiGraphics graphics, ScissorBoxStack scissor, int x, int y, int mouseX, int mouseY, boolean hovered, float ignoredPartialTicks) {
-        int offset = switch (status) {
-            case COMPLETED_CLAIMED -> 1;
-            case COMPLETED -> 2;
-            case LOCKED -> 3;
-            default -> 0;
-        };
         hovered = hovered && isMouseOver(mouseX - x, mouseY - y);
 
         info = TexturePlacements.getOrDefault(quest.display().iconBackground(), TexturePlacements.NO_OFFSET_24X);
 
         graphics.blit(quest.display().iconBackground(),
             x + x() + info.xOffset(), y + y() + info.yOffset(),
-            offset * info.width(), 0,
+            status.ordinal() * info.width(), 0,
             info.width(), info.height(),
             info.width() * 4, info.height()
         );

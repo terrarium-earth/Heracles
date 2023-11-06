@@ -10,7 +10,7 @@ import java.util.Objects;
 public final class QuestSettings {
     public static final Codec<QuestSettings> CODEC = RecordCodecBuilder.create(instance -> instance.group(
         Codec.BOOL.fieldOf("individual_progress").orElse(false).forGetter(QuestSettings::individualProgress),
-        EnumCodec.of(ModUtils.QuestStatus.class).orElse(ModUtils.QuestStatus.LOCKED).fieldOf("hidden").forGetter(QuestSettings::hiddenUntil),
+        EnumCodec.of(ModUtils.QuestStatus.class).fieldOf("hidden").orElse(ModUtils.QuestStatus.LOCKED).forGetter(QuestSettings::hiddenUntil),
         Codec.BOOL.fieldOf("unlockNotification").orElse(false).forGetter(QuestSettings::unlockNotification),
         Codec.BOOL.fieldOf("showDependencyArrow").orElse(true).forGetter(QuestSettings::showDependencyArrow)
     ).apply(instance, QuestSettings::new));

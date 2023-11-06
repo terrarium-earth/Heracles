@@ -1,14 +1,20 @@
 package earth.terrarium.heracles.common.network.packets.quests;
 
 import com.mojang.serialization.Codec;
+import com.teamresourceful.resourcefullib.common.codecs.yabn.YabnOps;
 import com.teamresourceful.resourcefullib.common.networking.PacketHelper;
 import com.teamresourceful.resourcefullib.common.networking.base.Packet;
 import com.teamresourceful.resourcefullib.common.networking.base.PacketContext;
 import com.teamresourceful.resourcefullib.common.networking.base.PacketHandler;
+import com.teamresourceful.yabn.YabnParser;
+import com.teamresourceful.yabn.elements.YabnElement;
+import com.teamresourceful.yabn.reader.ByteReader;
 import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.api.quests.Quest;
 import earth.terrarium.heracles.client.handlers.ClientQuests;
+import io.netty.buffer.ByteBuf;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.RegistryOps;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.List;
@@ -39,15 +45,41 @@ public record SyncQuestsPacket(Map<String, Quest> quests, List<String> groups) i
 
         @Override
         public SyncQuestsPacket decode(FriendlyByteBuf buffer) {
-            return new SyncQuestsPacket(
-                PacketHelper.readWithRegistryYabn(Heracles.getRegistryAccess(), buffer, QUEST_MAP_CODEC, true).get().orThrow(),
-                buffer.readList(FriendlyByteBuf::readUtf)
-            );
+            YabnElement element = YabnParser.parse(new ByteBufByteReader(buffer));
+            try {
+                return new SyncQuestsPacket(
+                    QUEST_MAP_CODEC.parse(RegistryOps.create(YabnOps.COMPRESSED, Heracles.getRegistryAccess()), element).get().orThrow(),
+                    buffer.readList(FriendlyByteBuf::readUtf)
+                );
+            }catch (Exception e) {
+                System.out.println("Failed to decode sync quests packet");
+                System.out.println(element.toString());
+                throw e;
+            }
         }
+
 
         @Override
         public PacketContext handle(SyncQuestsPacket message) {
             return (player, level) -> ClientQuests.sync(message.quests(), message.groups());
+        }
+    }
+
+    private record ByteBufByteReader(ByteBuf buf) implements ByteReader {
+
+        @Override
+        public byte peek() {
+            return buf.getByte(buf.readerIndex());
+        }
+
+        @Override
+        public void advance() {
+            buf.skipBytes(1);
+        }
+
+        @Override
+        public byte readByte() {
+            return buf.readByte();
         }
     }
 }

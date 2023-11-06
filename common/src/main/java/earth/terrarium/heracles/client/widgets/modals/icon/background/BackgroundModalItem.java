@@ -6,6 +6,7 @@ import com.teamresourceful.resourcefullib.client.scissor.ScissorBoxStack;
 import com.teamresourceful.resourcefullib.client.screens.CursorScreen;
 import com.teamresourceful.resourcefullib.client.utils.CursorUtils;
 import com.teamresourceful.resourcefullib.client.utils.ScreenUtils;
+import earth.terrarium.heracles.client.utils.TexturePlacements;
 import earth.terrarium.heracles.client.widgets.modals.upload.UploadModal;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.GameRenderer;
@@ -23,17 +24,18 @@ public record BackgroundModalItem(ResourceLocation texture) {
 
         RenderSystem.setShaderTexture(0, texture);
 
+        TexturePlacements.Info info = TexturePlacements.get(texture);
         Matrix4f matrix = graphics.pose().last().pose();
 
-        int xStart = (WIDTH - 96) / 2;
+        int xStart = (WIDTH - info.width() * 4) / 2;
 
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         BufferBuilder bufferBuilder = Tesselator.getInstance().getBuilder();
         bufferBuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
         bufferBuilder.vertex(matrix, x + xStart, y + 2, 0).uv(0, 0).endVertex();
-        bufferBuilder.vertex(matrix, x + xStart, y + 26, 0).uv(0, 1).endVertex();
-        bufferBuilder.vertex(matrix, x + xStart + 96, y + 26, 0).uv(1, 1).endVertex();
-        bufferBuilder.vertex(matrix, x + xStart + 96, y + 2, 0).uv(1, 0).endVertex();
+        bufferBuilder.vertex(matrix, x + xStart, y + 2 + info.height(), 0).uv(0, 1).endVertex();
+        bufferBuilder.vertex(matrix, x + xStart + info.width() * 4, y + 2 + info.height(), 0).uv(1, 1).endVertex();
+        bufferBuilder.vertex(matrix, x + xStart + info.width() * 4, y + 2, 0).uv(1, 0).endVertex();
         BufferUploader.drawWithShader(bufferBuilder.end());
 
         if (hovering && mouseX >= x && mouseX <= x + WIDTH && mouseY >= y && mouseY <= y + HEIGHT) {

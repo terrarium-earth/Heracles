@@ -18,12 +18,12 @@
             ]
 
         }
-    ]
+    ],
     "embeds": [
         {
             "title": "Heracles",
             "description": "**Changelog:**\\n${changelog}",
-            "color": 5814783,
+            "color": 3414574,
             "fields": [
                 {
                     "name": "Minecraft Version",
@@ -38,7 +38,7 @@
             ],
             "footer": {
                 "text": "Follow the project on Modrinth at mods.gay/heracles",
-                "icon_url": "https://modrinth.com/favicon.ico"
+                "icon_url": "https://i.imgur.com/3hVj8nM.png"
             },
             "thumbnail": {
                 "url": "https://cdn.modrinth.com/data/lo90fZoB/81b2b095d5570e29f29604c6c5c69eaf9f4033bc.png"

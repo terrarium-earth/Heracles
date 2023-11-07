@@ -69,6 +69,15 @@ public record QuestsProgress(Map<String, QuestProgress> progress, CompletableQue
         this.completableQuests.updateCompleteQuests(this, player);
     }
 
+
+    public void claimReward(String questId, String rewardId, ServerPlayer player) {
+        progress.get(questId).claimReward(rewardId);
+        Quest quest = QuestHandler.get(questId);
+        if (quest.settings().repeatable() && progress.get(questId).claimedRewards().size() == quest.rewards().size()) {
+            resetQuest(questId, player);
+        }
+    }
+
     public <I, T extends QuestTask<I, ?, T>> boolean testAndProgressTask(ServerPlayer player, String id, String task, I input, QuestTaskType<T> taskType) {
         List<String> completableQuests = this.completableQuests.getQuests(this);
         if (!completableQuests.contains(id)) return false;

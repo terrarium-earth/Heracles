@@ -59,7 +59,7 @@ public record Quest(
             rewards().values().stream().
                 filter(QuestReward::canBeMassClaimed)
                 .filter(reward -> !questProgress.claimedRewards().contains(reward.id()))
-                .peek(reward -> questProgress.claimReward(reward.id()))
+                .peek(reward -> progress.claimReward(id, reward.id(), player))
         );
     }
 
@@ -73,7 +73,7 @@ public record Quest(
         if (rewards.containsKey(rewardId) && !questProgress.claimedRewards().contains(rewardId)) {
             var reward = rewards.get(rewardId);
             if (reward.canBeMassClaimed()) {
-                questProgress.claimReward(rewardId);
+                progress.claimReward(id, rewardId, player);
                 claimRewards(
                     id,
                     player,

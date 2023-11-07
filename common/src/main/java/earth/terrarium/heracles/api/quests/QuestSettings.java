@@ -12,23 +12,26 @@ public final class QuestSettings {
         Codec.BOOL.fieldOf("individual_progress").orElse(false).forGetter(QuestSettings::individualProgress),
         EnumCodec.of(ModUtils.QuestStatus.class).fieldOf("hidden").orElse(ModUtils.QuestStatus.LOCKED).forGetter(QuestSettings::hiddenUntil),
         Codec.BOOL.fieldOf("unlockNotification").orElse(false).forGetter(QuestSettings::unlockNotification),
-        Codec.BOOL.fieldOf("showDependencyArrow").orElse(true).forGetter(QuestSettings::showDependencyArrow)
+        Codec.BOOL.fieldOf("showDependencyArrow").orElse(true).forGetter(QuestSettings::showDependencyArrow),
+        Codec.BOOL.fieldOf("repeatable").orElse(false).forGetter(QuestSettings::repeatable)
     ).apply(instance, QuestSettings::new));
 
     private boolean individualProgress;
     private ModUtils.QuestStatus hiddenUntil;
     private boolean unlockNotification;
     private boolean showDependencyArrow;
+    private boolean repeatable;
 
-    public QuestSettings(boolean individualProgress, ModUtils.QuestStatus hiddenUntil, boolean unlockNotification, boolean showDependencyArrow) {
+    public QuestSettings(boolean individualProgress, ModUtils.QuestStatus hiddenUntil, boolean unlockNotification, boolean showDependencyArrow, boolean repeatable) {
         this.individualProgress = individualProgress;
         this.hiddenUntil = hiddenUntil;
         this.unlockNotification = unlockNotification;
         this.showDependencyArrow = showDependencyArrow;
+        this.repeatable = repeatable;
     }
 
     public static QuestSettings createDefault() {
-        return new QuestSettings(false, ModUtils.QuestStatus.LOCKED, false, true);
+        return new QuestSettings(false, ModUtils.QuestStatus.LOCKED, false, true, false);
     }
 
     public boolean individualProgress() {
@@ -47,6 +50,10 @@ public final class QuestSettings {
         return showDependencyArrow;
     }
 
+    public Boolean repeatable() {
+        return repeatable;
+    }
+
     @Override
     public boolean equals(Object obj) {
         if (obj == this) return true;
@@ -56,12 +63,13 @@ public final class QuestSettings {
             this.individualProgress == that.individualProgress &&
             this.hiddenUntil == that.hiddenUntil &&
             this.unlockNotification == that.unlockNotification &&
-            this.showDependencyArrow == that.showDependencyArrow;
+            this.showDependencyArrow == that.showDependencyArrow &&
+            this.repeatable == that.repeatable;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(individualProgress, hiddenUntil, unlockNotification, showDependencyArrow);
+        return Objects.hash(individualProgress, hiddenUntil, unlockNotification, showDependencyArrow, repeatable);
     }
 
     public void update(QuestSettings newSettings) {
@@ -69,6 +77,7 @@ public final class QuestSettings {
         this.hiddenUntil = newSettings.hiddenUntil;
         this.unlockNotification = newSettings.unlockNotification;
         this.showDependencyArrow = newSettings.showDependencyArrow;
+        this.repeatable = newSettings.repeatable;
     }
 
     public void setIndividualProgress(boolean individualProgress) {
@@ -85,6 +94,10 @@ public final class QuestSettings {
 
     public void setShowDependencyArrow(boolean showDependencyArrow) {
         this.showDependencyArrow = showDependencyArrow;
+    }
+
+    public void setRepeatable(boolean repeatable) {
+        this.repeatable = repeatable;
     }
 
 }

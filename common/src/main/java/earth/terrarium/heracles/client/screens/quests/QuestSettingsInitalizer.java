@@ -18,6 +18,7 @@ public class QuestSettingsInitalizer implements SettingInitializer<QuestSettings
         settings.put("hidden", new EnumSetting<>(ModUtils.QuestStatus.class, ModUtils.QuestStatus.LOCKED), object != null ? object.hiddenUntil() : ModUtils.QuestStatus.LOCKED);
         settings.put("unlock_notification", BooleanSetting.FALSE, object != null && object.unlockNotification());
         settings.put("show_dependency_arrow", BooleanSetting.TRUE, object != null && object.showDependencyArrow());
+        settings.put("repeatable", BooleanSetting.FALSE, object != null && object.repeatable());
         return settings;
     }
 
@@ -27,7 +28,8 @@ public class QuestSettingsInitalizer implements SettingInitializer<QuestSettings
             data.get("individual_progress", BooleanSetting.FALSE).orElse(object != null && object.individualProgress()),
             data.get("hidden", new EnumSetting<>(ModUtils.QuestStatus.class, ModUtils.QuestStatus.LOCKED)).orElse(object != null ? object.hiddenUntil() : ModUtils.QuestStatus.LOCKED),
             data.get("unlock_notification", BooleanSetting.FALSE).orElse(object != null && object.unlockNotification()),
-            data.get("show_dependency_arrow", BooleanSetting.TRUE).orElse(object != null && object.showDependencyArrow())
+            data.get("show_dependency_arrow", BooleanSetting.TRUE).orElse(object != null && object.showDependencyArrow()),
+            data.get("repeatable", BooleanSetting.FALSE).orElse(object != null && object.repeatable())
         );
     }
 }

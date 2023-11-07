@@ -89,6 +89,15 @@ public class QuestProgress {
         return this.tasks;
     }
 
+    public void copyFrom(QuestProgress progress) {
+        claimed.clear();
+        claimed.addAll(progress.claimed);
+        tasks.clear();
+        tasks.putAll(progress.tasks);
+        complete = progress.complete;
+        checkComplete();
+    }
+
     public CompoundTag save() {
         CompoundTag tag = new CompoundTag();
         tag.putBoolean("complete", complete);

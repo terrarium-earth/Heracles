@@ -48,9 +48,7 @@ public abstract class BaseQuestScreen extends AbstractQuestScreen<QuestContent> 
 
     public void updateProgress(@Nullable QuestProgress newProgress) {
         if (newProgress != null) {
-            newProgress.claimedRewards().forEach(this.content.progress()::claimReward);
-            newProgress.tasks().forEach((id, taskProgress) -> this.content.progress().tasks().put(id, taskProgress));
-            this.content.progress().checkComplete();
+            this.content.progress().copyFrom(newProgress);
         }
         if (this.claimRewards != null) {
             this.claimRewards.active = this.content.progress().isComplete() && this.content.progress().claimedRewards().size() < this.quest().rewards().size();

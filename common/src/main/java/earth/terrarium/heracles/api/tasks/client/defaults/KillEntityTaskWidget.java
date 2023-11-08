@@ -44,7 +44,6 @@ public record KillEntityTaskWidget(KillEntityQuestTask task, TaskProgress<Numeri
                 WidgetUtils.drawEntity(graphics, x + 5, y + 5, iconSize, entity);
             }
         }
-        graphics.fill(x + iconSize + 9, y + 5, x + iconSize + 10, y + getHeight(width) - 5, 0xFF909090);
         String desc = this.task.target() == 1 ? DESC_SINGULAR : DESC_PLURAL;
         Component entityName = this.task.entity().entityType().getDescription();
         graphics.drawString(

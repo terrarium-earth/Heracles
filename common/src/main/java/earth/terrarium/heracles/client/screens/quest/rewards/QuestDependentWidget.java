@@ -20,7 +20,6 @@ public record QuestDependentWidget(Quest quest) implements DisplayWidget {
         WidgetUtils.drawBackground(graphics, x, y, width, getHeight(width));
         int iconSize = 32;
         quest.display().icon().render(graphics, scissor, x + 5, y + 5, iconSize, iconSize);
-        graphics.fill(x + iconSize + 9, y + 5, x + iconSize + 10, y + getHeight(width) - 5, 0xFF909090);
         graphics.drawString(
             font,
             Component.translatable(TITLE, this.quest.display().title()), x + iconSize + 16, y + 6, 0xFFFFFFFF,

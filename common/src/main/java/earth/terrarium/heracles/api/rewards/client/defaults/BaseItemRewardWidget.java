@@ -37,7 +37,6 @@ public interface BaseItemRewardWidget extends DisplayWidget {
         if (!getIconOverride().render(graphics, scissor, x + 5, y + 5, iconSize, iconSize)) {
             WidgetUtils.drawItemIconWithTooltip(graphics, getIcon(), x + 5, y + 5, iconSize, this::getTooltip, mouseX, mouseY);
         }
-        graphics.fill(x + iconSize + 9, y + 5, x + iconSize + 10, y + getHeight(width) - 5, 0xFF909090);
         int buttonY = y + 11;
         boolean buttonHovered = mouseX > x + width - 30 && mouseX < x + width - 10 && mouseY > buttonY && mouseY < buttonY + 20;
         int v = canClaim() ? buttonHovered ? 86 : 66 : 46;

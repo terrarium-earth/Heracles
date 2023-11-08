@@ -28,6 +28,7 @@ public final class WidgetUtils {
     public static void drawBackground(GuiGraphics graphics, int x, int y, int width, int height) {
         graphics.fill(x, y, x + width, y + height, 0x80808080);
         graphics.renderOutline(x, y, width, height, 0xFF909090);
+        graphics.fill(x + 32 + 9, y + 5, x + 32 + 10, y + height - 5, 0xFF909090);
     }
 
     public static <T extends Tag> void drawProgressBar(GuiGraphics graphics, int minX, int minY, int maxX, int maxY, QuestTask<?, T, ?> task, TaskProgress<T> progress) {

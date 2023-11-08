@@ -2,6 +2,7 @@ package earth.terrarium.heracles.api.tasks.client.defaults;
 
 import com.teamresourceful.resourcefullib.client.scissor.ScissorBoxStack;
 import earth.terrarium.heracles.api.client.DisplayWidget;
+import earth.terrarium.heracles.api.client.WidgetUtils;
 import earth.terrarium.heracles.api.tasks.QuestTask;
 import earth.terrarium.heracles.api.tasks.QuestTaskDisplayFormatter;
 import earth.terrarium.heracles.api.tasks.client.QuestTaskWidgets;
@@ -44,9 +45,7 @@ public final class CompositeTaskWidget implements DisplayWidget {
 
     @Override
     public void render(GuiGraphics graphics, ScissorBoxStack scissor, int x, int y, int width, int mouseX, int mouseY, boolean hovered, float partialTicks) {
-        int height = getHeight(width);
-        graphics.fill(x, y, x + width, y + height, 0x80808080);
-        graphics.renderOutline(x, y, width, height, 0xFF909090);
+        WidgetUtils.drawBackground(graphics, x, y, width, getHeight(width));
 
         Font font = Minecraft.getInstance().font;
         int start = graphics.drawString(

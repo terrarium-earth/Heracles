@@ -6,6 +6,7 @@ import com.teamresourceful.resourcefullib.client.utils.ScreenUtils;
 import earth.terrarium.heracles.api.tasks.QuestTask;
 import earth.terrarium.heracles.api.tasks.QuestTaskDisplayFormatter;
 import earth.terrarium.heracles.common.handlers.progress.TaskProgress;
+import earth.terrarium.heracles.common.utils.ModUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
@@ -29,6 +30,22 @@ public final class WidgetUtils {
         graphics.fill(x, y, x + width, y + height, 0x80808080);
         graphics.renderOutline(x, y, width, height, 0xFF909090);
         graphics.fill(x + 32 + 9, y + 5, x + 32 + 10, y + height - 5, 0xFF909090);
+    }
+
+    public static void drawSummaryBackground(GuiGraphics graphics, int x, int y, int width, int height) {
+        graphics.fill(x, y, x + width, y + height, 0xD0000000);
+        graphics.renderOutline(x, y, width, height, 0xFFFFFFFF);
+    }
+
+    public static void drawStatusSummaryBackground(GuiGraphics graphics, int x, int y, int width, int height, ModUtils.QuestStatus status) {
+        int color = switch (status) {
+            case LOCKED -> 0xFF000080;
+            case IN_PROGRESS -> 0xFFFFFFFF;
+            case COMPLETED -> 0xFFC7C700;
+            case COMPLETED_CLAIMED -> 0xFF32C143;
+        };
+        graphics.fill(x, y, x + width, y + height, 0xD0000000);
+        graphics.renderOutline(x, y, width, height, color);
     }
 
     public static <T extends Tag> void drawProgressBar(GuiGraphics graphics, int minX, int minY, int maxX, int maxY, QuestTask<?, T, ?> task, TaskProgress<T> progress) {

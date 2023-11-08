@@ -62,8 +62,7 @@ public final class AdvancementTaskWidget implements DisplayWidget {
         int actualY = y;
 
         Font font = Minecraft.getInstance().font;
-        graphics.fill(x, y, x + width, y + height, 0x80808080);
-        graphics.renderOutline(x, y, width, height, 0xFF909090);
+        WidgetUtils.drawBackground(graphics, x, y, width, height);
 
         int iconSize = 32;
         this.task.icon().renderOrStack(this.getCurrentItem(), graphics, scissor, x + 5, y + 5, iconSize);

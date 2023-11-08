@@ -2,6 +2,7 @@ package earth.terrarium.heracles.client.screens.quest.rewards;
 
 import com.teamresourceful.resourcefullib.client.scissor.ScissorBoxStack;
 import earth.terrarium.heracles.api.client.DisplayWidget;
+import earth.terrarium.heracles.api.client.WidgetUtils;
 import earth.terrarium.heracles.common.constants.ConstantComponents;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -15,8 +16,7 @@ public record RewardListHeadingWidget(boolean complete, int rewards, int claimed
 
     @Override
     public void render(GuiGraphics graphics, ScissorBoxStack scissor, int x, int y, int width, int mouseX, int mouseY, boolean hovered, float partialTicks) {
-        graphics.fill(x, y, x + width, y + 30, 0xD0000000);
-        graphics.renderOutline(x, y, width, 30, 0xFFFFFFFF);
+        WidgetUtils.drawSummaryBackground(graphics, x, y, width, 30);
 
         String desc = rewards == claimed ? DESC_COMPLETE : (!complete ? DESC_LOCKED : (rewards - claimed > 1 ? DESC_PLURAL : DESC_SINGULAR));
         String completion = String.format("%.0f%%", this.claimed * 100 / (double) rewards);

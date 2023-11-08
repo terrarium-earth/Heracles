@@ -48,11 +48,14 @@ public final class WidgetUtils {
     }
 
     public static <T extends Tag> void drawProgressBar(GuiGraphics graphics, int minX, int minY, int maxX, int maxY, QuestTask<?, T, ?> task, TaskProgress<T> progress) {
-        graphics.fill(minX, minY, maxX, maxY, 0xFF808080);
-        graphics.fill(minX + 1, minY + 1, maxX - 1, maxY - 1, 0xFF696969);
+        RenderSystem.enableBlend();
+        graphics.blitNineSliced(TEXTURE, minX, minY, maxX - minX, maxY - minY, 3, 128, 8, 0, progress.isComplete() ? 232 : 248);
         float fill = task.getProgress(progress.progress());
-        int progressWidth = (int) (((maxX - 1) - (minX + 1)) * fill);
-        graphics.fill(minX + 1, minY + 1, minX + 1 + progressWidth, maxY - 1, progress.isComplete() ? 0xFF04CB40 : 0xFF5691FF);
+        if (fill != 0.0 && !progress.isComplete()) {
+            int progressWidth = (int) ((maxX - minX) * fill);
+            graphics.blitNineSliced(TEXTURE, minX, minY, progressWidth, maxY - minY, 3, 128, 8, 0, 240);
+        }
+        RenderSystem.disableBlend();
     }
 
     public static <T extends Tag> void drawProgressText(GuiGraphics graphics, int x, int y, int width, QuestTask<?, T, ?> task, TaskProgress<T> progress) {

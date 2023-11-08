@@ -1,26 +1,27 @@
 package earth.terrarium.heracles.client.screens.quest;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.teamresourceful.resourcefullib.client.scissor.ScissorBoxStack;
+import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.api.client.DisplayWidget;
+import earth.terrarium.heracles.common.utils.ModUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 
-public record HeadingWidget(Component title, int color) implements DisplayWidget {
+public record HeadingWidget(Component title, ModUtils.QuestStatus status) implements DisplayWidget {
+    public static final ResourceLocation TEXTURE = new ResourceLocation(Heracles.MOD_ID, "textures/gui/widgets.png");
 
     @Override
     public void render(GuiGraphics graphics, ScissorBoxStack scissor, int x, int y, int width, int mouseX, int mouseY, boolean hovered, float partialTicks) {
         y += 5;
         int titleWidth = Minecraft.getInstance().font.width(title);
-        graphics.fill(x, y, x + titleWidth + 6, y + Minecraft.getInstance().font.lineHeight + 4, color);
-        graphics.fill(x + titleWidth + 6, y + Minecraft.getInstance().font.lineHeight, x + width, y + Minecraft.getInstance().font.lineHeight + 4, color);
-        //Draw Border
-        graphics.fill(x, y, x + 1, y + Minecraft.getInstance().font.lineHeight + 4, 0xFF909090);
-        graphics.fill(x + 1, y, x + titleWidth + 6, y + 1, 0xFF909090);
-        graphics.fill(x + titleWidth + 5, y, x + titleWidth + 6, y + Minecraft.getInstance().font.lineHeight + 1, 0xFF909090);
-        graphics.fill(x + titleWidth + 6, y + Minecraft.getInstance().font.lineHeight, x + width, y + Minecraft.getInstance().font.lineHeight + 1, 0xFF909090);
-        graphics.fill(x + width - 1, y + Minecraft.getInstance().font.lineHeight, x + width, y + Minecraft.getInstance().font.lineHeight + 4, 0xFF909090);
 
+        RenderSystem.enableBlend();
+        graphics.blitNineSliced(TEXTURE, x, y, titleWidth + 6, Minecraft.getInstance().font.lineHeight + 4, 3, 64, 13, 0, 42 + status.ordinal() * 13);
+        graphics.blitNineSliced(TEXTURE, x + titleWidth + 6, y, width - titleWidth - 6, Minecraft.getInstance().font.lineHeight + 4, 4, 64, 13, 64, 42 + status.ordinal() * 13);
+        RenderSystem.disableBlend();
 
         graphics.drawString(
             Minecraft.getInstance().font,

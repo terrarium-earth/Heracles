@@ -22,6 +22,7 @@ public class IconBackgroundModal extends BaseModal {
     private static final int HEIGHT = 173;
 
     private double scrollAmount = 0;
+    private int innerHeight = 0;
 
     private final List<BackgroundModalItem> items = new ArrayList<>();
     private Consumer<ResourceLocation> callback;
@@ -48,14 +49,13 @@ public class IconBackgroundModal extends BaseModal {
 
         int y = this.y + 19;
         int x = this.x + 8;
-        int tempY = y;
-        tempY -= scrollAmount;
+        innerHeight = 0;
 
         try (var scissor = RenderUtils.createScissor(Minecraft.getInstance(), graphics, x, y, 152, 130)) {
             for (BackgroundModalItem item : items) {
                 boolean hovering = mouseY >= y && mouseY <= y + 148;
-                item.render(graphics, scissor.stack(), x, tempY, mouseX, mouseY, hovering);
-                tempY += 28;
+                item.render(graphics, scissor.stack(), x, y - (int) scrollAmount + innerHeight, mouseX, mouseY, hovering);
+                innerHeight += item.height();
             }
         }
     }
@@ -78,14 +78,14 @@ public class IconBackgroundModal extends BaseModal {
 
         for (BackgroundModalItem item : items) {
             if (mouseY >= y && mouseY <= y + 148) {
-                if (mouseX >= x && mouseX <= x + UploadModalItem.WIDTH && mouseY >= tempY && mouseY <= tempY + 28) {
+                if (mouseX >= x && mouseX <= x + UploadModalItem.WIDTH && mouseY >= tempY && mouseY <= tempY + item.height()) {
                     if (callback != null) {
                         callback.accept(item.texture());
                     }
                     return true;
                 }
             }
-            tempY += 28;
+            tempY += item.height();
         }
 
         return true;
@@ -93,7 +93,7 @@ public class IconBackgroundModal extends BaseModal {
 
     @Override
     public boolean mouseScrolled(double mouseX, double mouseY, double scrollAmount) {
-        this.scrollAmount = Mth.clamp(this.scrollAmount - scrollAmount * 10, 0.0D, Math.max(0, (this.items.size() * 28) - 130));
+        this.scrollAmount = Mth.clamp(this.scrollAmount - scrollAmount * 10, 0.0D, Math.max(0, innerHeight - 130));
         return true;
     }
 

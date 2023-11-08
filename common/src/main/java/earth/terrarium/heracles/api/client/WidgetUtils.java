@@ -1,8 +1,10 @@
 package earth.terrarium.heracles.api.client;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.math.Axis;
 import com.teamresourceful.resourcefullib.client.CloseablePoseStack;
 import com.teamresourceful.resourcefullib.client.utils.ScreenUtils;
+import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.api.tasks.QuestTask;
 import earth.terrarium.heracles.api.tasks.QuestTaskDisplayFormatter;
 import earth.terrarium.heracles.common.handlers.progress.TaskProgress;
@@ -16,6 +18,7 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.boss.enderdragon.EnderDragon;
 import net.minecraft.world.item.ItemStack;
@@ -25,27 +28,23 @@ import java.util.List;
 import java.util.function.Supplier;
 
 public final class WidgetUtils {
+    public static final ResourceLocation TEXTURE = new ResourceLocation(Heracles.MOD_ID, "textures/gui/widgets.png");
 
     public static void drawBackground(GuiGraphics graphics, int x, int y, int width, int height) {
-        graphics.fill(x, y, x + width, y + height, 0x80808080);
-        graphics.renderOutline(x, y, width, height, 0xFF909090);
-        graphics.fill(x + 32 + 9, y + 5, x + 32 + 10, y + height - 5, 0xFF909090);
+        RenderSystem.enableBlend();
+        graphics.blitNineSliced(TEXTURE, x, y, 42, height, 3, 42, 42, 0, 0);
+        graphics.blitNineSliced(TEXTURE, x + 42, y, width - 42, height, 3, 86, 42, 42, 0);
+        RenderSystem.disableBlend();
     }
 
     public static void drawSummaryBackground(GuiGraphics graphics, int x, int y, int width, int height) {
-        graphics.fill(x, y, x + width, y + height, 0xD0000000);
-        graphics.renderOutline(x, y, width, height, 0xFFFFFFFF);
+        drawStatusSummaryBackground(graphics, x, y, width, height, ModUtils.QuestStatus.IN_PROGRESS);
     }
 
     public static void drawStatusSummaryBackground(GuiGraphics graphics, int x, int y, int width, int height, ModUtils.QuestStatus status) {
-        int color = switch (status) {
-            case LOCKED -> 0xFF000080;
-            case IN_PROGRESS -> 0xFFFFFFFF;
-            case COMPLETED -> 0xFFC7C700;
-            case COMPLETED_CLAIMED -> 0xFF32C143;
-        };
-        graphics.fill(x, y, x + width, y + height, 0xD0000000);
-        graphics.renderOutline(x, y, width, height, color);
+        RenderSystem.enableBlend();
+        graphics.blitNineSliced(TEXTURE, x, y, width, height, 3, 128, 42, 128, 42 * status.ordinal());
+        RenderSystem.disableBlend();
     }
 
     public static <T extends Tag> void drawProgressBar(GuiGraphics graphics, int minX, int minY, int maxX, int maxY, QuestTask<?, T, ?> task, TaskProgress<T> progress) {

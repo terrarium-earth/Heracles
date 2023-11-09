@@ -8,6 +8,7 @@ import earth.terrarium.heracles.common.network.packets.QuestRewardClaimedPacket;
 import earth.terrarium.heracles.common.network.packets.QuestUnlockedPacket;
 import earth.terrarium.heracles.common.network.packets.groups.CreateGroupPacket;
 import earth.terrarium.heracles.common.network.packets.groups.DeleteGroupPacket;
+import earth.terrarium.heracles.common.network.packets.groups.EditGroupPacket;
 import earth.terrarium.heracles.common.network.packets.groups.OpenGroupPacket;
 import earth.terrarium.heracles.common.network.packets.pinned.SetPinnedQuestPacket;
 import earth.terrarium.heracles.common.network.packets.pinned.SyncPinnedQuestsPacket;
@@ -51,5 +52,6 @@ public class NetworkHandler {
         CHANNEL.registerPacket(NetworkDirection.CLIENT_TO_SERVER, CheckTaskPacket.ID, CheckTaskPacket.HANDLER, CheckTaskPacket.class);
         CHANNEL.registerPacket(NetworkDirection.CLIENT_TO_SERVER, ManualItemTaskPacket.ID, ManualItemTaskPacket.HANDLER, ManualItemTaskPacket.class);
         CHANNEL.registerPacket(NetworkDirection.CLIENT_TO_SERVER, ManualXpTaskPacket.ID, ManualXpTaskPacket.HANDLER, ManualXpTaskPacket.class);
+        CHANNEL.registerPacket(NetworkDirection.CLIENT_TO_SERVER, EditGroupPacket.ID, EditGroupPacket.HANDLER, EditGroupPacket.class);
     }
 }

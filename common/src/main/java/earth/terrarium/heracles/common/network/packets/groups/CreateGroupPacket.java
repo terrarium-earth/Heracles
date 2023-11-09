@@ -4,6 +4,7 @@ import com.teamresourceful.resourcefullib.common.networking.base.Packet;
 import com.teamresourceful.resourcefullib.common.networking.base.PacketContext;
 import com.teamresourceful.resourcefullib.common.networking.base.PacketHandler;
 import earth.terrarium.heracles.Heracles;
+import earth.terrarium.heracles.api.groups.Group;
 import earth.terrarium.heracles.common.handlers.quests.QuestHandler;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
@@ -37,8 +38,8 @@ public record CreateGroupPacket(String group) implements Packet<CreateGroupPacke
         @Override
         public PacketContext handle(CreateGroupPacket message) {
             return (player, level) -> {
-                if (player.hasPermissions(2) && !QuestHandler.groups().contains(message.group)) {
-                    QuestHandler.groups().add(message.group);
+                if (player.hasPermissions(2) && !QuestHandler.groups().containsKey(message.group)) {
+                    QuestHandler.groups().put(message.group, new Group(message.group));
                     QuestHandler.saveGroups();
                 }
             };

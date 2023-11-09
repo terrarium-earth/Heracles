@@ -1,5 +1,6 @@
 package earth.terrarium.heracles.client.handlers;
 
+import earth.terrarium.heracles.api.groups.Group;
 import earth.terrarium.heracles.api.quests.Quest;
 import earth.terrarium.heracles.common.handlers.progress.QuestProgress;
 import earth.terrarium.heracles.common.menus.quests.QuestsContent;
@@ -15,7 +16,7 @@ public class ClientQuests {
     private static final Map<String, QuestEntry> ENTRIES = new HashMap<>();
     private static final Map<String, ModUtils.QuestStatus> STATUS = new HashMap<>();
     private static final Map<String, List<QuestEntry>> BY_GROUPS = new HashMap<>();
-    private static final List<String> GROUPS = new ArrayList<>();
+    private static final Map<String, Group> GROUPS = new LinkedHashMap<>();
 
     private static final Map<String, QuestProgress> PROGRESS = new HashMap<>();
 
@@ -23,11 +24,11 @@ public class ClientQuests {
         return Optional.ofNullable(ENTRIES.get(key));
     }
 
-    public static List<String> groups() {
+    public static Map<String, Group> groups() {
         return GROUPS;
     }
 
-    public static void sync(Map<String, Quest> quests, List<String> groups) {
+    public static void sync(Map<String, Quest> quests, Map<String, Group> groups) {
         ENTRIES.clear();
         BY_GROUPS.clear();
         GROUPS.clear();
@@ -36,7 +37,7 @@ public class ClientQuests {
             addEntry(entry.getKey(), entry.getValue(), quests);
         }
 
-        GROUPS.addAll(groups);
+        GROUPS.putAll(groups);
         for (QuestEntry value : ENTRIES.values()) {
             for (String s : value.value.display().groups().keySet()) {
                 BY_GROUPS.computeIfAbsent(s, k -> new ArrayList<>()).add(value);

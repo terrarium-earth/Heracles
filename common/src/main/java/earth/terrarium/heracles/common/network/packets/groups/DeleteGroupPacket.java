@@ -37,7 +37,7 @@ public record DeleteGroupPacket(String group) implements Packet<DeleteGroupPacke
         @Override
         public PacketContext handle(DeleteGroupPacket message) {
             return (player, level) -> {
-                if (player.hasPermissions(2) && QuestHandler.groups().contains(message.group)) {
+                if (player.hasPermissions(2) && QuestHandler.groups().containsKey(message.group)) {
                     QuestHandler.groups().remove(message.group);
                     QuestHandler.saveGroups();
                 }

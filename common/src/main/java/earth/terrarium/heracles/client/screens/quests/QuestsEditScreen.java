@@ -3,6 +3,7 @@ package earth.terrarium.heracles.client.screens.quests;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.teamresourceful.resourcefullib.client.components.context.ContextualMenuScreen;
 import com.teamresourceful.resourcefullib.client.components.context.ContextMenu;
+import earth.terrarium.heracles.api.groups.Group;
 import earth.terrarium.heracles.api.quests.GroupDisplay;
 import earth.terrarium.heracles.api.quests.Quest;
 import earth.terrarium.heracles.api.quests.QuestDisplay;
@@ -100,12 +101,12 @@ public class QuestsEditScreen extends QuestsScreen implements ContextualMenuScre
 
         this.uploadModal = addTemporary(new UploadModal(this.width, this.height));
         this.groupModal = addTemporary(new TextInputModal<>(this.width, this.height, ConstantComponents.Groups.CREATE, (ignored, text) -> {
-            NetworkHandler.CHANNEL.sendToServer(new CreateGroupPacket(text));
-            ClientQuests.groups().add(text);
+            NetworkHandler.CHANNEL.sendToServer(new CreateGroupPacket(text.trim()));
+            ClientQuests.groups().put(text.trim(), new Group(text.trim()));
             if (Minecraft.getInstance().screen instanceof QuestsScreen screen) {
-                screen.getGroupsList().addGroup(text);
+                screen.getGroupsList().addGroup(text.trim(), new Group(text.trim()));
             }
-        }, text -> !ClientQuests.groups().contains(text.trim())));
+        }, text -> !ClientQuests.groups().containsKey(text.trim())));
         this.iconBackgroundModal = addTemporary(new IconBackgroundModal(this.width, this.height));
         this.itemModal = addTemporary(new ItemModal(this.width, this.height));
         this.dependencyModal = addTemporary(new AddDependencyModal(this.width, this.height));

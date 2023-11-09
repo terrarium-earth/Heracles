@@ -4,12 +4,15 @@ import com.google.common.collect.HashBiMap;
 import com.google.common.collect.Sets;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
 import com.teamresourceful.resourcefullib.common.lib.Constants;
 import com.teamresourceful.resourcefullib.common.utils.FileUtils;
 import com.teamresourceful.resourcefullib.common.utils.Scheduling;
 import earth.terrarium.heracles.Heracles;
 import static earth.terrarium.heracles.Heracles.LOGGER;
+
+import earth.terrarium.heracles.api.groups.Group;
 import earth.terrarium.heracles.api.quests.Quest;
 import earth.terrarium.heracles.common.utils.ModUtils;
 import net.minecraft.core.RegistryAccess;
@@ -29,7 +32,7 @@ public class QuestHandler {
 
     private static final Map<String, Quest> QUESTS = HashBiMap.create();
     private static final Set<String> QUEST_KEYS = Sets.newConcurrentHashSet();
-    private static final List<String> GROUPS = new ArrayList<>();
+    private static final Map<String, Group> GROUPS = new LinkedHashMap<>();
     private static Path lastPath;
 
     private static final Map<String, ScheduledFuture<?>> SAVING_FUTURES = new HashMap<>();
@@ -59,7 +62,7 @@ public class QuestHandler {
         for (Quest value : QUESTS.values()) {
             value.dependencies().removeIf(Predicate.not(QUESTS::containsKey));
         }
-        loadGroups(heraclesPath.resolve("groups.txt").toFile());
+        loadGroups(heraclesPath);
     }
 
     private static void load(RegistryAccess access, Reader reader, String id, Map<String, Quest> quests) {
@@ -73,21 +76,42 @@ public class QuestHandler {
         }
     }
 
-    private static void loadGroups(File file) {
+    private static void loadGroups(Path path) {
         GROUPS.clear();
-        if (file.exists()) {
+        File json = path.resolve("groups.json").toFile();
+        File txt = path.resolve("groups.txt").toFile();
+        boolean save = false;
+        if (json.exists()) {
             try {
-                GROUPS.addAll(org.apache.commons.io.FileUtils.readLines(file, StandardCharsets.UTF_8));
+                Reader reader = Files.newBufferedReader(json.toPath());
+                JsonObject element = Constants.PRETTY_GSON.fromJson(reader, JsonObject.class);
+                Map<String, Group> groups = Codec.unboundedMap(Codec.STRING, Group.CODEC)
+                    .parse(JsonOps.INSTANCE, element)
+                    .getOrThrow(false, LOGGER::error);
+                GROUPS.putAll(groups);
+            } catch (Exception e) {
+                LOGGER.error("Failed to load quest groups", e);
+            }
+        } else if (txt.exists()) {
+            try {
+                for (String group : org.apache.commons.io.FileUtils.readLines(txt, StandardCharsets.UTF_8)) {
+                    GROUPS.put(group, new Group(group));
+                }
+                Files.deleteIfExists(txt.toPath());
+                save = true;
             } catch (Exception e) {
                 LOGGER.error("Failed to load quest groups", e);
             }
         }
         for (Quest value : QUESTS.values()) {
             for (String s : value.display().groups().keySet()) {
-                if (!GROUPS.contains(s)) {
-                    GROUPS.add(s);
+                if (!GROUPS.containsKey(s)) {
+                    GROUPS.put(s, new Group(s));
                 }
             }
+        }
+        if (save) {
+            saveGroups();
         }
     }
 
@@ -139,8 +163,11 @@ public class QuestHandler {
             return;
         }
         try {
-            File file = new File(lastPath.toFile(), "groups.txt");
-            org.apache.commons.io.FileUtils.writeLines(file, GROUPS);
+            File file = new File(lastPath.toFile(), "groups.json");
+            JsonElement json = Codec.unboundedMap(Codec.STRING, Group.CODEC)
+                .encodeStart(JsonOps.INSTANCE, GROUPS)
+                .getOrThrow(false, LOGGER::error);
+            org.apache.commons.io.FileUtils.write(file, Constants.PRETTY_GSON.toJson(json), StandardCharsets.UTF_8);
         } catch (Exception e) {
             LOGGER.error("Failed to save quest groups", e);
         }
@@ -191,9 +218,9 @@ public class QuestHandler {
         return QUESTS;
     }
 
-    public static List<String> groups() {
+    public static Map<String, Group> groups() {
         if (GROUPS.isEmpty()) {
-            GROUPS.add("Main");
+            GROUPS.put("main", new Group("Main"));
             saveGroups();
         }
         return GROUPS;

@@ -10,6 +10,7 @@ import com.teamresourceful.yabn.YabnParser;
 import com.teamresourceful.yabn.elements.YabnElement;
 import com.teamresourceful.yabn.reader.ByteReader;
 import earth.terrarium.heracles.Heracles;
+import earth.terrarium.heracles.api.groups.Group;
 import earth.terrarium.heracles.api.quests.Quest;
 import earth.terrarium.heracles.client.handlers.ClientQuests;
 import io.netty.buffer.ByteBuf;
@@ -17,10 +18,9 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.RegistryOps;
 import net.minecraft.resources.ResourceLocation;
 
-import java.util.List;
 import java.util.Map;
 
-public record SyncQuestsPacket(Map<String, Quest> quests, List<String> groups) implements Packet<SyncQuestsPacket> {
+public record SyncQuestsPacket(Map<String, Quest> quests, Map<String, Group> groups) implements Packet<SyncQuestsPacket> {
     public static final ResourceLocation ID = new ResourceLocation(Heracles.MOD_ID, "sync_quests");
     public static final PacketHandler<SyncQuestsPacket> HANDLER = new Handler();
 
@@ -36,24 +36,27 @@ public record SyncQuestsPacket(Map<String, Quest> quests, List<String> groups) i
 
     public static class Handler implements PacketHandler<SyncQuestsPacket> {
         private static final Codec<Map<String, Quest>> QUEST_MAP_CODEC = Codec.unboundedMap(Codec.STRING, Quest.CODEC);
+        private static final Codec<Map<String, Group>> GROUP_MAP_CODEC = Codec.unboundedMap(Codec.STRING, Group.CODEC);
 
         @Override
         public void encode(SyncQuestsPacket message, FriendlyByteBuf buffer) {
             PacketHelper.writeWithRegistryYabn(Heracles.getRegistryAccess(), buffer, QUEST_MAP_CODEC, message.quests(), true);
-            buffer.writeCollection(message.groups(), FriendlyByteBuf::writeUtf);
+            PacketHelper.writeWithRegistryYabn(Heracles.getRegistryAccess(), buffer, GROUP_MAP_CODEC, message.groups(), true);
         }
 
         @Override
         public SyncQuestsPacket decode(FriendlyByteBuf buffer) {
-            YabnElement element = YabnParser.parse(new ByteBufByteReader(buffer));
+            YabnElement quests = YabnParser.parse(new ByteBufByteReader(buffer));
+            YabnElement groups = YabnParser.parse(new ByteBufByteReader(buffer));
             try {
                 return new SyncQuestsPacket(
-                    QUEST_MAP_CODEC.parse(RegistryOps.create(YabnOps.COMPRESSED, Heracles.getRegistryAccess()), element).get().orThrow(),
-                    buffer.readList(FriendlyByteBuf::readUtf)
+                    QUEST_MAP_CODEC.parse(RegistryOps.create(YabnOps.COMPRESSED, Heracles.getRegistryAccess()), quests).get().orThrow(),
+                    GROUP_MAP_CODEC.parse(RegistryOps.create(YabnOps.COMPRESSED, Heracles.getRegistryAccess()), groups).get().orThrow()
                 );
             }catch (Exception e) {
                 System.out.println("Failed to decode sync quests packet");
-                System.out.println(element.toString());
+                System.out.println("Quests: " + quests);
+                System.out.println("Groups: " + groups);
                 throw e;
             }
         }

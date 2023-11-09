@@ -1,5 +1,7 @@
 package earth.terrarium.heracles.client.screens.quests;
 
+import com.mojang.blaze3d.platform.InputConstants;
+import com.teamresourceful.resourcefullib.client.components.context.ContextualMenuScreen;
 import com.teamresourceful.resourcefullib.client.components.selection.ListEntry;
 import com.teamresourceful.resourcefullib.client.components.selection.SelectionList;
 import com.teamresourceful.resourcefullib.client.scissor.ScissorBoxStack;
@@ -7,11 +9,14 @@ import com.teamresourceful.resourcefullib.client.screens.CursorScreen;
 import com.teamresourceful.resourcefullib.client.utils.CursorUtils;
 import com.teamresourceful.resourcefullib.client.utils.ScreenUtils;
 import earth.terrarium.heracles.client.handlers.ClientQuests;
+import earth.terrarium.heracles.client.utils.ClientUtils;
+import earth.terrarium.heracles.client.utils.MouseClick;
 import earth.terrarium.heracles.common.constants.ConstantComponents;
 import earth.terrarium.heracles.common.network.NetworkHandler;
 import earth.terrarium.heracles.common.network.packets.groups.DeleteGroupPacket;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -22,9 +27,13 @@ import java.util.function.Consumer;
 public class GroupsList extends SelectionList<GroupsList.Entry> {
 
     private final int width;
+    private final Consumer<@Nullable Entry> onSelection;
+    private final int x;
 
     public GroupsList(int x, int y, int width, int height, Consumer<@Nullable Entry> onSelection) {
-        super(x, y, width, height, 20, onSelection, true);
+        super(x, y, width, height, 20, entry -> {}, true);
+        this.x = x;
+        this.onSelection = onSelection;
         this.width = width;
     }
 
@@ -100,7 +109,7 @@ public class GroupsList extends SelectionList<GroupsList.Entry> {
         @Override
         public boolean mouseClicked(double mouseX, double mouseY, int button) {
             boolean cant = !ClientQuests.byGroup(name).isEmpty() || this.list.children().size() == 1;
-            if (Minecraft.getInstance().screen instanceof QuestsEditScreen screen && button == 0 && !cant) {
+            if (Minecraft.getInstance().screen instanceof QuestsEditScreen screen && button == InputConstants.MOUSE_BUTTON_LEFT && !cant) {
                 boolean closingButton = mouseX >= this.list.width - 11 && mouseX <= this.list.width - 2 && mouseY >= 2 && mouseY <= 12;
                 if (closingButton) {
                     screen.confirmModal().setVisible(true);
@@ -121,6 +130,24 @@ public class GroupsList extends SelectionList<GroupsList.Entry> {
                     return true;
                 }
             }
+            if (button == InputConstants.MOUSE_BUTTON_RIGHT) {
+                MouseClick mouse = ClientUtils.getMousePos();
+                ContextualMenuScreen.getMenu()
+                    .ifPresent(menu -> menu.start(this.list.x + this.list.width + 6, mouse.y())
+                        .addOption(Component.literal("\uD83D\uDDBC Edit Icon"), () ->
+                            System.out.println("Edit Icon") //TODO
+                        )
+                        .addDivider()
+                        .addOption(Component.literal("⬆ Move Up"), () ->
+                            System.out.println("Move UP") //TODO
+                        )
+                        .addOption(Component.literal("⬇ Move Down"), () ->
+                            System.out.println("Move Down") //TODO
+                        )
+                        .open());
+                return true;
+            }
+            this.list.onSelection.accept(this);
             return super.mouseClicked(mouseX, mouseY, button);
         }
 

@@ -1,6 +1,8 @@
 package earth.terrarium.heracles.client.screens.quests;
 
 import com.mojang.blaze3d.platform.InputConstants;
+import com.teamresourceful.resourcefullib.client.components.context.ContextualMenuScreen;
+import com.teamresourceful.resourcefullib.client.components.context.ContextMenu;
 import earth.terrarium.heracles.api.quests.GroupDisplay;
 import earth.terrarium.heracles.api.quests.Quest;
 import earth.terrarium.heracles.api.quests.QuestDisplay;
@@ -33,7 +35,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Locale;
 
-public class QuestsEditScreen extends QuestsScreen {
+public class QuestsEditScreen extends QuestsScreen implements ContextualMenuScreen {
 
     private SelectableImageButton moveTool;
     private SelectableImageButton dragTool;
@@ -46,6 +48,8 @@ public class QuestsEditScreen extends QuestsScreen {
     private ItemModal itemModal;
     private AddDependencyModal dependencyModal;
     private TextInputModal<MouseClick> questModal;
+
+    private ContextMenu contextMenu;
 
     public QuestsEditScreen(QuestsContent content) {
         super(content);
@@ -121,6 +125,8 @@ public class QuestsEditScreen extends QuestsScreen {
             );
             this.questsWidget.addQuest(ClientQuestNetworking.add(text, quest));
         }, text -> text.toLowerCase(Locale.ROOT).replaceAll("[^a-zA-Z_-]", "").length() >= 2 && ClientQuests.get(text.trim()).isEmpty()));
+
+        this.contextMenu = addRenderableWidget(-1, new ContextMenu());
     }
 
     @Override
@@ -213,5 +219,10 @@ public class QuestsEditScreen extends QuestsScreen {
 
     public TextInputModal<MouseClick> questModal() {
         return this.questModal;
+    }
+
+    @Override
+    public ContextMenu getContextMenu() {
+        return this.contextMenu;
     }
 }

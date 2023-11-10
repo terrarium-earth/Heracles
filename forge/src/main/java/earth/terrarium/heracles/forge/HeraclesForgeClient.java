@@ -1,10 +1,14 @@
 package earth.terrarium.heracles.forge;
 
+import com.teamresourceful.resourcefullib.client.highlights.HighlightHandler;
 import earth.terrarium.heracles.client.HeraclesClient;
+import earth.terrarium.heracles.client.handlers.ColorHandler;
 import earth.terrarium.heracles.client.handlers.DisplayConfig;
 import earth.terrarium.heracles.client.handlers.QuestTutorial;
 import earth.terrarium.heracles.client.screens.pinned.PinnedQuestDisplay;
+import net.minecraft.server.packs.resources.PreparableReloadListener;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.client.event.RegisterClientReloadListenersEvent;
 import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
 import net.minecraftforge.client.event.ScreenEvent;
 import net.minecraftforge.common.MinecraftForge;
@@ -29,6 +33,7 @@ public class HeraclesForgeClient {
         event.enqueueWork(HeraclesClient::init);
         MinecraftForge.EVENT_BUS.addListener(HeraclesForgeClient::onClientTick);
         MinecraftForge.EVENT_BUS.addListener(HeraclesForgeClient::onMouseClickedPreScreen);
+        MinecraftForge.EVENT_BUS.addListener(HeraclesForgeClient::onClientReloadListeners);
     }
 
     public static void onRegisterKeyBindings(RegisterKeyMappingsEvent event) {
@@ -45,5 +50,9 @@ public class HeraclesForgeClient {
         if (PinnedQuestDisplay.click(event.getMouseX(), event.getMouseY())) {
             event.setCanceled(true);
         }
+    }
+
+    public static void onClientReloadListeners(RegisterClientReloadListenersEvent event) {
+        event.registerReloadListener(ColorHandler.INSTANCE);
     }
 }

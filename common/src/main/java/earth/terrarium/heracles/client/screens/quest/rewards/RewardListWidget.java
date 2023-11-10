@@ -33,8 +33,8 @@ import java.util.function.BiConsumer;
 public class RewardListWidget extends AbstractContainerEventHandler implements Renderable {
 
     private static final HeadingWidget LOCKED = new HeadingWidget(Component.translatable("quest.heracles.locked"), ModUtils.QuestStatus.LOCKED);
-    private static final HeadingWidget AVAILABLE = new HeadingWidget(Component.translatable("quest.heracles.available"), ModUtils.QuestStatus.IN_PROGRESS);
-    private static final HeadingWidget CLAIMED = new HeadingWidget(Component.translatable("quest.heracles.claimed"), ModUtils.QuestStatus.COMPLETED);
+    private static final HeadingWidget AVAILABLE = new HeadingWidget(Component.translatable("quest.heracles.available"), ModUtils.QuestStatus.COMPLETED);
+    private static final HeadingWidget CLAIMED = new HeadingWidget(Component.translatable("quest.heracles.claimed"), ModUtils.QuestStatus.COMPLETED_CLAIMED);
 
     private final List<MutablePair<QuestReward<?>, DisplayWidget>> widgets = new ArrayList<>();
 

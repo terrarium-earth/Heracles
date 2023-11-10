@@ -7,6 +7,7 @@ import com.teamresourceful.resourcefullib.client.utils.CursorUtils;
 import com.teamresourceful.resourcefullib.client.utils.ScreenUtils;
 import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.client.screens.AbstractQuestScreen;
+import earth.terrarium.heracles.client.utils.ClientUtils;
 import earth.terrarium.heracles.common.constants.ConstantComponents;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -79,7 +80,9 @@ public abstract class BaseModal extends BaseWidget implements TemporyWidget {
         RenderSystem.disableDepthTest();
         try (var pose = new CloseablePoseStack(graphics)) {
             pose.translate(0, 0, 300 * depth);
-            graphics.fill(0, 15, this.screenWidth, this.screenHeight, 0x80000000);
+            RenderSystem.enableBlend();
+            ClientUtils.blitTiling(graphics, TEXTURE, 0, 0, this.screenWidth, this.screenHeight, 0, 128, 128, 128);
+            RenderSystem.disableBlend();
             renderBackground(graphics, mouseX, mouseY, partialTick);
 
             renderForeground(graphics, mouseX, mouseY, partialTick);

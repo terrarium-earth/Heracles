@@ -1,13 +1,21 @@
 package earth.terrarium.heracles.client.screens.pinned;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.client.handlers.DisplayConfig;
+import earth.terrarium.heracles.client.utils.ClientUtils;
+import earth.terrarium.heracles.common.constants.ConstantComponents;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.CommonComponents;
+import net.minecraft.resources.ResourceLocation;
 import org.joml.Vector2i;
 
+import java.util.List;
+
 public class PinnedDisplayScreen extends Screen {
+
+    private static final ResourceLocation TEXTURE = new ResourceLocation(Heracles.MOD_ID, "textures/gui/pinned.png");
 
     private int sectionWidth = 0;
     private int sectionHeight = 0;
@@ -34,31 +42,29 @@ public class PinnedDisplayScreen extends Screen {
     @Override
     public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
         RenderSystem.enableBlend();
-        graphics.fill(0, 0, this.width, this.height, 0x80000000);
-        for (int i = 0; i < 4; i++) {
-            int y = i * this.sectionHeight;
-            boolean hovered = dragging && mouseX < this.sectionWidth && mouseY > y && mouseY < y + this.sectionHeight;
-            graphics.fill(0, y, this.sectionWidth, y + this.sectionHeight, hovered ? 0x80A0A0A0 : 0x80808080);
-            graphics.renderOutline(0, y, this.sectionWidth, this.sectionHeight, 0xEE808080);
+        ClientUtils.blitTiling(graphics, TEXTURE, 0, 0, this.width, this.height, 0, 128, 128, 128);
+        for (int x : List.of(0, this.width - this.sectionWidth)) {
+            for (int i = 0; i < 4; i++) {
+                int y = i * this.sectionHeight;
+                boolean hovered = dragging && mouseX > x && mouseX < x + this.sectionWidth && mouseY > y && mouseY < y + this.sectionHeight;
+                graphics.blitNineSliced(TEXTURE, x, y, this.sectionWidth, this.sectionHeight, 3, 64, 64, hovered ? 64 : 0, 64);
+            }
         }
+        RenderSystem.disableBlend();
 
-        for (int i = 0; i < 4; i++) {
-            int y = i * this.sectionHeight;
-            boolean hovered = dragging && mouseX > this.width - this.sectionWidth && mouseY > y && mouseY < y + this.sectionHeight;
-            graphics.fill(this.width - this.sectionWidth, y, this.width, y + this.sectionHeight, hovered ? 0x80A0A0A0 : 0x80808080);
-            graphics.renderOutline(this.width - this.sectionWidth, y, this.sectionWidth, this.sectionHeight, 0xEE808080);
-        }
         int popupX = dragging ? offset.x() : PinnedQuestDisplay.x(index, sectionWidth, this.width);
-        int popupY = dragging ? offset.y() : PinnedQuestDisplay.y(index, sectionHeight - 20, this.height);
-
+        int popupY = dragging ? offset.y() : PinnedQuestDisplay.y(index, sectionHeight - 19, this.height);
         renderFakePopup(graphics, popupX, popupY);
     }
 
     private void renderFakePopup(GuiGraphics graphics, int x, int y) {
-        graphics.fill(x, y, x + this.sectionWidth, y + this.sectionHeight - 20, 0x80000000);
+        RenderSystem.enableBlend();
+        graphics.blitNineSliced(TEXTURE, x + 1, y + 1, this.sectionWidth - 2, 10, 3, 64, 10, 0, 0);
+        graphics.blitNineSliced(TEXTURE, x + 1, y + 11, this.sectionWidth - 2, this.sectionHeight - 30, 3, 64, 10, 0, 10);
+        RenderSystem.disableBlend();
         graphics.drawString(
             font,
-            "Pinned Quests", x + 5, y + 5, 0xFFFFFFFF,
+            ConstantComponents.PinnedQuests.TITLE, x + (this.sectionWidth - font.width(ConstantComponents.PinnedQuests.TITLE)) / 2, y + 3, 0xFF808080,
             false
         );
         graphics.drawString(

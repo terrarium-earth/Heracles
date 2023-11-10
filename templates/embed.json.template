@@ -7,13 +7,13 @@
                     "type": 2,
                     "label": "Fabric",
                     "style": 5,
-                    "url": "${fabric_link}"
+                    "url": "https://modrinth.com/mod/heracles/version/${fabric_link}"
                 },
                 {
                     "type": 2,
                     "label": "Forge",
                     "style": 5,
-                    "url": "${forge_link}"
+                    "url": "https://modrinth.com/mod/heracles/version/${forge_link}"
                 }
             ]
 

@@ -27,6 +27,6 @@ side="BOTH"
 [[dependencies.heracles]]
 modId = "resourcefullib"
 mandatory = true
-versionRange = "[2.1.1,)"
+versionRange = "[2.1.13,)"
 ordering = "NONE"
 side = "BOTH"

@@ -17,14 +17,17 @@ import org.joml.Matrix4f;
 public record BackgroundModalItem(ResourceLocation texture) {
 
     public static final int WIDTH = 152;
-    public static final int HEIGHT = 28;
+
+    public int height() {
+        return TexturePlacements.getOrDefault(texture, TexturePlacements.NO_OFFSET_24X).height() + 4;
+    }
 
     public void render(GuiGraphics graphics, ScissorBoxStack ignored, int x, int y, int mouseX, int mouseY, boolean hovering) {
-        graphics.blit(UploadModal.TEXTURE, x, y, 0, 173, WIDTH, HEIGHT, 256, 256);
+        TexturePlacements.Info info = TexturePlacements.getOrDefault(texture, TexturePlacements.NO_OFFSET_24X);
+
+        graphics.blitNineSliced(UploadModal.TEXTURE, x, y, WIDTH, info.height() + 4, 3, 152, 28, 0, 173);
 
         RenderSystem.setShaderTexture(0, texture);
-
-        TexturePlacements.Info info = TexturePlacements.get(texture);
         Matrix4f matrix = graphics.pose().last().pose();
 
         int xStart = (WIDTH - info.width() * 4) / 2;
@@ -38,7 +41,7 @@ public record BackgroundModalItem(ResourceLocation texture) {
         bufferBuilder.vertex(matrix, x + xStart + info.width() * 4, y + 2, 0).uv(1, 0).endVertex();
         BufferUploader.drawWithShader(bufferBuilder.end());
 
-        if (hovering && mouseX >= x && mouseX <= x + WIDTH && mouseY >= y && mouseY <= y + HEIGHT) {
+        if (hovering && mouseX >= x && mouseX <= x + WIDTH && mouseY >= y && mouseY <= y + info.height() + 4) {
             CursorUtils.setCursor(true, CursorScreen.Cursor.POINTER);
             String textureName = texture.getNamespace() + ":" + texture.getPath().substring("textures/gui/quest_backgrounds/".length());
             ScreenUtils.setTooltip(Component.literal(textureName));

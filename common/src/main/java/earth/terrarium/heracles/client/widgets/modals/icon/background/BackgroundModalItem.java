@@ -30,16 +30,18 @@ public record BackgroundModalItem(ResourceLocation texture) {
         RenderSystem.setShaderTexture(0, texture);
         Matrix4f matrix = graphics.pose().last().pose();
 
-        int xStart = (WIDTH - info.width() * 4) / 2;
+        int xStart = (WIDTH - info.width() * 5) / 2;
 
+        RenderSystem.enableBlend();
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         BufferBuilder bufferBuilder = Tesselator.getInstance().getBuilder();
         bufferBuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
         bufferBuilder.vertex(matrix, x + xStart, y + 2, 0).uv(0, 0).endVertex();
         bufferBuilder.vertex(matrix, x + xStart, y + 2 + info.height(), 0).uv(0, 1).endVertex();
-        bufferBuilder.vertex(matrix, x + xStart + info.width() * 4, y + 2 + info.height(), 0).uv(1, 1).endVertex();
-        bufferBuilder.vertex(matrix, x + xStart + info.width() * 4, y + 2, 0).uv(1, 0).endVertex();
+        bufferBuilder.vertex(matrix, x + xStart + info.width() * 5, y + 2 + info.height(), 0).uv(1, 1).endVertex();
+        bufferBuilder.vertex(matrix, x + xStart + info.width() * 5, y + 2, 0).uv(1, 0).endVertex();
         BufferUploader.drawWithShader(bufferBuilder.end());
+        RenderSystem.disableBlend();
 
         if (hovering && mouseX >= x && mouseX <= x + WIDTH && mouseY >= y && mouseY <= y + info.height() + 4) {
             CursorUtils.setCursor(true, CursorScreen.Cursor.POINTER);

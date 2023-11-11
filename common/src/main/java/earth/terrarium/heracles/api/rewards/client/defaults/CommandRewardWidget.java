@@ -5,6 +5,7 @@ import earth.terrarium.heracles.api.quests.QuestIcon;
 import earth.terrarium.heracles.api.rewards.defaults.CommandReward;
 import earth.terrarium.heracles.client.handlers.ClientQuests;
 import earth.terrarium.heracles.client.screens.quest.BaseQuestScreen;
+import earth.terrarium.heracles.client.utils.ThemeColors;
 import earth.terrarium.heracles.common.handlers.progress.QuestProgress;
 import earth.terrarium.heracles.common.network.NetworkHandler;
 import earth.terrarium.heracles.common.network.packets.rewards.ClaimRewardsPacket;
@@ -65,12 +66,12 @@ public record CommandRewardWidget(CommandReward reward, String quest, QuestProgr
         String desc = firstSpace > 0 ? reward.command().substring(0, reward.command().indexOf(" ")) : reward.command();
         graphics.drawString(
             font,
-            reward.titleOr(Component.translatable(TITLE_SINGULAR)), x + 48, y + 6, 0xFFFFFFFF,
+            reward.titleOr(Component.translatable(TITLE_SINGULAR)), x + 48, y + 6, ThemeColors.REWARD_TITLE,
             false
         );
         graphics.drawString(
             font,
-            Component.translatable(DESC_SINGULAR, desc), x + 48, y + 8 + font.lineHeight, 0xFF808080,
+            Component.translatable(DESC_SINGULAR, desc), x + 48, y + 8 + font.lineHeight, ThemeColors.REWARD_DESCRIPTION,
             false
         );
     }

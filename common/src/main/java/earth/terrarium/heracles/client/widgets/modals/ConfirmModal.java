@@ -1,5 +1,6 @@
 package earth.terrarium.heracles.client.widgets.modals;
 
+import earth.terrarium.heracles.client.utils.ThemeColors;
 import earth.terrarium.heracles.client.widgets.base.BaseModal;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
@@ -42,7 +43,7 @@ public class ConfirmModal extends BaseModal {
     protected void renderForeground(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
         graphics.drawString(
             font,
-            "Confirm", x + 10, y + 6, 0x404040,
+            "Confirm", x + 10, y + 6, ThemeColors.MODAL_BASIC_TITLE,
             false
         );
     }

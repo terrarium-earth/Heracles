@@ -7,6 +7,7 @@ import com.teamresourceful.resourcefullib.client.utils.ScreenUtils;
 import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.api.tasks.QuestTask;
 import earth.terrarium.heracles.api.tasks.QuestTaskDisplayFormatter;
+import earth.terrarium.heracles.client.utils.ThemeColors;
 import earth.terrarium.heracles.common.handlers.progress.TaskProgress;
 import earth.terrarium.heracles.common.utils.ModUtils;
 import net.minecraft.client.Minecraft;
@@ -63,7 +64,7 @@ public final class WidgetUtils {
         String text = QuestTaskDisplayFormatter.create(task, progress);
         graphics.drawString(
             font,
-            text, x + width - 5 - font.width(text), y + 6, 0xFFFFFFFF,
+            text, x + width - 5 - font.width(text), y + 6, ThemeColors.TASK_PROGRESS,
             false
         );
     }

@@ -3,6 +3,7 @@ package earth.terrarium.heracles.client.screens.quest.tasks;
 import com.teamresourceful.resourcefullib.client.scissor.ScissorBoxStack;
 import earth.terrarium.heracles.api.client.DisplayWidget;
 import earth.terrarium.heracles.api.client.WidgetUtils;
+import earth.terrarium.heracles.client.utils.ThemeColors;
 import earth.terrarium.heracles.common.constants.ConstantComponents;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -23,17 +24,17 @@ public record TaskListHeadingWidget(int tasks, int completed) implements Display
 
         graphics.drawString(
             Minecraft.getInstance().font,
-            ConstantComponents.Tasks.PROGRESS, x + 5, y + 5, 0xFFFFFFFF,
+            ConstantComponents.Tasks.PROGRESS, x + 5, y + 5, ThemeColors.SUMMARY_TITLE,
             false
         );
         graphics.drawString(
             Minecraft.getInstance().font,
-            completion, x + width - 5 - Minecraft.getInstance().font.width(completion), y + 5, 0xFFFFFFFF,
+            completion, x + width - 5 - Minecraft.getInstance().font.width(completion), y + 5, ThemeColors.SUMMARY_PROGRESS,
             false
         );
         graphics.drawString(
             Minecraft.getInstance().font,
-            Component.translatable(desc, tasks - completed), x + 5, y + 25 - Minecraft.getInstance().font.lineHeight, 0xFF696969,
+            Component.translatable(desc, tasks - completed), x + 5, y + 25 - Minecraft.getInstance().font.lineHeight, ThemeColors.SUMMARY_DESCRIPTION,
             false
         );
     }

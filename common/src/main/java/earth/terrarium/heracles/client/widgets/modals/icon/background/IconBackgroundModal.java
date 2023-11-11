@@ -2,6 +2,7 @@ package earth.terrarium.heracles.client.widgets.modals.icon.background;
 
 import com.teamresourceful.resourcefullib.client.utils.RenderUtils;
 import earth.terrarium.heracles.Heracles;
+import earth.terrarium.heracles.client.utils.ThemeColors;
 import earth.terrarium.heracles.client.widgets.base.BaseModal;
 import earth.terrarium.heracles.client.widgets.modals.upload.UploadModalItem;
 import net.minecraft.client.Minecraft;
@@ -43,7 +44,7 @@ public class IconBackgroundModal extends BaseModal {
         int textX = (WIDTH - font.width("Choose Background")) / 2;
         graphics.drawString(
             font,
-            "Choose Background", x + textX, y + 6, 0x404040,
+            "Choose Background", x + textX, y + 6, ThemeColors.MODAL_UPLOADING_TITLE,
             false
         );
 

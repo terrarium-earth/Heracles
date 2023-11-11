@@ -6,6 +6,7 @@ import com.teamresourceful.resourcefullib.client.utils.ScreenUtils;
 import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.client.handlers.DisplayConfig;
 import earth.terrarium.heracles.client.handlers.PinnedQuests;
+import earth.terrarium.heracles.client.utils.ThemeColors;
 import earth.terrarium.heracles.common.constants.ConstantComponents;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -49,7 +50,7 @@ public class PinnedQuestDisplay {
 
         graphics.drawString(
             font,
-            ConstantComponents.PinnedQuests.TITLE, titleX, y + 2, 0xFF808080,
+            ConstantComponents.PinnedQuests.TITLE, titleX, y + 2, ThemeColors.PINNED_TITLE,
             false
         );
 
@@ -70,7 +71,7 @@ public class PinnedQuestDisplay {
             title = title.append(display.title());
             graphics.drawString(
                 font,
-                title, x + 5, y, 0xFFFFFFFF,
+                title, x + 5, y, ThemeColors.PINNED_QUEST,
                 false
             );
             if (!PinnedQuests.isCollapsed(display.quest().key())) {
@@ -78,7 +79,7 @@ public class PinnedQuestDisplay {
                 for (var task : display.tasks()) {
                     graphics.drawString(
                         font,
-                        task, x + 5, y, 0xFFFFFFFF,
+                        task, x + 5, y, ThemeColors.PINNED_TASK,
                         false
                     );
                     y += 9;

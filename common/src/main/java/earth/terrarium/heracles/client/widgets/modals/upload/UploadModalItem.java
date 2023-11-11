@@ -10,6 +10,7 @@ import com.teamresourceful.resourcefullib.common.lib.Constants;
 import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.api.quests.Quest;
 import earth.terrarium.heracles.client.handlers.ClientQuests;
+import earth.terrarium.heracles.client.utils.ThemeColors;
 import earth.terrarium.heracles.common.constants.ConstantComponents;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
@@ -99,20 +100,20 @@ public record UploadModalItem(Path path, @Nullable Quest quest, String size, Lis
                 int startX = (int) Mth.lerp(f, 0.0, overflow);
                 graphics.drawString(
                     font,
-                    fileName, x + 4 - startX, y + 3, 0xFFFFFF,
+                    fileName, x + 4 - startX, y + 3, ThemeColors.MODAL_UPLOADING_FILE_NAME,
                     false
                 );
             } else {
                 graphics.drawString(
                     font,
-                    fileName, x + 4, y + 3, 0xFFFFFF,
+                    fileName, x + 4, y + 3, ThemeColors.MODAL_UPLOADING_FILE_NAME,
                     false
                 );
             }
         }
         graphics.drawString(
             font,
-            this.size, x + 13, y + 6 + font.lineHeight, 0xFFFFFF,
+            this.size, x + 13, y + 6 + font.lineHeight, ThemeColors.MODAL_UPLOADING_FILE_SIZE,
             false
         );
         if (hovering) {

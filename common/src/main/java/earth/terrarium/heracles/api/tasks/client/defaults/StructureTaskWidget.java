@@ -3,9 +3,9 @@ package earth.terrarium.heracles.api.tasks.client.defaults;
 import com.teamresourceful.resourcefullib.client.scissor.ScissorBoxStack;
 import earth.terrarium.heracles.api.client.DisplayWidget;
 import earth.terrarium.heracles.api.client.WidgetUtils;
-import earth.terrarium.heracles.api.tasks.QuestTaskDisplayFormatter;
 import earth.terrarium.heracles.api.tasks.client.display.TaskTitleFormatter;
 import earth.terrarium.heracles.api.tasks.defaults.StructureTask;
+import earth.terrarium.heracles.client.utils.ThemeColors;
 import earth.terrarium.heracles.common.handlers.progress.TaskProgress;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -34,20 +34,15 @@ public final class StructureTaskWidget implements DisplayWidget {
         this.task.icon().renderOrStack(Items.STRUCTURE_BLOCK.getDefaultInstance(), graphics, scissor, x + 5, y + 5, iconSize);
         graphics.drawString(
             font,
-            task.titleOr(DESCRIPTION), x + iconSize + 16, y + 6, 0xFFFFFFFF,
+            task.titleOr(DESCRIPTION), x + iconSize + 16, y + 6, ThemeColors.TASK_TITLE,
             false
         );
         graphics.drawString(
             font,
-            TaskTitleFormatter.create(this.task), x + iconSize + 16, y + 8 + font.lineHeight, 0xFF808080,
+            TaskTitleFormatter.create(this.task), x + iconSize + 16, y + 8 + font.lineHeight, ThemeColors.TASK_DESCRIPTION,
             false
         );
-        String progress = QuestTaskDisplayFormatter.create(this.task, this.progress);
-        graphics.drawString(
-            font,
-            progress, x + width - 5 - font.width(progress), y + 6, 0xFFFFFFFF,
-            false
-        );
+        WidgetUtils.drawProgressText(graphics, x, y, width, this.task, this.progress);
 
         int height = getHeight(width);
         WidgetUtils.drawProgressBar(graphics, x + iconSize + 16, y + height - font.lineHeight - 5, x + width - 5, y + height - 6, this.task, this.progress);

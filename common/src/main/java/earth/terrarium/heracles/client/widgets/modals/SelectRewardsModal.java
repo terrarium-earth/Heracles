@@ -8,6 +8,7 @@ import earth.terrarium.heracles.api.client.DisplayWidget;
 import earth.terrarium.heracles.api.client.WidgetUtils;
 import earth.terrarium.heracles.api.rewards.QuestReward;
 import earth.terrarium.heracles.api.rewards.client.QuestRewardWidgets;
+import earth.terrarium.heracles.client.utils.ThemeColors;
 import earth.terrarium.heracles.client.widgets.base.BaseModal;
 import earth.terrarium.heracles.common.constants.ConstantComponents;
 import net.minecraft.client.Minecraft;
@@ -56,12 +57,12 @@ public class SelectRewardsModal extends BaseModal {
     protected void renderForeground(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
         graphics.drawString(
             font,
-            "Select " + maxSelectable + " Reward" + (maxSelectable > 1 ? "s" : ""), x + 10, y + 6, 0x404040,
+            "Select " + maxSelectable + " Reward" + (maxSelectable > 1 ? "s" : ""), x + 10, y + 6, ThemeColors.MODAL_BASIC_TITLE,
             false
         );
         graphics.drawString(
             font,
-            selected.size() + "/" + maxSelectable, x + 10, y + height - 15, 0x404040,
+            selected.size() + "/" + maxSelectable, x + 10, y + height - 15, ThemeColors.MODAL_REWARDS_AMOUNT,
             false
         );
 

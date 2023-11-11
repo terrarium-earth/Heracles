@@ -4,6 +4,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.teamresourceful.resourcefullib.client.screens.BaseCursorScreen;
 import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.client.utils.ClientUtils;
+import earth.terrarium.heracles.client.utils.ThemeColors;
 import earth.terrarium.heracles.client.widgets.base.TemporyWidget;
 import earth.terrarium.heracles.client.widgets.modals.EditObjectModal;
 import earth.terrarium.heracles.common.constants.ConstantComponents;
@@ -103,7 +104,7 @@ public abstract class AbstractQuestScreen<T> extends BaseCursorScreen {
         Component title = getTitle();
         graphics.drawString(
             this.font,
-            title, (int) (center - (this.font.width(title) / 2f)), 3, 0x404040,
+            title, (int) (center - (this.font.width(title) / 2f)), 3, ThemeColors.HEADER_TITLE,
             false
         );
     }

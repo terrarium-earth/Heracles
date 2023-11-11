@@ -5,6 +5,7 @@ import earth.terrarium.heracles.api.quests.QuestIcon;
 import earth.terrarium.heracles.api.rewards.defaults.ItemReward;
 import earth.terrarium.heracles.client.handlers.ClientQuests;
 import earth.terrarium.heracles.client.screens.quest.BaseQuestScreen;
+import earth.terrarium.heracles.client.utils.ThemeColors;
 import earth.terrarium.heracles.common.handlers.progress.QuestProgress;
 import earth.terrarium.heracles.common.network.NetworkHandler;
 import earth.terrarium.heracles.common.network.packets.rewards.ClaimRewardsPacket;
@@ -61,12 +62,12 @@ public record ItemRewardWidget(ItemReward reward, String quest, QuestProgress pr
         String desc = getIcon().getCount() == 1 ? DESC_SINGULAR : DESC_PLURAL;
         graphics.drawString(
             font,
-            reward.titleOr(Component.translatable(title, getIcon().getHoverName())), x + 48, y + 6, 0xFFFFFFFF,
+            reward.titleOr(Component.translatable(title, getIcon().getHoverName())), x + 48, y + 6, ThemeColors.REWARD_TITLE,
             false
         );
         graphics.drawString(
             font,
-            Component.translatable(desc, getIcon().getCount(), getIcon().getHoverName()), x + 48, y + 8 + font.lineHeight, 0xFF808080,
+            Component.translatable(desc, getIcon().getCount(), getIcon().getHoverName()), x + 48, y + 8 + font.lineHeight, ThemeColors.REWARD_DESCRIPTION,
             false
         );
     }

@@ -9,6 +9,7 @@ import earth.terrarium.heracles.api.client.DisplayWidget;
 import earth.terrarium.heracles.api.client.WidgetUtils;
 import earth.terrarium.heracles.api.tasks.client.display.TaskTitleFormatter;
 import earth.terrarium.heracles.api.tasks.defaults.CheckTask;
+import earth.terrarium.heracles.client.utils.ThemeColors;
 import earth.terrarium.heracles.common.constants.ConstantComponents;
 import earth.terrarium.heracles.common.handlers.progress.TaskProgress;
 import earth.terrarium.heracles.common.network.NetworkHandler;
@@ -40,12 +41,12 @@ public record CheckTaskWidget(
         }
         graphics.drawString(
             font,
-            task.titleOr(TaskTitleFormatter.create(task)), x + iconSize + 16, y + 6, 0xFFFFFFFF,
+            task.titleOr(TaskTitleFormatter.create(task)), x + iconSize + 16, y + 6, ThemeColors.TASK_TITLE,
             false
         );
         graphics.drawString(
             font,
-            Component.translatable(DESC_SINGULAR), x + iconSize + 16, y + 8 + font.lineHeight, 0xFF808080,
+            Component.translatable(DESC_SINGULAR), x + iconSize + 16, y + 8 + font.lineHeight, ThemeColors.TASK_DESCRIPTION,
             false
         );
 

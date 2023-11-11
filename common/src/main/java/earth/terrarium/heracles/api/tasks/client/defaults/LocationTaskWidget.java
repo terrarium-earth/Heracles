@@ -4,6 +4,7 @@ import com.teamresourceful.resourcefullib.client.scissor.ScissorBoxStack;
 import earth.terrarium.heracles.api.client.DisplayWidget;
 import earth.terrarium.heracles.api.client.WidgetUtils;
 import earth.terrarium.heracles.api.tasks.defaults.LocationTask;
+import earth.terrarium.heracles.client.utils.ThemeColors;
 import earth.terrarium.heracles.common.handlers.progress.TaskProgress;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -20,8 +21,8 @@ public record LocationTaskWidget(
         WidgetUtils.drawBackground(graphics, x, y, width, getHeight(width));
         int iconSize = 32;
         this.task.icon().render(graphics, scissor, x + 5, y + 5, iconSize, iconSize);
-        graphics.drawString(font, this.task.title(), x + iconSize + 16, y + 6, 0xFFFFFFFF, false);
-        graphics.drawString(font, this.task.desc(), x + iconSize + 16, y + 8 + font.lineHeight, 0xFF808080, false);
+        graphics.drawString(font, this.task.title(), x + iconSize + 16, y + 6, ThemeColors.TASK_TITLE, false);
+        graphics.drawString(font, this.task.desc(), x + iconSize + 16, y + 8 + font.lineHeight, ThemeColors.TASK_DESCRIPTION, false);
         WidgetUtils.drawProgressText(graphics, x, y, width, this.task, this.progress);
         int height = getHeight(width);
         WidgetUtils.drawProgressBar(graphics, x + iconSize + 16, y + height - font.lineHeight - 5, x + width - 5, y + height - 6, this.task, this.progress);

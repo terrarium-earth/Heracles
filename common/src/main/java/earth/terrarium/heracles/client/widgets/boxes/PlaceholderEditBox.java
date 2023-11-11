@@ -6,11 +6,11 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.network.chat.Component;
 
-public class PlaceholerEditBox extends EditBox {
+public class PlaceholderEditBox extends EditBox {
 
     private boolean bordered = true;
 
-    public PlaceholerEditBox(Font font, int x, int y, int width, int height, Component message) {
+    public PlaceholderEditBox(Font font, int x, int y, int width, int height, Component message) {
         super(font, x, y, width, height, message);
     }
 

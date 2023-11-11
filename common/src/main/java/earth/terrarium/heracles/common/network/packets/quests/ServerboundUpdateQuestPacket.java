@@ -17,7 +17,7 @@ import net.minecraft.resources.ResourceLocation;
 import java.util.Objects;
 
 public record ServerboundUpdateQuestPacket(
-    String id, NetworkQuestData data
+    String id, NetworkQuestData data, boolean sendToSelf
 ) implements Packet<ServerboundUpdateQuestPacket> {
 
     public static final ResourceLocation ID = new ResourceLocation(Heracles.MOD_ID, "update_server_quest");
@@ -41,6 +41,7 @@ public record ServerboundUpdateQuestPacket(
             super(ObjectByteCodec.create(
                 ByteCodec.STRING.fieldOf(ServerboundUpdateQuestPacket::id),
                 NetworkQuestData.CODEC.fieldOf(ServerboundUpdateQuestPacket::data),
+                ByteCodec.BOOLEAN.fieldOf(ServerboundUpdateQuestPacket::sendToSelf),
                 ServerboundUpdateQuestPacket::new
             ));
         }
@@ -53,10 +54,16 @@ public record ServerboundUpdateQuestPacket(
                     if (quest == null) return;
                     message.data.update(quest);
                     QuestHandler.markDirty(message.id);
-                    NetworkHandler.CHANNEL.sendToAllPlayers(
-                        new ClientboundUpdateQuestPacket(message.id, message.data),
-                        Objects.requireNonNull(player.getServer())
-                    );
+
+                    ClientboundUpdateQuestPacket packet = new ClientboundUpdateQuestPacket(message.id, message.data);
+
+                    Objects.requireNonNull(player.getServer())
+                        .getPlayerList()
+                        .getPlayers()
+                        .stream()
+                        .filter(p -> p != player || message.sendToSelf())
+                        .forEach(p -> NetworkHandler.CHANNEL.sendToPlayer(packet, p));
+
                     QuestProgressHandler.read(player.getServer()).updatePossibleQuests();
                 }
             };

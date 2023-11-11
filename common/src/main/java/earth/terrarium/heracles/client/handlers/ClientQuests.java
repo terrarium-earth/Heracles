@@ -139,14 +139,22 @@ public class ClientQuests {
     }
 
     public static void updateQuest(QuestEntry entry, Function<Quest, NetworkQuestData.Builder> supplier) {
+        ClientQuests.updateQuest(entry, supplier, true);
+    }
+
+    public static void updateQuest(QuestEntry entry, Function<Quest, NetworkQuestData.Builder> supplier, boolean sendToSelf) {
         if (entry == null) return;
-        ClientQuests.updateQuest(entry, supplier.apply(entry.value()));
+        ClientQuests.updateQuest(entry, supplier.apply(entry.value()), sendToSelf);
     }
 
     public static void updateQuest(QuestEntry entry, NetworkQuestData.Builder builder) {
+        ClientQuests.updateQuest(entry, builder, true);
+    }
+
+    public static void updateQuest(QuestEntry entry, NetworkQuestData.Builder builder, boolean sendToSelf) {
         NetworkQuestData data = builder.build();
         data.update(entry.value());
-        NetworkHandler.CHANNEL.sendToServer(new ServerboundUpdateQuestPacket(entry.key(), data));
+        NetworkHandler.CHANNEL.sendToServer(new ServerboundUpdateQuestPacket(entry.key(), data, sendToSelf));
     }
 
     public static void syncGroup(QuestsContent content) {

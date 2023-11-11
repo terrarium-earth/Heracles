@@ -79,7 +79,9 @@ public class SelectQuestHandler {
                     pos.x = newX;
                     pos.y = newY;
                     return pos;
-                }));
+                }),
+                false
+            );
         }
     }
 

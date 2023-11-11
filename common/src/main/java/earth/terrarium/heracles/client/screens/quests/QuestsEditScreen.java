@@ -49,6 +49,7 @@ public class QuestsEditScreen extends QuestsScreen implements ContextualMenuScre
     private ItemModal itemModal;
     private AddDependencyModal dependencyModal;
     private TextInputModal<MouseClick> questModal;
+    private TextInputModal<Unit> textModal;
 
     private ContextMenu contextMenu;
 
@@ -126,6 +127,13 @@ public class QuestsEditScreen extends QuestsScreen implements ContextualMenuScre
             );
             this.questsWidget.addQuest(ClientQuestNetworking.add(text, quest));
         }, text -> text.toLowerCase(Locale.ROOT).replaceAll("[^a-zA-Z_-]", "").length() >= 2 && ClientQuests.get(text.trim()).isEmpty()));
+
+        this.textModal = addTemporary(new TextInputModal<>(this.width, this.height,
+            Component.literal("Enter Name"),
+            (unit, text) -> {},
+            text -> text.length() >= 2
+        ));
+        this.textModal.setData(Unit.INSTANCE);
 
         this.contextMenu = addRenderableWidget(-1, new ContextMenu());
     }
@@ -220,6 +228,10 @@ public class QuestsEditScreen extends QuestsScreen implements ContextualMenuScre
 
     public TextInputModal<MouseClick> questModal() {
         return this.questModal;
+    }
+
+    public TextInputModal<Unit> textModal() {
+        return this.textModal;
     }
 
     @Override

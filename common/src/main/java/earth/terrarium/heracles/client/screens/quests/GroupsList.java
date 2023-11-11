@@ -99,7 +99,7 @@ public class GroupsList extends SelectionList<GroupsList.Entry> {
                 group.icon().get().render(graphics, scissorStack, x, top + 1 + ((size - 16) / 2), size, size);
             }
             x += height;
-            graphics.drawString(Minecraft.getInstance().font, name, x, top + height / 2 - 4, 0xFFFFFF);
+            graphics.drawString(Minecraft.getInstance().font, Component.translatable(group.title()), x, top + height / 2 - 4, 0xFFFFFF);
             CursorUtils.setCursor(hovered, CursorScreen.Cursor.POINTER);
             if (Minecraft.getInstance().screen instanceof QuestsEditScreen) {
                 if (mouseX - left >= width - 11 && mouseX - left <= width - 2 && mouseY - top >= 2 && mouseY - top <= 12 && hovered) {
@@ -149,6 +149,22 @@ public class GroupsList extends SelectionList<GroupsList.Entry> {
                 MouseClick mouse = ClientUtils.getMousePos();
                 ContextualMenuScreen.getMenu()
                     .ifPresent(menu -> menu.start(this.list.x + this.list.width + 6, mouse.y())
+                        .addOption(Component.literal("\uD83D\uDCAC Edit Name"), () -> {
+                            if (Minecraft.getInstance().screen instanceof QuestsEditScreen screen) {
+                                screen.textModal().setVisible(true);
+                                screen.textModal().setText(this.group.title());
+                                screen.textModal().setCallback((unused, text) -> {
+                                    this.group = this.group.withTitle(text);
+                                    NetworkHandler.CHANNEL.sendToServer(new EditGroupPacket(
+                                        name,
+                                        Optional.empty(),
+                                        Optional.of(text),
+                                        Optional.empty()
+                                    ));
+                                    screen.textModal().setVisible(false);
+                                });
+                            }
+                        })
                         .addOption(Component.literal("\uD83D\uDDBC Edit Icon"), () -> {
                             if (Minecraft.getInstance().screen instanceof QuestsEditScreen screen) {
                                 screen.itemModal().setVisible(true);

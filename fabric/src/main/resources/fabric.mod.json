@@ -30,7 +30,7 @@
     "fabric": ">=0.14.19",
     "fabric-api": "*",
     "minecraft": ">=1.20-",
-    "resourcefullib": ">=2.1.13",
+    "resourcefullib": ">=2.1.16",
     "java": ">=17"
   }
 }

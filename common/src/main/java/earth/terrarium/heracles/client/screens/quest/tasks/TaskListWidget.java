@@ -160,7 +160,7 @@ public class TaskListWidget extends AbstractContainerEventHandler implements Ren
                     boolean removeHovered = mouseX > x + width + 1 && mouseX < x + width + 12 && mouseY > tempY + 13 && mouseY < tempY + 24;
                     graphics.blit(AbstractQuestScreen.HEADING, x + width + 1, tempY + 13, 11, removeHovered ? 70 : 59, 11, 11, 256, 256);
                     CursorUtils.setCursor(removeHovered, CursorScreen.Cursor.POINTER);
-                    if (mouse != null && mouse.x() > x + width + 1 && mouse.x() < x + width + 12 && mouse.y() > y + 13 && mouse.y() < y + 24 && mouse.button() == 0) {
+                    if (mouse != null && mouse.x() > x + width + 1 && mouse.x() < x + width + 12 && mouse.y() > tempY + 13 && mouse.y() < tempY + 24 && mouse.button() == 0) {
                         clicked = Pair.of(pair.left, true);
                     }
                 }

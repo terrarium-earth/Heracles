@@ -1,3 +1,3 @@
-- Fix bug where delete button was on clickable on tasks when scrolled (ThatGravyBoat)
-- Upgraded to Resourceful Lib 2.1.16 (ThatGravyBoat)
-- Added missing info for mods.toml (ThatGravyBoat)
+- Make it so that titles of quests are not synced back to the user that updated them (ThatGravyBoat)
+- Make it so that position of quests are not synced back to the user that updated them (ThatGravyBoat)
+- Make it so that the quest subtitles is not synced back to the user that updated it (ThatGravyBoat)

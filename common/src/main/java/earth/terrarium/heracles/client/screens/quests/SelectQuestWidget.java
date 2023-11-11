@@ -60,7 +60,14 @@ public class SelectQuestWidget extends BaseWidget {
         this.group = ClientUtils.screen() instanceof QuestsScreen screen ? screen.getGroup() : "";
 
         this.titleBox = this.addChild(new EditBox(this.font, this.x + 6, this.y + 14, this.width - 12, 10, CommonComponents.EMPTY));
-        this.titleBox.setResponder(s -> updateQuest(quest -> NetworkQuestData.builder().title(s.isEmpty() ? null : Component.translatable(s))));
+        this.titleBox.setResponder(s -> ClientQuests.updateQuest(
+            this.entry,
+            quest -> {
+                quest.display().setTitle(s.isEmpty() ? null : Component.translatable(s));
+                return NetworkQuestData.builder().title(quest.display().title());
+            },
+            false
+        ));
 
         int boxWidth = (this.width - 40) / 2;
 
@@ -76,7 +83,14 @@ public class SelectQuestWidget extends BaseWidget {
         })));
 
         this.subtitleBox = this.addChild(new MultiLineEditBox(this.font, this.x + 6, this.y + 76, this.width - 12, 40, CommonComponents.EMPTY, CommonComponents.EMPTY));
-        this.subtitleBox.setValueListener(s -> updateQuest(quest -> NetworkQuestData.builder().subtitle(s.isEmpty() ? null : Component.translatable(s))));
+        this.subtitleBox.setValueListener(s -> ClientQuests.updateQuest(
+            this.entry,
+            quest -> {
+                quest.display().setSubtitle(s.isEmpty() ? null : Component.translatable(s));
+                return NetworkQuestData.builder().subtitle(quest.display().title());
+            },
+            false
+        ));
 
         addChild(Button.builder(Component.literal("ℹ"), b -> {
                 if (Minecraft.getInstance().screen instanceof QuestsEditScreen screen) {

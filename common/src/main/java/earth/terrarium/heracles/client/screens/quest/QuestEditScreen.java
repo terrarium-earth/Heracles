@@ -1,5 +1,6 @@
 package earth.terrarium.heracles.client.screens.quest;
 
+import com.mojang.blaze3d.platform.InputConstants;
 import earth.terrarium.heracles.api.client.settings.SettingInitializer;
 import earth.terrarium.heracles.api.client.settings.Settings;
 import earth.terrarium.heracles.api.rewards.QuestReward;
@@ -29,6 +30,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.ImageButton;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.components.events.GuiEventListener;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -56,6 +58,18 @@ public class QuestEditScreen extends BaseQuestScreen {
         super.updateProgress(newProgress);
         this.taskList.update(this.quest().tasks().values());
         this.rewardList.update(this.content.fromGroup(), this.content.id(), this.quest());
+    }
+
+    @Override
+    protected void rebuildWidgets() {
+        var oldBox = this.descriptionBox;
+        ClientQuests.updateQuest(
+            entry(),
+            quest -> NetworkQuestData.builder().description(new ArrayList<>(this.descriptionBox.lines())),
+            false
+        );
+        super.rebuildWidgets();
+        this.descriptionBox.update(oldBox);
     }
 
     @Override
@@ -150,6 +164,7 @@ public class QuestEditScreen extends BaseQuestScreen {
         this.descriptionBox = new QuestTextEditor(contentX, contentY, contentWidth, contentHeight);
         this.descriptionBox.setContent(String.join("\n", this.quest().display().description()).replace("§", "&&"));
 
+
         if (Minecraft.getInstance().isLocalServer()) {
             addRenderableWidget(new ImageButton(this.width - 36, 1, 11, 11, 33, 59, 11, HEADING, 256, 256, (button) -> {
                 Path path = QuestHandler.getQuestPath(this.quest(), this.getQuestId());
@@ -200,6 +215,19 @@ public class QuestEditScreen extends BaseQuestScreen {
             });
             widget.setTitle(ConstantComponents.Rewards.EDIT);
         }
+    }
+
+    @Override
+    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+        if (Screen.hasControlDown() && keyCode == InputConstants.KEY_S) {
+            ClientQuests.updateQuest(
+                entry(),
+                quest -> NetworkQuestData.builder().description(new ArrayList<>(this.descriptionBox.lines())),
+                false
+            );
+            return true;
+        }
+        return super.keyPressed(keyCode, scanCode, modifiers);
     }
 
     @Override

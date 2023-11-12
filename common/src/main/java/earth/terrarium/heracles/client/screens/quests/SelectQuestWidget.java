@@ -73,14 +73,14 @@ public class SelectQuestWidget extends BaseWidget {
 
         this.xBox = this.addChild(new PositionBox(this.font, this.x + 16, this.y + 44, boxWidth, 10, ConstantComponents.X));
         this.yBox = this.addChild(new PositionBox(this.font, this.x + 33 + boxWidth, this.y + 44, boxWidth, 10, Component.literal("y")));
-        this.xBox.setNumberResponder(value -> updateQuest(quest -> NetworkQuestData.builder().group(quest, this.group, pos -> {
+        this.xBox.setNumberResponder(value -> ClientQuests.updateQuest(this.entry, quest -> NetworkQuestData.builder().group(quest, this.group, pos -> {
             pos.x = value;
             return pos;
-        })));
-        this.yBox.setNumberResponder(value -> updateQuest(quest -> NetworkQuestData.builder().group(quest, this.group, pos -> {
+        }), false));
+        this.yBox.setNumberResponder(value -> ClientQuests.updateQuest(this.entry, quest -> NetworkQuestData.builder().group(quest, this.group, pos -> {
             pos.y = value;
             return pos;
-        })));
+        }), false));
 
         this.subtitleBox = this.addChild(new MultiLineEditBox(this.font, this.x + 6, this.y + 76, this.width - 12, 40, CommonComponents.EMPTY, CommonComponents.EMPTY));
         this.subtitleBox.setValueListener(s -> ClientQuests.updateQuest(

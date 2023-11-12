@@ -48,6 +48,13 @@ public class TextEditor implements Renderable, GuiEventListener, NarratableEntry
         this.lineNumColor = lineNumColor;
     }
 
+    public void update(TextEditor editor) {
+        this.content.lines().clear();
+        this.content.lines().addAll(editor.content.lines());
+        this.content.cursor().set(editor.content.cursor());
+        this.content.setSelection(editor.content.selection());
+    }
+
     public void setContent(String content) {
         this.content.lines().clear();
         this.content.lines().addAll(List.of(content.split("\n")));

@@ -1,3 +1,3 @@
-- Make it so that titles of quests are not synced back to the user that updated them (ThatGravyBoat)
-- Make it so that position of quests are not synced back to the user that updated them (ThatGravyBoat)
-- Make it so that the quest subtitles is not synced back to the user that updated it (ThatGravyBoat)
+- Description content will be saved on resize (ThatGravyBoat)
+- Added CTRL+S shortcut to save (ThatGravyBoat)
+- Fixed position boxes sending packets back to you (ThatGravyBoat)

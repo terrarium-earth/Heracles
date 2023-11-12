@@ -8,6 +8,7 @@ import earth.terrarium.heracles.api.tasks.client.QuestTaskWidgets;
 import earth.terrarium.heracles.api.tasks.client.display.TaskTitleFormatters;
 import earth.terrarium.heracles.api.tasks.defaults.CompositeTask;
 import earth.terrarium.heracles.client.utils.ThemeColors;
+import earth.terrarium.heracles.common.constants.ConstantComponents;
 import earth.terrarium.heracles.common.handlers.progress.TaskProgress;
 import earth.terrarium.heracles.common.utils.ModUtils;
 import net.minecraft.client.Minecraft;
@@ -50,7 +51,7 @@ public final class CompositeTaskWidget implements DisplayWidget {
         Font font = Minecraft.getInstance().font;
         int start = graphics.drawString(
             font,
-            isOpened ? "▼" : "▶", x + 48, y + 5, ThemeColors.TASK_TITLE,
+            isOpened ? ConstantComponents.ARROW_DOWN : ConstantComponents.ARROW_RIGHT, x + 48, y + 5, ThemeColors.TASK_TITLE,
             false
         );
         graphics.drawString(

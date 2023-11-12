@@ -45,8 +45,8 @@ public record OpenQuestScreenPacket(boolean editing, QuestContent content) imple
         public PacketContext handle(OpenQuestScreenPacket message) {
             return (player, level) -> {
                 if (QuestHandler.failedToLoad) {
-                    player.sendSystemMessage(Component.literal("Failed to load quests, check the logs for more information."));
-                    player.sendSystemMessage(Component.literal("Manually fix and reload the quests by running /reload"));
+                    player.sendSystemMessage(Component.translatable("gui.heracles.error.quests.load_fail"));
+                    player.sendSystemMessage(Component.translatable("gui.heracles.error.quests.load_fail.suggestion"));
                     return;
                 }
                 if (message.editing) {

@@ -9,11 +9,11 @@ import earth.terrarium.heracles.client.handlers.ClientQuests;
 import earth.terrarium.heracles.client.utils.ThemeColors;
 import earth.terrarium.heracles.client.widgets.base.BaseModal;
 import earth.terrarium.heracles.client.widgets.boxes.AutocompleteEditBox;
+import earth.terrarium.heracles.common.constants.ConstantComponents;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Tooltip;
-import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.ArrayList;
@@ -46,9 +46,9 @@ public class AddDependencyModal extends BaseModal {
         }, ClientQuests.QuestEntry::key, value -> addDependency()));
 
         this.addButton = addChild(
-            new Button.Builder(Component.literal("+"), b -> addDependency())
+            new Button.Builder(ConstantComponents.PLUS, b -> addDependency())
                 .bounds(x + 142, y + 19, 16, 16)
-                .tooltip(Tooltip.create(Component.literal("Add Dependency")))
+                .tooltip(Tooltip.create(ConstantComponents.Quests.ADD_DEPENDENCY))
                 .build()
         );
     }
@@ -127,7 +127,7 @@ public class AddDependencyModal extends BaseModal {
     protected void renderForeground(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
         graphics.drawString(
             Minecraft.getInstance().font,
-            "Add Dependency", x + 8, y + 6, ThemeColors.MODAL_DEPENDENCIES_TITLE,
+            ConstantComponents.Quests.ADD_DEPENDENCY, x + 8, y + 6, ThemeColors.MODAL_DEPENDENCIES_TITLE,
             false
         );
     }

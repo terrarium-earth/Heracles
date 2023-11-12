@@ -14,12 +14,16 @@ import earth.terrarium.heracles.common.constants.ConstantComponents;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 
 import java.util.*;
 import java.util.function.Consumer;
 
 public class SelectRewardsModal extends BaseModal {
+
+    private static final String TITLE_SINGULAR = "reward.heracles.select.modal.title.singular";
+    private static final String TITLE_PLURAL = "reward.heracles.select.modal.title.plural";
 
     private final Map<String, DisplayWidget> widgets = new LinkedHashMap<>();
     private final Set<String> selected = new HashSet<>();
@@ -57,7 +61,7 @@ public class SelectRewardsModal extends BaseModal {
     protected void renderForeground(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
         graphics.drawString(
             font,
-            "Select " + maxSelectable + " Reward" + (maxSelectable > 1 ? "s" : ""), x + 10, y + 6, ThemeColors.MODAL_BASIC_TITLE,
+            Component.translatable(maxSelectable > 1 ? TITLE_PLURAL : TITLE_SINGULAR, maxSelectable), x + 10, y + 6, ThemeColors.MODAL_BASIC_TITLE,
             false
         );
         graphics.drawString(

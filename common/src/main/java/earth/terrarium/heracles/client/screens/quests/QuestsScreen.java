@@ -104,10 +104,10 @@ public class QuestsScreen extends AbstractQuestScreen<QuestsContent> {
     protected void renderLabels(GuiGraphics graphics, int mouseX, int mouseY) {
         super.renderLabels(graphics, mouseX, mouseY);
         int center = ((int) (this.width * 0.25f) - 2) / 2;
-        int textX = center - font.width("Groups") / 2;
+        int textX = center - font.width(ConstantComponents.Groups.GROUPS) / 2;
         graphics.drawString(
             font,
-            "Groups", textX, 3, ThemeColors.HEADER_GROUPS_TITLE,
+            ConstantComponents.Groups.GROUPS, textX, 3, ThemeColors.HEADER_GROUPS_TITLE,
             false
         );
     }

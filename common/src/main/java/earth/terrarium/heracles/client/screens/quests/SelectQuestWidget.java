@@ -88,7 +88,7 @@ public class SelectQuestWidget extends BaseWidget {
                 }
                 loseFocusListener = b;
             }).bounds(this.x + 6, this.y + 137, 16, 16)
-            .tooltip(Tooltip.create(Component.literal("Change Icon")))
+            .tooltip(Tooltip.create(Component.translatable("gui.heracles.quests.change_icon")))
             .build());
 
         addChild(Button.builder(Component.literal("□"), b -> {
@@ -101,7 +101,7 @@ public class SelectQuestWidget extends BaseWidget {
                 }
                 loseFocusListener = b;
             }).bounds(this.x + 24, this.y + 137, 16, 16)
-            .tooltip(Tooltip.create(Component.literal("Change Icon Background")))
+            .tooltip(Tooltip.create(Component.translatable("gui.heracles.quests.change_background")))
             .build());
 
         addChild(Button.builder(Component.literal("⬈"), b -> {
@@ -111,10 +111,10 @@ public class SelectQuestWidget extends BaseWidget {
                 }
                 loseFocusListener = b;
             }).bounds(this.x + 42, this.y + 137, 16, 16)
-            .tooltip(Tooltip.create(Component.literal("Change Dependencies")))
+            .tooltip(Tooltip.create(Component.translatable("gui.heracles.quests.change_dependencies")))
             .build());
 
-        addChild(Button.builder(Component.literal("x"), b -> {
+        addChild(Button.builder(ConstantComponents.X, b -> {
                 if (Minecraft.getInstance().screen instanceof QuestsEditScreen screen && this.entry != null) {
                     screen.confirmModal().setVisible(true);
                     screen.confirmModal().setCallback(() -> {
@@ -152,11 +152,11 @@ public class SelectQuestWidget extends BaseWidget {
                                 .repeatable(questSettings.repeatable());
                         })
                     );
-                    edit.setTitle(Component.literal("Edit Quest Settings"));
+                    edit.setTitle(Component.translatable("gui.heracles.quests.edit_quest_settings"));
                 }
                 loseFocusListener = b;
             }).bounds(this.x + 78, this.y + 137, 16, 16)
-            .tooltip(Tooltip.create(Component.literal("Edit Quest Settings")))
+            .tooltip(Tooltip.create(Component.translatable("gui.heracles.quests.edit_quest_settings")))
             .build());
     }
 
@@ -171,7 +171,7 @@ public class SelectQuestWidget extends BaseWidget {
         //Title
         graphics.drawString(
             font,
-            Component.literal("Title"), this.x + 7, this.y + 4, 0x808080,
+            Component.translatable("gui.heracles.quests.title"), this.x + 7, this.y + 4, 0x808080,
             false
         );
 
@@ -180,7 +180,7 @@ public class SelectQuestWidget extends BaseWidget {
         //Position
         graphics.drawString(
             font,
-            Component.literal("Position"), this.x + 7, this.y + 33, 0x808080,
+            Component.translatable("gui.heracles.quests.position"), this.x + 7, this.y + 33, 0x808080,
             false
         );
 
@@ -189,7 +189,7 @@ public class SelectQuestWidget extends BaseWidget {
         //Subtitle
         graphics.drawString(
             font,
-            Component.literal("Subtitle"), this.x + 7, this.y + 65, 0x808080,
+            Component.translatable("gui.heracles.quests.subtitle"), this.x + 7, this.y + 65, 0x808080,
             false
         );
 
@@ -198,7 +198,7 @@ public class SelectQuestWidget extends BaseWidget {
         //Actions
         graphics.drawString(
             font,
-            Component.literal("Actions"), this.x + 7, this.y + 126, 0x808080,
+            Component.translatable("gui.heracles.quests.actions"), this.x + 7, this.y + 126, 0x808080,
             false
         );
 

@@ -38,7 +38,7 @@ public class CreateObjectModal extends BaseModal {
         super(screenWidth, screenHeight, WIDTH, HEIGHT);
         this.typeBox = addChild(new Dropdown<>(
             this.x + 8, this.y + 19, 152, 14,
-            Component.literal("Type"),
+            ConstantComponents.TYPE,
             id -> Component.translatable(id.toLanguageKey(type))
         ));
 

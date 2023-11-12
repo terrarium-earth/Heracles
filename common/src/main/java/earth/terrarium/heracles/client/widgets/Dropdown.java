@@ -5,6 +5,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.teamresourceful.resourcefullib.client.CloseablePoseStack;
 import com.teamresourceful.resourcefullib.client.utils.RenderUtils;
 import earth.terrarium.heracles.client.widgets.base.BaseModal;
+import earth.terrarium.heracles.common.constants.ConstantComponents;
 import net.minecraft.Optionull;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -64,7 +65,7 @@ public class Dropdown<T> extends AbstractWidget implements Renderable {
         );
         graphics.drawString(
             font,
-            isFocused() ? "▲" : "▼", x + width - 10, y + 3, 0xFFFFFF,
+            isFocused() ? ConstantComponents.ARROW_UP : ConstantComponents.ARROW_DOWN, x + width - 10, y + 3, 0xFFFFFF,
             false
         );
 

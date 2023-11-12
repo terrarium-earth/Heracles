@@ -89,13 +89,13 @@ public class GroupsList extends SelectionList<GroupsList.Entry> {
                     ScreenUtils.setTooltip(cant ? ConstantComponents.Groups.DELETE_WITH_QUESTS : ConstantComponents.DELETE);
                     graphics.drawString(
                         Minecraft.getInstance().font,
-                        "x", left + width - 9, top + 2, 0xFFFFFF,
+                        ConstantComponents.X, left + width - 9, top + 2, 0xFFFFFF,
                         false
                     );
                 } else if (hovered) {
                     graphics.drawString(
                         Minecraft.getInstance().font,
-                        "x", left + width - 9, top + 2, 0x808080,
+                        ConstantComponents.X, left + width - 9, top + 2, 0x808080,
                         false
                     );
                 }

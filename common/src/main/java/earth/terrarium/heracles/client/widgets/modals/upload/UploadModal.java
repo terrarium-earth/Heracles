@@ -64,7 +64,7 @@ public class UploadModal extends BaseModal implements FileWidget {
     protected void renderForeground(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
         graphics.drawString(
             Minecraft.getInstance().font,
-            "Import Quests", x + 8, y + 6, ThemeColors.MODAL_UPLOADING_TITLE,
+            ConstantComponents.Quests.IMPORT, x + 8, y + 6, ThemeColors.MODAL_UPLOADING_TITLE,
             false
         );
 

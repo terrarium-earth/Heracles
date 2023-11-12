@@ -50,8 +50,9 @@ public record UploadModalItem(Path path, @Nullable Quest quest, String size, Lis
             size = " - " + FileUtils.byteCountToDisplaySize(file.length()).toLowerCase(Locale.ROOT);
             if (file.getName().endsWith(".json")) {
                 String filename = path.getFileName().toString();
-                if (ClientQuests.get(filename.substring(0, filename.lastIndexOf("."))).isPresent()) {
-                    return new UploadModalItem(path, null, size, List.of(Component.literal("Quest with id already exists.")), Icon.WARNING);
+                String id = filename.substring(0, filename.lastIndexOf("."));
+                if (ClientQuests.get(id).isPresent()) {
+                    return new UploadModalItem(path, null, size, List.of(Component.translatable("gui.heracles.error.import.duplicate", id)), Icon.WARNING);
                 }
                 try {
                     JsonObject json = Constants.PRETTY_GSON.fromJson(content, JsonObject.class);
@@ -61,7 +62,7 @@ public record UploadModalItem(Path path, @Nullable Quest quest, String size, Lis
                             quest -> new UploadModalItem(path, quest, finalSize, List.of(), Icon.SUCCESS),
                             error -> {
                                 var errors = new ArrayList<Component>();
-                                errors.add(Component.literal("Invalid quest file, must be a quest template."));
+                                errors.add(Component.translatable("gui.heracles.error.import.invalid"));
                                 errors.add(CommonComponents.EMPTY);
                                 error.message().lines().forEach(line -> {
                                     String formatted = MISSING_KEY_PATTERN.matcher(line).replaceAll("Missing Key '$1' in object.");

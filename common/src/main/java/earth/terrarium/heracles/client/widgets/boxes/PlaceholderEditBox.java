@@ -20,12 +20,11 @@ public class PlaceholderEditBox extends EditBox {
 
         if (this.isVisible() && this.getValue().isEmpty() && !this.isFocused()) {
             Font font = Minecraft.getInstance().font;
-            String placeholder = this.getMessage().getString();
             int x = this.bordered ? this.getX() + 4 : this.getX();
             int y = this.bordered ? this.getY() + (this.height - 8) / 2 : this.getY();
             graphics.drawString(
                 font,
-                placeholder, x, y, 0x808080,
+                getMessage(), x, y, 0x808080,
                 false
             );
         }

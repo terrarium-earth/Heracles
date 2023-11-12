@@ -2,6 +2,7 @@ package earth.terrarium.heracles.client.widgets.modals;
 
 import com.teamresourceful.resourcefullib.client.utils.RenderUtils;
 import earth.terrarium.heracles.api.client.settings.SettingInitializer;
+import earth.terrarium.heracles.client.utils.ThemeColors;
 import earth.terrarium.heracles.client.widgets.base.BaseModal;
 import earth.terrarium.heracles.common.constants.ConstantComponents;
 import net.minecraft.client.Minecraft;
@@ -54,7 +55,7 @@ public class EditObjectModal extends BaseModal {
     protected void renderForeground(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
         graphics.drawString(
             font,
-            this.title, this.x + 10, this.y + 7, 0x404040,
+            this.title, this.x + 10, this.y + 7, ThemeColors.MODAL_BASIC_TITLE,
             false
         );
 
@@ -84,7 +85,7 @@ public class EditObjectModal extends BaseModal {
                     int renderY = ((LayoutElement) renderable).getY();
                     graphics.drawString(
                         font,
-                        title, this.x + 15, renderY + 2, 0xFFFFFF,
+                        title, this.x + 15, renderY + 2, ThemeColors.MODAL_EDIT_SETTING_TITLE,
                         false
                     );
                     renderable.render(graphics, mouseX, mouseY, partialTick);

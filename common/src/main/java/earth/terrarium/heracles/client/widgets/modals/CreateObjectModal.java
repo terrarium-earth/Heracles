@@ -1,9 +1,10 @@
 package earth.terrarium.heracles.client.widgets.modals;
 
 import earth.terrarium.heracles.Heracles;
+import earth.terrarium.heracles.client.utils.ThemeColors;
 import earth.terrarium.heracles.client.widgets.Dropdown;
 import earth.terrarium.heracles.client.widgets.base.BaseModal;
-import earth.terrarium.heracles.client.widgets.boxes.PlaceholerEditBox;
+import earth.terrarium.heracles.client.widgets.boxes.PlaceholderEditBox;
 import earth.terrarium.heracles.common.constants.ConstantComponents;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -37,7 +38,7 @@ public class CreateObjectModal extends BaseModal {
         super(screenWidth, screenHeight, WIDTH, HEIGHT);
         this.typeBox = addChild(new Dropdown<>(
             this.x + 8, this.y + 19, 152, 14,
-            Component.literal("Type"),
+            ConstantComponents.TYPE,
             id -> Component.translatable(id.toLanguageKey(type))
         ));
 
@@ -46,7 +47,7 @@ public class CreateObjectModal extends BaseModal {
         addChild(createButton(CommonComponents.GUI_CANCEL, submitButton.getX() - 2, this.y + HEIGHT - 20, b ->
             this.hide()
         ));
-        this.nameBox = addChild(new PlaceholerEditBox(Minecraft.getInstance().font, this.x + 8, this.y + 46, 152, 14, ConstantComponents.ID));
+        this.nameBox = addChild(new PlaceholderEditBox(Minecraft.getInstance().font, this.x + 8, this.y + 46, 152, 14, ConstantComponents.ID));
         BooleanSupplier valid = () -> !nameBox.getValue().trim().isEmpty() && this.typeBox.value() != null && validator.test(this.typeBox.value(), nameBox.getValue().trim());
         nameBox.setMaxLength(32);
         nameBox.setResponder(s -> submitButton.active = valid.getAsBoolean());
@@ -78,7 +79,7 @@ public class CreateObjectModal extends BaseModal {
 
         graphics.drawString(
             font,
-            this.title, x + 8, y + 6, 0x404040,
+            this.title, x + 8, y + 6, ThemeColors.MODAL_BASIC_TITLE,
             false
         );
     }

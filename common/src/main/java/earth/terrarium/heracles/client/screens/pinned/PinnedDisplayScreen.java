@@ -4,10 +4,12 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.client.handlers.DisplayConfig;
 import earth.terrarium.heracles.client.utils.ClientUtils;
+import earth.terrarium.heracles.client.utils.ThemeColors;
 import earth.terrarium.heracles.common.constants.ConstantComponents;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.CommonComponents;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import org.joml.Vector2i;
 
@@ -64,24 +66,16 @@ public class PinnedDisplayScreen extends Screen {
         RenderSystem.disableBlend();
         graphics.drawString(
             font,
-            ConstantComponents.PinnedQuests.TITLE, x + (this.sectionWidth - font.width(ConstantComponents.PinnedQuests.TITLE)) / 2, y + 3, 0xFF808080,
+            ConstantComponents.PinnedQuests.TITLE, x + (this.sectionWidth - font.width(ConstantComponents.PinnedQuests.TITLE)) / 2, y + 3, ThemeColors.PINNED_TITLE,
             false
         );
-        graphics.drawString(
-            font,
-            "Quest 1", x + 5, y + 14, 0xFFFFFFFF,
-            false
-        );
-        graphics.drawString(
-            font,
-            "Quest 2", x + 5, y + 23, 0xFFFFFFFF,
-            false
-        );
-        graphics.drawString(
-            font,
-            "Quest 3", x + 5, y + 32, 0xFFFFFFFF,
-            false
-        );
+        for (int i = 0; i < 3; i++) {
+            graphics.drawString(
+                font,
+                Component.translatable("gui.heracles.pinned_quests.placeholder", i + 1), x + 5, y + 14 + i * 9, ThemeColors.PINNED_QUEST,
+                false
+            );
+        }
     }
 
     @Override

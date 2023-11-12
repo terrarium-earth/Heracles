@@ -6,9 +6,9 @@ import com.teamresourceful.resourcefullib.client.utils.CursorUtils;
 import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.api.client.DisplayWidget;
 import earth.terrarium.heracles.api.client.WidgetUtils;
-import earth.terrarium.heracles.api.tasks.QuestTaskDisplayFormatter;
 import earth.terrarium.heracles.api.tasks.client.display.TaskTitleFormatter;
 import earth.terrarium.heracles.api.tasks.defaults.RecipeTask;
+import earth.terrarium.heracles.client.utils.ThemeColors;
 import earth.terrarium.heracles.common.constants.ConstantComponents;
 import earth.terrarium.heracles.common.handlers.progress.TaskProgress;
 import net.minecraft.client.Minecraft;
@@ -66,23 +66,18 @@ public final class RecipeTaskWidget implements DisplayWidget {
         int iconSize = 32;
         this.task.icon().renderOrStack(this.getCurrentItem(), graphics, scissor, x + 5, y + 5, iconSize);
         String desc = this.task.recipes().size() == 1 ? DESC_SINGULAR : DESC_PLURAL;
-        Object text = this.task.recipes().size() == 1 ? this.titles.isEmpty() ? "" : this.titles.get(0) : isOpened ? "▼" : "▶";
+        Object text = this.task.recipes().size() == 1 ? this.titles.isEmpty() ? "" : this.titles.get(0) : isOpened ? ConstantComponents.ARROW_DOWN : ConstantComponents.ARROW_RIGHT;
         graphics.drawString(
             font,
-            task.titleOr(this.title), x + iconSize + 16, y + 6, 0xFFFFFFFF,
+            task.titleOr(this.title), x + iconSize + 16, y + 6, ThemeColors.TASK_TITLE,
             false
         );
         graphics.drawString(
             font,
-            Component.translatable(desc, text), x + iconSize + 16, y + 8 + font.lineHeight, 0xFF808080,
+            Component.translatable(desc, text), x + iconSize + 16, y + 8 + font.lineHeight, ThemeColors.TASK_DESCRIPTION,
             false
         );
-        String progress = QuestTaskDisplayFormatter.create(this.task, this.progress);
-        graphics.drawString(
-            font,
-            progress, x + width - 5 - font.width(progress), y + 6, 0xFFFFFFFF,
-            false
-        );
+        WidgetUtils.drawProgressText(graphics, x, y, width, this.task, this.progress);
 
         if (titles.size() > 1 && hovered && mouseY - y >= 7 + font.lineHeight && mouseY - y <= 7 + font.lineHeight * 2 && mouseX - x > (int) (width * 0.1f) && mouseX - x <= width) {
             CursorUtils.setCursor(true, CursorScreen.Cursor.POINTER);
@@ -94,7 +89,7 @@ public final class RecipeTaskWidget implements DisplayWidget {
             for (Component title : titles) {
                 graphics.drawString(
                     font,
-                    ConstantComponents.DOT.copy().append(title), x + iconSize + 13, y, 0xFFa0a0a0,
+                    ConstantComponents.DOT.copy().append(title), x + iconSize + 13, y, ThemeColors.TASK_NESTED_TITLE,
                     false
                 );
                 y += font.lineHeight + 2;

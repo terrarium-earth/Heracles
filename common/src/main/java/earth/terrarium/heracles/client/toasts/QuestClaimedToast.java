@@ -4,6 +4,7 @@ import com.mojang.datafixers.util.Pair;
 import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.api.quests.Quest;
 import earth.terrarium.heracles.client.handlers.ClientQuests;
+import earth.terrarium.heracles.client.utils.ThemeColors;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.toasts.Toast;
 import net.minecraft.client.gui.components.toasts.ToastComponent;
@@ -62,7 +63,7 @@ public class QuestClaimedToast implements Toast {
             graphics.blit(TEXTURE, 0, 0, 0, 0, width(), height());
             graphics.drawString(
                 toastComponent.getMinecraft().font,
-                TITLE_TEXT, 30, 7, 0xFF800080,
+                TITLE_TEXT, 30, 7, ThemeColors.TOAST_CLAIMED_TITLE,
                 false
             );
 

@@ -4,6 +4,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.teamresourceful.resourcefullib.client.scissor.ScissorBoxStack;
 import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.api.client.DisplayWidget;
+import earth.terrarium.heracles.client.utils.ThemeColors;
 import earth.terrarium.heracles.common.utils.ModUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -25,7 +26,7 @@ public record HeadingWidget(Component title, ModUtils.QuestStatus status) implem
 
         graphics.drawString(
             Minecraft.getInstance().font,
-            title, x + 3, y + 3, 0xFFFFFFFF,
+            title, x + 3, y + 3, ThemeColors.TASK_REWARD_STATUS_HEADING,
             false
         );
     }

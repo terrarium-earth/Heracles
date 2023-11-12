@@ -2,11 +2,13 @@ package earth.terrarium.heracles.client.widgets.modals.icon.background;
 
 import com.teamresourceful.resourcefullib.client.utils.RenderUtils;
 import earth.terrarium.heracles.Heracles;
+import earth.terrarium.heracles.client.utils.ThemeColors;
 import earth.terrarium.heracles.client.widgets.base.BaseModal;
 import earth.terrarium.heracles.client.widgets.modals.upload.UploadModalItem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 
@@ -18,6 +20,7 @@ import java.util.function.Consumer;
 public class IconBackgroundModal extends BaseModal {
 
     public static final ResourceLocation TEXTURE = new ResourceLocation(Heracles.MOD_ID, "textures/gui/uploading.png");
+    public static final Component TITLE = Component.translatable("gui.heracles.quests.choose_background");
     private static final int WIDTH = 168;
     private static final int HEIGHT = 173;
 
@@ -40,10 +43,10 @@ public class IconBackgroundModal extends BaseModal {
     @Override
     protected void renderForeground(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
         Font font = Minecraft.getInstance().font;
-        int textX = (WIDTH - font.width("Choose Background")) / 2;
+        int textX = (WIDTH - font.width(TITLE)) / 2;
         graphics.drawString(
             font,
-            "Choose Background", x + textX, y + 6, 0x404040,
+            TITLE, x + textX, y + 6, ThemeColors.MODAL_UPLOADING_TITLE,
             false
         );
 

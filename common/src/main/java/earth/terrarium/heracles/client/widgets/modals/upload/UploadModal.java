@@ -4,6 +4,7 @@ import com.teamresourceful.resourcefullib.client.utils.RenderUtils;
 import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.api.quests.Quest;
 import earth.terrarium.heracles.client.handlers.ClientQuestNetworking;
+import earth.terrarium.heracles.client.utils.ThemeColors;
 import earth.terrarium.heracles.client.widgets.base.BaseModal;
 import earth.terrarium.heracles.client.widgets.base.FileWidget;
 import earth.terrarium.heracles.common.constants.ConstantComponents;
@@ -63,7 +64,7 @@ public class UploadModal extends BaseModal implements FileWidget {
     protected void renderForeground(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
         graphics.drawString(
             Minecraft.getInstance().font,
-            "Import Quests", x + 8, y + 6, 0x404040,
+            ConstantComponents.Quests.IMPORT, x + 8, y + 6, ThemeColors.MODAL_UPLOADING_TITLE,
             false
         );
 

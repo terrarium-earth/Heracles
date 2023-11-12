@@ -5,6 +5,7 @@ import earth.terrarium.heracles.client.HeraclesClient;
 import earth.terrarium.heracles.client.handlers.ClientQuests;
 import earth.terrarium.heracles.client.screens.AbstractQuestScreen;
 import earth.terrarium.heracles.client.screens.mousemode.MouseMode;
+import earth.terrarium.heracles.client.utils.ThemeColors;
 import earth.terrarium.heracles.client.widgets.modals.ConfirmModal;
 import earth.terrarium.heracles.common.constants.ConstantComponents;
 import earth.terrarium.heracles.common.menus.quests.QuestsContent;
@@ -103,10 +104,10 @@ public class QuestsScreen extends AbstractQuestScreen<QuestsContent> {
     protected void renderLabels(GuiGraphics graphics, int mouseX, int mouseY) {
         super.renderLabels(graphics, mouseX, mouseY);
         int center = ((int) (this.width * 0.25f) - 2) / 2;
-        int textX = center - font.width("Groups") / 2;
+        int textX = center - font.width(ConstantComponents.Groups.GROUPS) / 2;
         graphics.drawString(
             font,
-            "Groups", textX, 3, 0x404040,
+            ConstantComponents.Groups.GROUPS, textX, 3, ThemeColors.HEADER_GROUPS_TITLE,
             false
         );
     }

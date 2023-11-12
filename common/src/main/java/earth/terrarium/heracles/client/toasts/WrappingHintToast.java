@@ -1,5 +1,6 @@
 package earth.terrarium.heracles.client.toasts;
 
+import earth.terrarium.heracles.client.utils.ThemeColors;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.toasts.Toast;
@@ -31,7 +32,7 @@ public class WrappingHintToast implements Toast {
 
         graphics.drawString(
             toastComponent.getMinecraft().font,
-            title, 32, 7, 0xFFB52CC8,
+            title, 32, 7, ThemeColors.TOAST_TITLE,
             false
         );
 
@@ -40,7 +41,7 @@ public class WrappingHintToast implements Toast {
         List<FormattedCharSequence> description = timeSinceLastVisible >= (time / 2) && !hints.isEmpty() ? hints : lines;
 
         for (int i = 0; i < description.size(); i++) {
-            graphics.drawString(toastComponent.getMinecraft().font, description.get(i), 32, 18 + i * 11, 0xFFFFFF, false);
+            graphics.drawString(toastComponent.getMinecraft().font, description.get(i), 32, 18 + i * 11, ThemeColors.TOAST_CONTENT, false);
         }
 
         return timeSinceLastVisible >= time ? Toast.Visibility.HIDE : Toast.Visibility.SHOW;

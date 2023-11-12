@@ -4,6 +4,7 @@
   "package": "earth.terrarium.heracles.mixins.fabric",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
+    "ColorHandlerMixin",
     "PlayerAdvancementsMixin",
     "ServerPlayerMixin"
   ],

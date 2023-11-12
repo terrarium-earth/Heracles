@@ -9,6 +9,7 @@ import com.teamresourceful.resourcefullib.client.utils.CursorUtils;
 import com.teamresourceful.resourcefullib.client.utils.ScreenUtils;
 import earth.terrarium.heracles.client.handlers.ClientQuests;
 import earth.terrarium.heracles.client.screens.AbstractQuestScreen;
+import earth.terrarium.heracles.client.utils.ThemeColors;
 import earth.terrarium.heracles.common.constants.ConstantComponents;
 import earth.terrarium.heracles.common.network.NetworkHandler;
 import earth.terrarium.heracles.common.network.packets.groups.DeleteGroupPacket;
@@ -79,7 +80,7 @@ public class GroupsList extends SelectionList<GroupsList.Entry> {
                 graphics.blitNineSliced(AbstractQuestScreen.HEADING, left, top, width, height, 5, 64, 20, 192, 55);
             }
             RenderSystem.disableBlend();
-            graphics.drawCenteredString(Minecraft.getInstance().font, name, left + width / 2, top + height / 2 - 4, 0xFFFFFF);
+            graphics.drawCenteredString(Minecraft.getInstance().font, name, left + width / 2, top + height / 2 - 4, ThemeColors.GROUP_NAME);
             CursorUtils.setCursor(hovered, CursorScreen.Cursor.POINTER);
             if (Minecraft.getInstance().screen instanceof QuestsEditScreen) {
                 if (mouseX - left >= width - 11 && mouseX - left <= width - 2 && mouseY - top >= 2 && mouseY - top <= 12 && hovered) {
@@ -88,13 +89,13 @@ public class GroupsList extends SelectionList<GroupsList.Entry> {
                     ScreenUtils.setTooltip(cant ? ConstantComponents.Groups.DELETE_WITH_QUESTS : ConstantComponents.DELETE);
                     graphics.drawString(
                         Minecraft.getInstance().font,
-                        "x", left + width - 9, top + 2, 0xFFFFFF,
+                        ConstantComponents.X, left + width - 9, top + 2, 0xFFFFFF,
                         false
                     );
                 } else if (hovered) {
                     graphics.drawString(
                         Minecraft.getInstance().font,
-                        "x", left + width - 9, top + 2, 0x808080,
+                        ConstantComponents.X, left + width - 9, top + 2, 0x808080,
                         false
                     );
                 }

@@ -4,6 +4,7 @@ import com.teamresourceful.resourcefullib.client.scissor.ScissorBoxStack;
 import earth.terrarium.heracles.api.client.DisplayWidget;
 import earth.terrarium.heracles.api.client.WidgetUtils;
 import earth.terrarium.heracles.api.quests.Quest;
+import earth.terrarium.heracles.client.utils.ThemeColors;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
@@ -22,12 +23,12 @@ public record DependencyDisplayWidget(Quest quest) implements DisplayWidget {
         quest.display().icon().render(graphics, scissor, x + 5, y + 5, iconSize, iconSize);
         graphics.drawString(
             font,
-            TITLE, x + iconSize + 16, y + 6, 0xFFFFFFFF,
+            TITLE, x + iconSize + 16, y + 6, ThemeColors.TASK_TITLE,
             false
         );
         graphics.drawString(
             font,
-            Component.translatable(DESCRIPTION, this.quest.display().title()), x + iconSize + 16, y + 8 + font.lineHeight, 0xFF808080,
+            Component.translatable(DESCRIPTION, this.quest.display().title()), x + iconSize + 16, y + 8 + font.lineHeight, ThemeColors.TASK_DESCRIPTION,
             false
         );
     }

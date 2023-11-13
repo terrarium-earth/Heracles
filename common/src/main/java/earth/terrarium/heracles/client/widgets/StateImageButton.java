@@ -1,6 +1,7 @@
 package earth.terrarium.heracles.client.widgets;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import earth.terrarium.heracles.client.widgets.buttons.ThemedButton;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.ImageButton;
 import net.minecraft.network.chat.CommonComponents;
@@ -8,7 +9,7 @@ import net.minecraft.resources.ResourceLocation;
 
 import java.util.function.IntConsumer;
 
-public class StateImageButton extends ImageButton {
+public class StateImageButton extends ImageButton implements ThemedButton {
 
     private final IntConsumer onPress;
     private final int states;

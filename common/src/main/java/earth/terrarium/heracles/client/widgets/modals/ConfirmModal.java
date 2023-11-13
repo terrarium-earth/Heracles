@@ -2,9 +2,9 @@ package earth.terrarium.heracles.client.widgets.modals;
 
 import earth.terrarium.heracles.client.utils.ThemeColors;
 import earth.terrarium.heracles.client.widgets.base.BaseModal;
+import earth.terrarium.heracles.client.widgets.buttons.ThemedButton;
 import earth.terrarium.heracles.common.constants.ConstantComponents;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.network.chat.CommonComponents;
 
@@ -18,12 +18,12 @@ public class ConfirmModal extends BaseModal {
     public ConfirmModal(int screenWidth, int screenHeight) {
         super(screenWidth, screenHeight, WIDTH, HEIGHT);
 
-        addChild(Button.builder(CommonComponents.GUI_CANCEL,
+        addChild(ThemedButton.builder(CommonComponents.GUI_CANCEL,
                 b -> this.hide()).bounds(this.x + 7, this.y + 24, 65, 20)
             .tooltip(Tooltip.create(CommonComponents.GUI_CANCEL))
             .build());
 
-        addChild(Button.builder(CommonComponents.GUI_CONTINUE,
+        addChild(ThemedButton.builder(CommonComponents.GUI_CONTINUE,
                 b -> {
                     if (this.onConfirm != null) {
                         this.onConfirm.run();

@@ -7,6 +7,7 @@ import earth.terrarium.heracles.client.screens.AbstractQuestScreen;
 import earth.terrarium.heracles.client.utils.ThemeColors;
 import earth.terrarium.heracles.client.widgets.SelectableTabButton;
 import earth.terrarium.heracles.client.widgets.base.TemporyWidget;
+import earth.terrarium.heracles.client.widgets.buttons.ThemedButton;
 import earth.terrarium.heracles.common.constants.ConstantComponents;
 import earth.terrarium.heracles.common.handlers.progress.QuestProgress;
 import earth.terrarium.heracles.common.menus.quest.QuestContent;
@@ -108,7 +109,7 @@ public abstract class BaseQuestScreen extends AbstractQuestScreen<QuestContent> 
                 }
             }));
 
-            this.claimRewards = addRenderableWidget(Button.builder(ConstantComponents.Rewards.CLAIM, button -> {
+            this.claimRewards = addRenderableWidget(ThemedButton.builder(ConstantComponents.Rewards.CLAIM, button -> {
                 NetworkHandler.CHANNEL.sendToServer(new ClaimRewardsPacket(this.content.id()));
                 if (this.claimRewards != null) {
                     this.claimRewards.active = false;

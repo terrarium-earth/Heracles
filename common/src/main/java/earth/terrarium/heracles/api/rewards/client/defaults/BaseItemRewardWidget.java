@@ -19,7 +19,7 @@ import net.minecraft.world.item.ItemStack;
 import java.util.List;
 
 public interface BaseItemRewardWidget extends DisplayWidget {
-    ResourceLocation BUTTON_TEXTURE = new ResourceLocation("textures/gui/widgets.png");
+    ResourceLocation BUTTON_TEXTURE = new ResourceLocation(Heracles.MOD_ID, "textures/gui/buttons.png");
     ResourceLocation LOOTBAG_TEXTURE = new ResourceLocation(Heracles.MOD_ID, "textures/item/lootbag.png");
 
     QuestIcon<?> getIconOverride();
@@ -42,8 +42,8 @@ public interface BaseItemRewardWidget extends DisplayWidget {
         if (isInteractive()) {
             int buttonY = y + 11;
             boolean buttonHovered = mouseX > x + width - 30 && mouseX < x + width - 10 && mouseY > buttonY && mouseY < buttonY + 20;
-            int v = canClaim() ? buttonHovered ? 86 : 66 : 46;
-            graphics.blitNineSliced(BUTTON_TEXTURE, x + width - 30, buttonY, 20, 20, 3, 3, 3, 3, 200, 20, 0, v);
+            int v = canClaim() ? (buttonHovered ? 40 : 20) : 0;
+            graphics.blitNineSliced(BUTTON_TEXTURE, x + width - 30, buttonY, 20, 20, 3, 200, 20, 0, v);
             graphics.blit(LOOTBAG_TEXTURE, x + width - 30 + 2, buttonY + 2, 0, 0, 16, 16, 16, 16);
             if (buttonHovered) {
                 CursorUtils.setCursor(true, canClaim() ? CursorScreen.Cursor.POINTER : CursorScreen.Cursor.DISABLED);

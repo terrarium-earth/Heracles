@@ -7,6 +7,7 @@ import earth.terrarium.heracles.client.handlers.ClientQuestNetworking;
 import earth.terrarium.heracles.client.utils.ThemeColors;
 import earth.terrarium.heracles.client.widgets.base.BaseModal;
 import earth.terrarium.heracles.client.widgets.base.FileWidget;
+import earth.terrarium.heracles.client.widgets.buttons.ThemedButton;
 import earth.terrarium.heracles.common.constants.ConstantComponents;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -85,7 +86,7 @@ public class UploadModal extends BaseModal implements FileWidget {
 
     private Button createButton(Component component, int x, int y, Button.OnPress onPress) {
         int width = Minecraft.getInstance().font.width(component) + 8;
-        return Button.builder(component, onPress)
+        return ThemedButton.builder(component, onPress)
             .bounds(x - width, y, width, 15)
             .build();
     }

@@ -10,6 +10,7 @@ import earth.terrarium.heracles.api.rewards.QuestReward;
 import earth.terrarium.heracles.api.rewards.client.QuestRewardWidgets;
 import earth.terrarium.heracles.client.utils.ThemeColors;
 import earth.terrarium.heracles.client.widgets.base.BaseModal;
+import earth.terrarium.heracles.client.widgets.buttons.ThemedButton;
 import earth.terrarium.heracles.common.constants.ConstantComponents;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -38,7 +39,7 @@ public class SelectRewardsModal extends BaseModal {
     public SelectRewardsModal(int screenWidth, int screenHeight) {
         super(screenWidth, screenHeight, (int) (screenWidth * 0.75f), (int) (screenHeight * 0.8f));
 
-        claimButton = Button.builder(ConstantComponents.Rewards.CLAIM_REWARD, b -> {
+        claimButton = ThemedButton.builder(ConstantComponents.Rewards.CLAIM_REWARD, b -> {
             this.setVisible(false);
             if (callback != null) {
                 callback.accept(selected);

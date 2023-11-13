@@ -12,7 +12,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
-public class ItemButton extends Button {
+public class ItemButton extends Button implements ThemedButton {
 
     private final boolean tagsAllowed;
     private Either<ItemStack, TagKey<Item>> value;

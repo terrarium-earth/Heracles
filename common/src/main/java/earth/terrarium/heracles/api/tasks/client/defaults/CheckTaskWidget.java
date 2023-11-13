@@ -26,7 +26,7 @@ public record CheckTaskWidget(
     String questId, CheckTask task, TaskProgress<ByteTag> progress, ModUtils.QuestStatus status
 ) implements DisplayWidget {
 
-    private static final ResourceLocation BUTTON_TEXTURE = new ResourceLocation("textures/gui/widgets.png");
+    private static final ResourceLocation BUTTON_TEXTURE = new ResourceLocation(Heracles.MOD_ID, "textures/gui/buttons.png");
     private static final ResourceLocation CHECK_TEXTURE = new ResourceLocation(Heracles.MOD_ID, "textures/item/check.png");
 
     private static final String DESC_SINGULAR = "task.heracles.check.desc.singular";
@@ -52,8 +52,8 @@ public record CheckTaskWidget(
 
         int buttonY = y + 11;
         boolean buttonHovered = mouseX > x + width - 30 && mouseX < x + width - 10 && mouseY > buttonY && mouseY < buttonY + 20;
-        int v = !isCompletable() ? 46 : buttonHovered ? 86 : 66;
-        graphics.blitNineSliced(BUTTON_TEXTURE, x + width - 30, buttonY, 20, 20, 3, 3, 3, 3, 200, 20, 0, v);
+        int v = isCompletable() ? (buttonHovered ? 40 : 20) : 0;
+        graphics.blitNineSliced(BUTTON_TEXTURE, x + width - 30, buttonY, 20, 20, 3, 200, 20, 0, v);
 
         graphics.blit(CHECK_TEXTURE, x + width - 30 + 2, buttonY + 2, 0, 0, 16, 16, 16, 16);
 

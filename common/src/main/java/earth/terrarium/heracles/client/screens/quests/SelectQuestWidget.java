@@ -11,6 +11,7 @@ import earth.terrarium.heracles.client.screens.AbstractQuestScreen;
 import earth.terrarium.heracles.client.utils.ClientUtils;
 import earth.terrarium.heracles.client.widgets.base.BaseWidget;
 import earth.terrarium.heracles.client.widgets.boxes.IntEditBox;
+import earth.terrarium.heracles.client.widgets.buttons.ThemedButton;
 import earth.terrarium.heracles.client.widgets.modals.EditObjectModal;
 import earth.terrarium.heracles.common.constants.ConstantComponents;
 import earth.terrarium.heracles.common.network.packets.quests.data.NetworkQuestData;
@@ -18,7 +19,6 @@ import earth.terrarium.heracles.common.utils.ItemValue;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.MultiLineEditBox;
 import net.minecraft.client.gui.components.Tooltip;
@@ -78,7 +78,7 @@ public class SelectQuestWidget extends BaseWidget {
         this.subtitleBox = this.addChild(new MultiLineEditBox(this.font, this.x + 6, this.y + 76, this.width - 12, 40, CommonComponents.EMPTY, CommonComponents.EMPTY));
         this.subtitleBox.setValueListener(s -> updateQuest(quest -> NetworkQuestData.builder().subtitle(s.isEmpty() ? null : Component.translatable(s))));
 
-        addChild(Button.builder(Component.literal("ℹ"), b -> {
+        addChild(ThemedButton.builder(Component.literal("ℹ"), b -> {
                 if (Minecraft.getInstance().screen instanceof QuestsEditScreen screen) {
                     screen.itemModal().setVisible(true);
                     screen.itemModal().setCallback(item -> {
@@ -91,7 +91,7 @@ public class SelectQuestWidget extends BaseWidget {
             .tooltip(Tooltip.create(Component.translatable("gui.heracles.quests.change_icon")))
             .build());
 
-        addChild(Button.builder(Component.literal("□"), b -> {
+        addChild(ThemedButton.builder(Component.literal("□"), b -> {
                 if (Minecraft.getInstance().screen instanceof QuestsEditScreen screen) {
                     screen.iconBackgroundModal().setVisible(true);
                     screen.iconBackgroundModal().update(ClientUtils.getTextures("gui/quest_backgrounds"), selected -> {
@@ -104,7 +104,7 @@ public class SelectQuestWidget extends BaseWidget {
             .tooltip(Tooltip.create(Component.translatable("gui.heracles.quests.change_background")))
             .build());
 
-        addChild(Button.builder(Component.literal("⬈"), b -> {
+        addChild(ThemedButton.builder(Component.literal("⬈"), b -> {
                 if (Minecraft.getInstance().screen instanceof QuestsEditScreen screen && this.entry != null) {
                     screen.dependencyModal().setVisible(true);
                     screen.dependencyModal().update(this.entry, () -> updateQuest(quest -> NetworkQuestData.builder().dependencies(quest.dependencies())));
@@ -114,7 +114,7 @@ public class SelectQuestWidget extends BaseWidget {
             .tooltip(Tooltip.create(Component.translatable("gui.heracles.quests.change_dependencies")))
             .build());
 
-        addChild(Button.builder(ConstantComponents.X, b -> {
+        addChild(ThemedButton.builder(ConstantComponents.X, b -> {
                 if (Minecraft.getInstance().screen instanceof QuestsEditScreen screen && this.entry != null) {
                     screen.confirmModal().setVisible(true);
                     screen.confirmModal().setCallback(() -> {
@@ -134,7 +134,7 @@ public class SelectQuestWidget extends BaseWidget {
             .tooltip(Tooltip.create(ConstantComponents.DELETE))
             .build());
 
-        addChild(Button.builder(Component.literal("\uD83D\uDD89"), b -> {
+        addChild(ThemedButton.builder(Component.literal("\uD83D\uDD89"), b -> {
                 if (Minecraft.getInstance().screen instanceof QuestsEditScreen screen && this.entry != null) {
                     EditObjectModal edit = screen.findOrCreateEditWidget();
                     ResourceLocation id = new ResourceLocation(Heracles.MOD_ID, "quest");

@@ -7,6 +7,8 @@ public final class ThemeColors {
     public static int GROUP_NAME = 0xFFFFFF;
 
     // Quest Screen
+    public static int TAB_MESSAGE = 0xFFFFFF;
+    public static int TAB_MESSAGE_SELECTED = 0xEEEEEE;
     public static int TASK_TITLE = 0xFFFFFF;
     public static int TASK_DESCRIPTION = 0x808080;
     public static int TASK_PROGRESS = 0xFFFFFF;
@@ -36,6 +38,10 @@ public final class ThemeColors {
     // Modals
     public static int MODAL_BASIC_TITLE = 0x404040;
     public static int MODAL_REWARDS_AMOUNT = 0x404040;
+
+    // Generic
+    public static int BUTTON_MESSAGE_ACTIVE = 0xFFFFFF;
+    public static int BUTTON_MESSAGE_INACTIVE = 0xA0A0A0;
 
     // Editor Only
     public static int MODAL_UPLOADING_TITLE = 0x404040;

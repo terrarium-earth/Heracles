@@ -2,9 +2,9 @@ package earth.terrarium.heracles.client.screens.pinned;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import earth.terrarium.heracles.Heracles;
+import earth.terrarium.heracles.api.client.theme.PinnedQuestsTheme;
 import earth.terrarium.heracles.client.handlers.DisplayConfig;
 import earth.terrarium.heracles.client.utils.ClientUtils;
-import earth.terrarium.heracles.client.utils.ThemeColors;
 import earth.terrarium.heracles.common.constants.ConstantComponents;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
@@ -66,13 +66,13 @@ public class PinnedDisplayScreen extends Screen {
         RenderSystem.disableBlend();
         graphics.drawString(
             font,
-            ConstantComponents.PinnedQuests.TITLE, x + (this.sectionWidth - font.width(ConstantComponents.PinnedQuests.TITLE)) / 2, y + 3, ThemeColors.PINNED_TITLE,
+            ConstantComponents.PinnedQuests.TITLE, x + (this.sectionWidth - font.width(ConstantComponents.PinnedQuests.TITLE)) / 2, y + 3, PinnedQuestsTheme.getTitle(),
             false
         );
         for (int i = 0; i < 3; i++) {
             graphics.drawString(
                 font,
-                Component.translatable("gui.heracles.pinned_quests.placeholder", i + 1), x + 5, y + 14 + i * 9, ThemeColors.PINNED_QUEST,
+                Component.translatable("gui.heracles.pinned_quests.placeholder", i + 1), x + 5, y + 14 + i * 9, PinnedQuestsTheme.getQuest(),
                 false
             );
         }

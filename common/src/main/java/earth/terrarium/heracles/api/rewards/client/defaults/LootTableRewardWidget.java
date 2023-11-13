@@ -1,11 +1,11 @@
 package earth.terrarium.heracles.api.rewards.client.defaults;
 
 import com.teamresourceful.resourcefullib.client.scissor.ScissorBoxStack;
+import earth.terrarium.heracles.api.client.theme.QuestScreenTheme;
 import earth.terrarium.heracles.api.quests.QuestIcon;
 import earth.terrarium.heracles.api.rewards.defaults.LootTableReward;
 import earth.terrarium.heracles.client.handlers.ClientQuests;
 import earth.terrarium.heracles.client.screens.quest.BaseQuestScreen;
-import earth.terrarium.heracles.client.utils.ThemeColors;
 import earth.terrarium.heracles.common.handlers.progress.QuestProgress;
 import earth.terrarium.heracles.common.network.NetworkHandler;
 import earth.terrarium.heracles.common.network.packets.rewards.ClaimRewardsPacket;
@@ -64,12 +64,12 @@ public record LootTableRewardWidget(LootTableReward reward, String quest, QuestP
         BaseItemRewardWidget.super.render(graphics, scissor, x, y, width, mouseX, mouseY, hovered, partialTicks);
         graphics.drawString(
             font,
-             TITLE_SINGULAR, x + 48, y + 6, ThemeColors.REWARD_TITLE,
+             TITLE_SINGULAR, x + 48, y + 6, QuestScreenTheme.getRewardTitle(),
             false
         );
         graphics.drawString(
             font,
-            Component.translatable(DESC_SINGULAR, this.reward.lootTable()), x + 48, y + 8 + font.lineHeight, ThemeColors.REWARD_DESCRIPTION,
+            Component.translatable(DESC_SINGULAR, this.reward.lootTable()), x + 48, y + 8 + font.lineHeight, QuestScreenTheme.getRewardDescription(),
             false
         );
     }

@@ -1,12 +1,9 @@
 package earth.terrarium.heracles.forge;
 
-import com.teamresourceful.resourcefullib.client.highlights.HighlightHandler;
 import earth.terrarium.heracles.client.HeraclesClient;
-import earth.terrarium.heracles.client.handlers.ColorHandler;
 import earth.terrarium.heracles.client.handlers.DisplayConfig;
 import earth.terrarium.heracles.client.handlers.QuestTutorial;
 import earth.terrarium.heracles.client.screens.pinned.PinnedQuestDisplay;
-import net.minecraft.server.packs.resources.PreparableReloadListener;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.RegisterClientReloadListenersEvent;
 import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
@@ -53,6 +50,6 @@ public class HeraclesForgeClient {
     }
 
     public static void onClientReloadListeners(RegisterClientReloadListenersEvent event) {
-        event.registerReloadListener(ColorHandler.INSTANCE);
+        HeraclesClient.initReloadListeners((id, listener) -> event.registerReloadListener(listener));
     }
 }

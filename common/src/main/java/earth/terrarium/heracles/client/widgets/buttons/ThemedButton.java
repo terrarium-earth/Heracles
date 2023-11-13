@@ -1,7 +1,7 @@
 package earth.terrarium.heracles.client.widgets.buttons;
 
 import earth.terrarium.heracles.Heracles;
-import earth.terrarium.heracles.client.utils.ThemeColors;
+import earth.terrarium.heracles.api.client.theme.GenericTheme;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -25,7 +25,7 @@ public interface ThemedButton {
     }
 
     default int getTextColor(boolean active, float alpha) {
-        return (active ? ThemeColors.BUTTON_MESSAGE_ACTIVE : ThemeColors.BUTTON_MESSAGE_INACTIVE) | Mth.ceil(alpha * 255.0F) << 24;
+        return GenericTheme.getButtonMessage(active) | Mth.ceil(alpha * 255.0F) << 24;
     }
 
     record TextureBounds(int sourceX, int sourceY, int sliceWidth, int sliceHeight, int sourceWidth, int sourceHeight) {

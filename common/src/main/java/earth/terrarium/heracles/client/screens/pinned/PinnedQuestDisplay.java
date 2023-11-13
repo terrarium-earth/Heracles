@@ -4,9 +4,9 @@ import com.mojang.blaze3d.platform.Window;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.teamresourceful.resourcefullib.client.utils.ScreenUtils;
 import earth.terrarium.heracles.Heracles;
+import earth.terrarium.heracles.api.client.theme.PinnedQuestsTheme;
 import earth.terrarium.heracles.client.handlers.DisplayConfig;
 import earth.terrarium.heracles.client.handlers.PinnedQuests;
-import earth.terrarium.heracles.client.utils.ThemeColors;
 import earth.terrarium.heracles.common.constants.ConstantComponents;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -50,7 +50,7 @@ public class PinnedQuestDisplay {
 
         graphics.drawString(
             font,
-            ConstantComponents.PinnedQuests.TITLE, titleX, y + 2, ThemeColors.PINNED_TITLE,
+            ConstantComponents.PinnedQuests.TITLE, titleX, y + 2, PinnedQuestsTheme.getTitle(),
             false
         );
 
@@ -71,7 +71,7 @@ public class PinnedQuestDisplay {
             title = title.append(display.title());
             graphics.drawString(
                 font,
-                title, x + 5, y, ThemeColors.PINNED_QUEST,
+                title, x + 5, y, PinnedQuestsTheme.getQuest(),
                 false
             );
             if (!PinnedQuests.isCollapsed(display.quest().key())) {
@@ -79,7 +79,7 @@ public class PinnedQuestDisplay {
                 for (var task : display.tasks()) {
                     graphics.drawString(
                         font,
-                        task, x + 5, y, ThemeColors.PINNED_TASK,
+                        task, x + 5, y, PinnedQuestsTheme.getTask(),
                         false
                     );
                     y += 9;

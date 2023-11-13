@@ -1,12 +1,12 @@
 package earth.terrarium.heracles.api.rewards.client.defaults;
 
 import com.teamresourceful.resourcefullib.client.scissor.ScissorBoxStack;
+import earth.terrarium.heracles.api.client.theme.QuestScreenTheme;
 import earth.terrarium.heracles.api.quests.QuestIcon;
 import earth.terrarium.heracles.api.quests.defaults.ItemQuestIcon;
 import earth.terrarium.heracles.api.rewards.defaults.SelectableReward;
 import earth.terrarium.heracles.client.handlers.ClientQuests;
 import earth.terrarium.heracles.client.screens.quest.BaseQuestScreen;
-import earth.terrarium.heracles.client.utils.ThemeColors;
 import earth.terrarium.heracles.client.widgets.base.TemporyWidget;
 import earth.terrarium.heracles.client.widgets.modals.SelectRewardsModal;
 import earth.terrarium.heracles.common.handlers.progress.QuestProgress;
@@ -84,12 +84,12 @@ public record SelectableRewardWidget(SelectableReward reward, String quest, Ques
         String desc = this.reward.amount() == 1 ? DESC_SINGULAR : DESC_PLURAL;
         graphics.drawString(
             font,
-            Component.translatable(title), x + 48, y + 6, ThemeColors.REWARD_TITLE,
+            Component.translatable(title), x + 48, y + 6, QuestScreenTheme.getRewardTitle(),
             false
         );
         graphics.drawString(
             font,
-            Component.translatable(desc, this.reward.amount()), x + 48, y + 8 + font.lineHeight, ThemeColors.REWARD_DESCRIPTION,
+            Component.translatable(desc, this.reward.amount()), x + 48, y + 8 + font.lineHeight, QuestScreenTheme.getRewardDescription(),
             false
         );
     }

@@ -1,11 +1,11 @@
 package earth.terrarium.heracles.client.screens.quests;
 
 import com.mojang.datafixers.util.Pair;
+import earth.terrarium.heracles.api.client.theme.QuestsScreenTheme;
 import earth.terrarium.heracles.client.HeraclesClient;
 import earth.terrarium.heracles.client.handlers.ClientQuests;
 import earth.terrarium.heracles.client.screens.AbstractQuestScreen;
 import earth.terrarium.heracles.client.screens.mousemode.MouseMode;
-import earth.terrarium.heracles.client.utils.ThemeColors;
 import earth.terrarium.heracles.client.widgets.modals.ConfirmModal;
 import earth.terrarium.heracles.common.constants.ConstantComponents;
 import earth.terrarium.heracles.common.menus.quests.QuestsContent;
@@ -107,7 +107,7 @@ public class QuestsScreen extends AbstractQuestScreen<QuestsContent> {
         int textX = center - font.width(ConstantComponents.Groups.GROUPS) / 2;
         graphics.drawString(
             font,
-            ConstantComponents.Groups.GROUPS, textX, 3, ThemeColors.HEADER_GROUPS_TITLE,
+            ConstantComponents.Groups.GROUPS, textX, 3, QuestsScreenTheme.getHeaderGroupsTitle(),
             false
         );
     }

@@ -1,6 +1,6 @@
 package earth.terrarium.heracles.client.widgets;
 
-import earth.terrarium.heracles.client.utils.ThemeColors;
+import earth.terrarium.heracles.api.client.theme.QuestScreenTheme;
 import earth.terrarium.heracles.client.widgets.buttons.ThemedButton;
 import net.minecraft.client.gui.components.AbstractButton;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
@@ -44,6 +44,6 @@ public class SelectableTabButton extends AbstractButton implements ThemedButton 
 
     @Override
     public int getTextColor(boolean active, float alpha) {
-        return (selected ? ThemeColors.TAB_MESSAGE_SELECTED : ThemeColors.TAB_MESSAGE) | Mth.ceil(alpha * 255.0F) << 24;
+        return QuestScreenTheme.getTabMessage(selected) | Mth.ceil(alpha * 255.0F) << 24;
     }
 }

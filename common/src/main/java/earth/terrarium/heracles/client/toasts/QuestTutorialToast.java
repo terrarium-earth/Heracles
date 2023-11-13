@@ -1,8 +1,8 @@
 package earth.terrarium.heracles.client.toasts;
 
+import earth.terrarium.heracles.api.client.theme.ToastsTheme;
 import earth.terrarium.heracles.client.handlers.DisplayConfig;
 import earth.terrarium.heracles.client.handlers.QuestTutorial;
-import earth.terrarium.heracles.client.utils.ThemeColors;
 import earth.terrarium.heracles.common.regisitries.ModItems;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.toasts.Toast;
@@ -19,14 +19,15 @@ public class QuestTutorialToast implements Toast {
         graphics.blit(TEXTURE, 0, 0, 0, 96, this.width(), this.height());
         graphics.drawString(
             toastComponent.getMinecraft().font,
-            TITLE_TEXT, 32, 7, ThemeColors.TOAST_TUTORIAL_TITLE,
+            TITLE_TEXT, 32, 7, ToastsTheme.getTutorialTitle(),
             false
         );
         graphics.drawString(
             toastComponent.getMinecraft().font,
             Component.translatable(
-                "quest.heracles.tutorial.desc", Component.keybind("key.heracles.open_quests").withStyle(style -> style.withBold(true).withColor(ThemeColors.TOAST_KEYBINDING))
-            ), 32, 18, ThemeColors.TOAST_TUTORIAL_CONTENT,
+                "quest.heracles.tutorial.desc", Component.keybind("key.heracles.open_quests")
+                    .withStyle(style -> style.withBold(true).withColor(ToastsTheme.getKeybinding()))
+            ), 32, 18, ToastsTheme.getTutorialContent(),
             false
         );
 

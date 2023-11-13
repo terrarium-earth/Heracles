@@ -1,7 +1,7 @@
 package earth.terrarium.heracles.client.widgets.modals;
 
 import earth.terrarium.heracles.Heracles;
-import earth.terrarium.heracles.client.utils.ThemeColors;
+import earth.terrarium.heracles.api.client.theme.ModalsTheme;
 import earth.terrarium.heracles.client.widgets.Dropdown;
 import earth.terrarium.heracles.client.widgets.base.BaseModal;
 import earth.terrarium.heracles.client.widgets.boxes.PlaceholderEditBox;
@@ -80,7 +80,7 @@ public class CreateObjectModal extends BaseModal {
 
         graphics.drawString(
             font,
-            this.title, x + 8, y + 6, ThemeColors.MODAL_BASIC_TITLE,
+            this.title, x + 8, y + 6, ModalsTheme.getTitle(),
             false
         );
     }

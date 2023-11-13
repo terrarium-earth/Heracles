@@ -3,7 +3,7 @@ package earth.terrarium.heracles.client.screens.quest.rewards;
 import com.teamresourceful.resourcefullib.client.scissor.ScissorBoxStack;
 import earth.terrarium.heracles.api.client.DisplayWidget;
 import earth.terrarium.heracles.api.client.WidgetUtils;
-import earth.terrarium.heracles.client.utils.ThemeColors;
+import earth.terrarium.heracles.api.client.theme.QuestScreenTheme;
 import earth.terrarium.heracles.common.constants.ConstantComponents;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -24,17 +24,17 @@ public record RewardListHeadingWidget(boolean complete, int rewards, int claimed
 
         graphics.drawString(
             Minecraft.getInstance().font,
-            ConstantComponents.Rewards.STATUS, x + 5, y + 5, ThemeColors.SUMMARY_TITLE,
+            ConstantComponents.Rewards.STATUS, x + 5, y + 5, QuestScreenTheme.getSummaryTitle(),
             false
         );
         graphics.drawString(
             Minecraft.getInstance().font,
-            completion, x + width - 5 - Minecraft.getInstance().font.width(completion), y + 5, ThemeColors.SUMMARY_PROGRESS,
+            completion, x + width - 5 - Minecraft.getInstance().font.width(completion), y + 5, QuestScreenTheme.getSummaryProgress(),
             false
         );
         graphics.drawString(
             Minecraft.getInstance().font,
-            Component.translatable(desc, rewards - claimed), x + 5, y + 25 - Minecraft.getInstance().font.lineHeight, ThemeColors.SUMMARY_DESCRIPTION,
+            Component.translatable(desc, rewards - claimed), x + 5, y + 25 - Minecraft.getInstance().font.lineHeight, QuestScreenTheme.getSummaryDescription(),
             false
         );
     }

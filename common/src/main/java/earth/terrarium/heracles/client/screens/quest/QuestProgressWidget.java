@@ -1,7 +1,7 @@
 package earth.terrarium.heracles.client.screens.quest;
 
 import earth.terrarium.heracles.api.client.WidgetUtils;
-import earth.terrarium.heracles.client.utils.ThemeColors;
+import earth.terrarium.heracles.api.client.theme.QuestScreenTheme;
 import earth.terrarium.heracles.common.utils.ModUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -47,17 +47,17 @@ public final class QuestProgressWidget implements Renderable {
 
         graphics.drawString(
             Minecraft.getInstance().font,
-            Component.translatable(title), x + 5, y + 5, ThemeColors.SUMMARY_TITLE,
+            Component.translatable(title), x + 5, y + 5, QuestScreenTheme.getSummaryTitle(),
             false
         );
         graphics.drawString(
             Minecraft.getInstance().font,
-            completion, x + width - 5 - Minecraft.getInstance().font.width(completion), y + 5, ThemeColors.SUMMARY_PROGRESS,
+            completion, x + width - 5 - Minecraft.getInstance().font.width(completion), y + 5, QuestScreenTheme.getSummaryProgress(),
             false
         );
         graphics.drawString(
             Minecraft.getInstance().font,
-            Component.translatable(desc, tasks == completed ? rewards - claimed : tasks - completed), x + 5, y + 25 - Minecraft.getInstance().font.lineHeight, ThemeColors.SUMMARY_DESCRIPTION,
+            Component.translatable(desc, tasks == completed ? rewards - claimed : tasks - completed), x + 5, y + 25 - Minecraft.getInstance().font.lineHeight, QuestScreenTheme.getSummaryDescription(),
             false
         );
     }

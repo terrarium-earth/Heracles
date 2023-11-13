@@ -1,11 +1,11 @@
 package earth.terrarium.heracles.api.rewards.client.defaults;
 
 import com.teamresourceful.resourcefullib.client.scissor.ScissorBoxStack;
+import earth.terrarium.heracles.api.client.theme.QuestScreenTheme;
 import earth.terrarium.heracles.api.quests.QuestIcon;
 import earth.terrarium.heracles.api.rewards.defaults.XpQuestReward;
 import earth.terrarium.heracles.client.handlers.ClientQuests;
 import earth.terrarium.heracles.client.screens.quest.BaseQuestScreen;
-import earth.terrarium.heracles.client.utils.ThemeColors;
 import earth.terrarium.heracles.common.handlers.progress.QuestProgress;
 import earth.terrarium.heracles.common.network.NetworkHandler;
 import earth.terrarium.heracles.common.network.packets.rewards.ClaimRewardsPacket;
@@ -64,12 +64,12 @@ public record XpRewardWidget(XpQuestReward reward, String quest, QuestProgress p
         String desc = this.reward.amount() == 1 ? DESC_SINGULAR : DESC_PLURAL;
         graphics.drawString(
             font,
-            reward.titleOr(Component.translatable(title, this.reward.amount())), x + 48, y + 6, ThemeColors.REWARD_TITLE,
+            reward.titleOr(Component.translatable(title, this.reward.amount())), x + 48, y + 6, QuestScreenTheme.getRewardTitle(),
             false
         );
         graphics.drawString(
             font,
-            Component.translatable(desc, this.reward.amount(), this.reward.xpType().text()), x + 48, y + 8 + font.lineHeight, ThemeColors.REWARD_DESCRIPTION,
+            Component.translatable(desc, this.reward.amount(), this.reward.xpType().text()), x + 48, y + 8 + font.lineHeight, QuestScreenTheme.getRewardDescription(),
             false
         );
     }

@@ -4,9 +4,9 @@ import com.teamresourceful.resourcefullib.client.screens.CursorScreen;
 import com.teamresourceful.resourcefullib.client.utils.CursorUtils;
 import com.teamresourceful.resourcefullib.client.utils.RenderUtils;
 import earth.terrarium.heracles.Heracles;
+import earth.terrarium.heracles.api.client.theme.EditorTheme;
 import earth.terrarium.heracles.api.quests.Quest;
 import earth.terrarium.heracles.client.handlers.ClientQuests;
-import earth.terrarium.heracles.client.utils.ThemeColors;
 import earth.terrarium.heracles.client.widgets.base.BaseModal;
 import earth.terrarium.heracles.client.widgets.boxes.AutocompleteEditBox;
 import earth.terrarium.heracles.common.constants.ConstantComponents;
@@ -83,7 +83,7 @@ public class AddDependencyModal extends BaseModal {
                     dependency.display().icon().render(graphics, scissor.stack(), x + 9, tempY + 1, 22, 22);
                     graphics.drawString(
                         Minecraft.getInstance().font,
-                        dependency.display().title(), x + 36, tempY + 6, ThemeColors.MODAL_DEPENDENCIES_DEPENDENCY_TITLE,
+                        dependency.display().title(), x + 36, tempY + 6, EditorTheme.getModalDependenciesDependencyTitle(),
                         false
                     );
                     tempY += 24;
@@ -127,7 +127,7 @@ public class AddDependencyModal extends BaseModal {
     protected void renderForeground(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
         graphics.drawString(
             Minecraft.getInstance().font,
-            ConstantComponents.Quests.ADD_DEPENDENCY, x + 8, y + 6, ThemeColors.MODAL_DEPENDENCIES_TITLE,
+            ConstantComponents.Quests.ADD_DEPENDENCY, x + 8, y + 6, EditorTheme.getModalDependenciesTitle(),
             false
         );
     }

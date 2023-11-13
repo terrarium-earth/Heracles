@@ -5,7 +5,7 @@ import com.teamresourceful.resourcefullib.client.CloseablePoseStack;
 import com.teamresourceful.resourcefullib.client.screens.CursorScreen;
 import com.teamresourceful.resourcefullib.client.utils.CursorUtils;
 import earth.terrarium.heracles.Heracles;
-import earth.terrarium.heracles.client.utils.ThemeColors;
+import earth.terrarium.heracles.api.client.theme.EditorTheme;
 import earth.terrarium.heracles.client.widgets.StateImageButton;
 import earth.terrarium.heracles.client.widgets.base.BaseModal;
 import earth.terrarium.heracles.common.constants.ConstantComponents;
@@ -99,7 +99,7 @@ public class ItemModal extends BaseModal {
         int textX = (WIDTH - font.width(TITLE)) / 2;
         graphics.drawString(
             font,
-            TITLE, x + textX, y + 6, ThemeColors.MODAL_ICONS_TITLE,
+            TITLE, x + textX, y + 6, EditorTheme.getModalIconsTitle(),
             false
         );
 

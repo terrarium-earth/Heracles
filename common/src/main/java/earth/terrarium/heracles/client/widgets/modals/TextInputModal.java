@@ -1,7 +1,7 @@
 package earth.terrarium.heracles.client.widgets.modals;
 
 import earth.terrarium.heracles.Heracles;
-import earth.terrarium.heracles.client.utils.ThemeColors;
+import earth.terrarium.heracles.api.client.theme.EditorTheme;
 import earth.terrarium.heracles.client.widgets.base.BaseModal;
 import earth.terrarium.heracles.client.widgets.boxes.EnterableEditBox;
 import earth.terrarium.heracles.client.widgets.buttons.ThemedButton;
@@ -68,7 +68,7 @@ public class TextInputModal<T> extends BaseModal {
 
         graphics.drawString(
             font,
-            this.title, this.x + 8, this.y + 6, ThemeColors.MODAL_TEXT_TITLE,
+            this.title, this.x + 8, this.y + 6, EditorTheme.getModalTextTitle(),
             false
         );
     }

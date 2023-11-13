@@ -6,9 +6,9 @@ import com.teamresourceful.resourcefullib.client.utils.CursorUtils;
 import com.teamresourceful.resourcefullib.client.utils.RenderUtils;
 import earth.terrarium.heracles.api.client.DisplayWidget;
 import earth.terrarium.heracles.api.client.WidgetUtils;
+import earth.terrarium.heracles.api.client.theme.ModalsTheme;
 import earth.terrarium.heracles.api.rewards.QuestReward;
 import earth.terrarium.heracles.api.rewards.client.QuestRewardWidgets;
-import earth.terrarium.heracles.client.utils.ThemeColors;
 import earth.terrarium.heracles.client.widgets.base.BaseModal;
 import earth.terrarium.heracles.client.widgets.buttons.ThemedButton;
 import earth.terrarium.heracles.common.constants.ConstantComponents;
@@ -62,12 +62,12 @@ public class SelectRewardsModal extends BaseModal {
     protected void renderForeground(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
         graphics.drawString(
             font,
-            Component.translatable(maxSelectable > 1 ? TITLE_PLURAL : TITLE_SINGULAR, maxSelectable), x + 10, y + 6, ThemeColors.MODAL_BASIC_TITLE,
+            Component.translatable(maxSelectable > 1 ? TITLE_PLURAL : TITLE_SINGULAR, maxSelectable), x + 10, y + 6, ModalsTheme.getTitle(),
             false
         );
         graphics.drawString(
             font,
-            selected.size() + "/" + maxSelectable, x + 10, y + height - 15, ThemeColors.MODAL_REWARDS_AMOUNT,
+            selected.size() + "/" + maxSelectable, x + 10, y + height - 15, ModalsTheme.getRewardsAmount(),
             false
         );
 

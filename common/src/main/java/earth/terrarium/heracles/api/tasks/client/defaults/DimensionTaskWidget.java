@@ -3,9 +3,9 @@ package earth.terrarium.heracles.api.tasks.client.defaults;
 import com.teamresourceful.resourcefullib.client.scissor.ScissorBoxStack;
 import earth.terrarium.heracles.api.client.DisplayWidget;
 import earth.terrarium.heracles.api.client.WidgetUtils;
+import earth.terrarium.heracles.api.client.theme.QuestScreenTheme;
 import earth.terrarium.heracles.api.tasks.client.display.TaskTitleFormatter;
 import earth.terrarium.heracles.api.tasks.defaults.ChangedDimensionTask;
-import earth.terrarium.heracles.client.utils.ThemeColors;
 import earth.terrarium.heracles.common.handlers.progress.TaskProgress;
 import net.minecraft.Optionull;
 import net.minecraft.Util;
@@ -39,12 +39,12 @@ public final class DimensionTaskWidget implements DisplayWidget {
         this.task.icon().renderOrStack(getIcon(), graphics, scissor, x + 5, y + 5, iconSize);
         graphics.drawString(
             font,
-            task.titleOr(TaskTitleFormatter.create(this.task)), x + iconSize + 16, y + 6, ThemeColors.TASK_TITLE,
+            task.titleOr(TaskTitleFormatter.create(this.task)), x + iconSize + 16, y + 6, QuestScreenTheme.getTaskTitle(),
             false
         );
         graphics.drawString(
             font,
-            getDescription(), x + iconSize + 16, y + 8 + font.lineHeight, ThemeColors.TASK_DESCRIPTION,
+            getDescription(), x + iconSize + 16, y + 8 + font.lineHeight, QuestScreenTheme.getTaskDescription(),
             false
         );
         WidgetUtils.drawProgressText(graphics, x, y, width, this.task, this.progress);

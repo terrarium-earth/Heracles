@@ -3,11 +3,11 @@ package earth.terrarium.heracles.api.tasks.client.defaults;
 import com.teamresourceful.resourcefullib.client.scissor.ScissorBoxStack;
 import earth.terrarium.heracles.api.client.DisplayWidget;
 import earth.terrarium.heracles.api.client.WidgetUtils;
+import earth.terrarium.heracles.api.client.theme.QuestScreenTheme;
 import earth.terrarium.heracles.api.tasks.QuestTask;
 import earth.terrarium.heracles.api.tasks.client.QuestTaskWidgets;
 import earth.terrarium.heracles.api.tasks.client.display.TaskTitleFormatters;
 import earth.terrarium.heracles.api.tasks.defaults.CompositeTask;
-import earth.terrarium.heracles.client.utils.ThemeColors;
 import earth.terrarium.heracles.common.constants.ConstantComponents;
 import earth.terrarium.heracles.common.handlers.progress.TaskProgress;
 import earth.terrarium.heracles.common.utils.ModUtils;
@@ -51,12 +51,12 @@ public final class CompositeTaskWidget implements DisplayWidget {
         Font font = Minecraft.getInstance().font;
         int start = graphics.drawString(
             font,
-            isOpened ? ConstantComponents.ARROW_DOWN : ConstantComponents.ARROW_RIGHT, x + 48, y + 5, ThemeColors.TASK_TITLE,
+            isOpened ? ConstantComponents.ARROW_DOWN : ConstantComponents.ARROW_RIGHT, x + 48, y + 5, QuestScreenTheme.getTaskTitle(),
             false
         );
         graphics.drawString(
             font,
-            Component.translatable(TaskTitleFormatters.toTranslationKey(this.task, this.task.amount() == 1), this.task.amount()), start + 2, y + 5, ThemeColors.TASK_TITLE,
+            Component.translatable(TaskTitleFormatters.toTranslationKey(this.task, this.task.amount() == 1), this.task.amount()), start + 2, y + 5, QuestScreenTheme.getTaskTitle(),
             false
         );
         WidgetUtils.drawProgressText(graphics, x, y, width, this.task, this.progress);

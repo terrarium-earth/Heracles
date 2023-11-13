@@ -8,9 +8,9 @@ import com.teamresourceful.resourcefullib.client.utils.ScreenUtils;
 import com.teamresourceful.resourcefullib.common.codecs.predicates.NbtPredicate;
 import earth.terrarium.heracles.api.client.DisplayWidget;
 import earth.terrarium.heracles.api.client.WidgetUtils;
+import earth.terrarium.heracles.api.client.theme.QuestScreenTheme;
 import earth.terrarium.heracles.api.tasks.CollectionType;
 import earth.terrarium.heracles.api.tasks.defaults.GatherItemTask;
-import earth.terrarium.heracles.client.utils.ThemeColors;
 import earth.terrarium.heracles.common.constants.ConstantComponents;
 import earth.terrarium.heracles.common.handlers.progress.TaskProgress;
 import earth.terrarium.heracles.common.network.NetworkHandler;
@@ -70,12 +70,12 @@ public final class ItemTaskWidget implements DisplayWidget {
         String desc = chooseGatherKey(task, DESC_ITEM, DESC_TAG, DESC_SUBMIT_ITEM, DESC_SUBMIT_TAG);
         graphics.drawString(
             font,
-            task.titleOr(Component.translatable(title, task.item().getDisplayName(stacks.size() == 1 ? i -> stacks.get(0).getHoverName() : Item::getDescription))), x + iconSize + 16, y + 6, ThemeColors.TASK_TITLE,
+            task.titleOr(Component.translatable(title, task.item().getDisplayName(stacks.size() == 1 ? i -> stacks.get(0).getHoverName() : Item::getDescription))), x + iconSize + 16, y + 6, QuestScreenTheme.getTaskTitle(),
             false
         );
         graphics.drawString(
             font,
-            Component.translatable(desc, this.task.target(), task.item().getDisplayName(stacks.size() == 1 ? i -> stacks.get(0).getHoverName() : Item::getDescription)), x + iconSize + 16, y + 8 + font.lineHeight, ThemeColors.TASK_DESCRIPTION,
+            Component.translatable(desc, this.task.target(), task.item().getDisplayName(stacks.size() == 1 ? i -> stacks.get(0).getHoverName() : Item::getDescription)), x + iconSize + 16, y + 8 + font.lineHeight, QuestScreenTheme.getTaskDescription(),
             false
         );
         WidgetUtils.drawProgressText(graphics, x, y, width, this.task, this.progress);
@@ -87,7 +87,7 @@ public final class ItemTaskWidget implements DisplayWidget {
             boolean buttonHovered = mouseX > x + width - 5 - buttonWidth && mouseX < x + width - 5 && mouseY > buttonY && mouseY < buttonY + font.lineHeight;
 
             Component text = buttonHovered ? ConstantComponents.Tasks.SUBMIT.copy().withStyle(ChatFormatting.UNDERLINE) : ConstantComponents.Tasks.SUBMIT;
-            graphics.drawString(font, text, x + width - 5 - buttonWidth, buttonY, progress.isComplete() ? ThemeColors.TASK_SUBMIT_DISABLED : ThemeColors.TASK_SUBMIT, false);
+            graphics.drawString(font, text, x + width - 5 - buttonWidth, buttonY, QuestScreenTheme.getTaskSubmit(this.progress.isComplete()), false);
             CursorUtils.setCursor(buttonHovered, progress.isComplete() ? CursorScreen.Cursor.DISABLED : CursorScreen.Cursor.POINTER);
             if (buttonHovered && !progress.isComplete()) {
                 ScreenUtils.setTooltip(Component.translatable("task.heracles.item.submit.button.tooltip", this.task.target()));

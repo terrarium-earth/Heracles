@@ -1,11 +1,11 @@
 package earth.terrarium.heracles.api.rewards.client.defaults;
 
 import com.teamresourceful.resourcefullib.client.scissor.ScissorBoxStack;
+import earth.terrarium.heracles.api.client.theme.QuestScreenTheme;
 import earth.terrarium.heracles.api.quests.QuestIcon;
 import earth.terrarium.heracles.api.rewards.defaults.CommandReward;
 import earth.terrarium.heracles.client.handlers.ClientQuests;
 import earth.terrarium.heracles.client.screens.quest.BaseQuestScreen;
-import earth.terrarium.heracles.client.utils.ThemeColors;
 import earth.terrarium.heracles.common.handlers.progress.QuestProgress;
 import earth.terrarium.heracles.common.network.NetworkHandler;
 import earth.terrarium.heracles.common.network.packets.rewards.ClaimRewardsPacket;
@@ -66,12 +66,12 @@ public record CommandRewardWidget(CommandReward reward, String quest, QuestProgr
         String desc = firstSpace > 0 ? reward.command().substring(0, reward.command().indexOf(" ")) : reward.command();
         graphics.drawString(
             font,
-            reward.titleOr(Component.translatable(TITLE_SINGULAR)), x + 48, y + 6, ThemeColors.REWARD_TITLE,
+            reward.titleOr(Component.translatable(TITLE_SINGULAR)), x + 48, y + 6, QuestScreenTheme.getRewardTitle(),
             false
         );
         graphics.drawString(
             font,
-            Component.translatable(DESC_SINGULAR, desc), x + 48, y + 8 + font.lineHeight, ThemeColors.REWARD_DESCRIPTION,
+            Component.translatable(DESC_SINGULAR, desc), x + 48, y + 8 + font.lineHeight, QuestScreenTheme.getRewardDescription(),
             false
         );
     }

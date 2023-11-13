@@ -30,7 +30,9 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
 import org.joml.Vector2i;
 
@@ -303,8 +305,10 @@ public class QuestsWidget extends BaseWidget {
                 for (QuestWidget widget : this.widgets) {
                     if (widget.isMouseOver(mouseX - (this.x + (this.fullWidth / 2f) + offset.x()), mouseY - (this.y + (this.height / 2f) + offset.y()))) {
                         if (mode.canSelect()) {
+                            Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1.0F));
                             this.selectHandler.clickQuest(mode, (int) mouseX, (int) mouseY, widget);
                         } else if (mode.canOpen()) {
+                            Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1.0F));
                             NetworkHandler.CHANNEL.sendToServer(new OpenQuestPacket(
                                 this.group, widget.id(), Minecraft.getInstance().screen instanceof QuestsEditScreen
                             ));

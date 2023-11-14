@@ -19,7 +19,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 
-public record SelectableRewardWidget(SelectableReward reward, String quest, QuestProgress progress, boolean interactive) implements BaseItemRewardWidget {
+public record SelectableRewardWidget(SelectableReward reward, String quest, QuestProgress progress, boolean isInteractive) implements BaseItemRewardWidget {
 
     private static final String TITLE_SINGULAR = "reward.heracles.select.title.singular";
     private static final String TITLE_PLURAL = "reward.heracles.select.title.plural";
@@ -46,11 +46,6 @@ public record SelectableRewardWidget(SelectableReward reward, String quest, Ques
     @Override
     public boolean canClaim() {
         return progress != null && progress.canClaim(reward.id());
-    }
-
-    @Override
-    public boolean isInteractive() {
-        return interactive;
     }
 
     @Override

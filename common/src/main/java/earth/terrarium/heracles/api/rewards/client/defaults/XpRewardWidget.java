@@ -16,7 +16,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 
-public record XpRewardWidget(XpQuestReward reward, String quest, QuestProgress progress, boolean interactive) implements BaseItemRewardWidget {
+public record XpRewardWidget(XpQuestReward reward, String quest, QuestProgress progress, boolean isInteractive) implements BaseItemRewardWidget {
 
     private static final String TITLE_SINGULAR = "reward.heracles.xp.title.singular";
     private static final String TITLE_PLURAL = "reward.heracles.xp.title.plural";
@@ -43,11 +43,6 @@ public record XpRewardWidget(XpQuestReward reward, String quest, QuestProgress p
     @Override
     public boolean canClaim() {
         return progress != null && progress.canClaim(reward.id());
-    }
-
-    @Override
-    public boolean isInteractive() {
-        return interactive;
     }
 
     @Override

@@ -19,7 +19,7 @@ import net.minecraft.world.item.Items;
 
 import java.util.List;
 
-public record LootTableRewardWidget(LootTableReward reward, String quest, QuestProgress progress, boolean interactive) implements BaseItemRewardWidget {
+public record LootTableRewardWidget(LootTableReward reward, String quest, QuestProgress progress, boolean isInteractive) implements BaseItemRewardWidget {
 
     private static final Component TITLE_SINGULAR = Component.translatable("reward.heracles.loottable.title.singular");
     private static final String DESC_SINGULAR = "reward.heracles.loottable.desc.singular";
@@ -45,11 +45,6 @@ public record LootTableRewardWidget(LootTableReward reward, String quest, QuestP
     @Override
     public boolean canClaim() {
         return progress != null && progress.canClaim(reward.id());
-    }
-
-    @Override
-    public boolean isInteractive() {
-        return interactive;
     }
 
     @Override

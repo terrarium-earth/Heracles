@@ -19,7 +19,7 @@ import net.minecraft.world.item.Items;
 
 import java.util.List;
 
-public record CommandRewardWidget(CommandReward reward, String quest, QuestProgress progress, boolean interactive) implements BaseItemRewardWidget {
+public record CommandRewardWidget(CommandReward reward, String quest, QuestProgress progress, boolean isInteractive) implements BaseItemRewardWidget {
 
     private static final String TITLE_SINGULAR = "reward.heracles.command.title.singular";
     private static final String DESC_SINGULAR = "reward.heracles.command.desc.singular";
@@ -45,11 +45,6 @@ public record CommandRewardWidget(CommandReward reward, String quest, QuestProgr
     @Override
     public boolean canClaim() {
         return progress != null && progress.canClaim(reward.id());
-    }
-
-    @Override
-    public boolean isInteractive() {
-        return interactive;
     }
 
     @Override

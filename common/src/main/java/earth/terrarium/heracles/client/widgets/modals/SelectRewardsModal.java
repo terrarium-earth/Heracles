@@ -39,13 +39,12 @@ public class SelectRewardsModal extends BaseModal {
     public SelectRewardsModal(int screenWidth, int screenHeight) {
         super(screenWidth, screenHeight, (int) (screenWidth * 0.75f), (int) (screenHeight * 0.8f));
 
-        claimButton = ThemedButton.builder(ConstantComponents.Rewards.CLAIM_REWARD, b -> {
+        claimButton = addChild(ThemedButton.builder(ConstantComponents.Rewards.CLAIM_REWARD, b -> {
             this.setVisible(false);
             if (callback != null) {
                 callback.accept(selected);
             }
-        }).bounds(this.x + this.width - 58, this.y + this.height - 20, 50, 16).build();
-        addChild(claimButton);
+        }).bounds(this.x + this.width - 58, this.y + this.height - 20, 50, 16).build());
 
         this.lastFullHeight = this.height - 42;
     }

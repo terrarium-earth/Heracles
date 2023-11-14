@@ -15,7 +15,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 
-public record ItemRewardWidget(ItemReward reward, String quest, QuestProgress progress, boolean interactive) implements BaseItemRewardWidget {
+public record ItemRewardWidget(ItemReward reward, String quest, QuestProgress progress, boolean isInteractive) implements BaseItemRewardWidget {
 
     private static final String TITLE_SINGULAR = "reward.heracles.item.title.singular";
     private static final String TITLE_PLURAL = "reward.heracles.item.title.plural";
@@ -41,11 +41,6 @@ public record ItemRewardWidget(ItemReward reward, String quest, QuestProgress pr
     @Override
     public boolean canClaim() {
         return progress != null && progress.canClaim(reward.id());
-    }
-
-    @Override
-    public boolean isInteractive() {
-        return interactive;
     }
 
     @Override

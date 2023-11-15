@@ -25,7 +25,7 @@ public interface ThemedButton {
     }
 
     default int getTextColor(boolean active, float alpha) {
-        return GenericTheme.getButtonMessage(active) | Mth.ceil(alpha * 255.0F) << 24;
+        return GenericTheme.getButton(active) | Mth.ceil(alpha * 255.0F) << 24;
     }
 
     record TextureBounds(int sourceX, int sourceY, int sliceWidth, int sliceHeight, int sourceWidth, int sourceHeight) {

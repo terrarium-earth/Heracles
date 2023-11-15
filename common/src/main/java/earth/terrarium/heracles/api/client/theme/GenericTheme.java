@@ -5,8 +5,8 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.teamresourceful.resourcefullib.common.color.Color;
 
 public record GenericTheme(
-    Color buttonMessageActive,
-    Color buttonMessageInactive
+    Color buttonActive,
+    Color buttonInactive
 ) {
 
     public static final GenericTheme DEFAULT = new GenericTheme(
@@ -15,12 +15,12 @@ public record GenericTheme(
     );
 
     public static final Codec<GenericTheme> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-        Color.CODEC.fieldOf("buttonMessageActive").orElse(DEFAULT.buttonMessageActive()).forGetter(GenericTheme::buttonMessageActive),
-        Color.CODEC.fieldOf("buttonMessageInactive").orElse(DEFAULT.buttonMessageInactive()).forGetter(GenericTheme::buttonMessageInactive)
+        Color.CODEC.fieldOf("buttonActive").orElse(DEFAULT.buttonActive()).forGetter(GenericTheme::buttonActive),
+        Color.CODEC.fieldOf("buttonInactive").orElse(DEFAULT.buttonInactive()).forGetter(GenericTheme::buttonInactive)
     ).apply(instance, GenericTheme::new));
 
-    public static int getButtonMessage(boolean active) {
+    public static int getButton(boolean active) {
         GenericTheme theme = Theme.getInstance().generic();
-        return active ? theme.buttonMessageActive().getValue() : theme.buttonMessageInactive().getValue();
+        return active ? theme.buttonActive().getValue() : theme.buttonInactive().getValue();
     }
 }

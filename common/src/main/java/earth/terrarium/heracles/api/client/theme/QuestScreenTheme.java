@@ -17,8 +17,8 @@ public record QuestScreenTheme(
     Color summaryTitle,
     Color summaryProgress,
     Color summaryDescription,
-    Color tabMessage,
-    Color tabMessageSelected
+    Color tabButton,
+    Color tabButtonSelected
 ) {
 
     public static final QuestScreenTheme DEFAULT = new QuestScreenTheme(
@@ -51,8 +51,8 @@ public record QuestScreenTheme(
         Color.CODEC.fieldOf("summaryTitle").orElse(DEFAULT.summaryTitle()).forGetter(QuestScreenTheme::summaryTitle),
         Color.CODEC.fieldOf("summaryProgress").orElse(DEFAULT.summaryProgress()).forGetter(QuestScreenTheme::summaryProgress),
         Color.CODEC.fieldOf("summaryDescription").orElse(DEFAULT.summaryDescription()).forGetter(QuestScreenTheme::summaryDescription),
-        Color.CODEC.fieldOf("tabMessage").orElse(DEFAULT.tabMessage()).forGetter(QuestScreenTheme::tabMessage),
-        Color.CODEC.fieldOf("tabMessageSelected").orElse(DEFAULT.tabMessageSelected()).forGetter(QuestScreenTheme::tabMessageSelected)
+        Color.CODEC.fieldOf("tabButton").orElse(DEFAULT.tabButton()).forGetter(QuestScreenTheme::tabButton),
+        Color.CODEC.fieldOf("tabButtonSelected").orElse(DEFAULT.tabButtonSelected()).forGetter(QuestScreenTheme::tabButtonSelected)
     ).apply(instance, QuestScreenTheme::new));
 
     public static int getTaskTitle() {
@@ -99,7 +99,7 @@ public record QuestScreenTheme(
         return Theme.getInstance().questScreen().summaryDescription().getValue();
     }
 
-    public static int getTabMessage(boolean selected) {
-        return (selected ? Theme.getInstance().questScreen().tabMessageSelected() : Theme.getInstance().questScreen().tabMessage()).getValue();
+    public static int getTabButton(boolean selected) {
+        return (selected ? Theme.getInstance().questScreen().tabButtonSelected() : Theme.getInstance().questScreen().tabButton()).getValue();
     }
 }

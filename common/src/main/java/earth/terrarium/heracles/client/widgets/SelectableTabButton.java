@@ -44,6 +44,6 @@ public class SelectableTabButton extends AbstractButton implements ThemedButton 
 
     @Override
     public int getTextColor(boolean active, float alpha) {
-        return QuestScreenTheme.getTabMessage(selected) | Mth.ceil(alpha * 255.0F) << 24;
+        return QuestScreenTheme.getTabButton(selected) | Mth.ceil(alpha * 255.0F) << 24;
     }
 }

@@ -15,10 +15,10 @@ public record Theme(
 ) {
 
     public static final Codec<Theme> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-        QuestsScreenTheme.CODEC.fieldOf("quests_screen").orElse(QuestsScreenTheme.DEFAULT).forGetter(Theme::questsScreen),
-        QuestScreenTheme.CODEC.fieldOf("quest_screen").orElse(QuestScreenTheme.DEFAULT).forGetter(Theme::questScreen),
+        QuestsScreenTheme.CODEC.fieldOf("questsScreen").orElse(QuestsScreenTheme.DEFAULT).forGetter(Theme::questsScreen),
+        QuestScreenTheme.CODEC.fieldOf("questScreen").orElse(QuestScreenTheme.DEFAULT).forGetter(Theme::questScreen),
         ToastsTheme.CODEC.fieldOf("toasts").orElse(ToastsTheme.DEFAULT).forGetter(Theme::toasts),
-        PinnedQuestsTheme.CODEC.fieldOf("pinned_quests").orElse(PinnedQuestsTheme.DEFAULT).forGetter(Theme::pinnedQuests),
+        PinnedQuestsTheme.CODEC.fieldOf("pinnedQuests").orElse(PinnedQuestsTheme.DEFAULT).forGetter(Theme::pinnedQuests),
         ModalsTheme.CODEC.fieldOf("modals").orElse(ModalsTheme.DEFAULT).forGetter(Theme::modals),
         EditorTheme.CODEC.fieldOf("editor").orElse(EditorTheme.DEFAULT).forGetter(Theme::editor),
         GenericTheme.CODEC.fieldOf("generic").orElse(GenericTheme.DEFAULT).forGetter(Theme::generic)

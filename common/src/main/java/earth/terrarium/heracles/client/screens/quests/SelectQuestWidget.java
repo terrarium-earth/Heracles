@@ -87,7 +87,7 @@ public class SelectQuestWidget extends BaseWidget {
             this.entry,
             quest -> {
                 quest.display().setSubtitle(s.isEmpty() ? null : Component.translatable(s));
-                return NetworkQuestData.builder().subtitle(quest.display().title());
+                return NetworkQuestData.builder().subtitle(quest.display().subtitle());
             },
             false
         ));

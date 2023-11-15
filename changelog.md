@@ -1,3 +1,1 @@
-- Description content will be saved on resize (ThatGravyBoat)
-- Added CTRL+S shortcut to save (ThatGravyBoat)
-- Fixed position boxes sending packets back to you (ThatGravyBoat)
+- Fixes subtitles being set to title

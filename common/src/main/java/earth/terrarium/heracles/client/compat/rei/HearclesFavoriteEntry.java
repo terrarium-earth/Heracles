@@ -20,7 +20,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 
 @SuppressWarnings("UnstableApiUsage")
-public class HearclesFavoriteEntry extends FavoriteEntry {
+public class HeraclesFavoriteEntry extends FavoriteEntry {
     public static final ResourceLocation ID = new ResourceLocation(Heracles.MOD_ID, "heracles");
     private static final ResourceLocation TEXTURE = new ResourceLocation(Heracles.MOD_ID, "textures/item/quest_book.png");
 
@@ -75,24 +75,24 @@ public class HearclesFavoriteEntry extends FavoriteEntry {
 
     @Override
     public boolean isSame(FavoriteEntry other) {
-        return other instanceof HearclesFavoriteEntry;
+        return other instanceof HeraclesFavoriteEntry;
     }
 
-    public enum Type implements FavoriteEntryType<HearclesFavoriteEntry> {
+    public enum Type implements FavoriteEntryType<HeraclesFavoriteEntry> {
         INSTANCE;
 
         @Override
-        public DataResult<HearclesFavoriteEntry> read(CompoundTag object) {
-            return DataResult.success(new HearclesFavoriteEntry(), Lifecycle.stable());
+        public DataResult<HeraclesFavoriteEntry> read(CompoundTag object) {
+            return DataResult.success(new HeraclesFavoriteEntry(), Lifecycle.stable());
         }
 
         @Override
-        public DataResult<HearclesFavoriteEntry> fromArgs(Object... args) {
-            return DataResult.success(new HearclesFavoriteEntry(), Lifecycle.stable());
+        public DataResult<HeraclesFavoriteEntry> fromArgs(Object... args) {
+            return DataResult.success(new HeraclesFavoriteEntry(), Lifecycle.stable());
         }
 
         @Override
-        public CompoundTag save(HearclesFavoriteEntry entry, CompoundTag tag) {
+        public CompoundTag save(HeraclesFavoriteEntry entry, CompoundTag tag) {
             return tag;
         }
     }

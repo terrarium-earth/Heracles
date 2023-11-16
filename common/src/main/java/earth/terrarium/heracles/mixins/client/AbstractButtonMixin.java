@@ -17,7 +17,7 @@ public abstract class AbstractButtonMixin extends AbstractWidget {
     }
 
     @ModifyArgs(method = "renderWidget", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiGraphics;blitNineSliced(Lnet/minecraft/resources/ResourceLocation;IIIIIIIIII)V"))
-    public void applyThemedTexture(Args args) {
+    public void heracles$applyThemedTexture(Args args) {
         if (((Object) this) instanceof ThemedButton tb) {
             ThemedButton.TextureBounds bounds = tb.getTextureBounds(this.active, this.isHoveredOrFocused());
             args.setAll(tb.getTexture(), this.getX(), this.getY(), this.getWidth(), this.getHeight(), bounds.sliceWidth(), bounds.sliceHeight(), bounds.sourceWidth(), bounds.sourceHeight(), bounds.sourceX(), bounds.sourceY());
@@ -25,7 +25,7 @@ public abstract class AbstractButtonMixin extends AbstractWidget {
     }
 
     @ModifyArg(method = "renderWidget", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/components/AbstractButton;renderString(Lnet/minecraft/client/gui/GuiGraphics;Lnet/minecraft/client/gui/Font;I)V"), index = 2)
-    public int applyThemedColor(int original) {
+    public int heracles$applyThemedColor(int original) {
         if (((Object) this) instanceof ThemedButton tb) {
             return tb.getTextColor(this.active, this.alpha);
         }

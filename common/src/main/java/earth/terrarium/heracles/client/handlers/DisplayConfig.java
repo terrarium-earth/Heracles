@@ -2,6 +2,7 @@ package earth.terrarium.heracles.client.handlers;
 
 import com.google.gson.JsonObject;
 import com.teamresourceful.resourcefullib.common.lib.Constants;
+import earth.terrarium.heracles.Heracles;
 import net.minecraft.util.GsonHelper;
 import org.apache.commons.io.FileUtils;
 
@@ -31,7 +32,7 @@ public class DisplayConfig {
                 save();
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            Heracles.LOGGER.error("[Heracles Client] Error parsing {}:", DISPLAY_FILE, e);
         }
     }
 
@@ -44,7 +45,7 @@ public class DisplayConfig {
         try {
             FileUtils.write(displayFile, Constants.PRETTY_GSON.toJson(displayObject), StandardCharsets.UTF_8);
         } catch (Exception e) {
-            e.printStackTrace();
+            Heracles.LOGGER.error("[Heracles Client] Error saving {}:", DISPLAY_FILE, e);
         }
     }
 }

@@ -51,9 +51,8 @@ public record SyncQuestsPacket(Map<String, Quest> quests, List<String> groups) i
                     QUEST_MAP_CODEC.parse(RegistryOps.create(YabnOps.COMPRESSED, Heracles.getRegistryAccess()), element).get().orThrow(),
                     buffer.readList(FriendlyByteBuf::readUtf)
                 );
-            }catch (Exception e) {
-                System.out.println("Failed to decode sync quests packet");
-                System.out.println(element.toString());
+            } catch (Exception e) {
+                Heracles.LOGGER.error("[Heracles Client] Failed to decode sync quests packet: {}", element, e);
                 throw e;
             }
         }

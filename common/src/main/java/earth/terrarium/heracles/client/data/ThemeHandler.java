@@ -35,7 +35,7 @@ public class ThemeHandler extends SimplePreparableReloadListener<Optional<Theme>
             })
             .flatMap(json -> Theme.CODEC.parse(JsonOps.INSTANCE, json)
                 .get()
-                .ifRight(result -> Heracles.LOGGER.error("Failed to parse theme: {}", result.message()))
+                .ifRight(result -> Heracles.LOGGER.error("[Heracles Client] Failed to parse theme: {}", result.message()))
                 .left()
             );
     }

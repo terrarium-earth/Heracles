@@ -57,7 +57,7 @@ public class QuestScreen extends BaseQuestScreen {
             this.desc = String.join("", MarkdownParser.parse(this.quest().display().description()));
         } catch (Throwable e) {
             this.descriptionError = e.getMessage();
-            Heracles.LOGGER.error("Error parsing quest description: ", e);
+            Heracles.LOGGER.error("[Heracles Client] Error parsing quest description: ", e);
         }
         if (Minecraft.getInstance().player != null && Minecraft.getInstance().player.hasPermissions(2)) {
             addRenderableWidget(new ImageButton(this.width - 24, 1, 11, 11, 33, 15, 11, HEADING, 256, 256, (button) ->

@@ -1,6 +1,7 @@
 package earth.terrarium.heracles.common.constants;
 
 import com.teamresourceful.resourcefullib.common.exceptions.UtilityClassException;
+import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.common.annotations.Translate;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
@@ -161,7 +162,9 @@ public final class ConstantComponents {
     }
 
     static {
-        //printTranslations(ConstantComponents.class);
+        Heracles.LOGGER.debug("[Heracles Client] Begin Translations Dump");
+        printTranslations(ConstantComponents.class);
+        Heracles.LOGGER.debug("[Heracles Client] End Translations Dump");
     }
 
     private static void printTranslations(Class<?> clazz) {
@@ -176,7 +179,7 @@ public final class ConstantComponents {
                         if (field.get(null) instanceof MutableComponent component && component.getContents() instanceof TranslatableContents translation) {
                             String key = translation.getKey();
                             String fallback = field.getAnnotation(Translate.class).value();
-                            System.out.println("\"" + key + "\": \"" + fallback + "\",");
+                            Heracles.LOGGER.debug("\"" + key + "\": \"" + fallback + "\",");
                         }
                     } catch (Exception ignored) {}
                 }

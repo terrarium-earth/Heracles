@@ -68,7 +68,7 @@ public class QuestProgressHandler extends SavedData {
             try {
                 to.progress().put(id, new QuestProgress(quest, progress.save()));
             } catch (Exception e) {
-                Heracles.LOGGER.error("[Heracles] Failed to copy quest progress for player {}", id, e);
+                Heracles.LOGGER.error("Failed to copy quest progress for player {}", id, e);
             }
         });
     }
@@ -92,7 +92,7 @@ public class QuestProgressHandler extends SavedData {
                 try {
                     progressTag.put(id, progress.save());
                 } catch (Exception e) {
-                    Heracles.LOGGER.error("[Heracles] Failed to save quest progress for player {}", id, e);
+                    Heracles.LOGGER.error("Failed to save quest progress for player {}", id, e);
                 }
             });
             tag.put(entry.getKey().toString(), progressTag);
@@ -116,13 +116,13 @@ public class QuestProgressHandler extends SavedData {
                     QuestProgress progressObj = new QuestProgress(questObj, progress.getCompound(quest));
                     questProgress.put(quest, progressObj);
                 } catch (Exception e) {
-                    Heracles.LOGGER.error("[Heracles] Failed to load quest progress for player {}", player, e);
+                    Heracles.LOGGER.error("Failed to load quest progress for player {}", player, e);
                 }
                 this.progress.put(UUID.fromString(player), new QuestsProgress(questProgress));
             }
         }
         if (!badQuests.isEmpty()) {
-            Heracles.LOGGER.error("[Heracles] Failed to load quest progress for quests: {}", String.join(", ", badQuests));
+            Heracles.LOGGER.error("Failed to load quest progress for quests: {}", String.join(", ", badQuests));
         }
     }
 

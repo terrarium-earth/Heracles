@@ -32,7 +32,7 @@ public class DisplayConfig {
                 save();
             }
         } catch (Exception e) {
-            Heracles.LOGGER.error("[Heracles Client] Error parsing {}:", DISPLAY_FILE, e);
+            Heracles.LOGGER.error("Error parsing {}:", DISPLAY_FILE, e);
         }
     }
 
@@ -45,7 +45,7 @@ public class DisplayConfig {
         try {
             FileUtils.write(displayFile, Constants.PRETTY_GSON.toJson(displayObject), StandardCharsets.UTF_8);
         } catch (Exception e) {
-            Heracles.LOGGER.error("[Heracles Client] Error saving {}:", DISPLAY_FILE, e);
+            Heracles.LOGGER.error("Error saving {}:", DISPLAY_FILE, e);
         }
     }
 }

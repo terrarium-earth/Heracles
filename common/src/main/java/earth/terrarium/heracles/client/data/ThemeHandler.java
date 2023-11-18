@@ -29,13 +29,13 @@ public class ThemeHandler extends SimplePreparableReloadListener<Optional<Theme>
                     Reader reader = resource.openAsReader();
                     return Optional.of(GsonHelper.fromJson(GSON, reader, JsonObject.class));
                 } catch (Exception e) {
-                    Heracles.LOGGER.error("[Heracles Client] Failed to load theme.", e);
+                    Heracles.LOGGER.error("Failed to load theme.", e);
                     return Optional.empty();
                 }
             })
             .flatMap(json -> Theme.CODEC.parse(JsonOps.INSTANCE, json)
                 .get()
-                .ifRight(result -> Heracles.LOGGER.error("[Heracles Client] Failed to parse theme: {}", result.message()))
+                .ifRight(result -> Heracles.LOGGER.error("Failed to parse theme: {}", result.message()))
                 .left()
             );
     }

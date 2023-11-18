@@ -52,7 +52,7 @@ public record SyncQuestsPacket(Map<String, Quest> quests, List<String> groups) i
                     buffer.readList(FriendlyByteBuf::readUtf)
                 );
             } catch (Exception e) {
-                Heracles.LOGGER.error("[Heracles Client] Failed to decode sync quests packet: {}", element, e);
+                Heracles.LOGGER.error("Failed to decode sync quests packet: {}", element, e);
                 throw e;
             }
         }

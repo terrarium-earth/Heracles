@@ -30,7 +30,7 @@ public class HeraclesForgeClient {
         event.enqueueWork(HeraclesClient::init);
         MinecraftForge.EVENT_BUS.addListener(HeraclesForgeClient::onClientTick);
         MinecraftForge.EVENT_BUS.addListener(HeraclesForgeClient::onMouseClickedPreScreen);
-        MinecraftForge.EVENT_BUS.addListener(HeraclesForgeClient::onClientReloadListeners);
+        FMLJavaModLoadingContext.get().getModEventBus().addListener(HeraclesForgeClient::onClientReloadListeners);
     }
 
     public static void onRegisterKeyBindings(RegisterKeyMappingsEvent event) {

@@ -54,11 +54,11 @@ public class QuestTutorial {
                 try {
                     FileUtils.write(displayFile, tutorialText, StandardCharsets.UTF_8);
                 } catch (Exception e) {
-                    Heracles.LOGGER.error("[Heracles] Failed to write tutorial", e);
+                    Heracles.LOGGER.error("Failed to write tutorial", e);
                 }
             }
         } catch (Exception e) {
-            Heracles.LOGGER.error("[Heracles] Failed to load tutorial", e);
+            Heracles.LOGGER.error("Failed to load tutorial", e);
         }
     }
 

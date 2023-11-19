@@ -1,6 +1,7 @@
 package earth.terrarium.heracles.mixins.client;
 
 import earth.terrarium.heracles.client.widgets.buttons.ThemedButton;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractButton;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.network.chat.Component;
@@ -20,7 +21,11 @@ public abstract class AbstractButtonMixin extends AbstractWidget {
     public void heracles$applyThemedTexture(Args args) {
         if (((Object) this) instanceof ThemedButton tb) {
             ThemedButton.TextureBounds bounds = tb.getTextureBounds(this.active, this.isHoveredOrFocused());
-            args.setAll(tb.getTexture(), this.getX(), this.getY(), this.getWidth(), this.getHeight(), bounds.sliceWidth(), bounds.sliceHeight(), bounds.sourceWidth(), bounds.sourceHeight(), bounds.sourceX(), bounds.sourceY());
+            if (args.get(0) instanceof GuiGraphics guiGraphics) {
+                args.setAll(guiGraphics, tb.getTexture(), this.getX(), this.getY(), this.getWidth(), this.getHeight(), bounds.sliceWidth(), bounds.sliceHeight(), bounds.sourceWidth(), bounds.sourceHeight(), bounds.sourceX(), bounds.sourceY());
+            } else {
+                args.setAll(tb.getTexture(), this.getX(), this.getY(), this.getWidth(), this.getHeight(), bounds.sliceWidth(), bounds.sliceHeight(), bounds.sourceWidth(), bounds.sourceHeight(), bounds.sourceX(), bounds.sourceY());
+            }
         }
     }
 

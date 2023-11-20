@@ -23,7 +23,7 @@ public class ItemRewardSettings implements SettingInitializer<ItemReward>, Custo
     public CreationData create(@Nullable ItemReward object) {
         CreationData settings = CustomizableQuestElementSettings.super.create(object);
         settings.put("item", ItemSetting.NO_TAGS, getDefaultItem(object));
-        settings.put("count", IntSetting.ONE, getDefaultCount(object));
+        settings.put("amount", IntSetting.ONE, getDefaultCount(object));
         return settings;
     }
 
@@ -31,7 +31,7 @@ public class ItemRewardSettings implements SettingInitializer<ItemReward>, Custo
     public ItemReward create(String id, @Nullable ItemReward object, Data data) {
         ItemStack stack = data.get("item", ItemSetting.NO_TAGS).orElse(getDefaultItem(object))
             .map(Function.identity(), key -> new ItemStack(Items.AIR));
-        stack.setCount(data.get("count", IntSetting.ONE).orElse(getDefaultCount(object)));
+        stack.setCount(data.get("amount", IntSetting.ONE).orElse(getDefaultCount(object)));
         if (object != null) {
             stack.setTag(object.stack().getTag());
         }

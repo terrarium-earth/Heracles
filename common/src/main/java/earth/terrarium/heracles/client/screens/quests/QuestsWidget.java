@@ -342,6 +342,15 @@ public class QuestsWidget extends BaseWidget {
     }
 
     @Override
+    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+        MouseMode mode = this.mouseMode.get();
+        if (mode.canSelect() && this.selectHandler.onKeyPress(keyCode)) {
+            return true;
+        }
+        return super.keyPressed(keyCode, scanCode, modifiers);
+    }
+
+    @Override
     public boolean isMouseOver(double mouseX, double mouseY) {
         return mouseX >= this.x && mouseX <= this.x + this.width && mouseY >= this.y && mouseY <= this.y + this.height;
     }

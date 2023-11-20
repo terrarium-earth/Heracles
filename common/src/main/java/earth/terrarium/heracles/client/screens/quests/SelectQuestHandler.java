@@ -1,5 +1,6 @@
 package earth.terrarium.heracles.client.screens.quests;
 
+import com.mojang.blaze3d.platform.InputConstants;
 import earth.terrarium.heracles.client.handlers.ClientQuests;
 import earth.terrarium.heracles.client.screens.mousemode.MouseMode;
 import earth.terrarium.heracles.common.network.NetworkHandler;
@@ -79,8 +80,45 @@ public class SelectQuestHandler {
                     pos.x = newX;
                     pos.y = newY;
                     return pos;
-                }));
+                }),
+                false
+            );
         }
+    }
+
+    public boolean onKeyPress(int key) {
+        int x = 0;
+        int y = 0;
+        switch (key) {
+            case InputConstants.KEY_UP -> y = -1;
+            case InputConstants.KEY_DOWN -> y = 1;
+            case InputConstants.KEY_LEFT -> x = -1;
+            case InputConstants.KEY_RIGHT -> x = 1;
+        }
+
+        if (Screen.hasShiftDown()) {
+            x *= 10;
+            y *= 10;
+        } else if (Screen.hasControlDown()) {
+            x *= 5;
+            y *= 5;
+        }
+
+        if (x == 0 && y == 0) return false;
+        if (selectedQuest == null) return false;
+
+        int newX = selectedQuest.x() + x;
+        int newY = selectedQuest.y() + y;
+
+        ClientQuests.updateQuest(selectedQuest.entry(), quest ->
+                NetworkQuestData.builder().group(quest, selectedQuest.group(), pos -> {
+                    pos.x = newX;
+                    pos.y = newY;
+                    return pos;
+                }),
+            false
+        );
+        return true;
     }
 
     public QuestWidget selectedQuest() {

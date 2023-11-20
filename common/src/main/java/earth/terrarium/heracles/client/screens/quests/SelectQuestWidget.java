@@ -60,23 +60,37 @@ public class SelectQuestWidget extends BaseWidget {
         this.group = ClientUtils.screen() instanceof QuestsScreen screen ? screen.getGroup() : "";
 
         this.titleBox = this.addChild(new EditBox(this.font, this.x + 6, this.y + 14, this.width - 12, 10, CommonComponents.EMPTY));
-        this.titleBox.setResponder(s -> updateQuest(quest -> NetworkQuestData.builder().title(s.isEmpty() ? null : Component.translatable(s))));
+        this.titleBox.setResponder(s -> ClientQuests.updateQuest(
+            this.entry,
+            quest -> {
+                quest.display().setTitle(s.isEmpty() ? null : Component.translatable(s));
+                return NetworkQuestData.builder().title(quest.display().title());
+            },
+            false
+        ));
 
         int boxWidth = (this.width - 40) / 2;
 
         this.xBox = this.addChild(new PositionBox(this.font, this.x + 16, this.y + 44, boxWidth, 10, ConstantComponents.X));
         this.yBox = this.addChild(new PositionBox(this.font, this.x + 33 + boxWidth, this.y + 44, boxWidth, 10, Component.literal("y")));
-        this.xBox.setNumberResponder(value -> updateQuest(quest -> NetworkQuestData.builder().group(quest, this.group, pos -> {
+        this.xBox.setNumberResponder(value -> ClientQuests.updateQuest(this.entry, quest -> NetworkQuestData.builder().group(quest, this.group, pos -> {
             pos.x = value;
             return pos;
-        })));
-        this.yBox.setNumberResponder(value -> updateQuest(quest -> NetworkQuestData.builder().group(quest, this.group, pos -> {
+        }), false));
+        this.yBox.setNumberResponder(value -> ClientQuests.updateQuest(this.entry, quest -> NetworkQuestData.builder().group(quest, this.group, pos -> {
             pos.y = value;
             return pos;
-        })));
+        }), false));
 
         this.subtitleBox = this.addChild(new MultiLineEditBox(this.font, this.x + 6, this.y + 76, this.width - 12, 40, CommonComponents.EMPTY, CommonComponents.EMPTY));
-        this.subtitleBox.setValueListener(s -> updateQuest(quest -> NetworkQuestData.builder().subtitle(s.isEmpty() ? null : Component.translatable(s))));
+        this.subtitleBox.setValueListener(s -> ClientQuests.updateQuest(
+            this.entry,
+            quest -> {
+                quest.display().setSubtitle(s.isEmpty() ? null : Component.translatable(s));
+                return NetworkQuestData.builder().subtitle(quest.display().subtitle());
+            },
+            false
+        ));
 
         addChild(ThemedButton.builder(Component.literal("ℹ"), b -> {
                 if (Minecraft.getInstance().screen instanceof QuestsEditScreen screen) {

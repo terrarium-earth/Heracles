@@ -13,7 +13,6 @@
     ],
     "client": [
         "client.AbstractButtonMixin",
-        "client.FontManagerAccessor",
         "client.InternalKeyPressedScreen",
         "client.ScreenMixin"
     ],

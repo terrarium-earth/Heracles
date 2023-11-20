@@ -6,7 +6,7 @@ import earth.terrarium.heracles.api.quests.Quest;
 import earth.terrarium.heracles.client.handlers.ClientQuests;
 import earth.terrarium.heracles.client.screens.AbstractQuestScreen;
 import earth.terrarium.heracles.client.widgets.SelectableTabButton;
-import earth.terrarium.heracles.client.widgets.base.TemporyWidget;
+import earth.terrarium.heracles.client.widgets.base.TemporaryWidget;
 import earth.terrarium.heracles.client.widgets.buttons.ThemedButton;
 import earth.terrarium.heracles.common.constants.ConstantComponents;
 import earth.terrarium.heracles.common.handlers.progress.QuestProgress;
@@ -168,7 +168,7 @@ public abstract class BaseQuestScreen extends AbstractQuestScreen<QuestContent> 
     @Override
     public @NotNull List<? extends GuiEventListener> children() {
         List<GuiEventListener> listeners = new ArrayList<>();
-        for (TemporyWidget widget : temporaryWidgets) {
+        for (TemporaryWidget widget : temporaryWidgets) {
             if (widget.isVisible() && widget instanceof GuiEventListener listener) {
                 listeners.add(listener);
             }

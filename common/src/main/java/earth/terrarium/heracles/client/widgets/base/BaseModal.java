@@ -16,7 +16,7 @@ import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.resources.ResourceLocation;
 
-public abstract class BaseModal extends BaseWidget implements TemporyWidget {
+public abstract class BaseModal extends BaseWidget implements TemporaryWidget {
 
     public static final ResourceLocation TEXTURE = new ResourceLocation(Heracles.MOD_ID, "textures/gui/modal.png");
 
@@ -55,6 +55,11 @@ public abstract class BaseModal extends BaseWidget implements TemporyWidget {
         return this.visible;
     }
 
+    @Override
+    public int depth() {
+        return this.depth;
+    }
+
     public void setVisible(boolean visible) {
         this.visible = visible;
         if (visible) {
@@ -77,7 +82,6 @@ public abstract class BaseModal extends BaseWidget implements TemporyWidget {
 
         CursorUtils.setCursor(true, CursorScreen.Cursor.DEFAULT);
 
-        RenderSystem.disableDepthTest();
         try (var pose = new CloseablePoseStack(graphics)) {
             pose.translate(0, 0, 300 * depth);
             RenderSystem.enableBlend();
@@ -87,7 +91,6 @@ public abstract class BaseModal extends BaseWidget implements TemporyWidget {
 
             renderForeground(graphics, mouseX, mouseY, partialTick);
         }
-        RenderSystem.enableDepthTest();
 
         if (Minecraft.getInstance().screen instanceof CursorScreen cursorScreen) {
             cursorScreen.setCursor(children(), mouseX, mouseY);

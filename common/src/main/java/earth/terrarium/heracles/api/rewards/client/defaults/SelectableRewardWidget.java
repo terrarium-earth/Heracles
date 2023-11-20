@@ -7,7 +7,7 @@ import earth.terrarium.heracles.api.quests.defaults.ItemQuestIcon;
 import earth.terrarium.heracles.api.rewards.defaults.SelectableReward;
 import earth.terrarium.heracles.client.handlers.ClientQuests;
 import earth.terrarium.heracles.client.screens.quest.BaseQuestScreen;
-import earth.terrarium.heracles.client.widgets.base.TemporyWidget;
+import earth.terrarium.heracles.client.widgets.base.TemporaryWidget;
 import earth.terrarium.heracles.client.widgets.modals.SelectRewardsModal;
 import earth.terrarium.heracles.common.handlers.progress.QuestProgress;
 import earth.terrarium.heracles.common.network.NetworkHandler;
@@ -53,7 +53,7 @@ public record SelectableRewardWidget(SelectableReward reward, String quest, Ques
         if (Minecraft.getInstance().screen instanceof BaseQuestScreen screen) {
             boolean found = false;
             SelectRewardsModal widget = new SelectRewardsModal(screen.width, screen.height);
-            for (TemporyWidget temporaryWidget : screen.temporaryWidgets()) {
+            for (TemporaryWidget temporaryWidget : screen.temporaryWidgets()) {
                 if (temporaryWidget instanceof SelectRewardsModal modal) {
                     found = true;
                     widget = modal;

@@ -5,7 +5,7 @@ import com.teamresourceful.resourcefullib.client.screens.BaseCursorScreen;
 import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.api.client.theme.QuestsScreenTheme;
 import earth.terrarium.heracles.client.utils.ClientUtils;
-import earth.terrarium.heracles.client.widgets.base.TemporyWidget;
+import earth.terrarium.heracles.client.widgets.base.TemporaryWidget;
 import earth.terrarium.heracles.client.widgets.modals.EditObjectModal;
 import earth.terrarium.heracles.common.constants.ConstantComponents;
 import net.minecraft.client.Minecraft;
@@ -27,7 +27,7 @@ public abstract class AbstractQuestScreen<T> extends BaseCursorScreen {
 
     public static final ResourceLocation HEADING = new ResourceLocation(Heracles.MOD_ID, "textures/gui/heading.png");
 
-    protected final List<TemporyWidget> temporaryWidgets = new ArrayList<>();
+    protected final List<TemporaryWidget> temporaryWidgets = new ArrayList<>();
     protected boolean hasBackButton = true;
 
     protected final T content;
@@ -58,13 +58,13 @@ public abstract class AbstractQuestScreen<T> extends BaseCursorScreen {
         this.temporaryWidgets.clear();
     }
 
-    public <R extends Renderable & TemporyWidget> R addTemporary(R renderable) {
+    public <R extends Renderable & TemporaryWidget> R addTemporary(R renderable) {
         addRenderableOnly(renderable);
         this.temporaryWidgets.add(renderable);
         return renderable;
     }
 
-    public List<TemporyWidget> temporaryWidgets() {
+    public List<TemporaryWidget> temporaryWidgets() {
         return this.temporaryWidgets;
     }
 
@@ -110,7 +110,7 @@ public abstract class AbstractQuestScreen<T> extends BaseCursorScreen {
     }
 
     public boolean isTemporaryWidgetVisible() {
-        for (TemporyWidget widget : temporaryWidgets) {
+        for (TemporaryWidget widget : temporaryWidgets) {
             if (widget.isVisible()) {
                 return true;
             }
@@ -122,7 +122,7 @@ public abstract class AbstractQuestScreen<T> extends BaseCursorScreen {
     @Override
     public GuiEventListener getFocused() {
         boolean visible = false;
-        for (TemporyWidget widget : this.temporaryWidgets) {
+        for (TemporaryWidget widget : this.temporaryWidgets) {
             visible |= widget.isVisible();
             if (widget.isVisible() && widget instanceof GuiEventListener listener) {
                 return listener;
@@ -137,7 +137,7 @@ public abstract class AbstractQuestScreen<T> extends BaseCursorScreen {
     @Override
     public @NotNull List<? extends GuiEventListener> children() {
         List<GuiEventListener> listeners = new ArrayList<>();
-        for (TemporyWidget widget : temporaryWidgets) {
+        for (TemporaryWidget widget : temporaryWidgets) {
             if (widget.isVisible() && widget instanceof GuiEventListener listener) {
                 listeners.add(listener);
             }
@@ -171,7 +171,7 @@ public abstract class AbstractQuestScreen<T> extends BaseCursorScreen {
     public EditObjectModal findOrCreateEditWidget() {
         boolean found = false;
         EditObjectModal widget = new EditObjectModal(this.width, this.height);
-        for (TemporyWidget temporaryWidget : this.temporaryWidgets()) {
+        for (TemporaryWidget temporaryWidget : this.temporaryWidgets()) {
             if (temporaryWidget instanceof EditObjectModal modal) {
                 found = true;
                 widget = modal;

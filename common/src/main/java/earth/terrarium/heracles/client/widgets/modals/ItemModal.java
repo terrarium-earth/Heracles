@@ -15,7 +15,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.EditBox;
-import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
@@ -54,7 +53,6 @@ public class ItemModal extends BaseModal {
     public ItemModal(int screenWidth, int screenHeight) {
         super(screenWidth, screenHeight, WIDTH, HEIGHT, 2);
         this.modeButton = addChild(new StateImageButton(x + 7, y + 5, 11, 11, 168, 0, 11, TEXTURE, 256, 256, 3, this::update));
-        this.modeButton.setTooltip(Tooltip.create(MODE_TOOLTIP));
         this.search = addChild(new EditBox(Minecraft.getInstance().font, x + 8, y + 19, 152, 14, ConstantComponents.SEARCH));
     }
 
@@ -131,6 +129,9 @@ public class ItemModal extends BaseModal {
                 pose.translate(0, 0, -100);
                 graphics.renderFakeItem(value.getDefaultInstance(), itemX + 2, itemY + 1);
             }
+        }
+        if (this.modeButton.isHovered()) {
+            tooltip.add(MODE_TOOLTIP);
         }
         if (!tooltip.isEmpty()) {
             graphics.renderTooltip(font, tooltip, Optional.empty(), mouseX, mouseY);

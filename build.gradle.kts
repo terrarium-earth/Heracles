@@ -56,7 +56,7 @@ subprojects {
 
         compileOnly(group = "org.jetbrains", name = "annotations", version = "24.0.1")
         "modImplementation"(group = "com.teamresourceful.resourcefullib", name = "resourcefullib-$modLoader-$minecraftVersion", version = resourcefulLibVersion)
-        val hermes = "modImplementation"(group = "earth.terrarium.hermes", name = "hermes-$modLoader-1.20", version = hermesLibVersion) {
+        val hermes = "modImplementation"(group = "earth.terrarium.hermes", name = "hermes-$modLoader-1.20", version = "latest.release") {
             isTransitive = false
         }
         if (!isCommon) {

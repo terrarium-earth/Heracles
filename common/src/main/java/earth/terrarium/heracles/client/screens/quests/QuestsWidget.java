@@ -214,7 +214,7 @@ public class QuestsWidget extends BaseWidget {
             for (ClientQuests.QuestEntry entry : this.entries) {
                 var position = entry.value().display().position(this.group);
 
-                boolean isHovered = isMouseOver(mouseX, mouseY) && mouseX >= x + offset.x() + position.x() && mouseX <= x + offset.x() + position.x() && mouseY >= y + offset.y() + position.y() && mouseY <= y + offset.y() + position.y();
+                boolean isHovered = isMouseOver(mouseX, mouseY) && mouseX >= x + offset.x() + position.x() && mouseX <= x + offset.x() + position.x() + 32 && mouseY >= y + offset.y() + position.y() && mouseY <= y + offset.y() + position.y() + 32;
 
                 RenderSystem.setShaderColor(0.9F, 0.9F, 0.9F, isHovered ? 0.8f : 0.4F);
 

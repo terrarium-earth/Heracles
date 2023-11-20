@@ -1,6 +1,7 @@
 package earth.terrarium.heracles.client.toasts;
 
 import com.teamresourceful.resourcefullib.client.scissor.ScissorBoxStack;
+import earth.terrarium.heracles.api.client.theme.ToastsTheme;
 import earth.terrarium.heracles.api.quests.Quest;
 import earth.terrarium.heracles.api.quests.QuestIcon;
 import earth.terrarium.heracles.client.handlers.ClientQuests;
@@ -14,7 +15,8 @@ import java.util.List;
 
 public final class QuestUnlockedToast extends WrappingHintToast implements Toast {
     private static final Component TITLE_TEXT = Component.translatable("quest_unlocked.heracles.toast");
-    private static final Component KEY_HINT = Component.translatable("quest.heracles.toast.desc", Component.keybind("key.heracles.open_quests"));
+    private static final Component KEY_HINT = Component.translatable("quest.heracles.toast.desc", Component.keybind("key.heracles.open_quests")
+        .withStyle(style -> style.withBold(true).withColor(ToastsTheme.getKeybinding())));
     private final QuestIcon<?> icon;
 
     public QuestUnlockedToast(Quest quest) {

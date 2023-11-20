@@ -1,11 +1,13 @@
 package earth.terrarium.heracles.client.toasts;
 
+import earth.terrarium.heracles.api.client.theme.ToastsTheme;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.toasts.Toast;
 import net.minecraft.client.gui.components.toasts.ToastComponent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.FormattedCharSequence;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,12 +28,12 @@ public class WrappingHintToast implements Toast {
     }
 
     @Override
-    public Visibility render(GuiGraphics graphics, ToastComponent toastComponent, long timeSinceLastVisible) {
+    public @NotNull Visibility render(GuiGraphics graphics, ToastComponent toastComponent, long timeSinceLastVisible) {
         graphics.blitNineSliced(TEXTURE, 0, 0, width(), height(), 4, 160, 32, 0, 0);
 
         graphics.drawString(
             toastComponent.getMinecraft().font,
-            title, 32, 7, 0xFFB52CC8,
+            title, 32, 7, ToastsTheme.getTitle(),
             false
         );
 
@@ -40,7 +42,7 @@ public class WrappingHintToast implements Toast {
         List<FormattedCharSequence> description = timeSinceLastVisible >= (time / 2) && !hints.isEmpty() ? hints : lines;
 
         for (int i = 0; i < description.size(); i++) {
-            graphics.drawString(toastComponent.getMinecraft().font, description.get(i), 32, 18 + i * 11, 0xFFFFFF, false);
+            graphics.drawString(toastComponent.getMinecraft().font, description.get(i), 32, 18 + i * 11, ToastsTheme.getContent(), false);
         }
 
         return timeSinceLastVisible >= time ? Toast.Visibility.HIDE : Toast.Visibility.SHOW;

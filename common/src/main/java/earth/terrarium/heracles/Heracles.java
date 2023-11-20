@@ -1,27 +1,29 @@
 package earth.terrarium.heracles;
 
+import com.mojang.logging.LogUtils;
 import earth.terrarium.heracles.api.events.HeraclesEvents;
 import earth.terrarium.heracles.api.events.QuestEventTarget;
-import com.mojang.logging.LogUtils;
 import earth.terrarium.heracles.common.network.NetworkHandler;
 import earth.terrarium.heracles.common.regisitries.ModItems;
+import earth.terrarium.heracles.common.utils.PlatformLogger;
+import earth.terrarium.heracles.common.utils.PlatformSettings;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
-import org.slf4j.Logger;
 
 import java.nio.file.Path;
 import java.util.function.Supplier;
 
 public class Heracles {
     public static final String MOD_ID = "heracles";
-    public static final Logger LOGGER = LogUtils.getLogger();
+    public static final PlatformLogger LOGGER = PlatformLogger.of(LogUtils.getLogger());
 
     private static Path configPath;
     private static Supplier<RegistryAccess> registryAccessSupplier;
 
-    public static void init() {
+    public static void init(PlatformSettings settings) {
+        settings.apply(Heracles.LOGGER);
         ModItems.ITEMS.init();
         NetworkHandler.init();
         HeraclesEvents.QuestCompleteListener.register(Heracles::playQuestCompleteSound);

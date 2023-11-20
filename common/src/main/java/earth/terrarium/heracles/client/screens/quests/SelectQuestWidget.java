@@ -11,6 +11,7 @@ import earth.terrarium.heracles.client.screens.AbstractQuestScreen;
 import earth.terrarium.heracles.client.utils.ClientUtils;
 import earth.terrarium.heracles.client.widgets.base.BaseWidget;
 import earth.terrarium.heracles.client.widgets.boxes.IntEditBox;
+import earth.terrarium.heracles.client.widgets.buttons.ThemedButton;
 import earth.terrarium.heracles.client.widgets.modals.EditObjectModal;
 import earth.terrarium.heracles.common.constants.ConstantComponents;
 import earth.terrarium.heracles.common.network.packets.quests.data.NetworkQuestData;
@@ -18,7 +19,6 @@ import earth.terrarium.heracles.common.utils.ItemValue;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.MultiLineEditBox;
 import net.minecraft.client.gui.components.Tooltip;
@@ -92,7 +92,7 @@ public class SelectQuestWidget extends BaseWidget {
             false
         ));
 
-        addChild(Button.builder(Component.literal("ℹ"), b -> {
+        addChild(ThemedButton.builder(Component.literal("ℹ"), b -> {
                 if (Minecraft.getInstance().screen instanceof QuestsEditScreen screen) {
                     screen.itemModal().setVisible(true);
                     screen.itemModal().setCallback(item -> {
@@ -102,10 +102,10 @@ public class SelectQuestWidget extends BaseWidget {
                 }
                 loseFocusListener = b;
             }).bounds(this.x + 6, this.y + 137, 16, 16)
-            .tooltip(Tooltip.create(Component.literal("Change Icon")))
+            .tooltip(Tooltip.create(Component.translatable("gui.heracles.quests.change_icon")))
             .build());
 
-        addChild(Button.builder(Component.literal("□"), b -> {
+        addChild(ThemedButton.builder(Component.literal("□"), b -> {
                 if (Minecraft.getInstance().screen instanceof QuestsEditScreen screen) {
                     screen.iconBackgroundModal().setVisible(true);
                     screen.iconBackgroundModal().update(ClientUtils.getTextures("gui/quest_backgrounds"), selected -> {
@@ -115,20 +115,20 @@ public class SelectQuestWidget extends BaseWidget {
                 }
                 loseFocusListener = b;
             }).bounds(this.x + 24, this.y + 137, 16, 16)
-            .tooltip(Tooltip.create(Component.literal("Change Icon Background")))
+            .tooltip(Tooltip.create(Component.translatable("gui.heracles.quests.change_background")))
             .build());
 
-        addChild(Button.builder(Component.literal("⬈"), b -> {
+        addChild(ThemedButton.builder(Component.literal("⬈"), b -> {
                 if (Minecraft.getInstance().screen instanceof QuestsEditScreen screen && this.entry != null) {
                     screen.dependencyModal().setVisible(true);
                     screen.dependencyModal().update(this.entry, () -> updateQuest(quest -> NetworkQuestData.builder().dependencies(quest.dependencies())));
                 }
                 loseFocusListener = b;
             }).bounds(this.x + 42, this.y + 137, 16, 16)
-            .tooltip(Tooltip.create(Component.literal("Change Dependencies")))
+            .tooltip(Tooltip.create(Component.translatable("gui.heracles.quests.change_dependencies")))
             .build());
 
-        addChild(Button.builder(Component.literal("x"), b -> {
+        addChild(ThemedButton.builder(ConstantComponents.X, b -> {
                 if (Minecraft.getInstance().screen instanceof QuestsEditScreen screen && this.entry != null) {
                     screen.confirmModal().setVisible(true);
                     screen.confirmModal().setCallback(() -> {
@@ -148,7 +148,7 @@ public class SelectQuestWidget extends BaseWidget {
             .tooltip(Tooltip.create(ConstantComponents.DELETE))
             .build());
 
-        addChild(Button.builder(Component.literal("\uD83D\uDD89"), b -> {
+        addChild(ThemedButton.builder(Component.literal("\uD83D\uDD89"), b -> {
                 if (Minecraft.getInstance().screen instanceof QuestsEditScreen screen && this.entry != null) {
                     EditObjectModal edit = screen.findOrCreateEditWidget();
                     ResourceLocation id = new ResourceLocation(Heracles.MOD_ID, "quest");
@@ -166,11 +166,11 @@ public class SelectQuestWidget extends BaseWidget {
                                 .repeatable(questSettings.repeatable());
                         })
                     );
-                    edit.setTitle(Component.literal("Edit Quest Settings"));
+                    edit.setTitle(Component.translatable("gui.heracles.quests.edit_quest_settings"));
                 }
                 loseFocusListener = b;
             }).bounds(this.x + 78, this.y + 137, 16, 16)
-            .tooltip(Tooltip.create(Component.literal("Edit Quest Settings")))
+            .tooltip(Tooltip.create(Component.translatable("gui.heracles.quests.edit_quest_settings")))
             .build());
     }
 
@@ -185,7 +185,7 @@ public class SelectQuestWidget extends BaseWidget {
         //Title
         graphics.drawString(
             font,
-            Component.literal("Title"), this.x + 7, this.y + 4, 0x808080,
+            Component.translatable("gui.heracles.quests.title"), this.x + 7, this.y + 4, 0x808080,
             false
         );
 
@@ -194,7 +194,7 @@ public class SelectQuestWidget extends BaseWidget {
         //Position
         graphics.drawString(
             font,
-            Component.literal("Position"), this.x + 7, this.y + 33, 0x808080,
+            Component.translatable("gui.heracles.quests.position"), this.x + 7, this.y + 33, 0x808080,
             false
         );
 
@@ -203,7 +203,7 @@ public class SelectQuestWidget extends BaseWidget {
         //Subtitle
         graphics.drawString(
             font,
-            Component.literal("Subtitle"), this.x + 7, this.y + 65, 0x808080,
+            Component.translatable("gui.heracles.quests.subtitle"), this.x + 7, this.y + 65, 0x808080,
             false
         );
 
@@ -212,7 +212,7 @@ public class SelectQuestWidget extends BaseWidget {
         //Actions
         graphics.drawString(
             font,
-            Component.literal("Actions"), this.x + 7, this.y + 126, 0x808080,
+            Component.translatable("gui.heracles.quests.actions"), this.x + 7, this.y + 126, 0x808080,
             false
         );
 

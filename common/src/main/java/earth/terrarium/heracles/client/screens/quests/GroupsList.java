@@ -1,17 +1,22 @@
 package earth.terrarium.heracles.client.screens.quests;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.teamresourceful.resourcefullib.client.components.selection.ListEntry;
 import com.teamresourceful.resourcefullib.client.components.selection.SelectionList;
 import com.teamresourceful.resourcefullib.client.scissor.ScissorBoxStack;
 import com.teamresourceful.resourcefullib.client.screens.CursorScreen;
 import com.teamresourceful.resourcefullib.client.utils.CursorUtils;
 import com.teamresourceful.resourcefullib.client.utils.ScreenUtils;
+import earth.terrarium.heracles.api.client.theme.QuestsScreenTheme;
 import earth.terrarium.heracles.client.handlers.ClientQuests;
+import earth.terrarium.heracles.client.screens.AbstractQuestScreen;
 import earth.terrarium.heracles.common.constants.ConstantComponents;
 import earth.terrarium.heracles.common.network.NetworkHandler;
 import earth.terrarium.heracles.common.network.packets.groups.DeleteGroupPacket;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.resources.sounds.SimpleSoundInstance;
+import net.minecraft.sounds.SoundEvents;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -71,11 +76,13 @@ public class GroupsList extends SelectionList<GroupsList.Entry> {
 
         @Override
         protected void render(@NotNull GuiGraphics graphics, @NotNull ScissorBoxStack scissorStack, int id, int left, int top, int width, int height, int mouseX, int mouseY, boolean hovered, float partialTick, boolean selected) {
-            graphics.fill(left, top, left + width, top + height, selected ? 0x22FFFFFF : 0x22808080);
+            RenderSystem.enableBlend();
+            graphics.blitNineSliced(AbstractQuestScreen.HEADING, left, top, width, height, 5, 64, 20, 192, selected ? 35 : 15);
             if (hovered) {
-                graphics.renderOutline(left, top, width, height, 0x44FFFFFF);
+                graphics.blitNineSliced(AbstractQuestScreen.HEADING, left, top, width, height, 5, 64, 20, 192, 55);
             }
-            graphics.drawCenteredString(Minecraft.getInstance().font, name, left + width / 2, top + height / 2 - 4, 0xFFFFFF);
+            RenderSystem.disableBlend();
+            graphics.drawCenteredString(Minecraft.getInstance().font, name, left + width / 2, top + height / 2 - 4, QuestsScreenTheme.getGroupName());
             CursorUtils.setCursor(hovered, CursorScreen.Cursor.POINTER);
             if (Minecraft.getInstance().screen instanceof QuestsEditScreen) {
                 if (mouseX - left >= width - 11 && mouseX - left <= width - 2 && mouseY - top >= 2 && mouseY - top <= 12 && hovered) {
@@ -84,13 +91,13 @@ public class GroupsList extends SelectionList<GroupsList.Entry> {
                     ScreenUtils.setTooltip(cant ? ConstantComponents.Groups.DELETE_WITH_QUESTS : ConstantComponents.DELETE);
                     graphics.drawString(
                         Minecraft.getInstance().font,
-                        "x", left + width - 9, top + 2, 0xFFFFFF,
+                        ConstantComponents.X, left + width - 9, top + 2, 0xFFFFFF,
                         false
                     );
                 } else if (hovered) {
                     graphics.drawString(
                         Minecraft.getInstance().font,
-                        "x", left + width - 9, top + 2, 0x808080,
+                        ConstantComponents.X, left + width - 9, top + 2, 0x808080,
                         false
                     );
                 }
@@ -99,6 +106,7 @@ public class GroupsList extends SelectionList<GroupsList.Entry> {
 
         @Override
         public boolean mouseClicked(double mouseX, double mouseY, int button) {
+            if (this.list.getSelected() != this) Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1.0F));
             boolean cant = !ClientQuests.byGroup(name).isEmpty() || this.list.children().size() == 1;
             if (Minecraft.getInstance().screen instanceof QuestsEditScreen screen && button == 0 && !cant) {
                 boolean closingButton = mouseX >= this.list.width - 11 && mouseX <= this.list.width - 2 && mouseY >= 2 && mouseY <= 12;

@@ -28,8 +28,13 @@ public final class QuestRewardWidgets {
     }
 
     @Nullable
+    public static DisplayWidget create(QuestReward<?> task, boolean interactive) {
+        return Optionull.map(getFactory(task.type()), factory -> factory.createAndCast(task, interactive));
+    }
+
+    @Nullable
     public static DisplayWidget create(QuestReward<?> task) {
-        return Optionull.map(getFactory(task.type()), factory -> factory.createAndCast(task));
+        return create(task, true);
     }
 
     static {

@@ -1,6 +1,7 @@
 package earth.terrarium.heracles.api.rewards.client.defaults;
 
 import com.teamresourceful.resourcefullib.client.scissor.ScissorBoxStack;
+import earth.terrarium.heracles.api.client.theme.QuestScreenTheme;
 import earth.terrarium.heracles.api.quests.QuestIcon;
 import earth.terrarium.heracles.api.rewards.defaults.CommandReward;
 import earth.terrarium.heracles.client.handlers.ClientQuests;
@@ -18,17 +19,17 @@ import net.minecraft.world.item.Items;
 
 import java.util.List;
 
-public record CommandRewardWidget(CommandReward reward, String quest, QuestProgress progress) implements BaseItemRewardWidget {
+public record CommandRewardWidget(CommandReward reward, String quest, QuestProgress progress, boolean isInteractive) implements BaseItemRewardWidget {
 
     private static final String TITLE_SINGULAR = "reward.heracles.command.title.singular";
     private static final String DESC_SINGULAR = "reward.heracles.command.desc.singular";
     private static final String TOOLTIP_SINGULAR = "reward.heracles.command.tooltip.singular";
 
-    public static CommandRewardWidget of(CommandReward reward) {
+    public static CommandRewardWidget of(CommandReward reward, boolean interactive) {
         if (Minecraft.getInstance().screen instanceof BaseQuestScreen screen) {
-            return new CommandRewardWidget(reward, screen.getQuestId(), ClientQuests.getProgress(screen.getQuestId()));
+            return new CommandRewardWidget(reward, screen.getQuestId(), ClientQuests.getProgress(screen.getQuestId()), interactive);
         }
-        return new CommandRewardWidget(reward, "", null);
+        return new CommandRewardWidget(reward, "", null, interactive);
     }
 
     @Override
@@ -60,12 +61,12 @@ public record CommandRewardWidget(CommandReward reward, String quest, QuestProgr
         String desc = firstSpace > 0 ? reward.command().substring(0, reward.command().indexOf(" ")) : reward.command();
         graphics.drawString(
             font,
-            reward.titleOr(Component.translatable(TITLE_SINGULAR)), x + 48, y + 6, 0xFFFFFFFF,
+            reward.titleOr(Component.translatable(TITLE_SINGULAR)), x + 48, y + 6, QuestScreenTheme.getRewardTitle(),
             false
         );
         graphics.drawString(
             font,
-            Component.translatable(DESC_SINGULAR, desc), x + 48, y + 8 + font.lineHeight, 0xFF808080,
+            Component.translatable(DESC_SINGULAR, desc), x + 48, y + 8 + font.lineHeight, QuestScreenTheme.getRewardDescription(),
             false
         );
     }

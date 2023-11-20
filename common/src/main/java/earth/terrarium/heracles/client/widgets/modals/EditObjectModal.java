@@ -2,11 +2,13 @@ package earth.terrarium.heracles.client.widgets.modals;
 
 import com.teamresourceful.resourcefullib.client.utils.RenderUtils;
 import earth.terrarium.heracles.api.client.settings.SettingInitializer;
+import earth.terrarium.heracles.api.client.theme.EditorTheme;
+import earth.terrarium.heracles.api.client.theme.ModalsTheme;
 import earth.terrarium.heracles.client.widgets.base.BaseModal;
+import earth.terrarium.heracles.client.widgets.buttons.ThemedButton;
 import earth.terrarium.heracles.common.constants.ConstantComponents;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.layouts.LayoutElement;
@@ -34,7 +36,7 @@ public class EditObjectModal extends BaseModal {
     public EditObjectModal(int screenWidth, int screenHeight) {
         super(screenWidth, screenHeight, (int) (screenWidth * 0.75f), (int) (screenHeight * 0.8f));
 
-        addChild(Button.builder(ConstantComponents.SAVE, b -> {
+        addChild(ThemedButton.builder(ConstantComponents.SAVE, b -> {
             this.setVisible(false);
             if (save != null) {
                 SettingInitializer.Data data = new SettingInitializer.Data();
@@ -54,7 +56,7 @@ public class EditObjectModal extends BaseModal {
     protected void renderForeground(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
         graphics.drawString(
             font,
-            this.title, this.x + 10, this.y + 7, 0x404040,
+            this.title, this.x + 10, this.y + 7, ModalsTheme.getTitle(),
             false
         );
 
@@ -84,7 +86,7 @@ public class EditObjectModal extends BaseModal {
                     int renderY = ((LayoutElement) renderable).getY();
                     graphics.drawString(
                         font,
-                        title, this.x + 15, renderY + 2, 0xFFFFFF,
+                        title, this.x + 15, renderY + 2, EditorTheme.getModalEditSettingTitle(),
                         false
                     );
                     renderable.render(graphics, mouseX, mouseY, partialTick);

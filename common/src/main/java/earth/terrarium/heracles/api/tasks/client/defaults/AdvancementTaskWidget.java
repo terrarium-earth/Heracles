@@ -5,7 +5,7 @@ import com.teamresourceful.resourcefullib.client.screens.CursorScreen;
 import com.teamresourceful.resourcefullib.client.utils.CursorUtils;
 import earth.terrarium.heracles.api.client.DisplayWidget;
 import earth.terrarium.heracles.api.client.WidgetUtils;
-import earth.terrarium.heracles.api.tasks.QuestTaskDisplayFormatter;
+import earth.terrarium.heracles.api.client.theme.QuestScreenTheme;
 import earth.terrarium.heracles.api.tasks.client.display.TaskTitleFormatter;
 import earth.terrarium.heracles.api.tasks.defaults.AdvancementTask;
 import earth.terrarium.heracles.common.constants.ConstantComponents;
@@ -62,30 +62,23 @@ public final class AdvancementTaskWidget implements DisplayWidget {
         int actualY = y;
 
         Font font = Minecraft.getInstance().font;
-        graphics.fill(x, y, x + width, y + height, 0x80808080);
-        graphics.renderOutline(x, y, width, height, 0xFF909090);
+        WidgetUtils.drawBackground(graphics, x, y, width, height);
 
         int iconSize = 32;
         this.task.icon().renderOrStack(this.getCurrentItem(), graphics, scissor, x + 5, y + 5, iconSize);
-        graphics.fill(x + iconSize + 9, y + 5, x + iconSize + 10, y + getHeight(width) - 5, 0xFF909090);
         String desc = this.task.advancements().size() == 1 ? DESC_SINGULAR : DESC_PLURAL;
-        Object text = this.task.advancements().size() == 1 ? this.titles.isEmpty() ? "" : this.titles.get(0) : isOpened ? "▼" : "▶";
+        Object text = this.task.advancements().size() == 1 ? this.titles.isEmpty() ? "" : this.titles.get(0) : isOpened ? ConstantComponents.ARROW_DOWN : ConstantComponents.ARROW_RIGHT;
         graphics.drawString(
             font,
-            task.titleOr(this.title), x + iconSize + 16, y + 6, 0xFFFFFFFF,
+            task.titleOr(this.title), x + iconSize + 16, y + 6, QuestScreenTheme.getTaskTitle(),
             false
         );
         graphics.drawString(
             font,
-            Component.translatable(desc, text), x + iconSize + 16, y + 8 + font.lineHeight, 0xFF808080,
+            Component.translatable(desc, text), x + iconSize + 16, y + 8 + font.lineHeight, QuestScreenTheme.getTaskDescription(),
             false
         );
-        String progress = QuestTaskDisplayFormatter.create(this.task, this.progress);
-        graphics.drawString(
-            font,
-            progress, x + width - 5 - font.width(progress), y + 6, 0xFFFFFFFF,
-            false
-        );
+        WidgetUtils.drawProgressText(graphics, x, y, width, this.task, this.progress);
 
         if (titles.size() > 1 && hovered && mouseY - y >= 7 + font.lineHeight && mouseY - y <= 7 + font.lineHeight * 2 && mouseX - x > (int) (width * 0.1f) && mouseX - x <= width) {
             CursorUtils.setCursor(true, CursorScreen.Cursor.POINTER);
@@ -97,7 +90,7 @@ public final class AdvancementTaskWidget implements DisplayWidget {
             for (Component title : titles) {
                 graphics.drawString(
                     font,
-                    ConstantComponents.DOT.copy().append(title), x + iconSize + 13, y, 0xFFA0A0A0,
+                    ConstantComponents.DOT.copy().append(title), x + iconSize + 13, y, QuestScreenTheme.getTaskNestedTitle(),
                     false
                 );
                 y += font.lineHeight + 2;

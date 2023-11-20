@@ -4,6 +4,7 @@ import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.api.tasks.defaults.*;
 import earth.terrarium.heracles.common.handlers.progress.QuestProgressHandler;
 import earth.terrarium.heracles.common.handlers.progress.QuestsProgress;
+import earth.terrarium.heracles.common.utils.PlatformSettings;
 import it.unimi.dsi.fastutil.longs.LongSet;
 import net.minecraft.core.BlockSourceImpl;
 import net.minecraft.server.level.ServerPlayer;
@@ -26,7 +27,7 @@ public class HeraclesForge {
 
     public HeraclesForge() {
         Heracles.setConfigPath(FMLPaths.CONFIGDIR.get());
-        Heracles.init();
+        Heracles.init(new PlatformSettings(false));
 
         MinecraftForge.EVENT_BUS.addListener(HeraclesForge::onServerStarting);
         MinecraftForge.EVENT_BUS.addListener(HeraclesForge::onAdvancementEarn);

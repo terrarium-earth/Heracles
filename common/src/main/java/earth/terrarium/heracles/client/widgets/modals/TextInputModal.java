@@ -1,8 +1,10 @@
 package earth.terrarium.heracles.client.widgets.modals;
 
 import earth.terrarium.heracles.Heracles;
+import earth.terrarium.heracles.api.client.theme.EditorTheme;
 import earth.terrarium.heracles.client.widgets.base.BaseModal;
 import earth.terrarium.heracles.client.widgets.boxes.EnterableEditBox;
+import earth.terrarium.heracles.client.widgets.buttons.ThemedButton;
 import earth.terrarium.heracles.common.constants.ConstantComponents;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -66,14 +68,14 @@ public class TextInputModal<T> extends BaseModal {
 
         graphics.drawString(
             font,
-            this.title, this.x + 8, this.y + 6, 0x404040,
+            this.title, this.x + 8, this.y + 6, EditorTheme.getModalTextTitle(),
             false
         );
     }
 
     private Button createButton(Component component, int x, int y, Button.OnPress onPress) {
         int width = Minecraft.getInstance().font.width(component) + 8;
-        return Button.builder(component, onPress)
+        return ThemedButton.builder(component, onPress)
             .bounds(x - width, y, width, 15)
             .build();
     }

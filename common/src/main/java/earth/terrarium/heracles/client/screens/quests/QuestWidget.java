@@ -1,5 +1,6 @@
 package earth.terrarium.heracles.client.screens.quests;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.teamresourceful.resourcefullib.client.scissor.ScissorBoxStack;
 import com.teamresourceful.resourcefullib.client.screens.CursorScreen;
 import com.teamresourceful.resourcefullib.client.utils.CursorUtils;
@@ -42,15 +43,18 @@ public class QuestWidget {
             x + x() + info.xOffset(), y + y() + info.yOffset(),
             status.ordinal() * info.width(), 0,
             info.width(), info.height(),
-            info.width() * 4, info.height()
+            info.width() * 5, info.height()
         );
 
         if (hovered) {
-            graphics.fill(
+            RenderSystem.enableBlend();
+            graphics.blit(quest.display().iconBackground(),
                 x + x() + info.xOffset(), y + y() + info.yOffset(),
-                x + x() + info.xOffset() + info.width(), y + y() + info.yOffset() + info.height(),
-                0x50FFFFFF
+                4 * info.width(), 0,
+                info.width(), info.height(),
+                info.width() * 5, info.height()
             );
+            RenderSystem.disableBlend();
         }
         quest.display().icon().render(graphics, scissor, x + x() + 4, y + y() + 4, 24, 24);
         CursorUtils.setCursor(hovered, CursorScreen.Cursor.POINTER);

@@ -6,7 +6,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.util.StringRepresentable;
 import org.jetbrains.annotations.NotNull;
 
-public class EnumButton<T extends Enum<T> & StringRepresentable> extends Button {
+public class EnumButton<T extends Enum<T> & StringRepresentable> extends Button implements ThemedButton {
 
     private final T[] values;
     private T value;

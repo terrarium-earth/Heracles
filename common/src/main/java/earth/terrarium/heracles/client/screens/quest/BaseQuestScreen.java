@@ -1,11 +1,13 @@
 package earth.terrarium.heracles.client.screens.quest;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import earth.terrarium.heracles.api.client.theme.EditorTheme;
 import earth.terrarium.heracles.api.quests.Quest;
 import earth.terrarium.heracles.client.handlers.ClientQuests;
 import earth.terrarium.heracles.client.screens.AbstractQuestScreen;
 import earth.terrarium.heracles.client.widgets.SelectableTabButton;
 import earth.terrarium.heracles.client.widgets.base.TemporyWidget;
+import earth.terrarium.heracles.client.widgets.buttons.ThemedButton;
 import earth.terrarium.heracles.common.constants.ConstantComponents;
 import earth.terrarium.heracles.common.handlers.progress.QuestProgress;
 import earth.terrarium.heracles.common.menus.quest.QuestContent;
@@ -107,7 +109,7 @@ public abstract class BaseQuestScreen extends AbstractQuestScreen<QuestContent> 
                 }
             }));
 
-            this.claimRewards = addRenderableWidget(Button.builder(ConstantComponents.Rewards.CLAIM, button -> {
+            this.claimRewards = addRenderableWidget(ThemedButton.builder(ConstantComponents.Rewards.CLAIM, button -> {
                 NetworkHandler.CHANNEL.sendToServer(new ClaimRewardsPacket(this.content.id()));
                 if (this.claimRewards != null) {
                     this.claimRewards.active = false;
@@ -155,7 +157,7 @@ public abstract class BaseQuestScreen extends AbstractQuestScreen<QuestContent> 
                 int textWidth = this.font.width(sequence);
                 graphics.drawString(
                     this.font,
-                    sequence, (int) (contentX + (contentWidth - textWidth) / 2f), (int) (contentY + (contentHeight - this.font.lineHeight) / 2f), 0xFF0000,
+                    sequence, (int) (contentX + (contentWidth - textWidth) / 2f), (int) (contentY + (contentHeight - this.font.lineHeight) / 2f), EditorTheme.getError(),
                     false
                 );
                 contentY += this.font.lineHeight;

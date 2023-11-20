@@ -1,6 +1,7 @@
 package earth.terrarium.heracles.api.rewards.client.defaults;
 
 import com.teamresourceful.resourcefullib.client.scissor.ScissorBoxStack;
+import earth.terrarium.heracles.api.client.theme.QuestScreenTheme;
 import earth.terrarium.heracles.api.quests.QuestIcon;
 import earth.terrarium.heracles.api.rewards.defaults.XpQuestReward;
 import earth.terrarium.heracles.client.handlers.ClientQuests;
@@ -15,18 +16,18 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 
-public record XpRewardWidget(XpQuestReward reward, String quest, QuestProgress progress) implements BaseItemRewardWidget {
+public record XpRewardWidget(XpQuestReward reward, String quest, QuestProgress progress, boolean isInteractive) implements BaseItemRewardWidget {
 
     private static final String TITLE_SINGULAR = "reward.heracles.xp.title.singular";
     private static final String TITLE_PLURAL = "reward.heracles.xp.title.plural";
     private static final String DESC_SINGULAR = "reward.heracles.xp.desc.singular";
     private static final String DESC_PLURAL = "reward.heracles.xp.desc.plural";
 
-    public static XpRewardWidget of(XpQuestReward reward) {
+    public static XpRewardWidget of(XpQuestReward reward, boolean interactive) {
         if (Minecraft.getInstance().screen instanceof BaseQuestScreen screen) {
-            return new XpRewardWidget(reward, screen.getQuestId(), ClientQuests.getProgress(screen.getQuestId()));
+            return new XpRewardWidget(reward, screen.getQuestId(), ClientQuests.getProgress(screen.getQuestId()), interactive);
         }
-        return new XpRewardWidget(reward, "", null);
+        return new XpRewardWidget(reward, "", null, interactive);
     }
 
     @Override
@@ -58,12 +59,12 @@ public record XpRewardWidget(XpQuestReward reward, String quest, QuestProgress p
         String desc = this.reward.amount() == 1 ? DESC_SINGULAR : DESC_PLURAL;
         graphics.drawString(
             font,
-            reward.titleOr(Component.translatable(title, this.reward.amount())), x + 48, y + 6, 0xFFFFFFFF,
+            reward.titleOr(Component.translatable(title, this.reward.amount())), x + 48, y + 6, QuestScreenTheme.getRewardTitle(),
             false
         );
         graphics.drawString(
             font,
-            Component.translatable(desc, this.reward.amount(), this.reward.xpType().text()), x + 48, y + 8 + font.lineHeight, 0xFF808080,
+            Component.translatable(desc, this.reward.amount(), this.reward.xpType().text()), x + 48, y + 8 + font.lineHeight, QuestScreenTheme.getRewardDescription(),
             false
         );
     }

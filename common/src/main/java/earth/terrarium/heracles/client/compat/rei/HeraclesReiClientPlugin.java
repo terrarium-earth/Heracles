@@ -9,8 +9,8 @@ public class HeraclesReiClientPlugin implements REIClientPlugin {
 
     @Override
     public void registerFavorites(FavoriteEntryType.Registry registry) {
-        registry.register(HearclesFavoriteEntry.ID, HearclesFavoriteEntry.Type.INSTANCE);
+        registry.register(HeraclesFavoriteEntry.ID, HeraclesFavoriteEntry.Type.INSTANCE);
         registry.getOrCrateSection(Component.translatable("rei.sections.odyssey"))
-            .add(new HearclesFavoriteEntry());
+            .add(new HeraclesFavoriteEntry());
     }
 }

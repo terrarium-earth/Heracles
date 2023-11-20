@@ -1,8 +1,10 @@
 package earth.terrarium.heracles.client.screens.pinned;
 
 import com.mojang.blaze3d.platform.Window;
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.teamresourceful.resourcefullib.client.utils.ScreenUtils;
 import earth.terrarium.heracles.Heracles;
+import earth.terrarium.heracles.api.client.theme.PinnedQuestsTheme;
 import earth.terrarium.heracles.client.handlers.DisplayConfig;
 import earth.terrarium.heracles.client.handlers.PinnedQuests;
 import earth.terrarium.heracles.common.constants.ConstantComponents;
@@ -18,7 +20,7 @@ import java.util.List;
 
 public class PinnedQuestDisplay {
 
-    private static final ResourceLocation MOVE_ICON = new ResourceLocation(Heracles.MOD_ID, "textures/gui/move_icon.png");
+    private static final ResourceLocation TEXTURE = new ResourceLocation(Heracles.MOD_ID, "textures/gui/pinned.png");
 
     public static void render(GuiGraphics graphics) {
         Minecraft mc = Minecraft.getInstance();
@@ -36,23 +38,24 @@ public class PinnedQuestDisplay {
 
         boolean hovered = mc.screen instanceof ChatScreen && mouseX >= x && mouseX <= x + PinnedQuests.width() + 10 && mouseY >= y && mouseY <= y + PinnedQuests.height() + 2;
 
-        graphics.fill(x, y, x + PinnedQuests.width() + 10, y + PinnedQuests.height() + 2, 0x80000000);
-        graphics.fill(x, y, x + PinnedQuests.width() + 10, y + 10, 0x80000000);
-        graphics.fill(x, y + 10, x + PinnedQuests.width() + 10, y + 11, 0xff808080);
+        RenderSystem.enableBlend();
+        graphics.blitNineSliced(TEXTURE, x, y, PinnedQuests.width() + 10, 10, 3, 64, 10, 0, 0);
+        graphics.blitNineSliced(TEXTURE, x, y + 10, PinnedQuests.width() + 10, PinnedQuests.height() + 2 - 10, 3, 64, 10, 0, 10);
         if (hovered) {
-            graphics.renderOutline(x, y, PinnedQuests.width() + 10, PinnedQuests.height() + 2, 0xFFFFFFFF);
+            graphics.blitNineSliced(TEXTURE, x, y, PinnedQuests.width() + 10, PinnedQuests.height() + 2, 3, 64, 10, 0, 20);
         }
+        RenderSystem.disableBlend();
 
         int titleX = x + (PinnedQuests.width() + 10 - font.width(ConstantComponents.PinnedQuests.TITLE)) / 2;
 
         graphics.drawString(
             font,
-            ConstantComponents.PinnedQuests.TITLE, titleX, y + 2, 0xFF808080,
+            ConstantComponents.PinnedQuests.TITLE, titleX, y + 2, PinnedQuestsTheme.getTitle(),
             false
         );
 
         if (hovered) {
-            graphics.blit(MOVE_ICON, x + PinnedQuests.width(), y + 1, 0, 0, 9, 9, 9, 9);
+            graphics.blit(TEXTURE, x + PinnedQuests.width(), y + 1, 64, 0, 9, 9, 256, 256);
             if (mouseX >= x + PinnedQuests.width() && mouseX <= x + PinnedQuests.width() + 9 && mouseY >= y + 1 && mouseY <= y + 10) {
                 ScreenUtils.setTooltip(ConstantComponents.PinnedQuests.MOVE);
             }
@@ -68,7 +71,7 @@ public class PinnedQuestDisplay {
             title = title.append(display.title());
             graphics.drawString(
                 font,
-                title, x + 5, y, 0xFFFFFFFF,
+                title, x + 5, y, PinnedQuestsTheme.getQuest(),
                 false
             );
             if (!PinnedQuests.isCollapsed(display.quest().key())) {
@@ -76,7 +79,7 @@ public class PinnedQuestDisplay {
                 for (var task : display.tasks()) {
                     graphics.drawString(
                         font,
-                        task, x + 5, y, 0xFFFFFFFF,
+                        task, x + 5, y, PinnedQuestsTheme.getTask(),
                         false
                     );
                     y += 9;

@@ -39,6 +39,8 @@ public class QuestWidget {
 
         info = TexturePlacements.getOrDefault(quest.display().iconBackground(), TexturePlacements.NO_OFFSET_24X);
 
+        RenderSystem.enableBlend();
+        
         graphics.blit(quest.display().iconBackground(),
             x + x() + info.xOffset(), y + y() + info.yOffset(),
             status.ordinal() * info.width(), 0,
@@ -47,15 +49,14 @@ public class QuestWidget {
         );
 
         if (hovered) {
-            RenderSystem.enableBlend();
             graphics.blit(quest.display().iconBackground(),
                 x + x() + info.xOffset(), y + y() + info.yOffset(),
                 4 * info.width(), 0,
                 info.width(), info.height(),
                 info.width() * 5, info.height()
             );
-            RenderSystem.disableBlend();
         }
+        RenderSystem.disableBlend();
         quest.display().icon().render(graphics, scissor, x + x() + 4, y + y() + 4, 24, 24);
         CursorUtils.setCursor(hovered, CursorScreen.Cursor.POINTER);
         if (hovered && (!(ClientUtils.screen() instanceof QuestsScreen screen) || !screen.isTemporaryWidgetVisible())) {

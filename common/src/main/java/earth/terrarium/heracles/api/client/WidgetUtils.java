@@ -51,7 +51,7 @@ public final class WidgetUtils {
     public static <T extends Tag> void drawProgressBar(GuiGraphics graphics, int minX, int minY, int maxX, int maxY, QuestTask<?, T, ?> task, TaskProgress<T> progress) {
         RenderSystem.enableBlend();
         graphics.blitNineSliced(TEXTURE, minX, minY, maxX - minX, maxY - minY, 3, 128, 8, 0, 168 + (progress.isComplete() ? 8 : 0));
-        float fill = task.getProgress(progress.progress());
+        float fill = Math.min(1f, task.getProgress(progress.progress()));
         if (fill != 0.0 && !progress.isComplete()) {
             int progressWidth = (int) ((maxX - minX) * fill);
             graphics.blitNineSliced(TEXTURE, minX, minY, progressWidth, maxY - minY, 3, 128, 8, 0, 168 + 8 + 8);
@@ -70,8 +70,8 @@ public final class WidgetUtils {
     }
 
     public static void drawEntity(GuiGraphics graphics, int x, int y, int size, Entity entity) {
-        y += size / 2f;
-        x += size / 4f;
+        y += (int) (size / 2f);
+        x += (int) (size / 4f);
         Minecraft mc = Minecraft.getInstance();
         float scaledSize = 25 / (Math.max(entity.getBbWidth(), entity.getBbHeight()));
         if (Math.abs(entity.getBbHeight() - entity.getBbWidth()) > 5) {
@@ -82,8 +82,8 @@ public final class WidgetUtils {
 
         scaledSize *= size / 40f;
 
-        x += size / 40f < 1 ? -6 * size / 40f : 5 * size / 40f;
-        y += size / 40f < 1 ? -6 * size / 40f : 8 * size / 35f;
+        x += (int) (size / 40f < 1 ? -6 * size / 40f : 5 * size / 40f);
+        y += (int) (size / 40f < 1 ? -6 * size / 40f : 8 * size / 35f);
 
         float rot = 45f;
         if (entity instanceof EnderDragon) {

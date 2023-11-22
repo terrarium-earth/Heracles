@@ -75,7 +75,6 @@ public record CheckTaskWidget(
         boolean buttonHovered = mouseX > width - 30 && mouseX < width - 10 && mouseY > buttonY && mouseY < buttonY + 20;
         if (buttonHovered && isCompletable()) {
             Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1.0F));
-            this.progress.setComplete(true);
             NetworkHandler.CHANNEL.sendToServer(new CheckTaskPacket(this.questId, this.task.id()));
             return true;
         }

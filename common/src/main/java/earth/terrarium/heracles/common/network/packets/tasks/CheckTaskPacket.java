@@ -44,7 +44,7 @@ public record CheckTaskPacket(String quest, String task) implements Packet<Check
             return (player, level) -> {
                 if (player instanceof ServerPlayer serverPlayer) {
                     QuestProgressHandler.getProgress(serverPlayer.getServer(), player.getUUID())
-                        .testAndProgressTask(serverPlayer, message.quest, message.task, null, CheckTask.TYPE);
+                        .testAndProgressTask(serverPlayer, message.quest, message.task, serverPlayer, CheckTask.TYPE);
                     QuestProgressHandler.sync(serverPlayer, Set.of(message.quest));
                 }
             };

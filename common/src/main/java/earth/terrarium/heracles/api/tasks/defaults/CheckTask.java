@@ -2,6 +2,7 @@ package earth.terrarium.heracles.api.tasks.defaults;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import com.teamresourceful.resourcefullib.common.codecs.predicates.NbtPredicate;
 import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.api.CustomizableQuestElement;
 import earth.terrarium.heracles.api.quests.QuestIcon;
@@ -12,15 +13,21 @@ import earth.terrarium.heracles.api.tasks.QuestTaskType;
 import earth.terrarium.heracles.api.tasks.storage.defaults.BooleanTaskStorage;
 import net.minecraft.nbt.ByteTag;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Items;
 
-public record CheckTask(String id, String title, QuestIcon<?> icon) implements QuestTask<Void, ByteTag, CheckTask>, CustomizableQuestElement {
+public record CheckTask(
+    String id, String title, QuestIcon<?> icon, NbtPredicate nbt
+) implements QuestTask<Player, ByteTag, CheckTask>, CustomizableQuestElement {
 
     public static final QuestTaskType<CheckTask> TYPE = new Type();
 
     @Override
-    public ByteTag test(QuestTaskType<?> type, ByteTag progress, Void input) {
-        return storage().of(progress, true);
+    public ByteTag test(QuestTaskType<?> type, ByteTag progress, Player input) {
+        if (nbt().matches(input)) {
+            return storage().of(progress, true);
+        }
+        return progress;
     }
 
     @Override
@@ -50,7 +57,8 @@ public record CheckTask(String id, String title, QuestIcon<?> icon) implements Q
             return RecordCodecBuilder.create(instance -> instance.group(
                 RecordCodecBuilder.point(id),
                 Codec.STRING.fieldOf("title").orElse("").forGetter(CheckTask::title),
-                QuestIcons.CODEC.fieldOf("icon").orElse(new ItemQuestIcon(Items.AIR)).forGetter(CheckTask::icon)
+                QuestIcons.CODEC.fieldOf("icon").orElse(new ItemQuestIcon(Items.AIR)).forGetter(CheckTask::icon),
+                NbtPredicate.CODEC.fieldOf("nbt").orElse(NbtPredicate.ANY).forGetter(CheckTask::nbt)
             ).apply(instance, CheckTask::new));
         }
     }

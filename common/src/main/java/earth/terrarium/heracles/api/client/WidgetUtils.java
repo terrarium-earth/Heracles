@@ -85,7 +85,7 @@ public final class WidgetUtils {
         x += (int) (size / 40f < 1 ? -6 * size / 40f : 5 * size / 40f);
         y += (int) (size / 40f < 1 ? -6 * size / 40f : 8 * size / 35f);
 
-        float rot = 45f;
+        float rot = -45f;
         if (entity instanceof EnderDragon) {
             // Ender dragon is rotated 180 degrees
             rot = 225f;

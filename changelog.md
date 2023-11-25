@@ -1,1 +1,8 @@
-- Fixes subtitles being set to title
+- Change in-game editor to have word wrapping and no longer use monocraft (ThatGravyBoat)
+- Add theming support (SisbyFolk)
+- Fix tooltip in item modal not showing up (ThatGravyBoat)
+- Update hermes to support tags in <entity> elements and new <item> element (ThatGravyBoat)
+- Allow check tasks to have an optional predicate (ThatGravyBoat)
+- Increase alpha of arrows (SubordinalBlue)
+- Fix progress bars not capping at 100% (ThatGravyBoat)
+- Change entity widgets to rotate at -45 instead of 45 (SubordinalBlue)

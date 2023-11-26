@@ -1,8 +1,8 @@
 package earth.terrarium.heracles.common.network.packets.quests;
 
-import com.teamresourceful.resourcefullib.common.networking.base.Packet;
-import com.teamresourceful.resourcefullib.common.networking.base.PacketContext;
-import com.teamresourceful.resourcefullib.common.networking.base.PacketHandler;
+import com.teamresourceful.resourcefullib.common.network.Packet;
+import com.teamresourceful.resourcefullib.common.network.base.ClientboundPacketType;
+import com.teamresourceful.resourcefullib.common.network.base.PacketType;
 import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.client.handlers.ClientQuests;
 import earth.terrarium.heracles.client.screens.quest.BaseQuestScreen;
@@ -15,20 +15,25 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 public record SyncQuestProgressPacket(Map<String, QuestProgress> quests) implements Packet<SyncQuestProgressPacket> {
-    public static final ResourceLocation ID = new ResourceLocation(Heracles.MOD_ID, "sync_quest_progress");
-    public static final PacketHandler<SyncQuestProgressPacket> HANDLER = new Handler();
+
+    public static final ClientboundPacketType<SyncQuestProgressPacket> TYPE = new Type();
 
     @Override
-    public ResourceLocation getID() {
-        return ID;
+    public PacketType<SyncQuestProgressPacket> type() {
+        return TYPE;
     }
 
-    @Override
-    public PacketHandler<SyncQuestProgressPacket> getHandler() {
-        return HANDLER;
-    }
+    private static class Type implements ClientboundPacketType<SyncQuestProgressPacket> {
 
-    public static class Handler implements PacketHandler<SyncQuestProgressPacket> {
+        @Override
+        public Class<SyncQuestProgressPacket> type() {
+            return SyncQuestProgressPacket.class;
+        }
+
+        @Override
+        public ResourceLocation id() {
+            return new ResourceLocation(Heracles.MOD_ID, "sync_quest_progress");
+        }
 
         @Override
         public void encode(SyncQuestProgressPacket message, FriendlyByteBuf buffer) {
@@ -54,8 +59,8 @@ public record SyncQuestProgressPacket(Map<String, QuestProgress> quests) impleme
         }
 
         @Override
-        public PacketContext handle(SyncQuestProgressPacket message) {
-            return (player, level) -> {
+        public Runnable handle(SyncQuestProgressPacket message) {
+            return () -> {
                 ClientQuests.mergeProgress(message.quests);
                 if (Minecraft.getInstance().screen instanceof BaseQuestScreen screen) {
                     screen.updateProgress(message.quests.getOrDefault(screen.getQuestId(), null));

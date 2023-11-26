@@ -1,32 +1,37 @@
 package earth.terrarium.heracles.common.network.packets.tasks;
 
-import com.teamresourceful.resourcefullib.common.networking.base.Packet;
-import com.teamresourceful.resourcefullib.common.networking.base.PacketContext;
-import com.teamresourceful.resourcefullib.common.networking.base.PacketHandler;
-import earth.terrarium.heracles.Heracles;
+import com.teamresourceful.resourcefullib.common.network.Packet;
+import com.teamresourceful.resourcefullib.common.network.base.PacketType;
+import com.teamresourceful.resourcefullib.common.network.base.ServerboundPacketType;
 import earth.terrarium.heracles.api.tasks.defaults.CheckTask;
 import earth.terrarium.heracles.common.handlers.progress.QuestProgressHandler;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Player;
 
 import java.util.Set;
+import java.util.function.Consumer;
 
 public record CheckTaskPacket(String quest, String task) implements Packet<CheckTaskPacket> {
-    public static final ResourceLocation ID = new ResourceLocation(Heracles.MOD_ID, "check_task");
-    public static final PacketHandler<CheckTaskPacket> HANDLER = new Handler();
+    public static final ServerboundPacketType<CheckTaskPacket> TYPE = new Type();
 
     @Override
-    public ResourceLocation getID() {
-        return ID;
+    public PacketType<CheckTaskPacket> type() {
+        return TYPE;
     }
 
-    @Override
-    public PacketHandler<CheckTaskPacket> getHandler() {
-        return HANDLER;
-    }
+    private static class Type implements ServerboundPacketType<CheckTaskPacket> {
 
-    public static class Handler implements PacketHandler<CheckTaskPacket> {
+        @Override
+        public Class<CheckTaskPacket> type() {
+            return CheckTaskPacket.class;
+        }
+
+        @Override
+        public ResourceLocation id() {
+            return new ResourceLocation("heracles", "check_task");
+        }
 
         @Override
         public void encode(CheckTaskPacket message, FriendlyByteBuf buffer) {
@@ -40,8 +45,8 @@ public record CheckTaskPacket(String quest, String task) implements Packet<Check
         }
 
         @Override
-        public PacketContext handle(CheckTaskPacket message) {
-            return (player, level) -> {
+        public Consumer<Player> handle(CheckTaskPacket message) {
+            return (player) -> {
                 if (player instanceof ServerPlayer serverPlayer) {
                     QuestProgressHandler.getProgress(serverPlayer.getServer(), player.getUUID())
                         .testAndProgressTask(serverPlayer, message.quest, message.task, serverPlayer, CheckTask.TYPE);

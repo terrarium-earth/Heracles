@@ -2,10 +2,10 @@ package earth.terrarium.heracles.common.network.packets.quests;
 
 import com.mojang.serialization.Codec;
 import com.teamresourceful.resourcefullib.common.codecs.yabn.YabnOps;
+import com.teamresourceful.resourcefullib.common.network.Packet;
+import com.teamresourceful.resourcefullib.common.network.base.ClientboundPacketType;
+import com.teamresourceful.resourcefullib.common.network.base.PacketType;
 import com.teamresourceful.resourcefullib.common.networking.PacketHelper;
-import com.teamresourceful.resourcefullib.common.networking.base.Packet;
-import com.teamresourceful.resourcefullib.common.networking.base.PacketContext;
-import com.teamresourceful.resourcefullib.common.networking.base.PacketHandler;
 import com.teamresourceful.yabn.YabnParser;
 import com.teamresourceful.yabn.elements.YabnElement;
 import com.teamresourceful.yabn.reader.ByteReader;
@@ -21,21 +21,26 @@ import java.util.List;
 import java.util.Map;
 
 public record SyncQuestsPacket(Map<String, Quest> quests, List<String> groups) implements Packet<SyncQuestsPacket> {
-    public static final ResourceLocation ID = new ResourceLocation(Heracles.MOD_ID, "sync_quests");
-    public static final PacketHandler<SyncQuestsPacket> HANDLER = new Handler();
+
+    public static final ClientboundPacketType<SyncQuestsPacket> TYPE = new Type();
 
     @Override
-    public ResourceLocation getID() {
-        return ID;
+    public PacketType<SyncQuestsPacket> type() {
+        return TYPE;
     }
 
-    @Override
-    public PacketHandler<SyncQuestsPacket> getHandler() {
-        return HANDLER;
-    }
-
-    public static class Handler implements PacketHandler<SyncQuestsPacket> {
+    private static class Type implements ClientboundPacketType<SyncQuestsPacket> {
         private static final Codec<Map<String, Quest>> QUEST_MAP_CODEC = Codec.unboundedMap(Codec.STRING, Quest.CODEC);
+
+        @Override
+        public Class<SyncQuestsPacket> type() {
+            return SyncQuestsPacket.class;
+        }
+
+        @Override
+        public ResourceLocation id() {
+            return new ResourceLocation(Heracles.MOD_ID, "sync_quests");
+        }
 
         @Override
         public void encode(SyncQuestsPacket message, FriendlyByteBuf buffer) {
@@ -59,8 +64,8 @@ public record SyncQuestsPacket(Map<String, Quest> quests, List<String> groups) i
 
 
         @Override
-        public PacketContext handle(SyncQuestsPacket message) {
-            return (player, level) -> ClientQuests.sync(message.quests(), message.groups());
+        public Runnable handle(SyncQuestsPacket message) {
+            return () -> ClientQuests.sync(message.quests(), message.groups());
         }
     }
 

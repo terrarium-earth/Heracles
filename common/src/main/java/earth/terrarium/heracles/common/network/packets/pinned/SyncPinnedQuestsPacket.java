@@ -1,8 +1,8 @@
 package earth.terrarium.heracles.common.network.packets.pinned;
 
-import com.teamresourceful.resourcefullib.common.networking.base.Packet;
-import com.teamresourceful.resourcefullib.common.networking.base.PacketContext;
-import com.teamresourceful.resourcefullib.common.networking.base.PacketHandler;
+import com.teamresourceful.resourcefullib.common.network.Packet;
+import com.teamresourceful.resourcefullib.common.network.base.ClientboundPacketType;
+import com.teamresourceful.resourcefullib.common.network.base.PacketType;
 import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.client.handlers.ClientQuests;
 import earth.terrarium.heracles.client.handlers.PinnedQuests;
@@ -14,20 +14,25 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 public record SyncPinnedQuestsPacket(Map<String, QuestProgress> quests) implements Packet<SyncPinnedQuestsPacket> {
-    public static final ResourceLocation ID = new ResourceLocation(Heracles.MOD_ID, "sync_pinned_quests");
-    public static final PacketHandler<SyncPinnedQuestsPacket> HANDLER = new Handler();
+
+    public static final ClientboundPacketType<SyncPinnedQuestsPacket> TYPE = new Type();
 
     @Override
-    public ResourceLocation getID() {
-        return ID;
+    public PacketType<SyncPinnedQuestsPacket> type() {
+        return TYPE;
     }
 
-    @Override
-    public PacketHandler<SyncPinnedQuestsPacket> getHandler() {
-        return HANDLER;
-    }
+    private static class Type implements ClientboundPacketType<SyncPinnedQuestsPacket> {
 
-    public static class Handler implements PacketHandler<SyncPinnedQuestsPacket> {
+        @Override
+        public Class<SyncPinnedQuestsPacket> type() {
+            return SyncPinnedQuestsPacket.class;
+        }
+
+        @Override
+        public ResourceLocation id() {
+            return new ResourceLocation(Heracles.MOD_ID, "sync_pinned_quests");
+        }
 
         @Override
         public void encode(SyncPinnedQuestsPacket message, FriendlyByteBuf buffer) {
@@ -53,8 +58,8 @@ public record SyncPinnedQuestsPacket(Map<String, QuestProgress> quests) implemen
         }
 
         @Override
-        public PacketContext handle(SyncPinnedQuestsPacket message) {
-            return (player, level) -> PinnedQuests.update(message.quests);
+        public Runnable handle(SyncPinnedQuestsPacket message) {
+            return () -> PinnedQuests.update(message.quests);
         }
     }
 }

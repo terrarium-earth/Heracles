@@ -1,28 +1,30 @@
 package earth.terrarium.heracles.common.network.packets.groups;
 
-import com.teamresourceful.resourcefullib.common.networking.base.Packet;
-import com.teamresourceful.resourcefullib.common.networking.base.PacketContext;
-import com.teamresourceful.resourcefullib.common.networking.base.PacketHandler;
+import com.teamresourceful.resourcefullib.common.network.Packet;
+import com.teamresourceful.resourcefullib.common.network.base.PacketType;
+import com.teamresourceful.resourcefullib.common.network.base.ServerboundPacketType;
 import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.common.handlers.quests.QuestHandler;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Player;
+
+import java.util.function.Consumer;
 
 public record CreateGroupPacket(String group) implements Packet<CreateGroupPacket> {
-    public static final ResourceLocation ID = new ResourceLocation(Heracles.MOD_ID, "create_group");
-    public static final PacketHandler<CreateGroupPacket> HANDLER = new Handler();
+    public static final ServerboundPacketType<CreateGroupPacket> TYPE = new Type();
 
     @Override
-    public ResourceLocation getID() {
-        return ID;
+    public PacketType<CreateGroupPacket> type() {
+        return TYPE;
     }
 
-    @Override
-    public PacketHandler<CreateGroupPacket> getHandler() {
-        return HANDLER;
-    }
+    private static class Type implements ServerboundPacketType<CreateGroupPacket> {
 
-    public static class Handler implements PacketHandler<CreateGroupPacket> {
+        @Override
+        public Class<CreateGroupPacket> type() {
+            return CreateGroupPacket.class;
+        }
 
         @Override
         public void encode(CreateGroupPacket message, FriendlyByteBuf buffer) {
@@ -35,8 +37,13 @@ public record CreateGroupPacket(String group) implements Packet<CreateGroupPacke
         }
 
         @Override
-        public PacketContext handle(CreateGroupPacket message) {
-            return (player, level) -> {
+        public ResourceLocation id() {
+            return new ResourceLocation(Heracles.MOD_ID, "create_group");
+        }
+
+        @Override
+        public Consumer<Player> handle(CreateGroupPacket message) {
+            return (player) -> {
                 if (player.hasPermissions(2) && !QuestHandler.groups().contains(message.group)) {
                     QuestHandler.groups().add(message.group);
                     QuestHandler.saveGroups();

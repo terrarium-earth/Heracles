@@ -1,33 +1,35 @@
 package earth.terrarium.heracles.common.network.packets.screens;
 
-import com.teamresourceful.resourcefullib.common.networking.base.Packet;
-import com.teamresourceful.resourcefullib.common.networking.base.PacketContext;
-import com.teamresourceful.resourcefullib.common.networking.base.PacketHandler;
+import com.teamresourceful.resourcefullib.common.network.Packet;
+import com.teamresourceful.resourcefullib.common.network.base.ClientboundPacketType;
+import com.teamresourceful.resourcefullib.common.network.base.PacketType;
 import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.client.ModScreens;
 import earth.terrarium.heracles.client.handlers.ClientQuests;
-import earth.terrarium.heracles.common.handlers.quests.QuestHandler;
 import earth.terrarium.heracles.common.menus.quests.QuestsContent;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
 public record OpenQuestsScreenPacket(boolean editing, QuestsContent content) implements Packet<OpenQuestsScreenPacket> {
 
-    public static final ResourceLocation ID = new ResourceLocation(Heracles.MOD_ID, "open_quests_screen");
-    public static final PacketHandler<OpenQuestsScreenPacket> HANDLER = new Handler();
+    public static final ClientboundPacketType<OpenQuestsScreenPacket> TYPE = new Type();
 
     @Override
-    public ResourceLocation getID() {
-        return ID;
+    public PacketType<OpenQuestsScreenPacket> type() {
+        return TYPE;
     }
 
-    @Override
-    public PacketHandler<OpenQuestsScreenPacket> getHandler() {
-        return HANDLER;
-    }
+    private static class Type implements ClientboundPacketType<OpenQuestsScreenPacket> {
+        @Override
+        public Class<OpenQuestsScreenPacket> type() {
+            return OpenQuestsScreenPacket.class;
+        }
 
-    public static class Handler implements PacketHandler<OpenQuestsScreenPacket> {
+        @Override
+        public ResourceLocation id() {
+            return new ResourceLocation(Heracles.MOD_ID, "open_quests_screen");
+        }
+
         @Override
         public void encode(OpenQuestsScreenPacket message, FriendlyByteBuf buffer) {
             buffer.writeBoolean(message.editing);
@@ -43,13 +45,8 @@ public record OpenQuestsScreenPacket(boolean editing, QuestsContent content) imp
         }
 
         @Override
-        public PacketContext handle(OpenQuestsScreenPacket message) {
-            return (player, level) -> {
-                if (QuestHandler.failedToLoad) {
-                    player.sendSystemMessage(Component.translatable("gui.heracles.error.quests.load_fail"));
-                    player.sendSystemMessage(Component.translatable("gui.heracles.error.quests.load_fail.suggestion"));
-                    return;
-                }
+        public Runnable handle(OpenQuestsScreenPacket message) {
+            return () -> {
                 ClientQuests.syncGroup(message.content);
                 if (message.editing) {
                     ModScreens.openEditQuestsScreen(message.content);

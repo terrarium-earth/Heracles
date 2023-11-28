@@ -40,7 +40,7 @@ public class QuestScreen extends BaseQuestScreen {
         int contentX = this.overview == null ? (int) ((this.width - contentWidth) / 2f) : (int) (this.width * 0.31f);
         int contentY = 15;
         TagProvider provider = new QuestTagProvider();
-        this.description = new DocumentWidget(contentX, contentY, contentWidth + 6, contentHeight + 6,5.0D, 5.0D, new DefaultTheme(), provider.parse(desc));
+        this.description = new DocumentWidget(contentX, contentY, contentWidth + 12, contentHeight + 6,5.0D, 5.0D, new DefaultTheme(), provider.parse(desc));
     }
 
     @Override

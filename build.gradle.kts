@@ -36,11 +36,13 @@ subprojects {
         maven(url = "https://maven.minecraftforge.net/")
         maven(url = "https://maven.msrandom.net/repository/root")
         maven(url = "https://maven.resourcefulbees.com/repository/maven-public/")
+        mavenCentral()
     }
 
     dependencies {
         val resourcefulLibVersion: String by project
         val hermesLibVersion: String by project
+        val mixinExtrasVersion: String by project
         val reiVersion: String by project
 
         "minecraft"("::${minecraftVersion}")
@@ -59,7 +61,14 @@ subprojects {
         val hermes = "modImplementation"(group = "earth.terrarium.hermes", name = "hermes-$modLoader-1.20", version = "latest.release") {
             isTransitive = false
         }
+
+        implementation("annotationProcessor"(group = "io.github.llamalad7", name = "mixinextras-common", version = mixinExtrasVersion))
+
         if (!isCommon) {
+            "annotationProcessor"(group = "io.github.llamalad7", name = "mixinextras-$modLoader", version = mixinExtrasVersion).apply {
+                implementation(this)
+                "include"(this)
+            }
             "include"(hermes)
 
             "modRuntimeOnly"("me.shedaniel:RoughlyEnoughItems-$modLoader:$reiVersion")

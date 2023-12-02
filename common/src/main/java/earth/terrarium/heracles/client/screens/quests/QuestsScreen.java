@@ -37,7 +37,6 @@ public class QuestsScreen extends AbstractQuestScreen<QuestsContent> {
     @Override
     protected void init() {
         super.init();
-        int sidebarWidth = (int) (this.width * 0.25f) - 2;
         if (Minecraft.getInstance().player != null && Minecraft.getInstance().player.hasPermissions(2)) {
             addRenderableWidget(new ImageButton(this.width - 24, 1, 11, 11, 33, 15, 11, HEADING, 256, 256, (button) ->
                 NetworkHandler.CHANNEL.sendToServer(new OpenGroupPacket(this.content.group(), this.getClass() == QuestsScreen.class))
@@ -51,7 +50,7 @@ public class QuestsScreen extends AbstractQuestScreen<QuestsContent> {
         );
 
         questsWidget = addRenderableWidget(new QuestsWidget(
-            (int) (this.width * 0.25f),
+            (int) (this.width * 0.25f), // aka SIDE_BAR_PORTION
             15,
             (int) (this.width * 0.75f),
             (int) (this.width * 0.50f),
@@ -75,7 +74,7 @@ public class QuestsScreen extends AbstractQuestScreen<QuestsContent> {
         this.groupsList = addRenderableWidget(new GroupsList(
             0,
             15,
-            sidebarWidth,
+            SIDE_BAR_WIDTH,
             this.height - 15,
             entry -> {
                 if (entry == null || this.content.group().equals(entry.name())) return;
@@ -103,7 +102,7 @@ public class QuestsScreen extends AbstractQuestScreen<QuestsContent> {
     @Override
     protected void renderLabels(GuiGraphics graphics, int mouseX, int mouseY) {
         super.renderLabels(graphics, mouseX, mouseY);
-        int center = ((int) (this.width * 0.25f) - 2) / 2;
+        int center = SIDE_BAR_WIDTH / 2;
         int textX = center - font.width(ConstantComponents.Groups.GROUPS) / 2;
         graphics.drawString(
             font,

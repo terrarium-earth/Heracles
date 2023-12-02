@@ -54,8 +54,7 @@ public class QuestsEditScreen extends QuestsScreen {
     @Override
     protected void init() {
         super.init();
-        int sidebarWidth = (int) (this.width * 0.25f) - 2;
-        addRenderableWidget(new ImageButton(sidebarWidth - 12, 1, 11, 11, 22, 15, 11, HEADING, 256, 256, (button) -> {
+        addRenderableWidget(new ImageButton(SIDE_BAR_WIDTH - 12, 1, 11, 11, 22, 15, 11, HEADING, 256, 256, (button) -> {
             if (this.groupModal != null) {
                 this.groupModal.setVisible(true);
             }
@@ -64,12 +63,12 @@ public class QuestsEditScreen extends QuestsScreen {
         selectQuestWidget = new SelectQuestWidget(
             (int) (this.width * 0.75f) + 2,
             15,
-            (int) (this.width * 0.25f) - 2,
+            SIDE_BAR_WIDTH,
             this.height - 15,
             this.questsWidget
         );
 
-        this.moveTool = addRenderableWidget(new MouseModeButton(sidebarWidth + 3, 1, MouseButtonType.MOVE, () -> {
+        this.moveTool = addRenderableWidget(new MouseModeButton(SIDE_BAR_WIDTH + 3, 1, MouseButtonType.MOVE, () -> {
             if (questsWidget.selectHandler().selectedQuest() != null) {
                 if (!actualChildren().contains(selectQuestWidget)) {
                     addRenderableWidget(selectQuestWidget);
@@ -79,13 +78,13 @@ public class QuestsEditScreen extends QuestsScreen {
         }));
         this.moveTool.setTooltip(Tooltip.create(ConstantComponents.Tools.MOVE));
 
-        this.dragTool = addRenderableWidget(new MouseModeButton(sidebarWidth + 15, 1, MouseButtonType.DRAG, this::clearWidget));
+        this.dragTool = addRenderableWidget(new MouseModeButton(SIDE_BAR_WIDTH + 15, 1, MouseButtonType.DRAG, this::clearWidget));
         this.dragTool.setTooltip(Tooltip.create(ConstantComponents.Tools.DRAG));
 
-        this.addTool = addRenderableWidget(new MouseModeButton(sidebarWidth + 27, 1, MouseButtonType.ADD, this::clearWidget));
+        this.addTool = addRenderableWidget(new MouseModeButton(SIDE_BAR_WIDTH + 27, 1, MouseButtonType.ADD, this::clearWidget));
         this.addTool.setTooltip(Tooltip.create(ConstantComponents.Tools.ADD_QUEST));
 
-        this.linkTool = addRenderableWidget(new MouseModeButton(sidebarWidth + 39, 1, MouseButtonType.LINK, this::clearWidget));
+        this.linkTool = addRenderableWidget(new MouseModeButton(SIDE_BAR_WIDTH + 39, 1, MouseButtonType.LINK, this::clearWidget));
         this.linkTool.setTooltip(Tooltip.create(ConstantComponents.Tools.LINK));
 
         addRenderableWidget(new ImageButton(this.width - 36, 1, 11, 11, 33, 37, 11, HEADING, 256, 256, (button) -> {

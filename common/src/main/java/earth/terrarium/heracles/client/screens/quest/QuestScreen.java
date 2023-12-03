@@ -26,6 +26,10 @@ public class QuestScreen extends BaseQuestScreen {
     private String descriptionError;
     private String desc;
 
+    private int contentX;
+    private int contentHeight;
+    private static final int CONTENT_Y = 15;
+
     public QuestScreen(QuestContent content) {
         super(content);
     }
@@ -36,25 +40,19 @@ public class QuestScreen extends BaseQuestScreen {
         this.taskList.update(this.quest().tasks().values());
         this.rewardList.update(this.content.fromGroup(), this.content.id(), this.quest());
 
-        int contentWidth = QUEST_CONTENT_WIDTH;
-        int contentX = (int) (questContentCenter() - (QUEST_CONTENT_WIDTH / 2f) + 0.5f);
-        int contentHeight = this.height - 15;
-        int contentY = 15;
+        calculateContentArea();
 
         TagProvider provider = new QuestTagProvider();
-        this.description = new DocumentWidget(contentX, contentY, contentWidth, contentHeight, 5.0D, 5.0D, new DefaultTheme(), provider.parse(desc));
+        this.description = new DocumentWidget(contentX, CONTENT_Y, QUEST_CONTENT_WIDTH, contentHeight, 5.0D, 5.0D, new DefaultTheme(), provider.parse(desc));
     }
 
     @Override
     protected void init() {
         super.init();
-        int contentWidth = QUEST_CONTENT_WIDTH;
-        int contentX = (int) (questContentCenter() - (QUEST_CONTENT_WIDTH / 2f) + 0.5f);
-        int contentHeight = this.height - 15;
-        int contentY = 15;
+        calculateContentArea();
 
-        this.taskList = new TaskListWidget(contentX, contentY, contentWidth, contentHeight, 5.0D, 5.0D, this.content.id(), this.entry(), this.content.progress(), this.content.quests(), null, null);
-        this.rewardList = new RewardListWidget(contentX, contentY, contentWidth, contentHeight, 5.0D, 5.0D, this.entry(), this.content.progress(), null, null);
+        this.taskList = new TaskListWidget(contentX, CONTENT_Y, QUEST_CONTENT_WIDTH, contentHeight, 5.0D, 5.0D, this.content.id(), this.entry(), this.content.progress(), this.content.quests(), null, null);
+        this.rewardList = new RewardListWidget(contentX, CONTENT_Y, QUEST_CONTENT_WIDTH, contentHeight, 5.0D, 5.0D, this.entry(), this.content.progress(), null, null);
         try {
             this.descriptionError = null;
             this.desc = String.join("", MarkdownParser.parse(this.quest().display().description()));
@@ -68,6 +66,11 @@ public class QuestScreen extends BaseQuestScreen {
             )).setTooltip(Tooltip.create(ConstantComponents.TOGGLE_EDIT));
         }
         updateProgress(null);
+    }
+
+    private void calculateContentArea() {
+        contentX = (int) (questContentCenter() - (QUEST_CONTENT_WIDTH / 2f) + 0.5f);
+        contentHeight = this.height - 15;
     }
 
     @Override

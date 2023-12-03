@@ -109,9 +109,6 @@ public abstract class AbstractQuestScreen<T> extends BaseCursorScreen {
     }
 
     protected void renderLabels(GuiGraphics graphics, int mouseX, int mouseY) {
-        //int center = drawSidebar() ?
-        //    SIDE_BAR_WIDTH + (int) ((this.width - SIDE_BAR_WIDTH) / 2f)
-        //    : (int) (this.width / 2f);
         int center = questContentCenter();
         Component title = getTitle();
         graphics.drawString(
@@ -198,7 +195,7 @@ public abstract class AbstractQuestScreen<T> extends BaseCursorScreen {
     }
 
     public int questContentCenter() {
-        // float, to avoid truncating (or rounding when 0.5f is added) twice
+        // float, to avoid truncating (effectively rounding when 0.5f is added) twice
         float nonSideBarWidth = width - (width * SIDE_BAR_PORTION);
         return drawSidebar() ?
             (int) (0.5f + (width - (nonSideBarWidth / 2f))) :

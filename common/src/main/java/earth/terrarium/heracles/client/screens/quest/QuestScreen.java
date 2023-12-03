@@ -35,21 +35,24 @@ public class QuestScreen extends BaseQuestScreen {
         super.updateProgress(newProgress);
         this.taskList.update(this.quest().tasks().values());
         this.rewardList.update(this.content.fromGroup(), this.content.id(), this.quest());
-        int contentWidth = (int) (this.width * 0.63f);
+
+        int contentWidth = QUEST_CONTENT_WIDTH;
+        int contentX = (int) (questContentCenter() - (QUEST_CONTENT_WIDTH / 2f) + 0.5f);
         int contentHeight = this.height - 15;
-        int contentX = this.overview == null ? (int) ((this.width - contentWidth) / 2f) : (int) (this.width * 0.31f);
         int contentY = 15;
+
         TagProvider provider = new QuestTagProvider();
-        this.description = new DocumentWidget(contentX, contentY, contentWidth + 6, contentHeight + 6,5.0D, 5.0D, new DefaultTheme(), provider.parse(desc));
+        this.description = new DocumentWidget(contentX, contentY, contentWidth, contentHeight, 5.0D, 5.0D, new DefaultTheme(), provider.parse(desc));
     }
 
     @Override
     protected void init() {
         super.init();
-        int contentWidth = (int) (this.width * 0.63f);
+        int contentWidth = QUEST_CONTENT_WIDTH;
+        int contentX = (int) (questContentCenter() - (QUEST_CONTENT_WIDTH / 2f) + 0.5f);
         int contentHeight = this.height - 15;
-        int contentX = this.overview == null ? (int) ((this.width - contentWidth) / 2f) : (int) (this.width * 0.31f);
         int contentY = 15;
+
         this.taskList = new TaskListWidget(contentX, contentY, contentWidth, contentHeight, 5.0D, 5.0D, this.content.id(), this.entry(), this.content.progress(), this.content.quests(), null, null);
         this.rewardList = new RewardListWidget(contentX, contentY, contentWidth, contentHeight, 5.0D, 5.0D, this.entry(), this.content.progress(), null, null);
         try {

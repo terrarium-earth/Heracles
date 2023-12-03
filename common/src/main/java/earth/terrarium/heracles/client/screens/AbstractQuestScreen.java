@@ -35,6 +35,9 @@ public abstract class AbstractQuestScreen<T> extends BaseCursorScreen {
     protected static final float SIDE_BAR_PORTION = 0.25f;
     protected static int SIDE_BAR_WIDTH;
 
+    protected static final float QUEST_CONTENT_PORTION = 0.66f;
+    protected static int QUEST_CONTENT_WIDTH;
+
     public AbstractQuestScreen(T content, Component component) {
         super(component);
         this.content = content;
@@ -47,6 +50,7 @@ public abstract class AbstractQuestScreen<T> extends BaseCursorScreen {
         // Established convention in this code-base counts this border area as "sidebar" in the general sense,
         // and subtracts 2 when referring to the sidebar area wholly within this border area.
         SIDE_BAR_WIDTH = (int) (width * SIDE_BAR_PORTION) - 2;
+        QUEST_CONTENT_WIDTH = (int) (width * QUEST_CONTENT_PORTION);
 
         if (hasBackButton) {
             addRenderableWidget(new ImageButton(1, 1, 11, 11, 0, 15, 11, HEADING, 256, 256, (button) ->
@@ -105,9 +109,10 @@ public abstract class AbstractQuestScreen<T> extends BaseCursorScreen {
     }
 
     protected void renderLabels(GuiGraphics graphics, int mouseX, int mouseY) {
-        int center = drawSidebar() ?
-            SIDE_BAR_WIDTH + (int) ((this.width - SIDE_BAR_WIDTH) / 2f)
-            : (int) (this.width / 2f);
+        //int center = drawSidebar() ?
+        //    SIDE_BAR_WIDTH + (int) ((this.width - SIDE_BAR_WIDTH) / 2f)
+        //    : (int) (this.width / 2f);
+        int center = questContentCenter();
         Component title = getTitle();
         graphics.drawString(
             this.font,
@@ -190,6 +195,14 @@ public abstract class AbstractQuestScreen<T> extends BaseCursorScreen {
             this.addTemporary(widget);
         }
         return widget;
+    }
+
+    public int questContentCenter() {
+        // float, to avoid truncating (or rounding when 0.5f is added) twice
+        float nonSideBarWidth = width - (width * SIDE_BAR_PORTION);
+        return drawSidebar() ?
+            (int) (0.5f + (width - (nonSideBarWidth / 2f))) :
+            (int) (0.5f + (width / 2f));
     }
 
     public boolean drawSidebar() {

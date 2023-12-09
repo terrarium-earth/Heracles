@@ -34,7 +34,7 @@ public class QuestTutorialScreen extends BaseCursorScreen {
     @Override
     protected void init() {
         super.init();
-        int widgetWidth = this.width / 2;
+        int widgetWidth = (int) (this.width * 0.63f);
         List<TagElement> elements;
         try {
             elements = new DefaultTagProvider().parse(QuestTutorial.tutorialText());

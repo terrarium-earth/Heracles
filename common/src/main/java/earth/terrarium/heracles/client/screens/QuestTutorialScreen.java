@@ -34,7 +34,8 @@ public class QuestTutorialScreen extends BaseCursorScreen {
     @Override
     protected void init() {
         super.init();
-        int widgetWidth = this.width / 2;
+        int widgetWidth = (int) ((this.width * AbstractQuestScreen.QUEST_CONTENT_PORTION) + 0.5f);
+        int widgetOffset = (int) (((this.width - widgetWidth) / 2f) + 0.5f);
         List<TagElement> elements;
         try {
             elements = new DefaultTagProvider().parse(QuestTutorial.tutorialText());
@@ -44,7 +45,7 @@ public class QuestTutorialScreen extends BaseCursorScreen {
             e1.setContent("Error parsing tutorial text: " + e.getMessage());
             elements.add(e1);
         }
-        this.document = addRenderableOnly(new DocumentWidget(widgetWidth / 2, 0, widgetWidth, height - 30, new DefaultTheme(), elements));
+        this.document = addRenderableOnly(new DocumentWidget(widgetOffset, 0, widgetWidth, height - 30, new DefaultTheme(), elements));
         int buttonX = (this.width - 150) / 2;
         addRenderableWidget(ThemedButton.builder(ConstantComponents.Quests.VIEW, button -> {
             DisplayConfig.save();

@@ -68,6 +68,8 @@ public class MarkdownParser {
                 builder.add(parse(List.of(line.substring(2).trim())).stream().reduce("", (a, b) -> a + b));
             } else if (trimedText.trim().startsWith("<")) {
                 builder.add(line);
+            } else if (trimedText.isEmpty()) {
+                builder.add("<br/>");
             } else {
                 String json = Component.Serializer.toJson(parseTextToComponent(line));
                 builder.add("<component>" + xmlEncode(json) + "</component>");

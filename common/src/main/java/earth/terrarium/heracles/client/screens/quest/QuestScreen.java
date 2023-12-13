@@ -43,7 +43,7 @@ public class QuestScreen extends BaseQuestScreen {
         calculateContentArea();
 
         TagProvider provider = new QuestTagProvider();
-        this.description = new DocumentWidget(contentX, CONTENT_Y, QUEST_CONTENT_WIDTH, contentHeight, 5.0D, 5.0D, new DefaultTheme(), provider.parse(desc));
+        this.description = new DocumentWidget(contentX, CONTENT_Y, questContentWidth, contentHeight, 5.0D, 5.0D, new DefaultTheme(), provider.parse(desc));
     }
 
     @Override
@@ -51,8 +51,8 @@ public class QuestScreen extends BaseQuestScreen {
         super.init();
         calculateContentArea();
 
-        this.taskList = new TaskListWidget(contentX, CONTENT_Y, QUEST_CONTENT_WIDTH, contentHeight, 5.0D, 5.0D, this.content.id(), this.entry(), this.content.progress(), this.content.quests(), null, null);
-        this.rewardList = new RewardListWidget(contentX, CONTENT_Y, QUEST_CONTENT_WIDTH, contentHeight, 5.0D, 5.0D, this.entry(), this.content.progress(), null, null);
+        this.taskList = new TaskListWidget(contentX, CONTENT_Y, questContentWidth, contentHeight, 5.0D, 5.0D, this.content.id(), this.entry(), this.content.progress(), this.content.quests(), null, null);
+        this.rewardList = new RewardListWidget(contentX, CONTENT_Y, questContentWidth, contentHeight, 5.0D, 5.0D, this.entry(), this.content.progress(), null, null);
         try {
             this.descriptionError = null;
             this.desc = String.join("", MarkdownParser.parse(this.quest().display().description()));
@@ -69,7 +69,7 @@ public class QuestScreen extends BaseQuestScreen {
     }
 
     private void calculateContentArea() {
-        contentX = (int) (questContentCenter() - (QUEST_CONTENT_WIDTH / 2f) + 0.5f);
+        contentX = (int) (questContentCenter() - (questContentWidth / 2f) + 0.5f);
         contentHeight = this.height - 15;
     }
 

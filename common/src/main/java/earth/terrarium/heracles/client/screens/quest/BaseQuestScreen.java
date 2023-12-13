@@ -63,7 +63,7 @@ public abstract class BaseQuestScreen extends AbstractQuestScreen<QuestContent> 
     @Override
     protected void init() {
         super.init();
-        int buttonWidth = SIDE_BAR_WIDTH - 10;
+        int buttonWidth = sideBarWidth - 10;
 
         boolean showRewards = isEditing() || ClientQuests.get(this.content.id())
             .map(ClientQuests.QuestEntry::value)

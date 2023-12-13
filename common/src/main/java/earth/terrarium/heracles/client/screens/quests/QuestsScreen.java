@@ -74,7 +74,7 @@ public class QuestsScreen extends AbstractQuestScreen<QuestsContent> {
         this.groupsList = addRenderableWidget(new GroupsList(
             0,
             15,
-            SIDE_BAR_WIDTH,
+            sideBarWidth,
             this.height - 15,
             entry -> {
                 if (entry == null || this.content.group().equals(entry.name())) return;
@@ -102,7 +102,7 @@ public class QuestsScreen extends AbstractQuestScreen<QuestsContent> {
     @Override
     protected void renderLabels(GuiGraphics graphics, int mouseX, int mouseY) {
         super.renderLabels(graphics, mouseX, mouseY);
-        int center = SIDE_BAR_WIDTH / 2;
+        int center = sideBarWidth / 2;
         int textX = center - font.width(ConstantComponents.Groups.GROUPS) / 2;
         graphics.drawString(
             font,

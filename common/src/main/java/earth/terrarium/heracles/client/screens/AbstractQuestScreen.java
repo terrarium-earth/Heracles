@@ -33,10 +33,10 @@ public abstract class AbstractQuestScreen<T> extends BaseCursorScreen {
     protected final T content;
 
     protected static final float SIDE_BAR_PORTION = 0.25f;
-    protected static int SIDE_BAR_WIDTH;
+    protected static int sideBarWidth;
 
     protected static final float QUEST_CONTENT_PORTION = 0.66f;
-    protected static int QUEST_CONTENT_WIDTH;
+    protected static int questContentWidth;
 
     public AbstractQuestScreen(T content, Component component) {
         super(component);
@@ -49,8 +49,8 @@ public abstract class AbstractQuestScreen<T> extends BaseCursorScreen {
         // There is a vertical 2-wide border area between the sidebar and the main area.
         // Established convention in this code-base counts this border area as "sidebar" in the general sense,
         // and subtracts 2 when referring to the sidebar area wholly within this border area.
-        SIDE_BAR_WIDTH = (int) (width * SIDE_BAR_PORTION) - 2;
-        QUEST_CONTENT_WIDTH = (int) (width * QUEST_CONTENT_PORTION);
+        sideBarWidth = (int) (width * SIDE_BAR_PORTION) - 2;
+        questContentWidth = (int) (width * QUEST_CONTENT_PORTION);
 
         if (hasBackButton) {
             addRenderableWidget(new ImageButton(1, 1, 11, 11, 0, 15, 11, HEADING, 256, 256, (button) ->
@@ -95,12 +95,12 @@ public abstract class AbstractQuestScreen<T> extends BaseCursorScreen {
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
         if (drawSidebar()) {
-            ClientUtils.blitTiling(graphics, HEADING, 0, 15, SIDE_BAR_WIDTH, height - 15, 0, 128, 128, 128); // Side Background
-            ClientUtils.blitTiling(graphics, HEADING, SIDE_BAR_WIDTH + 2, 15, width - SIDE_BAR_WIDTH, height - 15, 128, 128, 128, 128); // Main Background
-            ClientUtils.blitTiling(graphics, HEADING, 0, 0, SIDE_BAR_WIDTH, 15, 0, 0, 128, 15); // Side Header
-            ClientUtils.blitTiling(graphics, HEADING, SIDE_BAR_WIDTH + 2, 0, width - SIDE_BAR_WIDTH, 15, 130, 0, 126, 15); // Main Header
-            ClientUtils.blitTiling(graphics, HEADING, SIDE_BAR_WIDTH, 0, 2, 15, 128, 0, 2, 15); // Header Separator
-            ClientUtils.blitTiling(graphics, HEADING, SIDE_BAR_WIDTH, 15, 2, height - 15, 128, 15, 2, 113); // Body Separator
+            ClientUtils.blitTiling(graphics, HEADING, 0, 15, sideBarWidth, height - 15, 0, 128, 128, 128); // Side Background
+            ClientUtils.blitTiling(graphics, HEADING, sideBarWidth + 2, 15, width - sideBarWidth, height - 15, 128, 128, 128, 128); // Main Background
+            ClientUtils.blitTiling(graphics, HEADING, 0, 0, sideBarWidth, 15, 0, 0, 128, 15); // Side Header
+            ClientUtils.blitTiling(graphics, HEADING, sideBarWidth + 2, 0, width - sideBarWidth, 15, 130, 0, 126, 15); // Main Header
+            ClientUtils.blitTiling(graphics, HEADING, sideBarWidth, 0, 2, 15, 128, 0, 2, 15); // Header Separator
+            ClientUtils.blitTiling(graphics, HEADING, sideBarWidth, 15, 2, height - 15, 128, 15, 2, 113); // Body Separator
         } else {
             ClientUtils.blitTiling(graphics, HEADING, 0, 15, width, height - 15, 128, 128, 128, 128); // Main Background
             ClientUtils.blitTiling(graphics, HEADING, 0, 0, width, 15, 130, 0, 126, 15); // Main Header

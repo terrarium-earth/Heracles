@@ -47,6 +47,6 @@ public class Heracles {
 
     private static void playQuestCompleteSound(QuestEventTarget event) {
         ServerPlayer player = event.player();
-        player.level().playSound(null, player.blockPosition(), SoundEvents.UI_TOAST_CHALLENGE_COMPLETE, SoundSource.MASTER, 0.25f, 2f);
+        player.level().playSound(null, player.blockPosition(), SoundEvents.UI_TOAST_CHALLENGE_COMPLETE, SoundSource.MASTER, 0.1f, 2f);
     }
 }

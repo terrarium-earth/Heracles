@@ -69,6 +69,11 @@ public record QuestsProgress(Map<String, QuestProgress> progress, CompletableQue
         this.completableQuests.updateCompleteQuests(this, player);
     }
 
+    public void reset() {
+        progress.clear();
+        completableQuests.updateCompleteQuests(this);
+    }
+
 
     public void claimReward(String questId, String rewardId, ServerPlayer player) {
         progress.get(questId).claimReward(rewardId);

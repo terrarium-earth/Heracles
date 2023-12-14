@@ -1,2 +1,6 @@
-- Fix quests not being sent to clients on Forge after entering a world for the second time in a short amount of time. (ThatGravyBoat)
-- Switch to mixin extras for button changes should be more compatible with other mods. (ThatGravyBoat)
+- Empty lines now resolve to a <br/> tag meaning that are now properly empty. (SubordinalBlue)
+- Tutorial scree now same size as quest screen. (SubordinalBlue)
+- Quest screen description now properly centered (SubordinalBlue)
+- Added `resetall` command to reset all data. (ThatGravyBoat)
+- Added ability to reset another players progress. (ThatGravyBoat)
+- Reduced complete sound by 50% (ThatGravyBoat)

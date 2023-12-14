@@ -103,6 +103,7 @@
     "rei.heracles.heracles.tooltip": "Open Quests",
 
     "commands.heracles.reset.success": "[Heracles] Quest %s reset successfully.",
+    "commands.heracles.resetall.success": "[Heracles] Quests reset successfully.",
     "commands.heracles.pin.success.pinned": "[Heracles] Quest %s pinned.",
     "commands.heracles.pin.success.unpinned": "[Heracles] Quest %s unpinned.",
     "commands.heracles.pin.dummy.completed": "[Heracles] Quest %s completed."

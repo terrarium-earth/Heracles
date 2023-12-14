@@ -34,8 +34,7 @@ subprojects {
     repositories {
         maven(url = "https://maven.architectury.dev/")
         maven(url = "https://maven.minecraftforge.net/")
-        maven(url = "https://maven.msrandom.net/repository/root")
-        maven(url = "https://maven.resourcefulbees.com/repository/maven-public/")
+        maven(url = "https://maven.teamresourceful.com/repository/maven-public/")
         mavenCentral()
     }
 

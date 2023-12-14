@@ -32,6 +32,12 @@ public abstract class AbstractQuestScreen<T> extends BaseCursorScreen {
 
     protected final T content;
 
+    protected static final float SIDE_BAR_PORTION = 0.25f;
+    protected static int sideBarWidth;
+
+    protected static final float QUEST_CONTENT_PORTION = 0.66f;
+    protected static int questContentWidth;
+
     public AbstractQuestScreen(T content, Component component) {
         super(component);
         this.content = content;
@@ -40,6 +46,12 @@ public abstract class AbstractQuestScreen<T> extends BaseCursorScreen {
     @Override
     protected void init() {
         super.init();
+        // There is a vertical 2-wide border area between the sidebar and the main area.
+        // Established convention in this code-base counts this border area as "sidebar" in the general sense,
+        // and subtracts 2 when referring to the sidebar area wholly within this border area.
+        sideBarWidth = (int) (width * SIDE_BAR_PORTION) - 2;
+        questContentWidth = (int) (width * QUEST_CONTENT_PORTION);
+
         if (hasBackButton) {
             addRenderableWidget(new ImageButton(1, 1, 11, 11, 0, 15, 11, HEADING, 256, 256, (button) ->
                 goBack()
@@ -83,13 +95,12 @@ public abstract class AbstractQuestScreen<T> extends BaseCursorScreen {
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
         if (drawSidebar()) {
-            int sidebarWidth = (int) (this.width * 0.25f) - 2;
-            ClientUtils.blitTiling(graphics, HEADING, 0, 15, sidebarWidth, height - 15, 0, 128, 128, 128); // Side Background
-            ClientUtils.blitTiling(graphics, HEADING, sidebarWidth + 2, 15, width - sidebarWidth, height - 15, 128, 128, 128, 128); // Main Background
-            ClientUtils.blitTiling(graphics, HEADING, 0, 0, sidebarWidth, 15, 0, 0, 128, 15); // Side Header
-            ClientUtils.blitTiling(graphics, HEADING, sidebarWidth + 2, 0, width - sidebarWidth, 15, 130, 0, 126, 15); // Main Header
-            ClientUtils.blitTiling(graphics, HEADING, sidebarWidth, 0, 2, 15, 128, 0, 2, 15); // Header Separator
-            ClientUtils.blitTiling(graphics, HEADING, sidebarWidth, 15, 2, height - 15, 128, 15, 2, 113); // Body Separator
+            ClientUtils.blitTiling(graphics, HEADING, 0, 15, sideBarWidth, height - 15, 0, 128, 128, 128); // Side Background
+            ClientUtils.blitTiling(graphics, HEADING, sideBarWidth + 2, 15, width - sideBarWidth, height - 15, 128, 128, 128, 128); // Main Background
+            ClientUtils.blitTiling(graphics, HEADING, 0, 0, sideBarWidth, 15, 0, 0, 128, 15); // Side Header
+            ClientUtils.blitTiling(graphics, HEADING, sideBarWidth + 2, 0, width - sideBarWidth, 15, 130, 0, 126, 15); // Main Header
+            ClientUtils.blitTiling(graphics, HEADING, sideBarWidth, 0, 2, 15, 128, 0, 2, 15); // Header Separator
+            ClientUtils.blitTiling(graphics, HEADING, sideBarWidth, 15, 2, height - 15, 128, 15, 2, 113); // Body Separator
         } else {
             ClientUtils.blitTiling(graphics, HEADING, 0, 15, width, height - 15, 128, 128, 128, 128); // Main Background
             ClientUtils.blitTiling(graphics, HEADING, 0, 0, width, 15, 130, 0, 126, 15); // Main Header
@@ -98,9 +109,7 @@ public abstract class AbstractQuestScreen<T> extends BaseCursorScreen {
     }
 
     protected void renderLabels(GuiGraphics graphics, int mouseX, int mouseY) {
-        int center = drawSidebar() ?
-            (int) ((this.width * 0.25f) + ((this.width * 0.75f) / 2f))
-            : (int) (this.width / 2f);
+        int center = questContentCenter();
         Component title = getTitle();
         graphics.drawString(
             this.font,
@@ -183,6 +192,14 @@ public abstract class AbstractQuestScreen<T> extends BaseCursorScreen {
             this.addTemporary(widget);
         }
         return widget;
+    }
+
+    public int questContentCenter() {
+        // float, to avoid truncating (effectively rounding when 0.5f is added) twice
+        float nonSideBarWidth = width - (width * SIDE_BAR_PORTION);
+        return drawSidebar() ?
+            (int) (0.5f + (width - (nonSideBarWidth / 2f))) :
+            (int) (0.5f + (width / 2f));
     }
 
     public boolean drawSidebar() {

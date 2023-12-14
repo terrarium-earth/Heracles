@@ -34,7 +34,7 @@ public class QuestTutorialScreen extends BaseCursorScreen {
     @Override
     protected void init() {
         super.init();
-        int widgetWidth = (int) (this.width * 0.63f);
+        int widgetWidth = (int) ((this.width * AbstractQuestScreen.QUEST_CONTENT_PORTION) + 0.5f);
         int widgetOffset = (int) (((this.width - widgetWidth) / 2f) + 0.5f);
         List<TagElement> elements;
         try {

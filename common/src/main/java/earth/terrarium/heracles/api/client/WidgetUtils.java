@@ -8,7 +8,6 @@ import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.api.client.theme.QuestScreenTheme;
 import earth.terrarium.heracles.api.tasks.QuestTask;
 import earth.terrarium.heracles.api.tasks.QuestTaskDisplayFormatter;
-import earth.terrarium.heracles.client.compat.RecipeViewerHelper;
 import earth.terrarium.heracles.common.handlers.progress.TaskProgress;
 import earth.terrarium.heracles.common.utils.ModUtils;
 import net.minecraft.client.Minecraft;
@@ -128,7 +127,6 @@ public final class WidgetUtils {
             if (tooltipLines != null) {
                 ScreenUtils.setTooltip(tooltipLines);
             }
-            RecipeViewerHelper.showItem(icon);
         }
     }
 

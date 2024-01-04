@@ -4,6 +4,7 @@ import com.teamresourceful.resourcefullib.client.scissor.ScissorBoxStack;
 import earth.terrarium.heracles.api.client.theme.QuestScreenTheme;
 import earth.terrarium.heracles.api.quests.QuestIcon;
 import earth.terrarium.heracles.api.rewards.defaults.ItemReward;
+import earth.terrarium.heracles.client.compat.RecipeViewerHelper;
 import earth.terrarium.heracles.client.handlers.ClientQuests;
 import earth.terrarium.heracles.client.screens.quest.BaseQuestScreen;
 import earth.terrarium.heracles.common.handlers.progress.QuestProgress;
@@ -53,6 +54,9 @@ public record ItemRewardWidget(ItemReward reward, String quest, QuestProgress pr
     public void render(GuiGraphics graphics, ScissorBoxStack scissor, int x, int y, int width, int mouseX, int mouseY, boolean hovered, float partialTicks) {
         Font font = Minecraft.getInstance().font;
         BaseItemRewardWidget.super.render(graphics, scissor, x, y, width, mouseX, mouseY, hovered, partialTicks);
+        if (mouseX >= x + 5 && mouseX <= x + 37 && mouseY >= y + 5 && mouseY <= y + 37) {
+            RecipeViewerHelper.showItem(reward.stack());
+        }
         String title = getIcon().getCount() == 1 ? TITLE_SINGULAR : TITLE_PLURAL;
         String desc = getIcon().getCount() == 1 ? DESC_SINGULAR : DESC_PLURAL;
         graphics.drawString(

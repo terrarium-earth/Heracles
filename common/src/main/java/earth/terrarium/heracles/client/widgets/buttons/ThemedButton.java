@@ -85,7 +85,13 @@ public interface ThemedButton {
             @Override
             public @NotNull Button build() {
                 Button button = super.build();
-                return new SimpleThemedButton(texture, yOffset, button.getX(), button.getY(), button.getWidth(), button.getHeight(), button.getMessage(), onPress, createNarration);
+                SimpleThemedButton themedButton = new SimpleThemedButton(texture, yOffset,
+                    button.getX(), button.getY(),
+                    button.getWidth(), button.getHeight(),
+                    button.getMessage(), onPress, createNarration
+                );
+                themedButton.setTooltip(button.getTooltip());
+                return themedButton;
             }
         }
     }

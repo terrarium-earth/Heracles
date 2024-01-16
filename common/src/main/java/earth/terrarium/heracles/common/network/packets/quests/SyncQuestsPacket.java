@@ -31,6 +31,7 @@ public record SyncQuestsPacket(Map<String, Quest> quests, Map<String, Group> gro
 
     private static class Type implements ClientboundPacketType<SyncQuestsPacket> {
         private static final Codec<Map<String, Quest>> QUEST_MAP_CODEC = Codec.unboundedMap(Codec.STRING, Quest.CODEC);
+        private static final Codec<Map<String, Group>> GROUP_MAP_CODEC = Codec.unboundedMap(Codec.STRING, Group.CODEC);
 
         @Override
         public Class<SyncQuestsPacket> type() {

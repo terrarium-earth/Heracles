@@ -8,6 +8,7 @@ import earth.terrarium.heracles.common.handlers.progress.QuestProgressHandler;
 import earth.terrarium.heracles.common.handlers.quests.QuestHandler;
 import earth.terrarium.heracles.common.network.NetworkHandler;
 import earth.terrarium.heracles.common.network.packets.quests.SyncDescriptionsPacket;
+import earth.terrarium.heracles.common.network.packets.quests.SyncGroupOrderPacket;
 import earth.terrarium.heracles.common.network.packets.quests.SyncQuestsPacket;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
@@ -18,12 +19,14 @@ public final class QuestSyncer {
 
     public static void syncToAll(MinecraftServer server, List<ServerPlayer> players) {
         NetworkHandler.CHANNEL.sendToPlayers(createPacket(), players);
+        NetworkHandler.CHANNEL.sendToPlayers(new SyncGroupOrderPacket(QuestHandler.groupsOrder()), players);
         syncDescriptions(players);
         QuestProgressHandler.read(server).updatePossibleQuests();
     }
 
     public static void sync(ServerPlayer player) {
         NetworkHandler.CHANNEL.sendToPlayer(createPacket(), player);
+        NetworkHandler.CHANNEL.sendToPlayer(new SyncGroupOrderPacket(QuestHandler.groupsOrder()), player);
         PinnedQuestHandler.sync(player);
         syncDescriptions(List.of(player));
     }

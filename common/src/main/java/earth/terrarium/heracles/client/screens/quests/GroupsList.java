@@ -2,32 +2,36 @@ package earth.terrarium.heracles.client.screens.quests;
 
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.systems.RenderSystem;
+import com.teamresourceful.resourcefullib.client.components.context.ContextualMenuScreen;
 import com.teamresourceful.resourcefullib.client.components.selection.ListEntry;
 import com.teamresourceful.resourcefullib.client.components.selection.SelectionList;
 import com.teamresourceful.resourcefullib.client.scissor.ScissorBoxStack;
 import com.teamresourceful.resourcefullib.client.screens.CursorScreen;
 import com.teamresourceful.resourcefullib.client.utils.CursorUtils;
 import com.teamresourceful.resourcefullib.client.utils.ScreenUtils;
-import earth.terrarium.heracles.api.groups.Group;
 import earth.terrarium.heracles.api.client.theme.QuestsScreenTheme;
+import earth.terrarium.heracles.api.groups.Group;
+import earth.terrarium.heracles.api.quests.QuestIcon;
+import earth.terrarium.heracles.api.quests.defaults.ItemQuestIcon;
 import earth.terrarium.heracles.client.handlers.ClientQuests;
 import earth.terrarium.heracles.client.screens.AbstractQuestScreen;
+import earth.terrarium.heracles.client.utils.ClientUtils;
+import earth.terrarium.heracles.client.utils.MouseClick;
 import earth.terrarium.heracles.common.constants.ConstantComponents;
 import earth.terrarium.heracles.common.network.NetworkHandler;
 import earth.terrarium.heracles.common.network.packets.groups.DeleteGroupPacket;
+import earth.terrarium.heracles.common.network.packets.groups.EditGroupPacket;
+import earth.terrarium.heracles.common.network.packets.quests.ServerboundUpdateGroupOrderPacket;
+import earth.terrarium.heracles.common.utils.ItemValue;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.network.chat.Component;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
+import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Consumer;
 
 public class GroupsList extends SelectionList<GroupsList.Entry> {
@@ -68,6 +72,10 @@ public class GroupsList extends SelectionList<GroupsList.Entry> {
         if (selectedEntry != null) {
             setSelected(selectedEntry);
         }
+    }
+
+    public void updateOrder() {
+        update(ClientQuests.groups(), getSelected() == null ? null : getSelected().name());
     }
 
     public void addGroup(String id, Group group) {
@@ -147,6 +155,59 @@ public class GroupsList extends SelectionList<GroupsList.Entry> {
                     return true;
                 }
             }
+            if (button == InputConstants.MOUSE_BUTTON_RIGHT) {
+                MouseClick mouse = ClientUtils.getMousePos();
+                ContextualMenuScreen.getMenu()
+                    .ifPresent(menu -> menu.start(this.list.x + this.list.width + 6, mouse.y())
+                        .addOption(Component.literal("\uD83D\uDCAC Edit Name"), () -> {
+                            if (Minecraft.getInstance().screen instanceof QuestsEditScreen screen) {
+                                screen.textModal().setVisible(true);
+                                screen.textModal().setText(this.group.title());
+                                screen.textModal().setCallback((unused, text) -> {
+                                    this.group = this.group.withTitle(text);
+                                    NetworkHandler.CHANNEL.sendToServer(EditGroupPacket.ofTitle(name, text));
+                                    screen.textModal().setVisible(false);
+                                });
+                            }
+                        })
+                        .addOption(Component.literal("\uD83D\uDDBC Edit Icon"), () -> {
+                            if (Minecraft.getInstance().screen instanceof QuestsEditScreen screen) {
+                                screen.itemModal().setVisible(true);
+                                screen.itemModal().setCallback(item -> {
+                                    QuestIcon<?> icon = new ItemQuestIcon(new ItemValue(item));
+                                    this.group = this.group.withIcon(icon);
+                                    NetworkHandler.CHANNEL.sendToServer(EditGroupPacket.ofIcon(name, icon));
+                                    screen.itemModal().setVisible(false);
+                                });
+                            }
+                        })
+                        .addDivider()
+                        .addOption(Component.literal("⬆ Move Up"), () -> {
+                            int currentIndex = ClientQuests.groupOrders().indexOf(name);
+                            if (currentIndex > 0) {
+                                String previous = ClientQuests.groupOrders().get(currentIndex - 1);
+                                ClientQuests.groupOrders().set(currentIndex - 1, name);
+                                ClientQuests.groupOrders().set(currentIndex, previous);
+                                ClientQuests.updateGroupsWithOrder(new LinkedHashMap<>(ClientQuests.groups()));
+                                this.list.updateOrder();
+                                NetworkHandler.CHANNEL.sendToServer(new ServerboundUpdateGroupOrderPacket(ClientQuests.groupOrders()));
+                            }
+                        })
+                        .addOption(Component.literal("⬇ Move Down"), () -> {
+                            int currentIndex = ClientQuests.groupOrders().indexOf(name);
+                            if (currentIndex < ClientQuests.groupOrders().size() - 1) {
+                                String next = ClientQuests.groupOrders().get(currentIndex + 1);
+                                ClientQuests.groupOrders().set(currentIndex + 1, name);
+                                ClientQuests.groupOrders().set(currentIndex, next);
+                                ClientQuests.updateGroupsWithOrder(new LinkedHashMap<>(ClientQuests.groups()));
+                                this.list.updateOrder();
+                                NetworkHandler.CHANNEL.sendToServer(new ServerboundUpdateGroupOrderPacket(ClientQuests.groupOrders()));
+                            }
+                        })
+                        .open());
+                return true;
+            }
+            this.list.onSelection.accept(this);
             return super.mouseClicked(mouseX, mouseY, button);
         }
 

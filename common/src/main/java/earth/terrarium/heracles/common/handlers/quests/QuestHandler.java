@@ -33,6 +33,7 @@ public class QuestHandler {
     private static final Map<String, Quest> QUESTS = HashBiMap.create();
     private static final Set<String> QUEST_KEYS = Sets.newConcurrentHashSet();
     private static final Map<String, Group> GROUPS = new LinkedHashMap<>();
+    private static final List<String> GROUPS_ORDERS = new ArrayList<>();
     private static Path lastPath;
 
     private static final Map<String, ScheduledFuture<?>> SAVING_FUTURES = new HashMap<>();
@@ -78,6 +79,7 @@ public class QuestHandler {
 
     private static void loadGroups(Path path) {
         GROUPS.clear();
+        GROUPS_ORDERS.clear();
         File json = path.resolve("groups.json").toFile();
         File txt = path.resolve("groups.txt").toFile();
         boolean save = false;
@@ -86,9 +88,10 @@ public class QuestHandler {
                 Reader reader = Files.newBufferedReader(json.toPath());
                 JsonObject element = Constants.PRETTY_GSON.fromJson(reader, JsonObject.class);
                 Map<String, Group> groups = Codec.unboundedMap(Codec.STRING, Group.CODEC)
-                    .parse(JsonOps.INSTANCE, element)
+                    .parse(JsonOps.INSTANCE, element.get("groups"))
                     .getOrThrow(false, LOGGER::error);
                 GROUPS.putAll(groups);
+                element.getAsJsonArray("order").forEach(e -> GROUPS_ORDERS.add(e.getAsString()));
             } catch (Exception e) {
                 LOGGER.error("Failed to load quest groups", e);
             }
@@ -103,10 +106,14 @@ public class QuestHandler {
                 Heracles.LOGGER.error("Failed to load quest groups", e);
             }
         }
+
         for (Quest value : QUESTS.values()) {
             for (String s : value.display().groups().keySet()) {
                 if (!GROUPS.containsKey(s)) {
                     GROUPS.put(s, new Group(s));
+                    if (!GROUPS_ORDERS.contains(s)) {
+                        GROUPS_ORDERS.add(s);
+                    }
                 }
             }
         }
@@ -164,10 +171,13 @@ public class QuestHandler {
         }
         try {
             File file = new File(lastPath.toFile(), "groups.json");
+            JsonObject element = new JsonObject();
             JsonElement json = Codec.unboundedMap(Codec.STRING, Group.CODEC)
                 .encodeStart(JsonOps.INSTANCE, GROUPS)
                 .getOrThrow(false, LOGGER::error);
-            org.apache.commons.io.FileUtils.write(file, Constants.PRETTY_GSON.toJson(json), StandardCharsets.UTF_8);
+            element.add("groups", json);
+            element.add("order", Constants.PRETTY_GSON.toJsonTree(GROUPS_ORDERS));
+            org.apache.commons.io.FileUtils.write(file, Constants.PRETTY_GSON.toJson(element), StandardCharsets.UTF_8);
         } catch (Exception e) {
             Heracles.LOGGER.error("Failed to save quest groups", e);
         }
@@ -221,8 +231,13 @@ public class QuestHandler {
     public static Map<String, Group> groups() {
         if (GROUPS.isEmpty()) {
             GROUPS.put("main", new Group("Main"));
+            GROUPS_ORDERS.add("main");
             saveGroups();
         }
         return GROUPS;
+    }
+
+    public static List<String> groupsOrder() {
+        return GROUPS_ORDERS;
     }
 }

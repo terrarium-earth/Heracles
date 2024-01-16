@@ -38,7 +38,7 @@ public record Group(
     @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
     public Group edit(Optional<QuestIcon<?>> icon, Optional<String> title, Optional<String> description) {
         return new Group(
-            this.icon.or(() -> icon),
+            icon.or(() -> this.icon),
             title.orElse(this.title),
             description.orElse(this.description)
         );

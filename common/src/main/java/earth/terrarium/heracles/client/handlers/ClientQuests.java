@@ -17,6 +17,7 @@ public class ClientQuests {
     private static final Map<String, ModUtils.QuestStatus> STATUS = new HashMap<>();
     private static final Map<String, List<QuestEntry>> BY_GROUPS = new HashMap<>();
     private static final Map<String, Group> GROUPS = new LinkedHashMap<>();
+    private static final List<String> GROUP_ORDERS = new ArrayList<>();
 
     private static final Map<String, QuestProgress> PROGRESS = new HashMap<>();
 
@@ -37,11 +38,32 @@ public class ClientQuests {
             addEntry(entry.getKey(), entry.getValue(), quests);
         }
 
-        GROUPS.putAll(groups);
+        updateGroupsWithOrder(groups);
+
         for (QuestEntry value : ENTRIES.values()) {
             for (String s : value.value.display().groups().keySet()) {
                 BY_GROUPS.computeIfAbsent(s, k -> new ArrayList<>()).add(value);
             }
+        }
+    }
+
+    public static void syncGroupOrders(List<String> groupOrders) {
+        GROUP_ORDERS.clear();
+        GROUP_ORDERS.addAll(groupOrders);
+        updateGroupsWithOrder(new LinkedHashMap<>(GROUPS));
+    }
+
+    public static void updateGroupsWithOrder(Map<String, Group> groups) {
+        GROUPS.clear();
+        for (String id : ClientQuests.GROUP_ORDERS) {
+            Group group = groups.get(id);
+            if (group == null) continue;
+            GROUPS.put(id, group);
+        }
+
+        for (var entry : groups.entrySet()) {
+            if (GROUPS.containsKey(entry.getKey())) continue;
+            GROUPS.put(entry.getKey(), entry.getValue());
         }
     }
 
@@ -125,6 +147,10 @@ public class ClientQuests {
 
     public static Collection<QuestEntry> entries() {
         return ENTRIES.values();
+    }
+
+    public static List<String> groupOrders() {
+        return GROUP_ORDERS;
     }
 
     public static QuestProgress getProgress(String id) {

@@ -38,6 +38,7 @@ public class NetworkHandler {
         CHANNEL.register(ClientboundRemoveQuestPacket.TYPE);
         CHANNEL.register(ClientboundUpdateQuestPacket.TYPE);
         CHANNEL.register(QuestUnlockedPacket.TYPE);
+        CHANNEL.register(SyncGroupOrderPacket.TYPE);
 
         CHANNEL.register(OpenGroupPacket.TYPE);
         CHANNEL.register(OpenQuestPacket.TYPE);
@@ -52,6 +53,7 @@ public class NetworkHandler {
         CHANNEL.register(CheckTaskPacket.TYPE);
         CHANNEL.register(ManualItemTaskPacket.TYPE);
         CHANNEL.register(ManualXpTaskPacket.TYPE);
-        CHANNEL.registerPacket(EditGroupPacket.TYPE);
+        CHANNEL.register(EditGroupPacket.TYPE);
+        CHANNEL.register(ServerboundUpdateGroupOrderPacket.TYPE);
     }
 }

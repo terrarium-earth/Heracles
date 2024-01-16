@@ -1,9 +1,9 @@
 package earth.terrarium.heracles.common.network.packets.groups;
 
+import com.teamresourceful.resourcefullib.common.network.Packet;
+import com.teamresourceful.resourcefullib.common.network.base.PacketType;
+import com.teamresourceful.resourcefullib.common.network.base.ServerboundPacketType;
 import com.teamresourceful.resourcefullib.common.networking.PacketHelper;
-import com.teamresourceful.resourcefullib.common.networking.base.Packet;
-import com.teamresourceful.resourcefullib.common.networking.base.PacketContext;
-import com.teamresourceful.resourcefullib.common.networking.base.PacketHandler;
 import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.api.groups.Group;
 import earth.terrarium.heracles.api.quests.QuestIcon;
@@ -11,8 +11,10 @@ import earth.terrarium.heracles.api.quests.QuestIcons;
 import earth.terrarium.heracles.common.handlers.quests.QuestHandler;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Player;
 
 import java.util.Optional;
+import java.util.function.Consumer;
 
 public record EditGroupPacket(
     String group,
@@ -21,20 +23,34 @@ public record EditGroupPacket(
     Optional<String> description
 ) implements Packet<EditGroupPacket> {
 
-    public static final ResourceLocation ID = new ResourceLocation(Heracles.MOD_ID, "edit_group");
-    public static final PacketHandler<EditGroupPacket> HANDLER = new Handler();
+    public static final ServerboundPacketType<EditGroupPacket> TYPE = new Type();
 
-    @Override
-    public ResourceLocation getID() {
-        return ID;
+    public static EditGroupPacket ofTitle(String group, String title) {
+        return new EditGroupPacket(group, Optional.empty(), Optional.of(title), Optional.empty());
+    }
+
+    public static EditGroupPacket ofIcon(String group, QuestIcon<?> icon) {
+        return new EditGroupPacket(group, Optional.of(icon), Optional.empty(), Optional.empty());
     }
 
     @Override
-    public PacketHandler<EditGroupPacket> getHandler() {
-        return HANDLER;
+    public PacketType<EditGroupPacket> type() {
+        return TYPE;
     }
 
-    public static class Handler implements PacketHandler<EditGroupPacket> {
+    public static class Type implements ServerboundPacketType<EditGroupPacket> {
+
+        public static final ResourceLocation ID = new ResourceLocation(Heracles.MOD_ID, "edit_group");
+
+        @Override
+        public Class<EditGroupPacket> type() {
+            return EditGroupPacket.class;
+        }
+
+        @Override
+        public ResourceLocation id() {
+            return ID;
+        }
 
         @Override
         public void encode(EditGroupPacket message, FriendlyByteBuf buffer) {
@@ -55,8 +71,8 @@ public record EditGroupPacket(
         }
 
         @Override
-        public PacketContext handle(EditGroupPacket message) {
-            return (player, level) -> {
+        public Consumer<Player> handle(EditGroupPacket message) {
+            return (player) -> {
                 if (player.hasPermissions(2) && QuestHandler.groups().containsKey(message.group())) {
                     Group group = QuestHandler.groups().get(message.group());
                     QuestHandler.groups().put(message.group(), new Group(

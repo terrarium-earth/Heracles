@@ -134,7 +134,7 @@ public class QuestsEditScreen extends QuestsScreen implements ContextualMenuScre
         ));
         this.textModal.setData(Unit.INSTANCE);
 
-        this.contextMenu = addRenderableWidget(-1, new ContextMenu());
+        this.contextMenu = addRenderableWidget(-1, new GroupsContextMenu());
     }
 
     @Override

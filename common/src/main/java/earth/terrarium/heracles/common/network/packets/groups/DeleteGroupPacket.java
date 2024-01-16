@@ -1,28 +1,35 @@
 package earth.terrarium.heracles.common.network.packets.groups;
 
-import com.teamresourceful.resourcefullib.common.networking.base.Packet;
-import com.teamresourceful.resourcefullib.common.networking.base.PacketContext;
-import com.teamresourceful.resourcefullib.common.networking.base.PacketHandler;
+import com.teamresourceful.resourcefullib.common.network.Packet;
+import com.teamresourceful.resourcefullib.common.network.base.PacketType;
+import com.teamresourceful.resourcefullib.common.network.base.ServerboundPacketType;
 import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.common.handlers.quests.QuestHandler;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Player;
+
+import java.util.function.Consumer;
 
 public record DeleteGroupPacket(String group) implements Packet<DeleteGroupPacket> {
-    public static final ResourceLocation ID = new ResourceLocation(Heracles.MOD_ID, "delete_group");
-    public static final PacketHandler<DeleteGroupPacket> HANDLER = new Handler();
+    public static final ServerboundPacketType<DeleteGroupPacket> TYPE = new Type();
 
     @Override
-    public ResourceLocation getID() {
-        return ID;
+    public PacketType<DeleteGroupPacket> type() {
+        return TYPE;
     }
 
-    @Override
-    public PacketHandler<DeleteGroupPacket> getHandler() {
-        return HANDLER;
-    }
+    private static class Type implements ServerboundPacketType<DeleteGroupPacket> {
 
-    public static class Handler implements PacketHandler<DeleteGroupPacket> {
+        @Override
+        public Class<DeleteGroupPacket> type() {
+            return DeleteGroupPacket.class;
+        }
+
+        @Override
+        public ResourceLocation id() {
+            return new ResourceLocation(Heracles.MOD_ID, "delete_group");
+        }
 
         @Override
         public void encode(DeleteGroupPacket message, FriendlyByteBuf buffer) {
@@ -35,8 +42,8 @@ public record DeleteGroupPacket(String group) implements Packet<DeleteGroupPacke
         }
 
         @Override
-        public PacketContext handle(DeleteGroupPacket message) {
-            return (player, level) -> {
+        public Consumer<Player> handle(DeleteGroupPacket message) {
+            return (player) -> {
                 if (player.hasPermissions(2) && QuestHandler.groups().containsKey(message.group)) {
                     QuestHandler.groups().remove(message.group);
                     QuestHandler.saveGroups();

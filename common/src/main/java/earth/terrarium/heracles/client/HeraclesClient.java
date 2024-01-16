@@ -2,6 +2,7 @@ package earth.terrarium.heracles.client;
 
 import com.mojang.blaze3d.platform.InputConstants;
 import earth.terrarium.heracles.Heracles;
+import earth.terrarium.heracles.client.data.ThemeHandler;
 import earth.terrarium.heracles.client.handlers.ClientQuests;
 import earth.terrarium.heracles.client.handlers.DisplayConfig;
 import earth.terrarium.heracles.client.handlers.QuestTutorial;
@@ -14,9 +15,12 @@ import earth.terrarium.heracles.common.network.packets.groups.OpenGroupPacket;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.RegistryAccess;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.packs.resources.PreparableReloadListener;
 import net.minecraft.world.item.Item;
 
 import java.util.List;
+import java.util.function.BiConsumer;
 
 public class HeraclesClient {
 
@@ -70,5 +74,9 @@ public class HeraclesClient {
 
     public static void displayQuestUnlockedToast(String id) {
         QuestUnlockedToast.add(Minecraft.getInstance().getToasts(), id);
+    }
+
+    public static void initReloadListeners(BiConsumer<ResourceLocation, PreparableReloadListener> init) {
+        init.accept(new ResourceLocation(Heracles.MOD_ID, "theme"), ThemeHandler.INSTANCE);
     }
 }

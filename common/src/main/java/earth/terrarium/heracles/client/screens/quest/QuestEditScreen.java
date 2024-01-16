@@ -1,5 +1,6 @@
 package earth.terrarium.heracles.client.screens.quest;
 
+import com.mojang.blaze3d.platform.InputConstants;
 import earth.terrarium.heracles.api.client.settings.SettingInitializer;
 import earth.terrarium.heracles.api.client.settings.Settings;
 import earth.terrarium.heracles.api.rewards.QuestReward;
@@ -9,9 +10,10 @@ import earth.terrarium.heracles.api.tasks.QuestTask;
 import earth.terrarium.heracles.api.tasks.QuestTaskType;
 import earth.terrarium.heracles.api.tasks.QuestTasks;
 import earth.terrarium.heracles.client.handlers.ClientQuests;
-import earth.terrarium.heracles.client.screens.quest.editing.QuestTextEditor;
+import earth.terrarium.heracles.client.screens.quest.editing.QuestMultiLineEditBox;
 import earth.terrarium.heracles.client.screens.quest.rewards.RewardListWidget;
 import earth.terrarium.heracles.client.screens.quest.tasks.TaskListWidget;
+import earth.terrarium.heracles.client.widgets.editor.MultiLineEditBox;
 import earth.terrarium.heracles.client.widgets.modals.CreateObjectModal;
 import earth.terrarium.heracles.client.widgets.modals.EditObjectModal;
 import earth.terrarium.heracles.client.widgets.modals.ItemModal;
@@ -29,12 +31,13 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.ImageButton;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.components.events.GuiEventListener;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.nio.file.Path;
-import java.util.ArrayList;
+import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
@@ -42,7 +45,7 @@ public class QuestEditScreen extends BaseQuestScreen {
 
     private TaskListWidget taskList;
     private RewardListWidget rewardList;
-    private QuestTextEditor descriptionBox;
+    private MultiLineEditBox descriptionBox;
 
     private CreateObjectModal createModal;
     private ItemModal itemModal;
@@ -56,6 +59,14 @@ public class QuestEditScreen extends BaseQuestScreen {
         super.updateProgress(newProgress);
         this.taskList.update(this.quest().tasks().values());
         this.rewardList.update(this.content.fromGroup(), this.content.id(), this.quest());
+    }
+
+    @Override
+    protected void rebuildWidgets() {
+        var oldBox = this.descriptionBox;
+        saveDescription();
+        super.rebuildWidgets();
+        this.descriptionBox.setValue(oldBox.getValue());
     }
 
     @Override
@@ -147,8 +158,8 @@ public class QuestEditScreen extends BaseQuestScreen {
             )).setTooltip(Tooltip.create(ConstantComponents.TOGGLE_EDIT));
         }
 
-        this.descriptionBox = new QuestTextEditor(contentX, contentY, contentWidth, contentHeight);
-        this.descriptionBox.setContent(String.join("\n", this.quest().display().description()).replace("§", "&&"));
+        this.descriptionBox = new QuestMultiLineEditBox(contentX, contentY, contentWidth, contentHeight);
+        this.descriptionBox.setValue(String.join("\n", this.quest().display().description()).replace("§", "&&"));
 
         if (Minecraft.getInstance().isLocalServer()) {
             addRenderableWidget(new ImageButton(this.width - 36, 1, 11, 11, 33, 59, 11, HEADING, 256, 256, (button) -> {
@@ -203,10 +214,25 @@ public class QuestEditScreen extends BaseQuestScreen {
     }
 
     @Override
+    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+        if (Screen.hasControlDown() && keyCode == InputConstants.KEY_S) {
+            saveDescription();
+            return true;
+        }
+        return super.keyPressed(keyCode, scanCode, modifiers);
+    }
+
+    @Override
     public void removed() {
         super.removed();
-        ClientQuests.updateQuest(entry(), quest ->
-            NetworkQuestData.builder().description(new ArrayList<>(this.descriptionBox.lines()))
+        saveDescription();
+    }
+
+    private void saveDescription() {
+        ClientQuests.updateQuest(
+            entry(),
+            quest -> NetworkQuestData.builder().description(List.of(this.descriptionBox.getValue().split("\n"))),
+            false
         );
     }
 

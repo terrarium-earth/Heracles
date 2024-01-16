@@ -1,6 +1,7 @@
 package earth.terrarium.heracles.common.constants;
 
 import com.teamresourceful.resourcefullib.common.exceptions.UtilityClassException;
+import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.common.annotations.Translate;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
@@ -19,8 +20,10 @@ public final class ConstantComponents {
     public static final Component DOT = Component.literal(" • ");
     public static final Component DASH = Component.literal(" - ");
     public static final Component EM_DASH = Component.literal(" — ");
+    public static final Component ARROW_UP = Component.literal("▲");
     public static final Component ARROW_RIGHT = Component.literal("▶");
     public static final Component ARROW_DOWN = Component.literal("▼");
+    public static final Component PLUS = Component.literal("+");
     public static final Component X = Component.literal("x");
 
     @Translate("Save")
@@ -32,6 +35,9 @@ public final class ConstantComponents {
     @Translate("Submit")
     public static final Component SUBMIT = Component.translatable("gui.heracles.submit");
 
+    @Translate("Confirm")
+    public static final Component CONFIRM = Component.translatable("gui.heracles.confirm");
+
     @Translate("Search")
     public static final Component SEARCH = Component.translatable("gui.heracles.search");
 
@@ -40,6 +46,9 @@ public final class ConstantComponents {
 
     @Translate("Identifier")
     public static final Component ID = Component.translatable("gui.heracles.id");
+
+    @Translate("Type")
+    public static final Component TYPE = Component.translatable("gui.heracles.type");
 
     @Translate("Toggle Edit Mode")
     public static final Component TOGGLE_EDIT = Component.translatable("gui.heracles.toggle_edit");
@@ -64,6 +73,9 @@ public final class ConstantComponents {
 
     public static final class Groups {
 
+        @Translate("Groups")
+        public static final Component GROUPS = Component.translatable("gui.heracles.group.groups");
+
         @Translate("Create Group")
         public static final Component CREATE = Component.translatable("gui.heracles.group.create");
 
@@ -87,6 +99,9 @@ public final class ConstantComponents {
 
         @Translate("Unclaimed Rewards")
         public static final Component CLAIMABLE = Component.translatable("gui.heracles.quests.claimable").setStyle(Style.EMPTY.withColor(ChatFormatting.GOLD));
+
+        @Translate("Add Dependency")
+        public static final Component ADD_DEPENDENCY = Component.translatable("gui.heracles.quests.add_dependency");
     }
 
     public static final class Tasks {
@@ -147,7 +162,9 @@ public final class ConstantComponents {
     }
 
     static {
-        //printTranslations(ConstantComponents.class);
+        Heracles.LOGGER.debug("[Heracles Client] Begin Translations Dump");
+        printTranslations(ConstantComponents.class);
+        Heracles.LOGGER.debug("[Heracles Client] End Translations Dump");
     }
 
     private static void printTranslations(Class<?> clazz) {
@@ -162,7 +179,7 @@ public final class ConstantComponents {
                         if (field.get(null) instanceof MutableComponent component && component.getContents() instanceof TranslatableContents translation) {
                             String key = translation.getKey();
                             String fallback = field.getAnnotation(Translate.class).value();
-                            System.out.println("\"" + key + "\": \"" + fallback + "\",");
+                            Heracles.LOGGER.debug("\"" + key + "\": \"" + fallback + "\",");
                         }
                     } catch (Exception ignored) {}
                 }

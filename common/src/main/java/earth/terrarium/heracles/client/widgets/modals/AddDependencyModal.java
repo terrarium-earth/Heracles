@@ -4,15 +4,16 @@ import com.teamresourceful.resourcefullib.client.screens.CursorScreen;
 import com.teamresourceful.resourcefullib.client.utils.CursorUtils;
 import com.teamresourceful.resourcefullib.client.utils.RenderUtils;
 import earth.terrarium.heracles.Heracles;
+import earth.terrarium.heracles.api.client.theme.EditorTheme;
 import earth.terrarium.heracles.api.quests.Quest;
 import earth.terrarium.heracles.client.handlers.ClientQuests;
 import earth.terrarium.heracles.client.widgets.base.BaseModal;
 import earth.terrarium.heracles.client.widgets.boxes.AutocompleteEditBox;
+import earth.terrarium.heracles.common.constants.ConstantComponents;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Tooltip;
-import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.ArrayList;
@@ -45,9 +46,9 @@ public class AddDependencyModal extends BaseModal {
         }, ClientQuests.QuestEntry::key, value -> addDependency()));
 
         this.addButton = addChild(
-            new Button.Builder(Component.literal("+"), b -> addDependency())
+            new Button.Builder(ConstantComponents.PLUS, b -> addDependency())
                 .bounds(x + 142, y + 19, 16, 16)
-                .tooltip(Tooltip.create(Component.literal("Add Dependency")))
+                .tooltip(Tooltip.create(ConstantComponents.Quests.ADD_DEPENDENCY))
                 .build()
         );
     }
@@ -82,7 +83,7 @@ public class AddDependencyModal extends BaseModal {
                     dependency.display().icon().render(graphics, scissor.stack(), x + 9, tempY + 1, 22, 22);
                     graphics.drawString(
                         Minecraft.getInstance().font,
-                        dependency.display().title(), x + 36, tempY + 6, 0xffffff,
+                        dependency.display().title(), x + 36, tempY + 6, EditorTheme.getModalDependenciesDependencyTitle(),
                         false
                     );
                     tempY += 24;
@@ -126,7 +127,7 @@ public class AddDependencyModal extends BaseModal {
     protected void renderForeground(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
         graphics.drawString(
             Minecraft.getInstance().font,
-            "Add Dependency", x + 8, y + 6, 0xffffff,
+            ConstantComponents.Quests.ADD_DEPENDENCY, x + 8, y + 6, EditorTheme.getModalDependenciesTitle(),
             false
         );
     }

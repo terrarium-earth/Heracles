@@ -4,6 +4,7 @@ import com.teamresourceful.resourcefullib.client.scissor.ScissorBoxStack;
 import com.teamresourceful.resourcefullib.common.codecs.predicates.NbtPredicate;
 import earth.terrarium.heracles.api.client.DisplayWidget;
 import earth.terrarium.heracles.api.client.WidgetUtils;
+import earth.terrarium.heracles.api.client.theme.QuestScreenTheme;
 import earth.terrarium.heracles.api.tasks.client.display.TaskTitleFormatter;
 import earth.terrarium.heracles.api.tasks.defaults.ItemInteractTask;
 import earth.terrarium.heracles.common.handlers.progress.TaskProgress;
@@ -45,15 +46,14 @@ public record ItemInteractTaskWidget(
         WidgetUtils.drawBackground(graphics, x, y, width, getHeight(width));
         int iconSize = 32;
         this.task.icon().renderOrStack(this.getCurrentItem(), graphics, scissor, x + 5, y + 5, iconSize, mouseX, mouseY);
-        graphics.fill(x + iconSize + 9, y + 5, x + iconSize + 10, y + getHeight(width) - 5, 0xFF909090);
         graphics.drawString(
             font,
-            task.titleOr(TaskTitleFormatter.create(this.task)), x + iconSize + 16, y + 6, 0xFFFFFFFF,
+            task.titleOr(TaskTitleFormatter.create(this.task)), x + iconSize + 16, y + 6, QuestScreenTheme.getTaskTitle(),
             false
         );
         graphics.drawString(
             font,
-            Component.translatable(DESC, Component.keybind("key.use")), x + iconSize + 16, y + 8 + font.lineHeight, 0xFF808080,
+            Component.translatable(DESC, Component.keybind("key.use")), x + iconSize + 16, y + 8 + font.lineHeight, QuestScreenTheme.getTaskDescription(),
             false
         );
         WidgetUtils.drawProgressText(graphics, x, y, width, this.task, this.progress);

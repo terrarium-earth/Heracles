@@ -42,7 +42,7 @@ public class QuestHandler {
 
     public static void load(RegistryAccess access, Path path) {
         failedToLoad = false;
-        LOGGER.info("Loading quests");
+        Heracles.LOGGER.info("Loading quests");
         Path heraclesPath = path.resolve(Heracles.MOD_ID);
         QuestHandler.lastPath = heraclesPath;
         Path questsPath = heraclesPath.resolve("quests");
@@ -51,8 +51,8 @@ public class QuestHandler {
             Files.createDirectories(questsPath);
             FileUtils.streamFilesAndParse(questsPath, (reader, id) -> load(access, reader, id, tempQuests), FileUtils::isJson);
         } catch (Exception e) {
-            LOGGER.error("Failed to load quests", e);
-            LOGGER.error("Quests reverted to last known good state");
+            Heracles.LOGGER.error("Failed to load quests", e);
+            Heracles.LOGGER.error("Quests reverted to last known good state");
             failedToLoad = true;
             return;
         }
@@ -68,11 +68,11 @@ public class QuestHandler {
     private static void load(RegistryAccess access, Reader reader, String id, Map<String, Quest> quests) {
         try {
             JsonObject element = Constants.PRETTY_GSON.fromJson(reader, JsonObject.class);
-            Quest quest = Quest.CODEC.parse(RegistryOps.create(JsonOps.INSTANCE, access), element).getOrThrow(false, LOGGER::error);
+            Quest quest = Quest.CODEC.parse(RegistryOps.create(JsonOps.INSTANCE, access), element).getOrThrow(false, Heracles.LOGGER::error);
             quest.dependencies().remove(id); // Remove self from dependencies
             quests.put(id, quest);
         } catch (Exception e) {
-            LOGGER.error("Failed to load quest " + id, e);
+            Heracles.LOGGER.error("Failed to load quest " + id, e);
         }
     }
 
@@ -100,7 +100,7 @@ public class QuestHandler {
                 Files.deleteIfExists(txt.toPath());
                 save = true;
             } catch (Exception e) {
-                LOGGER.error("Failed to load quest groups", e);
+                Heracles.LOGGER.error("Failed to load quest groups", e);
             }
         }
         for (Quest value : QUESTS.values()) {
@@ -118,14 +118,14 @@ public class QuestHandler {
     public static void markDirty(String id) {
         try {
             if (lastPath == null) {
-                LOGGER.error("Failed to mark quest dirty, last path is null");
+                Heracles.LOGGER.error("Failed to mark quest dirty, last path is null");
                 return;
             }
             Quest quest = QUESTS.get(id);
             Path questsPath = lastPath.resolve("quests");
             File file = new File(questsPath.toFile(), pickQuestPath(quest) + "/" + id + ".json");
             JsonElement json = Quest.CODEC.encodeStart(RegistryOps.create(JsonOps.INSTANCE, Heracles.getRegistryAccess()), quest)
-                .getOrThrow(false, LOGGER::error);
+                .getOrThrow(false, Heracles.LOGGER::error);
             if (SAVING_FUTURES.containsKey(id)) {
                 SAVING_FUTURES.get(id).cancel(true);
             }
@@ -134,7 +134,7 @@ public class QuestHandler {
                     file.getParentFile().mkdirs();
                     org.apache.commons.io.FileUtils.write(file, Constants.PRETTY_GSON.toJson(json), StandardCharsets.UTF_8);
                 } catch (Exception e) {
-                    LOGGER.error("Failed to save quest " + id, e);
+                    Heracles.LOGGER.error("Failed to save quest " + id, e);
                 }
             }, 1500, TimeUnit.MILLISECONDS));
         } catch (Exception ignored) {}
@@ -169,7 +169,7 @@ public class QuestHandler {
                 .getOrThrow(false, LOGGER::error);
             org.apache.commons.io.FileUtils.write(file, Constants.PRETTY_GSON.toJson(json), StandardCharsets.UTF_8);
         } catch (Exception e) {
-            LOGGER.error("Failed to save quest groups", e);
+            Heracles.LOGGER.error("Failed to save quest groups", e);
         }
     }
 
@@ -192,7 +192,7 @@ public class QuestHandler {
             delayedDeletion.cancel(true);
         }
         if (lastPath == null) {
-            LOGGER.error("Failed to remove dead quest files, last path is null");
+            Heracles.LOGGER.error("Failed to remove dead quest files, last path is null");
             return;
         }
         Path questsPath = lastPath.resolve("quests");
@@ -209,7 +209,7 @@ public class QuestHandler {
                         });
                 }
             } catch (Exception e) {
-                LOGGER.error("Failed to remove dead quest files", e);
+                Heracles.LOGGER.error("Failed to remove dead quest files", e);
             }
         }, 1500, TimeUnit.MILLISECONDS);
     }

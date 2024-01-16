@@ -1,13 +1,14 @@
 package earth.terrarium.heracles.client.widgets;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import earth.terrarium.heracles.client.widgets.buttons.ThemedButton;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.ImageButton;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.resources.ResourceLocation;
 
-public class SelectableImageButton extends ImageButton {
+public class SelectableImageButton extends ImageButton implements ThemedButton {
 
     private boolean selected;
 

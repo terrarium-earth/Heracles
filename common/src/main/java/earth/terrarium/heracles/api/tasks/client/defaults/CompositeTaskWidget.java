@@ -2,11 +2,13 @@ package earth.terrarium.heracles.api.tasks.client.defaults;
 
 import com.teamresourceful.resourcefullib.client.scissor.ScissorBoxStack;
 import earth.terrarium.heracles.api.client.DisplayWidget;
+import earth.terrarium.heracles.api.client.WidgetUtils;
+import earth.terrarium.heracles.api.client.theme.QuestScreenTheme;
 import earth.terrarium.heracles.api.tasks.QuestTask;
-import earth.terrarium.heracles.api.tasks.QuestTaskDisplayFormatter;
 import earth.terrarium.heracles.api.tasks.client.QuestTaskWidgets;
 import earth.terrarium.heracles.api.tasks.client.display.TaskTitleFormatters;
 import earth.terrarium.heracles.api.tasks.defaults.CompositeTask;
+import earth.terrarium.heracles.common.constants.ConstantComponents;
 import earth.terrarium.heracles.common.handlers.progress.TaskProgress;
 import earth.terrarium.heracles.common.utils.ModUtils;
 import net.minecraft.client.Minecraft;
@@ -44,27 +46,20 @@ public final class CompositeTaskWidget implements DisplayWidget {
 
     @Override
     public void render(GuiGraphics graphics, ScissorBoxStack scissor, int x, int y, int width, int mouseX, int mouseY, boolean hovered, float partialTicks) {
-        int height = getHeight(width);
-        graphics.fill(x, y, x + width, y + height, 0x80808080);
-        graphics.renderOutline(x, y, width, height, 0xFF909090);
+        WidgetUtils.drawBackground(graphics, x, y, width, getHeight(width));
 
         Font font = Minecraft.getInstance().font;
         int start = graphics.drawString(
             font,
-            isOpened ? "▼" : "▶", x + 48, y + 5, 0xFFFFFFFF,
+            isOpened ? ConstantComponents.ARROW_DOWN : ConstantComponents.ARROW_RIGHT, x + 48, y + 5, QuestScreenTheme.getTaskTitle(),
             false
         );
         graphics.drawString(
             font,
-            Component.translatable(TaskTitleFormatters.toTranslationKey(this.task, this.task.amount() == 1), this.task.amount()), start + 2, y + 5, 0xFFFFFFFF,
+            Component.translatable(TaskTitleFormatters.toTranslationKey(this.task, this.task.amount() == 1), this.task.amount()), start + 2, y + 5, QuestScreenTheme.getTaskTitle(),
             false
         );
-        String progress = QuestTaskDisplayFormatter.create(this.task, this.progress);
-        graphics.drawString(
-            font,
-            progress, x + width - 5 - font.width(progress), y + 6, 0xFFFFFFFF,
-            false
-        );
+        WidgetUtils.drawProgressText(graphics, x, y, width, this.task, this.progress);
 
         if (isOpened) {
             int yOffset = 19;

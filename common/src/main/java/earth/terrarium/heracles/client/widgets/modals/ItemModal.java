@@ -5,6 +5,7 @@ import com.teamresourceful.resourcefullib.client.CloseablePoseStack;
 import com.teamresourceful.resourcefullib.client.screens.CursorScreen;
 import com.teamresourceful.resourcefullib.client.utils.CursorUtils;
 import earth.terrarium.heracles.Heracles;
+import earth.terrarium.heracles.api.client.theme.EditorTheme;
 import earth.terrarium.heracles.client.widgets.StateImageButton;
 import earth.terrarium.heracles.client.widgets.base.BaseModal;
 import earth.terrarium.heracles.common.constants.ConstantComponents;
@@ -14,7 +15,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.EditBox;
-import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
@@ -33,6 +33,8 @@ import java.util.function.Consumer;
 public class ItemModal extends BaseModal {
 
     public static final ResourceLocation TEXTURE = new ResourceLocation(Heracles.MOD_ID, "textures/gui/icons.png");
+    public static final Component TITLE = Component.translatable("gui.heracles.choose_item");
+    public static final Component MODE_TOOLTIP = Component.translatable("gui.heracles.switch_mode");
     private static final int WIDTH = 168;
     private static final int HEIGHT = 173;
 
@@ -51,7 +53,6 @@ public class ItemModal extends BaseModal {
     public ItemModal(int screenWidth, int screenHeight) {
         super(screenWidth, screenHeight, WIDTH, HEIGHT, 2);
         this.modeButton = addChild(new StateImageButton(x + 7, y + 5, 11, 11, 168, 0, 11, TEXTURE, 256, 256, 3, this::update));
-        this.modeButton.setTooltip(Tooltip.create(Component.literal("Switch Mode")));
         this.search = addChild(new EditBox(Minecraft.getInstance().font, x + 8, y + 19, 152, 14, ConstantComponents.SEARCH));
     }
 
@@ -93,10 +94,10 @@ public class ItemModal extends BaseModal {
     @Override
     protected void renderForeground(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
         Font font = Minecraft.getInstance().font;
-        int textX = (WIDTH - font.width("Choose Item")) / 2;
+        int textX = (WIDTH - font.width(TITLE)) / 2;
         graphics.drawString(
             font,
-            "Choose Item", x + textX, y + 6, 0x404040,
+            TITLE, x + textX, y + 6, EditorTheme.getModalIconsTitle(),
             false
         );
 
@@ -128,6 +129,9 @@ public class ItemModal extends BaseModal {
                 pose.translate(0, 0, -100);
                 graphics.renderFakeItem(value.getDefaultInstance(), itemX + 2, itemY + 1);
             }
+        }
+        if (this.modeButton.isHovered()) {
+            tooltip.add(MODE_TOOLTIP);
         }
         if (!tooltip.isEmpty()) {
             graphics.renderTooltip(font, tooltip, Optional.empty(), mouseX, mouseY);

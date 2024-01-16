@@ -40,7 +40,7 @@ public record LootTableReward(
             .create(LootContextParamSets.CHEST);
         LootTable table = player.server.getLootData().getLootTable(lootTable);
         if (table == LootTable.EMPTY) {
-            player.sendSystemMessage(Component.literal("Loot table " + lootTable + " does not exist!"));
+            player.sendSystemMessage(Component.translatable("gui.heracles.error.loot.not_found", lootTable));
             return Stream.empty();
         }
         List<ItemStack> rewards = new ArrayList<>();

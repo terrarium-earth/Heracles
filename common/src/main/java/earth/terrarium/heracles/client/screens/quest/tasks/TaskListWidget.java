@@ -32,9 +32,9 @@ import java.util.function.BiConsumer;
 
 public class TaskListWidget extends AbstractContainerEventHandler implements Renderable {
 
-    private static final HeadingWidget IN_PROGRESS = new HeadingWidget(Component.translatable("quest.heracles.in_progress"), 0xFF5691FF);
-    private static final HeadingWidget COMPLETED = new HeadingWidget(Component.translatable("quest.heracles.completed"), 0xFF04CB40);
-    private static final HeadingWidget DEPENDENCIES = new HeadingWidget(Component.translatable("quest.heracles.dependencies"), 0xFF000080);
+    private static final HeadingWidget DEPENDENCIES = new HeadingWidget(Component.translatable("quest.heracles.dependencies"), ModUtils.QuestStatus.LOCKED);
+    private static final HeadingWidget IN_PROGRESS = new HeadingWidget(Component.translatable("quest.heracles.in_progress"), ModUtils.QuestStatus.IN_PROGRESS);
+    private static final HeadingWidget COMPLETED = new HeadingWidget(Component.translatable("quest.heracles.completed"), ModUtils.QuestStatus.COMPLETED_CLAIMED);
 
     private final List<MutablePair<QuestTask<?, ?, ?>, DisplayWidget>> widgets = new ArrayList<>();
 
@@ -160,7 +160,7 @@ public class TaskListWidget extends AbstractContainerEventHandler implements Ren
                     boolean removeHovered = mouseX > x + width + 1 && mouseX < x + width + 12 && mouseY > tempY + 13 && mouseY < tempY + 24;
                     graphics.blit(AbstractQuestScreen.HEADING, x + width + 1, tempY + 13, 11, removeHovered ? 70 : 59, 11, 11, 256, 256);
                     CursorUtils.setCursor(removeHovered, CursorScreen.Cursor.POINTER);
-                    if (mouse != null && mouse.x() > x + width + 1 && mouse.x() < x + width + 12 && mouse.y() > y + 13 && mouse.y() < y + 24 && mouse.button() == 0) {
+                    if (mouse != null && mouse.x() > x + width + 1 && mouse.x() < x + width + 12 && mouse.y() > tempY + 13 && mouse.y() < tempY + 24 && mouse.button() == 0) {
                         clicked = Pair.of(pair.left, true);
                     }
                 }

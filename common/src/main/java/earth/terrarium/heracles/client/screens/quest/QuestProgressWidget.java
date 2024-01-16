@@ -1,5 +1,8 @@
 package earth.terrarium.heracles.client.screens.quest;
 
+import earth.terrarium.heracles.api.client.WidgetUtils;
+import earth.terrarium.heracles.api.client.theme.QuestScreenTheme;
+import earth.terrarium.heracles.common.utils.ModUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Renderable;
@@ -36,8 +39,7 @@ public final class QuestProgressWidget implements Renderable {
 
     @Override
     public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
-        graphics.fill(x, y, x + width, y + 30, 0xD0000000);
-        graphics.renderOutline(x, y, width, 30, tasks == completed ? (rewards == claimed ? 0xFF32C143 : 0xFFC7C700) : 0xFFFFFFFF);
+        WidgetUtils.drawStatusSummaryBackground(graphics, x, y, width, 30, tasks == completed ? (rewards == claimed ? ModUtils.QuestStatus.COMPLETED_CLAIMED : ModUtils.QuestStatus.COMPLETED) : ModUtils.QuestStatus.IN_PROGRESS);
 
         String title = tasks == completed ? TITLE_COMPLETE : TITLE_INCOMPLETE;
         String desc = tasks == completed ? (rewards == claimed ? DESC_COMPLETE_CLAIMED : (rewards - claimed > 1 ? DESC_COMPLETE_PLURAL : DESC_COMPLETE_SINGULAR)) : (tasks - completed > 1 ? DESC_PLURAL : DESC_SINGULAR);
@@ -45,17 +47,17 @@ public final class QuestProgressWidget implements Renderable {
 
         graphics.drawString(
             Minecraft.getInstance().font,
-            Component.translatable(title), x + 5, y + 5, 0xFFFFFFFF,
+            Component.translatable(title), x + 5, y + 5, QuestScreenTheme.getSummaryTitle(),
             false
         );
         graphics.drawString(
             Minecraft.getInstance().font,
-            completion, x + width - 5 - Minecraft.getInstance().font.width(completion), y + 5, 0xFFFFFFFF,
+            completion, x + width - 5 - Minecraft.getInstance().font.width(completion), y + 5, QuestScreenTheme.getSummaryProgress(),
             false
         );
         graphics.drawString(
             Minecraft.getInstance().font,
-            Component.translatable(desc, tasks == completed ? rewards - claimed : tasks - completed), x + 5, y + 25 - Minecraft.getInstance().font.lineHeight, 0xFF696969,
+            Component.translatable(desc, tasks == completed ? rewards - claimed : tasks - completed), x + 5, y + 25 - Minecraft.getInstance().font.lineHeight, QuestScreenTheme.getSummaryDescription(),
             false
         );
     }

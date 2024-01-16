@@ -1,16 +1,21 @@
 package earth.terrarium.heracles.client.widgets.modals;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.teamresourceful.resourcefullib.client.screens.CursorScreen;
 import com.teamresourceful.resourcefullib.client.utils.CursorUtils;
 import com.teamresourceful.resourcefullib.client.utils.RenderUtils;
 import earth.terrarium.heracles.api.client.DisplayWidget;
+import earth.terrarium.heracles.api.client.WidgetUtils;
+import earth.terrarium.heracles.api.client.theme.ModalsTheme;
 import earth.terrarium.heracles.api.rewards.QuestReward;
 import earth.terrarium.heracles.api.rewards.client.QuestRewardWidgets;
 import earth.terrarium.heracles.client.widgets.base.BaseModal;
+import earth.terrarium.heracles.client.widgets.buttons.ThemedButton;
 import earth.terrarium.heracles.common.constants.ConstantComponents;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 
 import java.util.*;
@@ -18,8 +23,12 @@ import java.util.function.Consumer;
 
 public class SelectRewardsModal extends BaseModal {
 
+    private static final String TITLE_SINGULAR = "reward.heracles.select.modal.title.singular";
+    private static final String TITLE_PLURAL = "reward.heracles.select.modal.title.plural";
+
     private final Map<String, DisplayWidget> widgets = new LinkedHashMap<>();
     private final Set<String> selected = new HashSet<>();
+    private final Button claimButton;
 
     private Consumer<Set<String>> callback = null;
     private int maxSelectable = 1;
@@ -30,7 +39,7 @@ public class SelectRewardsModal extends BaseModal {
     public SelectRewardsModal(int screenWidth, int screenHeight) {
         super(screenWidth, screenHeight, (int) (screenWidth * 0.75f), (int) (screenHeight * 0.8f));
 
-        addChild(Button.builder(ConstantComponents.Rewards.CLAIM_REWARD, b -> {
+        claimButton = addChild(ThemedButton.builder(ConstantComponents.Rewards.CLAIM_REWARD, b -> {
             this.setVisible(false);
             if (callback != null) {
                 callback.accept(selected);
@@ -52,12 +61,12 @@ public class SelectRewardsModal extends BaseModal {
     protected void renderForeground(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
         graphics.drawString(
             font,
-            "Select " + maxSelectable + " Reward" + (maxSelectable > 1 ? "s" : ""), x + 10, y + 6, 0x404040,
+            Component.translatable(maxSelectable > 1 ? TITLE_PLURAL : TITLE_SINGULAR, maxSelectable), x + 10, y + 6, ModalsTheme.getTitle(),
             false
         );
         graphics.drawString(
             font,
-            selected.size() + "/" + maxSelectable, x + 10, y + height - 15, 0x404040,
+            selected.size() + "/" + maxSelectable, x + 10, y + height - 15, ModalsTheme.getRewardsAmount(),
             false
         );
 
@@ -77,7 +86,9 @@ public class SelectRewardsModal extends BaseModal {
                     CursorUtils.setCursor(true, CursorScreen.Cursor.POINTER);
                 }
                 if (this.selected.contains(id)) {
-                    graphics.renderOutline(x - 1, y + 1 - (int) this.scrollAmount, width + 2, itemheight - 2, 0xFFA8EFF0);
+                    RenderSystem.enableBlend();
+                    graphics.blitNineSliced(WidgetUtils.TEXTURE, x - 1, y + 1 - (int) this.scrollAmount, width + 2, itemheight - 2, 3, 128, 42, 0, 42);
+                    RenderSystem.disableBlend();
                 }
                 widget.render(graphics, scissor.stack(), x, y + 2 - (int) this.scrollAmount, width, mouseX, mouseY, this.isMouseOver(mouseX, mouseY), partialTick);
                 y += itemheight;
@@ -85,6 +96,7 @@ public class SelectRewardsModal extends BaseModal {
             }
             this.lastFullHeight = fullHeight;
         }
+        claimButton.active = !this.selected.isEmpty() && this.selected.size() <= maxSelectable;
         this.scrollAmount = Mth.clamp(this.scrollAmount, 0.0D, Math.max(0, this.lastFullHeight - height));
     }
 
@@ -124,7 +136,7 @@ public class SelectRewardsModal extends BaseModal {
         this.maxSelectable = maxSelectable;
         this.callback = callback;
         for (QuestReward<?> reward : rewards) {
-            DisplayWidget widget = QuestRewardWidgets.create(reward);
+            DisplayWidget widget = QuestRewardWidgets.create(reward, false);
             if (widget == null) continue;
             this.widgets.put(reward.id(), widget);
         }

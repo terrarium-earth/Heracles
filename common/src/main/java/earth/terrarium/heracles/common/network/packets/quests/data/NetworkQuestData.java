@@ -108,7 +108,8 @@ public record NetworkQuestData(
                 this.groups = new HashMap<>();
                 this.groups.putAll(quest.display().groups());
             }
-            Vector2i pos = position.apply(quest.display().groups().getOrDefault(id, GroupDisplay.createDefault()).position());
+            GroupDisplay display = quest.display().groups().computeIfAbsent(id, GroupDisplay::create);
+            Vector2i pos = position.apply(display.position());
             this.groups.put(id, new GroupDisplay(id, pos));
             return this;
         }

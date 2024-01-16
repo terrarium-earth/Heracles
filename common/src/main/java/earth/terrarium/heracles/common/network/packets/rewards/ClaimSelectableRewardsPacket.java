@@ -1,8 +1,8 @@
 package earth.terrarium.heracles.common.network.packets.rewards;
 
-import com.teamresourceful.resourcefullib.common.networking.base.Packet;
-import com.teamresourceful.resourcefullib.common.networking.base.PacketContext;
-import com.teamresourceful.resourcefullib.common.networking.base.PacketHandler;
+import com.teamresourceful.resourcefullib.common.network.Packet;
+import com.teamresourceful.resourcefullib.common.network.base.PacketType;
+import com.teamresourceful.resourcefullib.common.network.base.ServerboundPacketType;
 import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.api.quests.Quest;
 import earth.terrarium.heracles.api.rewards.QuestReward;
@@ -14,30 +14,36 @@ import earth.terrarium.heracles.common.handlers.quests.QuestHandler;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Player;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Objects;
 import java.util.Set;
+import java.util.function.Consumer;
 
 public record ClaimSelectableRewardsPacket(
     String quest, String reward, Collection<String> rewards
 ) implements Packet<ClaimSelectableRewardsPacket> {
 
-    public static final ResourceLocation ID = new ResourceLocation(Heracles.MOD_ID, "claim_selectable_rewards");
-    public static final PacketHandler<ClaimSelectableRewardsPacket> HANDLER = new Handler();
+    public static final ServerboundPacketType<ClaimSelectableRewardsPacket> TYPE = new Type();
 
     @Override
-    public ResourceLocation getID() {
-        return ID;
+    public PacketType<ClaimSelectableRewardsPacket> type() {
+        return TYPE;
     }
 
-    @Override
-    public PacketHandler<ClaimSelectableRewardsPacket> getHandler() {
-        return HANDLER;
-    }
+    private static class Type implements ServerboundPacketType<ClaimSelectableRewardsPacket> {
 
-    public static class Handler implements PacketHandler<ClaimSelectableRewardsPacket> {
+        @Override
+        public Class<ClaimSelectableRewardsPacket> type() {
+            return ClaimSelectableRewardsPacket.class;
+        }
+
+        @Override
+        public ResourceLocation id() {
+            return new ResourceLocation(Heracles.MOD_ID, "claim_selectable_rewards");
+        }
 
         @Override
         public void encode(ClaimSelectableRewardsPacket message, FriendlyByteBuf buffer) {
@@ -56,8 +62,8 @@ public record ClaimSelectableRewardsPacket(
         }
 
         @Override
-        public PacketContext handle(ClaimSelectableRewardsPacket message) {
-            return (player, level) -> {
+        public Consumer<Player> handle(ClaimSelectableRewardsPacket message) {
+            return (player) -> {
                 ServerPlayer serverPlayer = (ServerPlayer) player;
                 Quest quest = QuestHandler.get(message.quest);
                 if (quest != null) {

@@ -2,6 +2,7 @@ package earth.terrarium.heracles.client.utils;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import com.teamresourceful.resourcefullib.client.utils.CodecMetadataSectionSerializer;
 import com.teamresourceful.resourcefullib.common.caches.CacheableFunction;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;

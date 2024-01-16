@@ -1,34 +1,39 @@
 package earth.terrarium.heracles.common.network.packets.tasks;
 
 import com.mojang.datafixers.util.Pair;
-import com.teamresourceful.resourcefullib.common.networking.base.Packet;
-import com.teamresourceful.resourcefullib.common.networking.base.PacketContext;
-import com.teamresourceful.resourcefullib.common.networking.base.PacketHandler;
+import com.teamresourceful.resourcefullib.common.network.Packet;
+import com.teamresourceful.resourcefullib.common.network.base.PacketType;
+import com.teamresourceful.resourcefullib.common.network.base.ServerboundPacketType;
 import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.api.tasks.defaults.GatherItemTask;
 import earth.terrarium.heracles.common.handlers.progress.QuestProgressHandler;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.entity.player.Player;
 
 import java.util.Optional;
+import java.util.function.Consumer;
 
 public record ManualItemTaskPacket(String quest, String task) implements Packet<ManualItemTaskPacket> {
-    public static final ResourceLocation ID = new ResourceLocation(Heracles.MOD_ID, "check_item");
-    public static final PacketHandler<ManualItemTaskPacket> HANDLER = new Handler();
+    public static final ServerboundPacketType<ManualItemTaskPacket> TYPE = new Type();
 
     @Override
-    public ResourceLocation getID() {
-        return ID;
+    public PacketType<ManualItemTaskPacket> type() {
+        return TYPE;
     }
 
-    @Override
-    public PacketHandler<ManualItemTaskPacket> getHandler() {
-        return HANDLER;
-    }
+    private static class Type implements ServerboundPacketType<ManualItemTaskPacket> {
 
-    public static class Handler implements PacketHandler<ManualItemTaskPacket> {
+        @Override
+        public Class<ManualItemTaskPacket> type() {
+            return ManualItemTaskPacket.class;
+        }
+
+        @Override
+        public ResourceLocation id() {
+            return new ResourceLocation(Heracles.MOD_ID, "check_item");
+        }
 
         @Override
         public void encode(ManualItemTaskPacket message, FriendlyByteBuf buffer) {
@@ -42,8 +47,8 @@ public record ManualItemTaskPacket(String quest, String task) implements Packet<
         }
 
         @Override
-        public PacketContext handle(ManualItemTaskPacket message) {
-            return (player, level) -> {
+        public Consumer<Player> handle(ManualItemTaskPacket message) {
+            return (player) -> {
                 if (player instanceof ServerPlayer serverPlayer) {
                     QuestProgressHandler.getProgress(serverPlayer.getServer(), player.getUUID())
                         .testAndProgressTask(serverPlayer, message.quest, message.task, Pair.of(Optional.empty(), player.getInventory()), GatherItemTask.TYPE);

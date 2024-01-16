@@ -12,9 +12,8 @@
         "common.SlotMixin"
     ],
     "client": [
-        "client.FontManagerAccessor",
+        "client.AbstractButtonMixin",
         "client.InternalKeyPressedScreen",
-        "client.MinecraftAccessor",
         "client.ScreenMixin"
     ],
     "injectors": {

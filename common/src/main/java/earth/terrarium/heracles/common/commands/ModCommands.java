@@ -10,7 +10,6 @@ import earth.terrarium.heracles.common.handlers.quests.QuestHandler;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.SharedSuggestionProvider;
-import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 
 public class ModCommands {
@@ -36,21 +35,8 @@ public class ModCommands {
                         PinnedQuestHandler.sync(player);
                         return 1;
                     })))
-            .then(Commands.literal("reset")
-                .requires(source -> source.hasPermission(2))
-                .then(Commands.argument("quest", StringArgumentType.string())
-                    .suggests(((context, builder) -> {
-                        SharedSuggestionProvider.suggest(QuestHandler.quests().keySet(), builder);
-                        return builder.buildFuture();
-                    }))
-                    .executes(context -> {
-                        CommandSourceStack source = context.getSource();
-                        ServerPlayer player = source.getPlayerOrException();
-                        String quest = StringArgumentType.getString(context, "quest");
-                        QuestProgressHandler.getProgress(source.getServer(), player.getUUID()).resetQuest(quest, player);
-                        source.sendSystemMessage(Component.translatable("commands.heracles.reset.success", quest));
-                        return 1;
-                    })))
+            .then(ResetCommand.reset())
+            .then(ResetCommand.resetAll())
             .then(Commands.literal("dummy")
                 .requires(source -> source.hasPermission(2))
                 .then(Commands.argument("id", StringArgumentType.string())

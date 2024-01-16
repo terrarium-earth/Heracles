@@ -14,6 +14,7 @@ import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.api.quests.Quest;
 import earth.terrarium.heracles.client.HeraclesClient;
 import earth.terrarium.heracles.client.handlers.ClientQuests;
+import earth.terrarium.heracles.client.screens.AbstractQuestScreen;
 import earth.terrarium.heracles.client.screens.mousemode.MouseMode;
 import earth.terrarium.heracles.client.utils.ClientUtils;
 import earth.terrarium.heracles.client.utils.MouseClick;
@@ -29,7 +30,9 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
 import org.joml.Vector2i;
 
@@ -211,9 +214,13 @@ public class QuestsWidget extends BaseWidget {
             for (ClientQuests.QuestEntry entry : this.entries) {
                 var position = entry.value().display().position(this.group);
 
-                boolean isHovered = isMouseOver(mouseX, mouseY) && mouseX >= x + offset.x() + position.x() && mouseX <= x + offset.x() + position.x() && mouseY >= y + offset.y() + position.y() && mouseY <= y + offset.y() + position.y();
+                boolean isHovered = isMouseOver(mouseX, mouseY) &&
+                                    mouseX >= x + offset.x() + position.x() &&
+                                    mouseX <= x + offset.x() + position.x() + 32 &&
+                                    mouseY >= y + offset.y() + position.y() &&
+                                    mouseY <= y + offset.y() + position.y() + 32;
 
-                RenderSystem.setShaderColor(0.9F, 0.9F, 0.9F, isHovered ? 0.45f : 0.25F);
+                RenderSystem.setShaderColor(0.9F, 0.9F, 0.9F, isHovered ? 0.8f : 0.4F);
 
                 for (ClientQuests.QuestEntry child : entry.children()) {
                     if (!child.value().display().groups().containsKey(this.group)) continue;
@@ -269,7 +276,7 @@ public class QuestsWidget extends BaseWidget {
                 int canvasWidth = this.maxX - this.minX;
                 int width = (this.width - 10) * (this.width - 10) / (canvasWidth + this.width - 10);
                 int barX = this.x + 5 + (this.width - 10 - width) / 2 + (this.width - 10 - width) * xFromCentre / canvasWidth;
-                graphics.fill(barX, this.y + this.height - 4, barX + width, this.y + this.height - 2, 0xFFFFFFFF);
+                graphics.blitNineSliced(AbstractQuestScreen.HEADING, barX, this.y + this.height - 4, width, 2, 2, 32, 2, 224, 126);
             }
 
             int yFromCentre = centreOffset.y - offset.y;
@@ -277,7 +284,7 @@ public class QuestsWidget extends BaseWidget {
                 int canvasHeight = this.maxY - this.minY;
                 int height = (this.height - 10) * (this.height - 10) / (canvasHeight + this.height - 10);
                 int barY = this.y + 5 + (this.height - 10 - height) / 2 + (this.height - 10 - height) * yFromCentre / canvasHeight;
-                graphics.fill(this.x + this.width - 4, barY, this.x + this.width - 2, barY + height, 0xFFFFFFFF);
+                graphics.blitNineSliced(AbstractQuestScreen.HEADING, this.x + this.width - 4, barY, 2, height, 2, 2, 32, 222, 96);
             }
         }
     }
@@ -302,8 +309,10 @@ public class QuestsWidget extends BaseWidget {
                 for (QuestWidget widget : this.widgets) {
                     if (widget.isMouseOver(mouseX - (this.x + (this.fullWidth / 2f) + offset.x()), mouseY - (this.y + (this.height / 2f) + offset.y()))) {
                         if (mode.canSelect()) {
+                            Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1.0F));
                             this.selectHandler.clickQuest(mode, (int) mouseX, (int) mouseY, widget);
                         } else if (mode.canOpen()) {
+                            Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1.0F));
                             NetworkHandler.CHANNEL.sendToServer(new OpenQuestPacket(
                                 this.group, widget.id(), Minecraft.getInstance().screen instanceof QuestsEditScreen
                             ));
@@ -334,6 +343,15 @@ public class QuestsWidget extends BaseWidget {
             this.selectHandler.onDrag((int) mouseX, (int) mouseY);
         }
         return true;
+    }
+
+    @Override
+    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+        MouseMode mode = this.mouseMode.get();
+        if (mode.canSelect() && this.selectHandler.onKeyPress(keyCode)) {
+            return true;
+        }
+        return super.keyPressed(keyCode, scanCode, modifiers);
     }
 
     @Override

@@ -1,7 +1,8 @@
 package earth.terrarium.heracles.client.screens.quests;
 
 import com.mojang.blaze3d.platform.InputConstants;
-import com.teamresourceful.resourcefullib.client.components.context.ContextualMenuScreen;
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.teamresourceful.resourcefullib.client.components.selection.ListEntry;
 import com.teamresourceful.resourcefullib.client.components.selection.SelectionList;
 import com.teamresourceful.resourcefullib.client.scissor.ScissorBoxStack;
@@ -9,18 +10,17 @@ import com.teamresourceful.resourcefullib.client.screens.CursorScreen;
 import com.teamresourceful.resourcefullib.client.utils.CursorUtils;
 import com.teamresourceful.resourcefullib.client.utils.ScreenUtils;
 import earth.terrarium.heracles.api.groups.Group;
-import earth.terrarium.heracles.api.quests.defaults.ItemQuestIcon;
+import earth.terrarium.heracles.api.client.theme.QuestsScreenTheme;
 import earth.terrarium.heracles.client.handlers.ClientQuests;
-import earth.terrarium.heracles.client.utils.ClientUtils;
-import earth.terrarium.heracles.client.utils.MouseClick;
+import earth.terrarium.heracles.client.screens.AbstractQuestScreen;
 import earth.terrarium.heracles.common.constants.ConstantComponents;
 import earth.terrarium.heracles.common.network.NetworkHandler;
 import earth.terrarium.heracles.common.network.packets.groups.DeleteGroupPacket;
-import earth.terrarium.heracles.common.network.packets.groups.EditGroupPacket;
-import earth.terrarium.heracles.common.utils.ItemValue;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
+import net.minecraft.client.resources.sounds.SimpleSoundInstance;
+import net.minecraft.sounds.SoundEvents;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -87,19 +87,20 @@ public class GroupsList extends SelectionList<GroupsList.Entry> {
         }
 
         @Override
-        @SuppressWarnings("SuspiciousNameCombination")
         protected void render(@NotNull GuiGraphics graphics, @NotNull ScissorBoxStack scissorStack, int id, int left, int top, int width, int height, int mouseX, int mouseY, boolean hovered, float partialTick, boolean selected) {
-            graphics.fill(left, top, left + width, top + height, selected ? 0x22FFFFFF : 0x22808080);
+            RenderSystem.enableBlend();
+            graphics.blitNineSliced(AbstractQuestScreen.HEADING, left, top, width, height, 5, 64, 20, 192, selected ? 35 : 15);
             if (hovered) {
-                graphics.renderOutline(left, top, width, height, 0x44FFFFFF);
+                graphics.blitNineSliced(AbstractQuestScreen.HEADING, left, top, width, height, 5, 64, 20, 192, 55);
             }
+            RenderSystem.disableBlend();
             int x = left + 5;
             if (group.icon().isPresent()) {
                 int size = height - 2;
                 group.icon().get().render(graphics, scissorStack, x, top + 1 + ((size - 16) / 2), size, size);
             }
             x += height;
-            graphics.drawString(Minecraft.getInstance().font, Component.translatable(group.title()), x, top + height / 2 - 4, 0xFFFFFF);
+            graphics.drawString(Minecraft.getInstance().font, Component.translatable(group.title()), x, top + height / 2 - 4, QuestsScreenTheme.getGroupName());
             CursorUtils.setCursor(hovered, CursorScreen.Cursor.POINTER);
             if (Minecraft.getInstance().screen instanceof QuestsEditScreen) {
                 if (mouseX - left >= width - 11 && mouseX - left <= width - 2 && mouseY - top >= 2 && mouseY - top <= 12 && hovered) {
@@ -108,13 +109,13 @@ public class GroupsList extends SelectionList<GroupsList.Entry> {
                     ScreenUtils.setTooltip(cant ? ConstantComponents.Groups.DELETE_WITH_QUESTS : ConstantComponents.DELETE);
                     graphics.drawString(
                         Minecraft.getInstance().font,
-                        "x", left + width - 9, top + 2, 0xFFFFFF,
+                        ConstantComponents.X, left + width - 9, top + 2, 0xFFFFFF,
                         false
                     );
                 } else if (hovered) {
                     graphics.drawString(
                         Minecraft.getInstance().font,
-                        "x", left + width - 9, top + 2, 0x808080,
+                        ConstantComponents.X, left + width - 9, top + 2, 0x808080,
                         false
                     );
                 }
@@ -123,6 +124,7 @@ public class GroupsList extends SelectionList<GroupsList.Entry> {
 
         @Override
         public boolean mouseClicked(double mouseX, double mouseY, int button) {
+            if (this.list.getSelected() != this) Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1.0F));
             boolean cant = !ClientQuests.byGroup(name).isEmpty() || this.list.children().size() == 1;
             if (Minecraft.getInstance().screen instanceof QuestsEditScreen screen && button == InputConstants.MOUSE_BUTTON_LEFT && !cant) {
                 boolean closingButton = mouseX >= this.list.width - 11 && mouseX <= this.list.width - 2 && mouseY >= 2 && mouseY <= 12;
@@ -145,52 +147,6 @@ public class GroupsList extends SelectionList<GroupsList.Entry> {
                     return true;
                 }
             }
-            if (button == InputConstants.MOUSE_BUTTON_RIGHT) {
-                MouseClick mouse = ClientUtils.getMousePos();
-                ContextualMenuScreen.getMenu()
-                    .ifPresent(menu -> menu.start(this.list.x + this.list.width + 6, mouse.y())
-                        .addOption(Component.literal("\uD83D\uDCAC Edit Name"), () -> {
-                            if (Minecraft.getInstance().screen instanceof QuestsEditScreen screen) {
-                                screen.textModal().setVisible(true);
-                                screen.textModal().setText(this.group.title());
-                                screen.textModal().setCallback((unused, text) -> {
-                                    this.group = this.group.withTitle(text);
-                                    NetworkHandler.CHANNEL.sendToServer(new EditGroupPacket(
-                                        name,
-                                        Optional.empty(),
-                                        Optional.of(text),
-                                        Optional.empty()
-                                    ));
-                                    screen.textModal().setVisible(false);
-                                });
-                            }
-                        })
-                        .addOption(Component.literal("\uD83D\uDDBC Edit Icon"), () -> {
-                            if (Minecraft.getInstance().screen instanceof QuestsEditScreen screen) {
-                                screen.itemModal().setVisible(true);
-                                screen.itemModal().setCallback(item -> {
-                                    this.group = this.group.withIcon(new ItemQuestIcon(new ItemValue(item)));
-                                    NetworkHandler.CHANNEL.sendToServer(new EditGroupPacket(
-                                        name,
-                                        this.group.icon(),
-                                        Optional.empty(),
-                                        Optional.empty()
-                                    ));
-                                    screen.itemModal().setVisible(false);
-                                });
-                            }
-                        })
-                        .addDivider()
-                        .addOption(Component.literal("⬆ Move Up"), () ->
-                            System.out.println("Move UP") //TODO
-                        )
-                        .addOption(Component.literal("⬇ Move Down"), () ->
-                            System.out.println("Move Down") //TODO
-                        )
-                        .open());
-                return true;
-            }
-            this.list.onSelection.accept(this);
             return super.mouseClicked(mouseX, mouseY, button);
         }
 

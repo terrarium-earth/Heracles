@@ -3,8 +3,9 @@ package earth.terrarium.heracles.client.screens;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.teamresourceful.resourcefullib.client.screens.PriorityScreen;
 import earth.terrarium.heracles.Heracles;
+import earth.terrarium.heracles.api.client.theme.QuestsScreenTheme;
 import earth.terrarium.heracles.client.utils.ClientUtils;
-import earth.terrarium.heracles.client.widgets.base.TemporyWidget;
+import earth.terrarium.heracles.client.widgets.base.TemporaryWidget;
 import earth.terrarium.heracles.client.widgets.modals.EditObjectModal;
 import earth.terrarium.heracles.common.constants.ConstantComponents;
 import net.minecraft.client.Minecraft;
@@ -26,10 +27,16 @@ public abstract class AbstractQuestScreen<T> extends PriorityScreen {
 
     public static final ResourceLocation HEADING = new ResourceLocation(Heracles.MOD_ID, "textures/gui/heading.png");
 
-    protected final List<TemporyWidget> temporaryWidgets = new ArrayList<>();
+    protected final List<TemporaryWidget> temporaryWidgets = new ArrayList<>();
     protected boolean hasBackButton = true;
 
     protected final T content;
+
+    protected static final float SIDE_BAR_PORTION = 0.25f;
+    protected static int sideBarWidth;
+
+    protected static final float QUEST_CONTENT_PORTION = 0.66f;
+    protected static int questContentWidth;
 
     public AbstractQuestScreen(T content, Component component) {
         super(component);
@@ -39,6 +46,12 @@ public abstract class AbstractQuestScreen<T> extends PriorityScreen {
     @Override
     protected void init() {
         super.init();
+        // There is a vertical 2-wide border area between the sidebar and the main area.
+        // Established convention in this code-base counts this border area as "sidebar" in the general sense,
+        // and subtracts 2 when referring to the sidebar area wholly within this border area.
+        sideBarWidth = (int) (width * SIDE_BAR_PORTION) - 2;
+        questContentWidth = (int) (width * QUEST_CONTENT_PORTION);
+
         if (hasBackButton) {
             addRenderableWidget(new ImageButton(1, 1, 11, 11, 0, 15, 11, HEADING, 256, 256, (button) ->
                 goBack()
@@ -57,13 +70,13 @@ public abstract class AbstractQuestScreen<T> extends PriorityScreen {
         this.temporaryWidgets.clear();
     }
 
-    public <R extends Renderable & TemporyWidget> R addTemporary(R renderable) {
+    public <R extends Renderable & TemporaryWidget> R addTemporary(R renderable) {
         addRenderableOnly(renderable);
         this.temporaryWidgets.add(renderable);
         return renderable;
     }
 
-    public List<TemporyWidget> temporaryWidgets() {
+    public List<TemporaryWidget> temporaryWidgets() {
         return this.temporaryWidgets;
     }
 
@@ -82,13 +95,12 @@ public abstract class AbstractQuestScreen<T> extends PriorityScreen {
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
         if (drawSidebar()) {
-            int sidebarWidth = (int) (this.width * 0.25f) - 2;
-            ClientUtils.blitTiling(graphics, HEADING, 0, 15, sidebarWidth, height - 15, 0, 128, 128, 128); // Side Background
-            ClientUtils.blitTiling(graphics, HEADING, sidebarWidth + 2, 15, width - sidebarWidth, height - 15, 128, 128, 128, 128); // Main Background
-            ClientUtils.blitTiling(graphics, HEADING, 0, 0, sidebarWidth, 15, 0, 0, 128, 15); // Side Header
-            ClientUtils.blitTiling(graphics, HEADING, sidebarWidth + 2, 0, width - sidebarWidth, 15, 130, 0, 126, 15); // Main Header
-            ClientUtils.blitTiling(graphics, HEADING, sidebarWidth, 0, 2, 15, 128, 0, 2, 15); // Header Separator
-            ClientUtils.blitTiling(graphics, HEADING, sidebarWidth, 15, 2, height - 15, 128, 15, 2, 113); // Body Separator
+            ClientUtils.blitTiling(graphics, HEADING, 0, 15, sideBarWidth, height - 15, 0, 128, 128, 128); // Side Background
+            ClientUtils.blitTiling(graphics, HEADING, sideBarWidth + 2, 15, width - sideBarWidth, height - 15, 128, 128, 128, 128); // Main Background
+            ClientUtils.blitTiling(graphics, HEADING, 0, 0, sideBarWidth, 15, 0, 0, 128, 15); // Side Header
+            ClientUtils.blitTiling(graphics, HEADING, sideBarWidth + 2, 0, width - sideBarWidth, 15, 130, 0, 126, 15); // Main Header
+            ClientUtils.blitTiling(graphics, HEADING, sideBarWidth, 0, 2, 15, 128, 0, 2, 15); // Header Separator
+            ClientUtils.blitTiling(graphics, HEADING, sideBarWidth, 15, 2, height - 15, 128, 15, 2, 113); // Body Separator
         } else {
             ClientUtils.blitTiling(graphics, HEADING, 0, 15, width, height - 15, 128, 128, 128, 128); // Main Background
             ClientUtils.blitTiling(graphics, HEADING, 0, 0, width, 15, 130, 0, 126, 15); // Main Header
@@ -97,19 +109,17 @@ public abstract class AbstractQuestScreen<T> extends PriorityScreen {
     }
 
     protected void renderLabels(GuiGraphics graphics, int mouseX, int mouseY) {
-        int center = drawSidebar() ?
-            (int) ((this.width * 0.25f) + ((this.width * 0.75f) / 2f))
-            : (int) (this.width / 2f);
+        int center = questContentCenter();
         Component title = getTitle();
         graphics.drawString(
             this.font,
-            title, (int) (center - (this.font.width(title) / 2f)), 3, 0x404040,
+            title, (int) (center - (this.font.width(title) / 2f)), 3, QuestsScreenTheme.getHeaderTitle(),
             false
         );
     }
 
     public boolean isTemporaryWidgetVisible() {
-        for (TemporyWidget widget : temporaryWidgets) {
+        for (TemporaryWidget widget : temporaryWidgets) {
             if (widget.isVisible()) {
                 return true;
             }
@@ -121,7 +131,7 @@ public abstract class AbstractQuestScreen<T> extends PriorityScreen {
     @Override
     public GuiEventListener getFocused() {
         boolean visible = false;
-        for (TemporyWidget widget : this.temporaryWidgets) {
+        for (TemporaryWidget widget : this.temporaryWidgets) {
             visible |= widget.isVisible();
             if (widget.isVisible() && widget instanceof GuiEventListener listener) {
                 return listener;
@@ -136,7 +146,7 @@ public abstract class AbstractQuestScreen<T> extends PriorityScreen {
     @Override
     public @NotNull List<? extends GuiEventListener> children() {
         List<GuiEventListener> listeners = new ArrayList<>();
-        for (TemporyWidget widget : temporaryWidgets) {
+        for (TemporaryWidget widget : temporaryWidgets) {
             if (widget.isVisible() && widget instanceof GuiEventListener listener) {
                 listeners.add(listener);
             }
@@ -170,7 +180,7 @@ public abstract class AbstractQuestScreen<T> extends PriorityScreen {
     public EditObjectModal findOrCreateEditWidget() {
         boolean found = false;
         EditObjectModal widget = new EditObjectModal(this.width, this.height);
-        for (TemporyWidget temporaryWidget : this.temporaryWidgets()) {
+        for (TemporaryWidget temporaryWidget : this.temporaryWidgets()) {
             if (temporaryWidget instanceof EditObjectModal modal) {
                 found = true;
                 widget = modal;
@@ -182,6 +192,14 @@ public abstract class AbstractQuestScreen<T> extends PriorityScreen {
             this.addTemporary(widget);
         }
         return widget;
+    }
+
+    public int questContentCenter() {
+        // float, to avoid truncating (effectively rounding when 0.5f is added) twice
+        float nonSideBarWidth = width - (width * SIDE_BAR_PORTION);
+        return drawSidebar() ?
+            (int) (0.5f + (width - (nonSideBarWidth / 2f))) :
+            (int) (0.5f + (width / 2f));
     }
 
     public boolean drawSidebar() {

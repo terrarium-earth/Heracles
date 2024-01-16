@@ -25,4 +25,8 @@ public record GroupDisplay(String id, Vector2i position) {
     public static GroupDisplay createDefault() {
         return new GroupDisplay("Main", new Vector2i());
     }
+
+    public static GroupDisplay create(String id) {
+        return new GroupDisplay(id, new Vector2i());
+    }
 }

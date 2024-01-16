@@ -1,40 +1,47 @@
 package earth.terrarium.heracles.common.network.packets.quests;
 
-import com.teamresourceful.bytecodecs.base.ByteCodec;
-import com.teamresourceful.resourcefullib.common.networking.base.CodecPacketHandler;
-import com.teamresourceful.resourcefullib.common.networking.base.Packet;
-import com.teamresourceful.resourcefullib.common.networking.base.PacketContext;
-import com.teamresourceful.resourcefullib.common.networking.base.PacketHandler;
+import com.teamresourceful.resourcefullib.common.network.Packet;
+import com.teamresourceful.resourcefullib.common.network.base.ClientboundPacketType;
+import com.teamresourceful.resourcefullib.common.network.base.PacketType;
 import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.client.handlers.ClientQuests;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 
 public record ClientboundRemoveQuestPacket(String id) implements Packet<ClientboundRemoveQuestPacket> {
 
-    public static final ResourceLocation ID = new ResourceLocation(Heracles.MOD_ID, "remove_client_quest");
-    public static final Handler HANDLER = new Handler();
+    public static final ClientboundPacketType<ClientboundRemoveQuestPacket> TYPE = new Type();
 
     @Override
-    public ResourceLocation getID() {
-        return ID;
+    public PacketType<ClientboundRemoveQuestPacket> type() {
+        return TYPE;
     }
 
-    @Override
-    public PacketHandler<ClientboundRemoveQuestPacket> getHandler() {
-        return HANDLER;
-    }
+    private static class Type implements ClientboundPacketType<ClientboundRemoveQuestPacket> {
 
-
-    @SuppressWarnings("UnstableApiUsage")
-    public static class Handler extends CodecPacketHandler<ClientboundRemoveQuestPacket> {
-
-        public Handler() {
-            super(ByteCodec.STRING.map(ClientboundRemoveQuestPacket::new, ClientboundRemoveQuestPacket::id));
+        @Override
+        public Class<ClientboundRemoveQuestPacket> type() {
+            return ClientboundRemoveQuestPacket.class;
         }
 
         @Override
-        public PacketContext handle(ClientboundRemoveQuestPacket message) {
-            return (player, level) -> ClientQuests.remove(message.id);
+        public ResourceLocation id() {
+            return new ResourceLocation(Heracles.MOD_ID, "remove_client_quest");
+        }
+
+        @Override
+        public void encode(ClientboundRemoveQuestPacket message, FriendlyByteBuf buffer) {
+            buffer.writeUtf(message.id);
+        }
+
+        @Override
+        public ClientboundRemoveQuestPacket decode(FriendlyByteBuf buffer) {
+            return new ClientboundRemoveQuestPacket(buffer.readUtf());
+        }
+
+        @Override
+        public Runnable handle(ClientboundRemoveQuestPacket message) {
+            return () -> ClientQuests.remove(message.id);
         }
     }
 }

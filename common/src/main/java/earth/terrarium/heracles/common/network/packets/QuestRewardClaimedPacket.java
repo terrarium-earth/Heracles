@@ -1,8 +1,8 @@
 package earth.terrarium.heracles.common.network.packets;
 
-import com.teamresourceful.resourcefullib.common.networking.base.Packet;
-import com.teamresourceful.resourcefullib.common.networking.base.PacketContext;
-import com.teamresourceful.resourcefullib.common.networking.base.PacketHandler;
+import com.teamresourceful.resourcefullib.common.network.Packet;
+import com.teamresourceful.resourcefullib.common.network.base.ClientboundPacketType;
+import com.teamresourceful.resourcefullib.common.network.base.PacketType;
 import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.client.HeraclesClient;
 import net.minecraft.network.FriendlyByteBuf;
@@ -12,20 +12,24 @@ import net.minecraft.world.item.Item;
 import java.util.List;
 
 public record QuestRewardClaimedPacket(String id, List<Item> items) implements Packet<QuestRewardClaimedPacket> {
-    public static final ResourceLocation ID = new ResourceLocation(Heracles.MOD_ID, "quest_reward_claimed");
-    public static final PacketHandler<QuestRewardClaimedPacket> HANDLER = new Handler();
+    public static final ClientboundPacketType<QuestRewardClaimedPacket> TYPE = new Type();
 
     @Override
-    public ResourceLocation getID() {
-        return ID;
+    public PacketType<QuestRewardClaimedPacket> type() {
+        return TYPE;
     }
 
-    @Override
-    public PacketHandler<QuestRewardClaimedPacket> getHandler() {
-        return HANDLER;
-    }
+    private static class Type implements ClientboundPacketType<QuestRewardClaimedPacket> {
+        @Override
+        public Class<QuestRewardClaimedPacket> type() {
+            return QuestRewardClaimedPacket.class;
+        }
 
-    public static class Handler implements PacketHandler<QuestRewardClaimedPacket> {
+        @Override
+        public ResourceLocation id() {
+            return new ResourceLocation(Heracles.MOD_ID, "quest_reward_claimed");
+        }
+
         @Override
         public void encode(QuestRewardClaimedPacket message, FriendlyByteBuf buffer) {
             buffer.writeUtf(message.id());
@@ -41,8 +45,8 @@ public record QuestRewardClaimedPacket(String id, List<Item> items) implements P
         }
 
         @Override
-        public PacketContext handle(QuestRewardClaimedPacket message) {
-            return (player, level) -> HeraclesClient.displayItemsRewardedToast(message.id, message.items());
+        public Runnable handle(QuestRewardClaimedPacket message) {
+            return () -> HeraclesClient.displayItemsRewardedToast(message.id, message.items());
         }
     }
 }

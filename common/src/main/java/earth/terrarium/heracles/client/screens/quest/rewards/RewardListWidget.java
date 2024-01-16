@@ -32,9 +32,9 @@ import java.util.function.BiConsumer;
 
 public class RewardListWidget extends AbstractContainerEventHandler implements Renderable {
 
-    private static final HeadingWidget LOCKED = new HeadingWidget(Component.translatable("quest.heracles.locked"), 0xFF000080);
-    private static final HeadingWidget AVAILABLE = new HeadingWidget(Component.translatable("quest.heracles.available"), 0xFF5691FF);
-    private static final HeadingWidget CLAIMED = new HeadingWidget(Component.translatable("quest.heracles.claimed"), 0xFF04CB40);
+    private static final HeadingWidget LOCKED = new HeadingWidget(Component.translatable("quest.heracles.locked"), ModUtils.QuestStatus.LOCKED);
+    private static final HeadingWidget AVAILABLE = new HeadingWidget(Component.translatable("quest.heracles.available"), ModUtils.QuestStatus.COMPLETED);
+    private static final HeadingWidget CLAIMED = new HeadingWidget(Component.translatable("quest.heracles.claimed"), ModUtils.QuestStatus.COMPLETED_CLAIMED);
 
     private final List<MutablePair<QuestReward<?>, DisplayWidget>> widgets = new ArrayList<>();
 
@@ -126,7 +126,7 @@ public class RewardListWidget extends AbstractContainerEventHandler implements R
                 }
             }
             if (children.isEmpty()) return;
-            this.widgets.add(new MutablePair<>(null, new HeadingWidget(Component.nullToEmpty("Dependents"), 0xFF000080)));
+            this.widgets.add(new MutablePair<>(null, new HeadingWidget(Component.nullToEmpty("Dependents"), ModUtils.QuestStatus.LOCKED)));
             for (ClientQuests.QuestEntry dependent : children) {
                 this.widgets.add(new MutablePair<>(null, new QuestDependentWidget(dependent.value())));
             }

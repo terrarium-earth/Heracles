@@ -2,10 +2,10 @@ package earth.terrarium.heracles.common.network.packets.quests;
 
 import com.teamresourceful.bytecodecs.base.ByteCodec;
 import com.teamresourceful.bytecodecs.base.object.ObjectByteCodec;
-import com.teamresourceful.resourcefullib.common.networking.base.CodecPacketHandler;
-import com.teamresourceful.resourcefullib.common.networking.base.Packet;
-import com.teamresourceful.resourcefullib.common.networking.base.PacketContext;
-import com.teamresourceful.resourcefullib.common.networking.base.PacketHandler;
+import com.teamresourceful.resourcefullib.common.network.Packet;
+import com.teamresourceful.resourcefullib.common.network.base.PacketType;
+import com.teamresourceful.resourcefullib.common.network.base.ServerboundPacketType;
+import com.teamresourceful.resourcefullib.common.network.defaults.CodecPacketType;
 import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.api.quests.Quest;
 import earth.terrarium.heracles.common.handlers.progress.QuestProgressHandler;
@@ -13,41 +13,48 @@ import earth.terrarium.heracles.common.handlers.quests.QuestHandler;
 import earth.terrarium.heracles.common.network.NetworkHandler;
 import earth.terrarium.heracles.common.utils.ModUtils;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Player;
 
 import java.util.Objects;
+import java.util.function.Consumer;
 
 public record ServerboundAddQuestPacket(
     String id, Quest quest
 ) implements Packet<ServerboundAddQuestPacket> {
 
-    public static final ResourceLocation ID = new ResourceLocation(Heracles.MOD_ID, "add_server_quest");
-    public static final Handler HANDLER = new Handler();
+    public static final ServerboundPacketType<ServerboundAddQuestPacket> TYPE = new Type();
 
     @Override
-    public ResourceLocation getID() {
-        return ID;
+    public PacketType<ServerboundAddQuestPacket> type() {
+        return TYPE;
     }
 
-    @Override
-    public PacketHandler<ServerboundAddQuestPacket> getHandler() {
-        return HANDLER;
-    }
+    private static class Type implements ServerboundPacketType<ServerboundAddQuestPacket>, CodecPacketType<ServerboundAddQuestPacket> {
 
+        private static final ByteCodec<ServerboundAddQuestPacket> CODEC = ObjectByteCodec.create(
+            ByteCodec.STRING.fieldOf(ServerboundAddQuestPacket::id),
+            ModUtils.toByteCodec(Quest.CODEC).fieldOf(ServerboundAddQuestPacket::quest),
+            ServerboundAddQuestPacket::new
+        );
 
-    @SuppressWarnings("UnstableApiUsage")
-    public static class Handler extends CodecPacketHandler<ServerboundAddQuestPacket> {
-
-        public Handler() {
-            super(ObjectByteCodec.create(
-                ByteCodec.STRING.fieldOf(ServerboundAddQuestPacket::id),
-                ModUtils.toByteCodec(Quest.CODEC).fieldOf(ServerboundAddQuestPacket::quest),
-                ServerboundAddQuestPacket::new
-            ));
+        @Override
+        public Class<ServerboundAddQuestPacket> type() {
+            return ServerboundAddQuestPacket.class;
         }
 
         @Override
-        public PacketContext handle(ServerboundAddQuestPacket message) {
-            return (player, level) -> {
+        public ResourceLocation id() {
+            return new ResourceLocation(Heracles.MOD_ID, "add_server_quest");
+        }
+
+        @Override
+        public ByteCodec<ServerboundAddQuestPacket> codec() {
+            return CODEC;
+        }
+
+        @Override
+        public Consumer<Player> handle(ServerboundAddQuestPacket message) {
+            return (player) -> {
                 if (player.hasPermissions(2)) {
                     QuestHandler.upload(message.id(), message.quest());
                     NetworkHandler.CHANNEL.sendToAllPlayers(

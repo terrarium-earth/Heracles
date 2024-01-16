@@ -2,10 +2,10 @@ package earth.terrarium.heracles.common.network.packets.quests;
 
 import com.teamresourceful.bytecodecs.base.ByteCodec;
 import com.teamresourceful.bytecodecs.base.object.ObjectByteCodec;
-import com.teamresourceful.resourcefullib.common.networking.base.CodecPacketHandler;
-import com.teamresourceful.resourcefullib.common.networking.base.Packet;
-import com.teamresourceful.resourcefullib.common.networking.base.PacketContext;
-import com.teamresourceful.resourcefullib.common.networking.base.PacketHandler;
+import com.teamresourceful.resourcefullib.common.network.Packet;
+import com.teamresourceful.resourcefullib.common.network.base.ClientboundPacketType;
+import com.teamresourceful.resourcefullib.common.network.base.PacketType;
+import com.teamresourceful.resourcefullib.common.network.defaults.CodecPacketType;
 import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.client.handlers.ClientQuests;
 import earth.terrarium.heracles.common.network.packets.quests.data.NetworkQuestData;
@@ -15,34 +15,38 @@ public record ClientboundUpdateQuestPacket(
     String id, NetworkQuestData data
 ) implements Packet<ClientboundUpdateQuestPacket> {
 
-    public static final ResourceLocation ID = new ResourceLocation(Heracles.MOD_ID, "update_client_quest");
-    public static final Handler HANDLER = new Handler();
+    public static final ClientboundPacketType<ClientboundUpdateQuestPacket> TYPE = new Type();
 
     @Override
-    public ResourceLocation getID() {
-        return ID;
+    public PacketType<ClientboundUpdateQuestPacket> type() {
+        return TYPE;
     }
 
-    @Override
-    public PacketHandler<ClientboundUpdateQuestPacket> getHandler() {
-        return HANDLER;
-    }
+    private static class Type implements ClientboundPacketType<ClientboundUpdateQuestPacket>, CodecPacketType<ClientboundUpdateQuestPacket> {
+        private static final ByteCodec<ClientboundUpdateQuestPacket> CODEC = ObjectByteCodec.create(
+            ByteCodec.STRING.fieldOf(ClientboundUpdateQuestPacket::id),
+            NetworkQuestData.CODEC.fieldOf(ClientboundUpdateQuestPacket::data),
+            ClientboundUpdateQuestPacket::new
+        );
 
-
-    @SuppressWarnings("UnstableApiUsage")
-    public static class Handler extends CodecPacketHandler<ClientboundUpdateQuestPacket> {
-
-        public Handler() {
-            super(ObjectByteCodec.create(
-                ByteCodec.STRING.fieldOf(ClientboundUpdateQuestPacket::id),
-                NetworkQuestData.CODEC.fieldOf(ClientboundUpdateQuestPacket::data),
-                ClientboundUpdateQuestPacket::new
-            ));
+        @Override
+        public Class<ClientboundUpdateQuestPacket> type() {
+            return ClientboundUpdateQuestPacket.class;
         }
 
         @Override
-        public PacketContext handle(ClientboundUpdateQuestPacket message) {
-            return (player, level) -> ClientQuests.get(message.id)
+        public ResourceLocation id() {
+            return new ResourceLocation(Heracles.MOD_ID, "update_client_quest");
+        }
+
+        @Override
+        public ByteCodec<ClientboundUpdateQuestPacket> codec() {
+            return CODEC;
+        }
+
+        @Override
+        public Runnable handle(ClientboundUpdateQuestPacket message) {
+            return () -> ClientQuests.get(message.id)
                 .map(ClientQuests.QuestEntry::value)
                 .ifPresent(message.data::update);
         }

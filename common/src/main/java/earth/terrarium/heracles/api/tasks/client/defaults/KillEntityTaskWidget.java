@@ -5,7 +5,7 @@ import com.teamresourceful.resourcefullib.client.utils.RenderUtils;
 import com.teamresourceful.resourcefullib.common.caches.CacheableFunction;
 import earth.terrarium.heracles.api.client.DisplayWidget;
 import earth.terrarium.heracles.api.client.WidgetUtils;
-import earth.terrarium.heracles.api.tasks.QuestTaskDisplayFormatter;
+import earth.terrarium.heracles.api.client.theme.QuestScreenTheme;
 import earth.terrarium.heracles.api.tasks.client.display.TaskTitleFormatter;
 import earth.terrarium.heracles.api.tasks.defaults.KillEntityQuestTask;
 import earth.terrarium.heracles.common.handlers.progress.TaskProgress;
@@ -44,25 +44,19 @@ public record KillEntityTaskWidget(KillEntityQuestTask task, TaskProgress<Numeri
                 WidgetUtils.drawEntity(graphics, x + 5, y + 5, iconSize, entity);
             }
         }
-        graphics.fill(x + iconSize + 9, y + 5, x + iconSize + 10, y + getHeight(width) - 5, 0xFF909090);
         String desc = this.task.target() == 1 ? DESC_SINGULAR : DESC_PLURAL;
         Component entityName = this.task.entity().entityType().getDescription();
         graphics.drawString(
             font,
-            task.titleOr(TaskTitleFormatter.create(this.task)), x + iconSize + 16, y + 6, 0xFFFFFFFF,
+            task.titleOr(TaskTitleFormatter.create(this.task)), x + iconSize + 16, y + 6, QuestScreenTheme.getTaskTitle(),
             false
         );
         graphics.drawString(
             font,
-            Component.translatable(desc, this.task.target(), entityName), x + iconSize + 16, y + 8 + font.lineHeight, 0xFF808080,
+            Component.translatable(desc, this.task.target(), entityName), x + iconSize + 16, y + 8 + font.lineHeight, QuestScreenTheme.getTaskDescription(),
             false
         );
-        String progress = QuestTaskDisplayFormatter.create(this.task, this.progress);
-        graphics.drawString(
-            font,
-            progress, x + width - 5 - font.width(progress), y + 6, 0xFFFFFFFF,
-            false
-        );
+        WidgetUtils.drawProgressText(graphics, x, y, width, this.task, this.progress);
 
         int height = getHeight(width);
         WidgetUtils.drawProgressBar(graphics, x + iconSize + 16, y + height - font.lineHeight - 5, x + width - 5, y + height - 6, this.task, this.progress);

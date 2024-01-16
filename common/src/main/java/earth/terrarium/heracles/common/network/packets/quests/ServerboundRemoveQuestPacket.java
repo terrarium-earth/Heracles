@@ -1,44 +1,51 @@
 package earth.terrarium.heracles.common.network.packets.quests;
 
 import com.teamresourceful.bytecodecs.base.ByteCodec;
-import com.teamresourceful.resourcefullib.common.networking.base.CodecPacketHandler;
-import com.teamresourceful.resourcefullib.common.networking.base.Packet;
-import com.teamresourceful.resourcefullib.common.networking.base.PacketContext;
-import com.teamresourceful.resourcefullib.common.networking.base.PacketHandler;
+import com.teamresourceful.resourcefullib.common.network.Packet;
+import com.teamresourceful.resourcefullib.common.network.base.PacketType;
+import com.teamresourceful.resourcefullib.common.network.base.ServerboundPacketType;
+import com.teamresourceful.resourcefullib.common.network.defaults.CodecPacketType;
 import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.common.handlers.progress.QuestProgressHandler;
 import earth.terrarium.heracles.common.handlers.quests.QuestHandler;
 import earth.terrarium.heracles.common.network.NetworkHandler;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Player;
 
 import java.util.Objects;
+import java.util.function.Consumer;
 
 public record ServerboundRemoveQuestPacket(String id) implements Packet<ServerboundRemoveQuestPacket> {
 
-    public static final ResourceLocation ID = new ResourceLocation(Heracles.MOD_ID, "remove_server_quest");
-    public static final Handler HANDLER = new Handler();
+    public static final ServerboundPacketType<ServerboundRemoveQuestPacket> TYPE = new Type();
 
     @Override
-    public ResourceLocation getID() {
-        return ID;
+    public PacketType<ServerboundRemoveQuestPacket> type() {
+        return TYPE;
     }
 
-    @Override
-    public PacketHandler<ServerboundRemoveQuestPacket> getHandler() {
-        return HANDLER;
-    }
+    private static class Type implements ServerboundPacketType<ServerboundRemoveQuestPacket>, CodecPacketType<ServerboundRemoveQuestPacket> {
 
+        private static final ByteCodec<ServerboundRemoveQuestPacket> CODEC = ByteCodec.STRING.map(ServerboundRemoveQuestPacket::new, ServerboundRemoveQuestPacket::id);
 
-    @SuppressWarnings("UnstableApiUsage")
-    public static class Handler extends CodecPacketHandler<ServerboundRemoveQuestPacket> {
-
-        public Handler() {
-            super(ByteCodec.STRING.map(ServerboundRemoveQuestPacket::new, ServerboundRemoveQuestPacket::id));
+        @Override
+        public Class<ServerboundRemoveQuestPacket> type() {
+            return ServerboundRemoveQuestPacket.class;
         }
 
         @Override
-        public PacketContext handle(ServerboundRemoveQuestPacket message) {
-            return (player, level) -> {
+        public ResourceLocation id() {
+            return new ResourceLocation(Heracles.MOD_ID, "remove_server_quest");
+        }
+
+        @Override
+        public ByteCodec<ServerboundRemoveQuestPacket> codec() {
+            return CODEC;
+        }
+
+        @Override
+        public Consumer<Player> handle(ServerboundRemoveQuestPacket message) {
+            return (player) -> {
                 if (player.hasPermissions(2)) {
                     QuestHandler.remove(message.id);
                     NetworkHandler.CHANNEL.sendToAllPlayers(

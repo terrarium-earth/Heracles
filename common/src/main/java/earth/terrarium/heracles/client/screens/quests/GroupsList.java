@@ -2,6 +2,7 @@ package earth.terrarium.heracles.client.screens.quests;
 
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.teamresourceful.resourcefullib.client.components.context.ContextMenu;
 import com.teamresourceful.resourcefullib.client.components.context.ContextualMenuScreen;
 import com.teamresourceful.resourcefullib.client.components.selection.ListEntry;
 import com.teamresourceful.resourcefullib.client.components.selection.SelectionList;
@@ -132,7 +133,8 @@ public class GroupsList extends SelectionList<GroupsList.Entry> {
 
         @Override
         public boolean mouseClicked(double mouseX, double mouseY, int button) {
-            if (this.list.getSelected() != this) Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1.0F));
+            if (this.list.getSelected() != this)
+                Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1.0F));
             boolean cant = !ClientQuests.byGroup(name).isEmpty() || this.list.children().size() == 1;
             if (Minecraft.getInstance().screen instanceof QuestsEditScreen screen && button == InputConstants.MOUSE_BUTTON_LEFT && !cant) {
                 boolean closingButton = mouseX >= this.list.width - 11 && mouseX <= this.list.width - 2 && mouseY >= 2 && mouseY <= 12;
@@ -157,8 +159,10 @@ public class GroupsList extends SelectionList<GroupsList.Entry> {
             }
             if (button == InputConstants.MOUSE_BUTTON_RIGHT) {
                 MouseClick mouse = ClientUtils.getMousePos();
-                ContextualMenuScreen.getMenu()
-                    .ifPresent(menu -> menu.start(this.list.x + this.list.width + 6, mouse.y())
+                Optional<ContextMenu> menu = ContextualMenuScreen.getMenu();
+                if (menu.isPresent()) {
+                    menu.get()
+                        .start(this.list.x + this.list.width + 6, mouse.y())
                         .addOption(Component.literal("\uD83D\uDCAC Edit Name"), () -> {
                             if (Minecraft.getInstance().screen instanceof QuestsEditScreen screen) {
                                 screen.textModal().setVisible(true);
@@ -204,8 +208,9 @@ public class GroupsList extends SelectionList<GroupsList.Entry> {
                                 NetworkHandler.CHANNEL.sendToServer(new ServerboundUpdateGroupOrderPacket(ClientQuests.groupOrders()));
                             }
                         })
-                        .open());
-                return true;
+                        .open();
+                    return true;
+                }
             }
             this.list.onSelection.accept(this);
             return super.mouseClicked(mouseX, mouseY, button);

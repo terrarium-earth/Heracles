@@ -2,6 +2,7 @@ package earth.terrarium.heracles.common.handlers.quests;
 
 import com.google.common.collect.HashBiMap;
 import com.google.common.collect.Sets;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.mojang.serialization.Codec;
@@ -15,6 +16,7 @@ import static earth.terrarium.heracles.Heracles.LOGGER;
 import earth.terrarium.heracles.api.groups.Group;
 import earth.terrarium.heracles.api.quests.Quest;
 import earth.terrarium.heracles.common.utils.ModUtils;
+import net.minecraft.Util;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.RegistryOps;
 
@@ -176,7 +178,7 @@ public class QuestHandler {
                 .encodeStart(JsonOps.INSTANCE, GROUPS)
                 .getOrThrow(false, LOGGER::error);
             element.add("groups", json);
-            element.add("order", Constants.PRETTY_GSON.toJsonTree(GROUPS_ORDERS));
+            element.add("order", Util.make(new JsonArray(), array -> GROUPS_ORDERS.forEach(array::add)));
             org.apache.commons.io.FileUtils.write(file, Constants.PRETTY_GSON.toJson(element), StandardCharsets.UTF_8);
         } catch (Exception e) {
             Heracles.LOGGER.error("Failed to save quest groups", e);

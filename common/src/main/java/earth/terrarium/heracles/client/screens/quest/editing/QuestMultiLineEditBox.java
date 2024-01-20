@@ -67,7 +67,7 @@ public class QuestMultiLineEditBox extends MultiLineEditBox implements CursorWid
                 graphics.blit(TEXTURE, this.getX() + 97 + i * 11, this.getY() - 12, i * 11, isHovered(mouseX, mouseY, 7 + i) ? 33 : 22, 11, 11);
             }
             for (int i = 0; i < 8; i++) {
-                graphics.blit(TEXTURE, this.getX() + 174 + i * 11, this.getY() - 12, i * 11, isHovered(mouseX, mouseY, 14 + i) ? 55 : 44, 11, 11);
+                graphics.blit(TEXTURE, this.getX() + 185 + i * 11, this.getY() - 12, i * 11, isHovered(mouseX, mouseY, 15 + i) ? 55 : 44, 11, 11);
             }
         }
 

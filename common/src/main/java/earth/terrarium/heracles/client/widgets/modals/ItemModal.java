@@ -20,6 +20,7 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
+import net.minecraft.util.Mth;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -50,10 +51,13 @@ public class ItemModal extends BaseModal {
     private final EditBox search;
     private final StateImageButton modeButton;
 
+    private int scroll = 0;
+
     public ItemModal(int screenWidth, int screenHeight) {
         super(screenWidth, screenHeight, WIDTH, HEIGHT, 2);
         this.modeButton = addChild(new StateImageButton(x + 7, y + 5, 11, 11, 168, 0, 11, TEXTURE, 256, 256, 3, this::update));
         this.search = addChild(new EditBox(Minecraft.getInstance().font, x + 8, y + 19, 152, 14, ConstantComponents.SEARCH));
+        this.search.setResponder(text -> this.scroll = 0);
     }
 
     public void update(int state) {
@@ -171,6 +175,21 @@ public class ItemModal extends BaseModal {
     }
 
     @Override
+    public boolean mouseScrolled(double mouseX, double mouseY, double delta) {
+        if (!isVisible()) return false;
+        if (super.mouseScrolled(mouseX, mouseY, delta)) return true;
+        float itemMaxForSearch = 0;
+        for (ItemValue item : this.items) {
+            if (matches(item, this.search.getValue())) {
+                itemMaxForSearch++;
+            }
+        }
+        int maxRows = Mth.ceil(itemMaxForSearch / ITEM_COLUMNS);
+        scroll = Mth.clamp(this.scroll - (int) delta * ITEM_COLUMNS, 0, (maxRows - ITEM_ROWS) * ITEM_COLUMNS);
+        return true;
+    }
+
+    @Override
     public void setVisible(boolean visible) {
         super.setVisible(visible);
         if (visible) {
@@ -182,15 +201,24 @@ public class ItemModal extends BaseModal {
         search = search.toLowerCase(Locale.ROOT).trim();
 
         List<ItemValue> filteredItems = new ArrayList<>();
+        int i = 0;
         for (ItemValue item : items) {
             if (filteredItems.size() >= ITEM_COLUMNS * ITEM_ROWS) break;
-            Component desc = ModUtils.throwStackoverflow(item, ItemValue::getDisplayName);
-            Component namespace = ModUtils.throwStackoverflow(item, ItemValue::getNamespace);
-            if (desc.getString().toLowerCase(Locale.ROOT).contains(search) || namespace.getString().toLowerCase(Locale.ROOT).contains(search) || item.getId().toString().startsWith(search) || item.getId().getPath().startsWith(search)) {
+            if (matches(item, search)) {
+                if (i++ < scroll) continue;
                 filteredItems.add(item);
             }
         }
         return filteredItems;
+    }
+
+    private boolean matches(ItemValue value, String text) {
+        Component desc = ModUtils.throwStackoverflow(value, ItemValue::getDisplayName);
+        Component namespace = ModUtils.throwStackoverflow(value, ItemValue::getNamespace);
+        return desc.getString().toLowerCase(Locale.ROOT).contains(text) ||
+            namespace.getString().toLowerCase(Locale.ROOT).contains(text) ||
+            value.getId().toString().startsWith(text) ||
+            value.getId().getPath().startsWith(text);
     }
 
     public void setCallback(Consumer<Either<ItemStack, TagKey<Item>>> callback) {

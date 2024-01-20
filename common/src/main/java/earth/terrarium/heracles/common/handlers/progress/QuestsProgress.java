@@ -36,8 +36,8 @@ public record QuestsProgress(Map<String, QuestProgress> progress, CompletableQue
             for (QuestTask<?, ?, ?> task : quest.tasks().values()) {
                 if (task.isCompatibleWith(taskType)) {
                     TaskProgress<?> progress = questProgress.getTask(task);
-                    Tag before = progress.progress().copy();
                     if (progress.isComplete()) continue;
+                    Tag before = progress.progress().copy();
                     progress.addProgress(taskType, ModUtils.cast(task), input);
                     if (progress.isComplete()) {
                         HeraclesEvents.TaskCompleteListener.fire(TaskEventTarget.create(task, player));

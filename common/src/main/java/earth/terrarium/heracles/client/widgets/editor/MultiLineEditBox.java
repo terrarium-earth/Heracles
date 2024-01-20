@@ -27,7 +27,7 @@ public class MultiLineEditBox extends AbstractScrollWidget {
 	}
 
 	public void setValue(String fullText) {
-		this.field.setValue(fullText, false);
+		this.field.setValue(fullText, true);
 	}
 
 	public String getValue() {

@@ -199,7 +199,7 @@ public class QuestMultiLineEditBox extends MultiLineEditBox implements CursorWid
         boolean changed = !String.join("\n", newValue).equals(content.value());
         if (!changed) return;
 
-        content.setValue(String.join("\n", newValue));
+        content.setValue(String.join("\n", newValue), true);
 
         if (cursor == selection) {
             int offset = add ? 2 : -2;

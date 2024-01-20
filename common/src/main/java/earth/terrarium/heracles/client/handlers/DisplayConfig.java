@@ -17,6 +17,7 @@ public class DisplayConfig {
     private static Path lastPath;
 
     public static int pinnedIndex = 0;
+    public static int maxEditorHistory = 100;
     public static boolean showTutorial = true;
 
     public static void load(Path path) {
@@ -28,6 +29,7 @@ public class DisplayConfig {
                 JsonObject displayObject = Constants.PRETTY_GSON.fromJson(displayString, JsonObject.class);
                 pinnedIndex = GsonHelper.getAsInt(displayObject, "pinnedIndex", 0);
                 showTutorial = GsonHelper.getAsBoolean(displayObject, "showTutorial", true);
+                maxEditorHistory = GsonHelper.getAsInt(displayObject, "maxEditorHistory", 100);
             } else {
                 save();
             }
@@ -42,6 +44,7 @@ public class DisplayConfig {
         JsonObject displayObject = new JsonObject();
         displayObject.addProperty("pinnedIndex", pinnedIndex);
         displayObject.addProperty("showTutorial", showTutorial);
+        displayObject.addProperty("maxEditorHistory", maxEditorHistory);
         try {
             FileUtils.write(displayFile, Constants.PRETTY_GSON.toJson(displayObject), StandardCharsets.UTF_8);
         } catch (Exception e) {

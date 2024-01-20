@@ -17,6 +17,9 @@ public class MultilineTextField {
 
 	private final Font font;
 	private final List<MultilineTextField.StringView> lines = Lists.newArrayList();
+	private final EditorHistory history = new EditorHistory();
+
+
 	private String value;
 	private int cursor;
 	private int selectCursor;
@@ -24,21 +27,27 @@ public class MultilineTextField {
 	private final int width;
 	private Runnable cursorListener = () -> {};
 
+	private String oldValue = null;
+
 	public MultilineTextField(Font font, int i) {
 		this.font = font;
 		this.width = i;
-		this.setValue("");
+		this.value = "";
+		this.cursor = 0;
+		this.selectCursor = 0;
+		this.reflowDisplayLines();
+		this.cursorListener.run();
 	}
 
 	public void setCursorListener(Runnable cursorListener) {
 		this.cursorListener = cursorListener;
 	}
 
-	public void setValue(String fullText) {
+	public void setValue(String fullText, boolean updateHistory) {
 		this.value = fullText;
 		this.cursor = this.value.length();
 		this.selectCursor = this.cursor;
-		this.onValueChange();
+		this.onValueChange(updateHistory);
 	}
 
 	public String value() {
@@ -53,7 +62,7 @@ public class MultilineTextField {
 			this.value = new StringBuilder(this.value).replace(stringView.beginIndex, stringView.endIndex, string).toString();
 			this.cursor = stringView.beginIndex + string.length();
 			this.selectCursor = this.cursor;
-			this.onValueChange();
+			this.onValueChange(true);
 		}
 	}
 
@@ -146,6 +155,12 @@ public class MultilineTextField {
 		} else if (Screen.isCut(i)) {
 			Minecraft.getInstance().keyboardHandler.setClipboard(this.getSelectedText());
 			this.insertText("");
+			return true;
+		} else if (isUndo(i)) {
+			this.setValue(this.history.undo(this.value), false);
+			return true;
+		} else if (isRedo(i)) {
+			this.setValue(this.history.redo(this.value), false);
 			return true;
 		} else {
 			return switch (i) {
@@ -307,7 +322,13 @@ public class MultilineTextField {
 		return i;
 	}
 
-	private void onValueChange() {
+	private void onValueChange(boolean updateHistory) {
+		 if (updateHistory) {
+			 if (this.oldValue != null) {
+				 this.history.push(this.oldValue);
+			 }
+			 this.oldValue = this.value;
+		 }
 		this.reflowDisplayLines();
 		this.cursorListener.run();
 	}
@@ -328,5 +349,13 @@ public class MultilineTextField {
 
 	public record StringView(int beginIndex, int endIndex) {
 		public static final MultilineTextField.StringView EMPTY = new MultilineTextField.StringView(0, 0);
+	}
+
+	public static boolean isUndo(int keyCode) {
+		return keyCode == InputConstants.KEY_Z && Screen.hasControlDown() && !Screen.hasShiftDown() && !Screen.hasAltDown();
+	}
+
+	public static boolean isRedo(int keyCode) {
+		return keyCode == InputConstants.KEY_Y && Screen.hasControlDown() && !Screen.hasShiftDown() && !Screen.hasAltDown();
 	}
 }

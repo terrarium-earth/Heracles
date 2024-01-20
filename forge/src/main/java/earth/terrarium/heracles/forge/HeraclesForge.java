@@ -2,6 +2,7 @@ package earth.terrarium.heracles.forge;
 
 import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.api.tasks.defaults.*;
+import earth.terrarium.heracles.common.commands.ModCommands;
 import earth.terrarium.heracles.common.handlers.progress.QuestProgressHandler;
 import earth.terrarium.heracles.common.handlers.progress.QuestsProgress;
 import earth.terrarium.heracles.common.utils.PlatformSettings;
@@ -10,6 +11,7 @@ import net.minecraft.core.BlockSourceImpl;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.levelgen.structure.Structure;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingEntityUseItemEvent;
@@ -37,6 +39,7 @@ public class HeraclesForge {
         MinecraftForge.EVENT_BUS.addListener(HeraclesForge::onBlockInteract);
         MinecraftForge.EVENT_BUS.addListener(HeraclesForge::onEntityInteract);
         MinecraftForge.EVENT_BUS.addListener(HeraclesForge::onEntityDeath);
+        MinecraftForge.EVENT_BUS.addListener(HeraclesForge::onRegisterCommands);
 
         if (FMLEnvironment.dist.isClient()) {
             HeraclesForgeClient.init();
@@ -103,5 +106,9 @@ public class HeraclesForge {
 
         QuestProgressHandler.getProgress(player.server, player.getUUID())
             .testAndProgressTaskType(player, event.getTarget(), EntityInteractTask.TYPE);
+    }
+
+    private static void onRegisterCommands(RegisterCommandsEvent event) {
+        ModCommands.init(event.getDispatcher());
     }
 }

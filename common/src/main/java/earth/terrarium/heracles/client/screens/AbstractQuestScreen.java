@@ -1,7 +1,7 @@
 package earth.terrarium.heracles.client.screens;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.teamresourceful.resourcefullib.client.screens.BaseCursorScreen;
+import com.teamresourceful.resourcefullib.client.screens.PriorityScreen;
 import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.api.client.theme.QuestsScreenTheme;
 import earth.terrarium.heracles.client.utils.ClientUtils;
@@ -23,7 +23,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class AbstractQuestScreen<T> extends BaseCursorScreen {
+public abstract class AbstractQuestScreen<T> extends PriorityScreen {
 
     public static final ResourceLocation HEADING = new ResourceLocation(Heracles.MOD_ID, "textures/gui/heading.png");
 

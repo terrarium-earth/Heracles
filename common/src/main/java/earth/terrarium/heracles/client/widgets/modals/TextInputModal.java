@@ -24,6 +24,7 @@ public class TextInputModal<T> extends BaseModal {
     private static final int HEIGHT = 57;
 
     private final Component title;
+    private final EnterableEditBox editBox;
 
     private T data;
     private BiConsumer<T, String> callback;
@@ -32,7 +33,7 @@ public class TextInputModal<T> extends BaseModal {
         super(screenWidth, screenHeight, WIDTH, HEIGHT);
         this.title = title;
         this.callback = callback;
-        var editBox = addChild(new EnterableEditBox(Minecraft.getInstance().font, this.x + 8, this.y + 19, 152, 14, Component.nullToEmpty("Group Name")));
+        editBox = addChild(new EnterableEditBox(Minecraft.getInstance().font, this.x + 8, this.y + 19, 152, 14, Component.nullToEmpty("Group Name")));
         editBox.setEnter(value -> {
             if (!value.isBlank()) {
                 this.callback.accept(this.data, value);
@@ -91,6 +92,10 @@ public class TextInputModal<T> extends BaseModal {
             setVisible(false);
         }
         return true;
+    }
+
+    public void setText(String text) {
+        editBox.setValue(text);
     }
 
     public void setData(T data) {

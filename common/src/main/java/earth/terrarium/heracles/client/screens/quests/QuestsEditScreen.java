@@ -1,6 +1,9 @@
 package earth.terrarium.heracles.client.screens.quests;
 
 import com.mojang.blaze3d.platform.InputConstants;
+import com.teamresourceful.resourcefullib.client.components.context.ContextualMenuScreen;
+import com.teamresourceful.resourcefullib.client.components.context.ContextMenu;
+import earth.terrarium.heracles.api.groups.Group;
 import earth.terrarium.heracles.api.quests.GroupDisplay;
 import earth.terrarium.heracles.api.quests.Quest;
 import earth.terrarium.heracles.api.quests.QuestDisplay;
@@ -33,7 +36,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Locale;
 
-public class QuestsEditScreen extends QuestsScreen {
+public class QuestsEditScreen extends QuestsScreen implements ContextualMenuScreen {
 
     private SelectableImageButton moveTool;
     private SelectableImageButton dragTool;
@@ -46,6 +49,9 @@ public class QuestsEditScreen extends QuestsScreen {
     private ItemModal itemModal;
     private AddDependencyModal dependencyModal;
     private TextInputModal<MouseClick> questModal;
+    private TextInputModal<Unit> textModal;
+
+    private ContextMenu contextMenu;
 
     public QuestsEditScreen(QuestsContent content) {
         super(content);
@@ -95,12 +101,12 @@ public class QuestsEditScreen extends QuestsScreen {
 
         this.uploadModal = addTemporary(new UploadModal(this.width, this.height));
         this.groupModal = addTemporary(new TextInputModal<>(this.width, this.height, ConstantComponents.Groups.CREATE, (ignored, text) -> {
-            NetworkHandler.CHANNEL.sendToServer(new CreateGroupPacket(text));
-            ClientQuests.groups().add(text);
+            NetworkHandler.CHANNEL.sendToServer(new CreateGroupPacket(text.trim()));
+            ClientQuests.groups().put(text.trim(), new Group(text.trim()));
             if (Minecraft.getInstance().screen instanceof QuestsScreen screen) {
-                screen.getGroupsList().addGroup(text);
+                screen.getGroupsList().addGroup(text.trim(), new Group(text.trim()));
             }
-        }, text -> !ClientQuests.groups().contains(text.trim())));
+        }, text -> !ClientQuests.groups().containsKey(text.trim())));
         this.iconBackgroundModal = addTemporary(new IconBackgroundModal(this.width, this.height));
         this.itemModal = addTemporary(new ItemModal(this.width, this.height));
         this.dependencyModal = addTemporary(new AddDependencyModal(this.width, this.height));
@@ -120,6 +126,15 @@ public class QuestsEditScreen extends QuestsScreen {
             );
             this.questsWidget.addQuest(ClientQuestNetworking.add(text, quest));
         }, text -> text.toLowerCase(Locale.ROOT).replaceAll("[^a-zA-Z_-]", "").length() >= 2 && ClientQuests.get(text.trim()).isEmpty()));
+
+        this.textModal = addTemporary(new TextInputModal<>(this.width, this.height,
+            Component.literal("Enter Name"),
+            (unit, text) -> {},
+            text -> text.length() >= 2
+        ));
+        this.textModal.setData(Unit.INSTANCE);
+
+        this.contextMenu = addRenderableWidget(-1, new GroupsContextMenu());
     }
 
     @Override
@@ -212,5 +227,14 @@ public class QuestsEditScreen extends QuestsScreen {
 
     public TextInputModal<MouseClick> questModal() {
         return this.questModal;
+    }
+
+    public TextInputModal<Unit> textModal() {
+        return this.textModal;
+    }
+
+    @Override
+    public ContextMenu getContextMenu() {
+        return this.contextMenu;
     }
 }

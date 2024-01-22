@@ -50,7 +50,7 @@ public record OpenGroupPacket(String group, boolean edit) implements Packet<Open
                 if (player instanceof ServerPlayer serverPlayer) {
                     String group = message.group;
                     if (group.isEmpty()) {
-                        group = QuestHandler.groups().get(0);
+                        group = QuestHandler.groups().keySet().iterator().next();
                     }
                     if (message.edit) {
                         ModUtils.editGroup(serverPlayer, group);

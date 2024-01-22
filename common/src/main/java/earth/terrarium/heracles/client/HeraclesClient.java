@@ -48,7 +48,7 @@ public class HeraclesClient {
     }
 
     public static void openQuestScreen() {
-        if (!ClientQuests.groups().contains(lastGroup)) {
+        if (!ClientQuests.groups().containsKey(lastGroup)) {
             lastGroup = "";
         }
         if (DisplayConfig.showTutorial) {

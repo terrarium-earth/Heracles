@@ -92,7 +92,7 @@ public class ModUtils {
     }
 
     public static void openGroup(ServerPlayer player, String group) {
-        if (!QuestHandler.groups().contains(group)) {
+        if (!QuestHandler.groups().containsKey(group)) {
             player.sendSystemMessage(Component.translatable("gui.heracles.error.group.not_found", group));
             return;
         }
@@ -103,7 +103,7 @@ public class ModUtils {
     }
 
     public static void editGroup(ServerPlayer player, String group) {
-        if (!QuestHandler.groups().contains(group)) {
+        if (!QuestHandler.groups().containsKey(group)) {
             player.sendSystemMessage(Component.translatable("gui.heracles.error.group.not_found", group));
             player.closeContainer();
             return;

@@ -2,6 +2,7 @@ package earth.terrarium.heracles.api.tasks;
 
 import earth.terrarium.heracles.api.tasks.storage.TaskStorage;
 import net.minecraft.nbt.Tag;
+import net.minecraft.server.level.ServerPlayer;
 
 public interface QuestTask<I, S extends Tag, T extends QuestTask<I, S, T>> {
 
@@ -20,6 +21,10 @@ public interface QuestTask<I, S extends Tag, T extends QuestTask<I, S, T>> {
      * @return The added progress.
      */
     S test(QuestTaskType<?> type, S progress, I input);
+
+    default S init(QuestTaskType<?> type, S progress, ServerPlayer player) {
+        return progress;
+    }
 
 
     /**

@@ -95,17 +95,20 @@ public record QuestsProgress(Map<String, QuestProgress> progress, CompletableQue
         TaskProgress<?> progress = questProgress.getTask(questTask);
         if (progress.isComplete()) return false;
         progress.addProgress(taskType, ModUtils.cast(questTask), input);
+        sendOutQuestChanged(id, quest, questProgress, player);
+        return true;
+    }
+
+    public void sendOutQuestChanged(String id, Quest quest, QuestProgress questProgress, ServerPlayer player) {
         questProgress.update(quest);
         this.progress.put(id, questProgress);
-
+        PinnedQuestHandler.syncIfChanged(player, List.of(id));
         QuestEntry entry = QuestEntry.of(id, quest);
         if (questProgress.isComplete()) {
             sendOutQuestComplete(entry, player);
         }
-        PinnedQuestHandler.syncIfChanged(player, List.of(id));
         this.completableQuests.updateCompleteQuests(this, player);
         syncToTeam(player, List.of(entry));
-        return true;
     }
 
     private void syncToTeam(ServerPlayer player, List<QuestEntry> quests) {
@@ -128,7 +131,7 @@ public record QuestsProgress(Map<String, QuestProgress> progress, CompletableQue
             });
     }
 
-    private static void sendOutQuestComplete(QuestEntry entry, ServerPlayer player) {
+    public static void sendOutQuestComplete(QuestEntry entry, ServerPlayer player) {
         NetworkHandler.CHANNEL.sendToPlayer(new QuestCompletedPacket(entry.id()), player);
         HeraclesEvents.QuestCompleteListener.fire(QuestEventTarget.create(entry, player));
     }

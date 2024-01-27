@@ -30,6 +30,10 @@ public class TaskProgress<S extends Tag> {
         updateComplete(task);
     }
 
+    public void setProgress(S progress) {
+        this.progress = progress;
+    }
+
     public void reset() {
         progress = defaultProgress.get();
         setComplete(false);

@@ -38,4 +38,8 @@ public final class IntegerTaskStorage implements TaskStorage<Integer, NumericTag
     public IntTag set(int amount) {
         return IntTag.valueOf(amount);
     }
+
+    public IntTag max(NumericTag progress, int amount) {
+        return IntTag.valueOf(Math.max(readInt(progress), amount));
+    }
 }

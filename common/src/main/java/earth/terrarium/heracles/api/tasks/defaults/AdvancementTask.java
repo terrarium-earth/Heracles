@@ -14,6 +14,9 @@ import earth.terrarium.heracles.api.tasks.storage.defaults.BooleanTaskStorage;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.nbt.ByteTag;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.ServerAdvancementManager;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.Items;
 
 import java.util.Set;
@@ -27,6 +30,19 @@ public record AdvancementTask(
     @Override
     public ByteTag test(QuestTaskType<?> type, ByteTag progress, Advancement input) {
         return storage().of(progress, advancements.contains(input.getId()));
+    }
+
+    @Override
+    public ByteTag init(QuestTaskType<?> type, ByteTag progress, ServerPlayer player) {
+        MinecraftServer server = player.getServer();
+        if (server == null) return progress;
+        ServerAdvancementManager manager = server.getAdvancements();
+        for (ResourceLocation id : advancements) {
+            Advancement advancement = manager.getAdvancement(id);
+            if (advancement == null) continue;
+            progress = test(type, progress, advancement);
+        }
+        return progress;
     }
 
     @Override

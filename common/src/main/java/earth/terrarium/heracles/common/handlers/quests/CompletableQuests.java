@@ -1,14 +1,21 @@
 package earth.terrarium.heracles.common.handlers.quests;
 
 import earth.terrarium.heracles.api.quests.Quest;
+import earth.terrarium.heracles.api.tasks.QuestTask;
+import earth.terrarium.heracles.common.handlers.progress.QuestProgress;
 import earth.terrarium.heracles.common.handlers.progress.QuestsProgress;
+import earth.terrarium.heracles.common.handlers.progress.TaskProgress;
 import earth.terrarium.heracles.common.network.NetworkHandler;
 import earth.terrarium.heracles.common.network.packets.QuestUnlockedPacket;
+import earth.terrarium.heracles.common.utils.ModUtils;
+import net.minecraft.nbt.Tag;
 import net.minecraft.server.level.ServerPlayer;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.function.BiConsumer;
 
 public class CompletableQuests {
@@ -61,10 +68,50 @@ public class CompletableQuests {
     }
 
     public void updateCompleteQuests(QuestsProgress progress, @Nullable ServerPlayer player) {
+        List<UpdatedEntry> updatedQuests = new ArrayList<>();
+
         this.updateCompleteQuests(progress, (id, quest) -> {
-            if (quest.settings().unlockNotification() && player != null) {
+            if (player == null) return;
+            if (quest.settings().unlockNotification()) {
                 NetworkHandler.CHANNEL.sendToPlayer(new QuestUnlockedPacket(id), player);
             }
+            QuestProgress questProgress = progress.getProgress(id);
+            if (questProgress.isComplete()) return;
+            UpdatedEntry entry = new UpdatedEntry(id, quest, new HashMap<>());
+            for (QuestTask<?, ?, ?> value : quest.tasks().values()) {
+                Tag newProgress = initTask(value, questProgress, player);
+                if (newProgress == null) continue;
+                entry.newProgress().put(value.id(), newProgress);
+            }
+            if (entry.newProgress().isEmpty()) return;
+            updatedQuests.add(entry);
         });
+
+        if (player == null) return;
+        if (updatedQuests.isEmpty()) return;
+        for (UpdatedEntry entry : updatedQuests) {
+            QuestProgress questProgress = progress.getProgress(entry.id());
+            for (var task : entry.newProgress().entrySet()) {
+                progressTask(entry.quest().tasks().get(task.getKey()), task.getValue(), questProgress);
+            }
+            progress.sendOutQuestChanged(entry.id(), entry.quest(), questProgress, player);
+        }
     }
+
+    private static <T extends Tag> void progressTask(QuestTask<?, T, ?> task, Tag newProgress, QuestProgress progress) {
+        TaskProgress<T> taskProgress = progress.getTask(task);
+        if (taskProgress.isComplete()) return;
+        taskProgress.setProgress(ModUtils.cast(newProgress));
+        taskProgress.updateComplete(task);
+    }
+
+    private static <T extends Tag> T initTask(QuestTask<?, T, ?> task, QuestProgress progress, ServerPlayer player) {
+        TaskProgress<T> taskProgress = progress.getTask(task);
+        if (taskProgress.isComplete()) return null;
+        Tag before = taskProgress.progress().copy();
+        T newProgress = task.init(task.type(), taskProgress.progress(), player);
+        return task.storage().same(before, newProgress) ? null : newProgress;
+    }
+
+    private record UpdatedEntry(String id, Quest quest, Map<String, Tag> newProgress) {}
 }

@@ -12,6 +12,8 @@ import earth.terrarium.heracles.api.tasks.QuestTaskType;
 import earth.terrarium.heracles.api.tasks.storage.defaults.IntegerTaskStorage;
 import net.minecraft.nbt.NumericTag;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.stats.Stats;
 import net.minecraft.world.item.Items;
 
 public record StatTask(
@@ -23,9 +25,15 @@ public record StatTask(
     @Override
     public NumericTag test(QuestTaskType<?> type, NumericTag progress, ResourceLocation stat, Integer amount) {
         if (this.stat.equals(stat)) {
-            return storage().set(amount);
+            return storage().max(progress, amount);
         }
         return progress;
+    }
+
+    @Override
+    public NumericTag init(QuestTaskType<?> type, NumericTag progress, ServerPlayer player) {
+        int value = player.getStats().getValue(Stats.CUSTOM, this.stat);
+        return value == 0 ? progress : storage().max(progress, value);
     }
 
     @Override

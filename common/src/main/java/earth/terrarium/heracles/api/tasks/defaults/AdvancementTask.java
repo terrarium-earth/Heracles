@@ -11,7 +11,9 @@ import earth.terrarium.heracles.api.quests.defaults.ItemQuestIcon;
 import earth.terrarium.heracles.api.tasks.QuestTask;
 import earth.terrarium.heracles.api.tasks.QuestTaskType;
 import earth.terrarium.heracles.api.tasks.storage.defaults.BooleanTaskStorage;
+import earth.terrarium.heracles.mixins.common.PlayerAdvancementAccessor;
 import net.minecraft.advancements.Advancement;
+import net.minecraft.advancements.AdvancementProgress;
 import net.minecraft.nbt.ByteTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
@@ -40,6 +42,10 @@ public record AdvancementTask(
         for (ResourceLocation id : advancements) {
             Advancement advancement = manager.getAdvancement(id);
             if (advancement == null) continue;
+            PlayerAdvancementAccessor advancements = (PlayerAdvancementAccessor) player.getAdvancements();
+            AdvancementProgress advancementProgress = advancements.progress().get(advancement);
+            if (advancementProgress == null) continue;
+            if (!advancementProgress.isDone()) continue;
             progress = test(type, progress, advancement);
         }
         return progress;

@@ -6,6 +6,7 @@
     "mixins": [
         "common.ChangeDimensionTriggerMixin",
         "common.InventoryMixin",
+        "common.PlayerAdvancementAccessor",
         "common.PlayerListMixin",
         "common.ReloadableServerResourcesMixin",
         "common.ServerPlayerMixin",

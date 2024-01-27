@@ -1,6 +1,6 @@
 package earth.terrarium.heracles.mixins.common;
 
-import earth.terrarium.heracles.common.duck.SlotChangeAwareInventory;
+import earth.terrarium.heracles.common.items.SlotChangeAwareInventory;
 import net.minecraft.world.Container;
 import net.minecraft.world.inventory.Slot;
 import org.spongepowered.asm.mixin.Final;

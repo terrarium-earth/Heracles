@@ -2,7 +2,7 @@ package earth.terrarium.heracles.mixins.common;
 
 import com.mojang.datafixers.util.Pair;
 import earth.terrarium.heracles.api.tasks.defaults.GatherItemTask;
-import earth.terrarium.heracles.common.duck.SlotChangeAwareInventory;
+import earth.terrarium.heracles.common.items.SlotChangeAwareInventory;
 import earth.terrarium.heracles.common.handlers.progress.QuestProgressHandler;
 import earth.terrarium.heracles.common.handlers.progress.QuestsProgress;
 import net.minecraft.server.level.ServerPlayer;

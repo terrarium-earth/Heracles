@@ -1,6 +1,8 @@
 package earth.terrarium.heracles.mixins.common;
 
 import earth.terrarium.heracles.common.handlers.syncing.QuestSyncer;
+import earth.terrarium.heracles.common.network.NetworkHandler;
+import earth.terrarium.heracles.common.network.packets.ClientboundAdvancementDisplayPacket;
 import net.minecraft.network.Connection;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
@@ -31,6 +33,10 @@ public class PlayerListMixin {
     )
     private void heracles$afterSyncData(Connection netManager, ServerPlayer player, CallbackInfo ci) {
         QuestSyncer.sync(player);
+        NetworkHandler.CHANNEL.sendToPlayer(
+            new ClientboundAdvancementDisplayPacket(this.server),
+            player
+        );
     }
 
     @Inject(
@@ -39,5 +45,9 @@ public class PlayerListMixin {
     )
     private void heracles$afterSyncDataToAll(CallbackInfo ci) {
         QuestSyncer.syncToAll(this.server, this.players);
+        NetworkHandler.CHANNEL.sendToPlayers(
+            new ClientboundAdvancementDisplayPacket(this.server),
+            this.players
+        );
     }
 }

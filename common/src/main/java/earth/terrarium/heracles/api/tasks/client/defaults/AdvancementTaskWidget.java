@@ -8,15 +8,14 @@ import earth.terrarium.heracles.api.client.WidgetUtils;
 import earth.terrarium.heracles.api.client.theme.QuestScreenTheme;
 import earth.terrarium.heracles.api.tasks.client.display.TaskTitleFormatter;
 import earth.terrarium.heracles.api.tasks.defaults.AdvancementTask;
+import earth.terrarium.heracles.client.handlers.ClientAdvancementDisplays;
 import earth.terrarium.heracles.common.constants.ConstantComponents;
 import earth.terrarium.heracles.common.handlers.progress.TaskProgress;
 import net.minecraft.Optionull;
-import net.minecraft.advancements.AdvancementList;
 import net.minecraft.advancements.DisplayInfo;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.nbt.ByteTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -131,15 +130,12 @@ public final class AdvancementTaskWidget implements DisplayWidget {
     }
 
     private static List<Component> getAdvancementTitles(AdvancementTask task) {
-        ClientPacketListener connection = Minecraft.getInstance().getConnection();
-        if (connection == null) return List.of();
-        AdvancementList list = connection.getAdvancements().getAdvancements();
         List<Component> titles = new ArrayList<>();
         for (ResourceLocation id : task.advancements()) {
             titles.add(
                 Optionull.mapOrDefault(
-                    list.get(id),
-                    advancement -> Optionull.mapOrDefault(advancement.getDisplay(), DisplayInfo::getTitle, getTranslation(id)),
+                    ClientAdvancementDisplays.get(id),
+                    display -> Optionull.mapOrDefault(display, DisplayInfo::getTitle, getTranslation(id)),
                     getTranslation(id)
                 )
             );
@@ -156,13 +152,13 @@ public final class AdvancementTaskWidget implements DisplayWidget {
     }
 
     private static List<ItemStack> getAdvancementIcons(AdvancementTask task) {
-        ClientPacketListener connection = Minecraft.getInstance().getConnection();
-        if (connection == null) return List.of();
-        AdvancementList list = connection.getAdvancements().getAdvancements();
         List<ItemStack> icons = new ArrayList<>();
         for (ResourceLocation id : task.advancements()) {
             icons.add(
-                Optionull.map(list.get(id), advancement -> Optionull.map(advancement.getDisplay(), DisplayInfo::getIcon))
+                Optionull.map(
+                    ClientAdvancementDisplays.get(id),
+                    display -> Optionull.map(display, DisplayInfo::getIcon)
+                )
             );
         }
         icons.removeIf(Objects::isNull);

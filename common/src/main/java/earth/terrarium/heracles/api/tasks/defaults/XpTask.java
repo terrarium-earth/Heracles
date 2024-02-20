@@ -15,6 +15,7 @@ import earth.terrarium.heracles.api.tasks.storage.defaults.IntegerTaskStorage;
 import net.minecraft.nbt.NumericTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Items;
@@ -34,6 +35,14 @@ public record XpTask(
                     xpType == XpType.LEVEL ? input.experienceLevel : input.totalExperience));
         } else if (collectionType == CollectionType.CONSUME || cause == Cause.MANUALLY_COMPLETED) {
             return deductXp(progress, input);
+        }
+        return progress;
+    }
+
+    @Override
+    public NumericTag init(QuestTaskType<?> type, NumericTag progress, ServerPlayer player) {
+        if (collectionType != CollectionType.MANUAL) {
+            return test(type, progress, player, Cause.GAINED_XP);
         }
         return progress;
     }

@@ -56,8 +56,6 @@ public record GatherItemTask(
 
     @Override
     public NumericTag init(QuestTaskType<?> type, NumericTag progress, ServerPlayer player) {
-        MinecraftServer server = player.getServer();
-        if (server == null) return progress;
         if (this.collectionType != CollectionType.MANUAL) {
             return automatic(progress, player.getInventory());
         }

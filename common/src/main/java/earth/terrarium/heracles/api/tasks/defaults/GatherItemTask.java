@@ -15,9 +15,16 @@ import earth.terrarium.heracles.api.tasks.PairQuestTask;
 import earth.terrarium.heracles.api.tasks.QuestTaskType;
 import earth.terrarium.heracles.api.tasks.storage.defaults.IntegerTaskStorage;
 import earth.terrarium.heracles.common.utils.RegistryValue;
+import earth.terrarium.heracles.mixins.common.PlayerAdvancementAccessor;
+import net.minecraft.advancements.Advancement;
+import net.minecraft.advancements.AdvancementProgress;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.nbt.ByteTag;
 import net.minecraft.nbt.NumericTag;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.ServerAdvancementManager;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -43,6 +50,16 @@ public record GatherItemTask(
             if (this.item.is(stack.get().getItemHolder()) && nbt.matches(stack.get().getTag(), false)) {
                 return automatic(progress, container);
             }
+        }
+        return progress;
+    }
+
+    @Override
+    public NumericTag init(QuestTaskType<?> type, NumericTag progress, ServerPlayer player) {
+        MinecraftServer server = player.getServer();
+        if (server == null) return progress;
+        if (this.collectionType != CollectionType.MANUAL) {
+            return automatic(progress, player.getInventory());
         }
         return progress;
     }

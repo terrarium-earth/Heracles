@@ -1,3 +1,1 @@
-- Made it so advancement display info is now synced to clients (ThatGravyBoat)
-- Fixed advancement tasks not be granted if task was unlocked after advancement was acquired (ThatGravyBoat)
-- Check if stats requirement is already acquired when task is unlocked (ThatGravyBoat)
+- Fix certain tasks not checking progression on initialization (CodexAdrian)

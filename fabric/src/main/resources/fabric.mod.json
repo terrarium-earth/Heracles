@@ -20,6 +20,9 @@
     ],
     "rei_client": [
       "earth.terrarium.heracles.client.compat.rei.HeraclesReiClientPlugin"
+    ],
+    "jei_mod_plugin": [
+      "earth.terrarium.heracles.client.compat.jei.HeraclesJeiModPlugin"
     ]
   },
   "mixins": [

@@ -12,6 +12,7 @@ import com.teamresourceful.resourcefullib.client.CloseablePoseStack;
 import com.teamresourceful.resourcefullib.client.utils.RenderUtils;
 import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.api.quests.Quest;
+import earth.terrarium.heracles.api.quests.QuestDisplayStatus;
 import earth.terrarium.heracles.client.HeraclesClient;
 import earth.terrarium.heracles.client.handlers.ClientQuests;
 import earth.terrarium.heracles.client.screens.AbstractQuestScreen;
@@ -155,14 +156,29 @@ public class QuestsWidget extends BaseWidget {
         var value = quest.value();
         boolean inGroup = value.display().groups().containsKey(group);
         if (!inGroup) return true;
-        if (value.settings().hiddenUntil() == ModUtils.QuestStatus.COMPLETED) {
+        return shouldHide(statuses, quest, value.settings().hiddenUntil());
+    }
+
+    private static boolean shouldHide(Object2BooleanMap<String> statuses, ClientQuests.QuestEntry quest, QuestDisplayStatus status) {
+        if (status == QuestDisplayStatus.COMPLETED) {
             return !statuses.getBoolean(quest.key());
-        } else if (value.settings().hiddenUntil() == ModUtils.QuestStatus.IN_PROGRESS) {
+        } else if (status == QuestDisplayStatus.IN_PROGRESS) {
             for (var dependency : quest.dependencies()) {
                 if (!statuses.getBoolean(dependency.key())) {
                     return true;
                 }
             }
+        } else if (status == QuestDisplayStatus.DEPENDENCIES_VISIBLE) {
+            boolean visible = statuses.getBoolean(quest.key());
+            if (visible) {
+                return false;
+            }
+            for (var dependency : quest.dependencies()) {
+                if (shouldHide(statuses, dependency, QuestDisplayStatus.DEPENDENCIES_VISIBLE)) {
+                    return true;
+                }
+            }
+            return quest.value().settings().hiddenUntil() != QuestDisplayStatus.DEPENDENCIES_VISIBLE;
         }
         return false;
     }

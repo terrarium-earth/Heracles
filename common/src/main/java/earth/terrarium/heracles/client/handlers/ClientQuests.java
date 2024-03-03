@@ -85,7 +85,7 @@ public class ClientQuests {
 
         QuestEntry entry = new QuestEntry(key, quest, dependencies);
 
-        dependencies.forEach(dependency -> dependency.dependants().add(entry));
+        dependencies.forEach(dependency -> dependency.dependents().add(entry));
 
         ENTRIES.put(key, entry);
         return entry;
@@ -96,9 +96,9 @@ public class ClientQuests {
         BY_GROUPS.values().forEach(list -> list.removeIf(entry -> entry.key().equals(id)));
         if (quest != null) {
             for (QuestEntry dependency : quest.dependencies()) {
-                dependency.dependants().remove(quest);
+                dependency.dependents().remove(quest);
             }
-            for (QuestEntry child : quest.dependants()) {
+            for (QuestEntry child : quest.dependents()) {
                 child.dependencies().remove(quest);
             }
         }
@@ -111,13 +111,13 @@ public class ClientQuests {
             QuestEntry dependent = ENTRIES.get(dependency);
             if (dependent != null) {
                 entry.dependencies().add(dependent);
-                dependent.dependants().removeIf(child -> child.key().equals(id));
-                dependent.dependants().add(entry);
+                dependent.dependents().removeIf(child -> child.key().equals(id));
+                dependent.dependents().add(entry);
             }
         }
         for (QuestEntry value : ENTRIES.values()) {
             if (value.value.dependencies().contains(id)) {
-                entry.dependants().add(value);
+                entry.dependents().add(value);
                 value.dependencies().removeIf(dependency -> dependency.key().equals(id));
                 value.dependencies().add(entry);
             }
@@ -168,7 +168,7 @@ public class ClientQuests {
         STATUS.putAll(content.quests());
     }
 
-    public record QuestEntry(String key, Quest value, List<QuestEntry> dependencies, List<QuestEntry> dependants) {
+    public record QuestEntry(String key, Quest value, List<QuestEntry> dependencies, List<QuestEntry> dependents) {
 
         public QuestEntry(String key, Quest value, List<QuestEntry> dependencies) {
             this(key, value, dependencies, new ArrayList<>());

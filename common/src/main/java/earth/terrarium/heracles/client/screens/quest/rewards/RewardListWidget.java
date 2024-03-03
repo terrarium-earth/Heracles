@@ -120,7 +120,7 @@ public class RewardListWidget extends AbstractContainerEventHandler implements R
         }
         ClientQuests.get(id).ifPresent(entry -> {
             List<ClientQuests.QuestEntry> children = new ArrayList<>();
-            for (ClientQuests.QuestEntry child : entry.dependants()) {
+            for (ClientQuests.QuestEntry child : entry.dependents()) {
                 if (!child.value().display().groups().containsKey(group)) {
                     children.add(child);
                 }

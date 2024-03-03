@@ -238,7 +238,7 @@ public class QuestsWidget extends BaseWidget {
 
                 RenderSystem.setShaderColor(0.9F, 0.9F, 0.9F, isHovered ? 0.8f : 0.4F);
 
-                for (ClientQuests.QuestEntry child : entry.children()) {
+                for (ClientQuests.QuestEntry child : entry.dependents()) {
                     if (!child.value().display().groups().containsKey(this.group)) continue;
                     if (!this.visibleQuests.contains(child.key())) continue;
                     if (!child.value().settings().showDependencyArrow()) continue;

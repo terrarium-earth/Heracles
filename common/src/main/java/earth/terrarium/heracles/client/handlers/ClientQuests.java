@@ -67,21 +67,28 @@ public class ClientQuests {
         Quest quest,
         Map<String, Quest> quests
     ) {
+        QuestEntry existingEntry = ENTRIES.get(key);
+
+        if (existingEntry != null) {
+            return existingEntry;
+        }
+
         List<QuestEntry> dependencies = new ArrayList<>();
+
         for (String dependency : quest.dependencies()) {
             Quest dependent = quests.get(dependency);
+
             if (dependent != null && !dependent.dependencies().contains(key) && !key.equals(dependency)) {
-                QuestEntry dependencyEntry = addEntry(dependency, dependent, quests);
-                if (dependencyEntry != null) {
-                    dependencies.add(dependencyEntry);
-                }
+                dependencies.add(addEntry(dependency, dependent, quests));
             }
         }
 
-        QuestEntry entry = new QuestEntry(dependencies, key, quest, new ArrayList<>());
-        dependencies.forEach(dependency -> dependency.children().add(entry));
+        QuestEntry entry = new QuestEntry(key, quest, dependencies);
 
-        return ENTRIES.computeIfAbsent(key, k -> entry);
+        dependencies.forEach(dependency -> dependency.dependents().add(entry));
+
+        ENTRIES.put(key, entry);
+        return entry;
     }
 
     public static void remove(String id) {
@@ -89,9 +96,9 @@ public class ClientQuests {
         BY_GROUPS.values().forEach(list -> list.removeIf(entry -> entry.key().equals(id)));
         if (quest != null) {
             for (QuestEntry dependency : quest.dependencies()) {
-                dependency.children().remove(quest);
+                dependency.dependents().remove(quest);
             }
-            for (QuestEntry child : quest.children()) {
+            for (QuestEntry child : quest.dependents()) {
                 child.dependencies().remove(quest);
             }
         }
@@ -99,18 +106,18 @@ public class ClientQuests {
 
     public static QuestEntry addQuest(String id, Quest quest) {
         remove(id);
-        QuestEntry entry = new QuestEntry(new ArrayList<>(), id, quest, new ArrayList<>());
+        QuestEntry entry = new QuestEntry(id, quest);
         for (String dependency : quest.dependencies()) {
             QuestEntry dependent = ENTRIES.get(dependency);
             if (dependent != null) {
                 entry.dependencies().add(dependent);
-                dependent.children().removeIf(child -> child.key().equals(id));
-                dependent.children().add(entry);
+                dependent.dependents().removeIf(child -> child.key().equals(id));
+                dependent.dependents().add(entry);
             }
         }
         for (QuestEntry value : ENTRIES.values()) {
             if (value.value.dependencies().contains(id)) {
-                entry.children().add(value);
+                entry.dependents().add(value);
                 value.dependencies().removeIf(dependency -> dependency.key().equals(id));
                 value.dependencies().add(entry);
             }
@@ -161,7 +168,15 @@ public class ClientQuests {
         STATUS.putAll(content.quests());
     }
 
-    public record QuestEntry(List<QuestEntry> dependencies, String key, Quest value, List<QuestEntry> children) {
+    public record QuestEntry(String key, Quest value, List<QuestEntry> dependencies, List<QuestEntry> dependents) {
+
+        public QuestEntry(String key, Quest value, List<QuestEntry> dependencies) {
+            this(key, value, dependencies, new ArrayList<>());
+        }
+
+        public QuestEntry(String key, Quest value) {
+            this(key, value, new ArrayList<>());
+        }
 
         @Override
         public String toString() {

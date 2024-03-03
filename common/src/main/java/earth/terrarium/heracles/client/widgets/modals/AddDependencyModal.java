@@ -58,7 +58,7 @@ public class AddDependencyModal extends BaseModal {
         if (entry != null) {
             ClientQuests.QuestEntry entry = ClientQuests.get(value).orElse(null);
             if (entry != null) {
-                entry.children().add(this.entry);
+                entry.dependents().add(this.entry);
                 this.entry.dependencies().add(entry);
                 this.dependencies.add(entry.value());
                 this.entry.value().dependencies().add(value);
@@ -108,7 +108,7 @@ public class AddDependencyModal extends BaseModal {
                     this.dependencies.remove(dependency);
                     for (ClientQuests.QuestEntry questEntry : ClientQuests.entries()) {
                         if (questEntry.value().equals(dependency)) {
-                            questEntry.children().remove(this.entry);
+                            questEntry.dependents().remove(this.entry);
                             this.entry.dependencies().remove(questEntry);
                             this.entry.value().dependencies().remove(questEntry.key());
                             this.callback.run();

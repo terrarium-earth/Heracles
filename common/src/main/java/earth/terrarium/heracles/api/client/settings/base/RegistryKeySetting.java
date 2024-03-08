@@ -2,9 +2,8 @@ package earth.terrarium.heracles.api.client.settings.base;
 
 import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.api.client.settings.Setting;
-import earth.terrarium.heracles.client.widgets.boxes.AutocompleteEditBox;
+import earth.terrarium.heracles.client.components.widgets.textbox.autocomplete.AutocompleteTextBox;
 import net.minecraft.Optionull;
-import net.minecraft.client.Minecraft;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
@@ -18,31 +17,29 @@ import java.util.function.Function;
 
 public record RegistryKeySetting<T>(
     ResourceKey<? extends Registry<T>> key
-) implements Setting<ResourceKey<T>, AutocompleteEditBox<String>> {
+) implements Setting<ResourceKey<T>, AutocompleteTextBox<String>> {
 
     public static final RegistryKeySetting<Level> DIMENSION = new RegistryKeySetting<>(Registries.DIMENSION);
 
     @Override
-    public AutocompleteEditBox<String> createWidget(int width, ResourceKey<T> value) {
-        AutocompleteEditBox<String> box = new AutocompleteEditBox<>(Minecraft.getInstance().font, 0, 0, width, 11,
-            (text, item) -> item.contains(text) && !item.equals(text), Function.identity(), s -> {});
-        box.setMaxLength(Short.MAX_VALUE);
+    public AutocompleteTextBox<String> createWidget(AutocompleteTextBox<String> old, int width, ResourceKey<T> value) {
+        ResourceLocation id = Optionull.map(value, ResourceKey::location);
         List<String> suggestions = new ArrayList<>();
         var registry = Heracles.getRegistryAccess().registry(key).orElse(null);
-        if (registry == null) {
-            return box;
+        if (registry != null) {
+            registry.keySet().stream().map(ResourceLocation::toString).forEach(suggestions::add);
         }
-        registry.keySet().stream().map(ResourceLocation::toString).forEach(suggestions::add);
-        box.setSuggestions(suggestions);
-
-        ResourceLocation id = Optionull.map(value, ResourceKey::location);
-        box.setValue(id == null ? "" : id.toString());
-        return box;
+        return new AutocompleteTextBox<>(
+            old, Optionull.mapOrDefault(id, ResourceLocation::toString, ""),
+            width, 24,
+            suggestions,
+            (text, item) -> item.contains(text) && !item.equals(text), Function.identity()
+        );
     }
 
     @Override
-    public ResourceKey<T> getValue(AutocompleteEditBox<String> widget) {
-        ResourceLocation id = ResourceLocation.tryParse(widget.getValue());
+    public ResourceKey<T> getValue(AutocompleteTextBox<String> widget) {
+        ResourceLocation id = ResourceLocation.tryParse(widget.value());
         return Optional.ofNullable(id)
             .map(ignored -> ResourceKey.create(key, id))
             .orElse(null);

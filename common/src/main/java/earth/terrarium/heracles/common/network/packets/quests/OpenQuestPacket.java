@@ -12,7 +12,7 @@ import net.minecraft.world.entity.player.Player;
 
 import java.util.function.Consumer;
 
-public record OpenQuestPacket(String group, String quest, boolean edit) implements Packet<OpenQuestPacket> {
+public record OpenQuestPacket(String group, String quest) implements Packet<OpenQuestPacket> {
 
     public static final ServerboundPacketType<OpenQuestPacket> TYPE = new Type();
 
@@ -37,23 +37,18 @@ public record OpenQuestPacket(String group, String quest, boolean edit) implemen
         public void encode(OpenQuestPacket message, FriendlyByteBuf buffer) {
             buffer.writeUtf(message.group);
             buffer.writeUtf(message.quest);
-            buffer.writeBoolean(message.edit);
         }
 
         @Override
         public OpenQuestPacket decode(FriendlyByteBuf buffer) {
-            return new OpenQuestPacket(buffer.readUtf(), buffer.readUtf(), buffer.readBoolean());
+            return new OpenQuestPacket(buffer.readUtf(), buffer.readUtf());
         }
 
         @Override
         public Consumer<Player> handle(OpenQuestPacket message) {
             return (player) -> {
                 if (player instanceof ServerPlayer serverPlayer) {
-                    if (message.edit() && player.hasPermissions(2)) {
-                        ModUtils.openEditQuest(serverPlayer, message.group(), message.quest());
-                    } else {
-                        ModUtils.openQuest(serverPlayer, message.group(), message.quest());
-                    }
+                    ModUtils.openQuest(serverPlayer, message.group(), message.quest());
                 }
             };
         }

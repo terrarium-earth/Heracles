@@ -13,7 +13,7 @@ import net.minecraft.world.entity.player.Player;
 
 import java.util.function.Consumer;
 
-public record OpenGroupPacket(String group, boolean edit) implements Packet<OpenGroupPacket> {
+public record OpenGroupPacket(String group) implements Packet<OpenGroupPacket> {
     public static final ServerboundPacketType<OpenGroupPacket> TYPE = new Type();
 
     @Override
@@ -36,12 +36,11 @@ public record OpenGroupPacket(String group, boolean edit) implements Packet<Open
         @Override
         public void encode(OpenGroupPacket message, FriendlyByteBuf buffer) {
             buffer.writeUtf(message.group);
-            buffer.writeBoolean(message.edit);
         }
 
         @Override
         public OpenGroupPacket decode(FriendlyByteBuf buffer) {
-            return new OpenGroupPacket(buffer.readUtf(), buffer.readBoolean());
+            return new OpenGroupPacket(buffer.readUtf());
         }
 
         @Override
@@ -52,11 +51,7 @@ public record OpenGroupPacket(String group, boolean edit) implements Packet<Open
                     if (group.isEmpty()) {
                         group = QuestHandler.groups().get(0);
                     }
-                    if (message.edit) {
-                        ModUtils.editGroup(serverPlayer, group);
-                    } else {
-                        ModUtils.openGroup(serverPlayer, group);
-                    }
+                    ModUtils.openGroup(serverPlayer, group);
                 }
             };
         }

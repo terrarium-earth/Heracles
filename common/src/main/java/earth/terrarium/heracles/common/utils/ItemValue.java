@@ -15,6 +15,7 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.level.ItemLike;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -42,8 +43,8 @@ public final class ItemValue extends RegistryValue<Item> {
         this(Either.right(key));
     }
 
-    public ItemValue(Item item) {
-        this(Either.left(item.getDefaultInstance()));
+    public ItemValue(ItemLike item) {
+        this(Either.left(item.asItem().getDefaultInstance()));
     }
 
     public ItemValue(ItemStack stack) {
@@ -78,6 +79,16 @@ public final class ItemValue extends RegistryValue<Item> {
         return item;
     }
 
+    public boolean isEmpty() {
+        return item.map(
+            stack -> stack.is(Items.AIR),
+            key -> Heracles.getRegistryAccess()
+                .registry(Registries.ITEM)
+                .map(registry -> registry.getTag(key).isEmpty())
+                .orElse(true)
+        );
+    }
+
     public List<ItemStack> values() {
         if (values == null) {
             values = item.map(
@@ -88,5 +99,9 @@ public final class ItemValue extends RegistryValue<Item> {
                 ).orElse(List.of()));
         }
         return values;
+    }
+
+    public ItemValue copy() {
+        return new ItemValue(this.item.mapLeft(ItemStack::copy));
     }
 }

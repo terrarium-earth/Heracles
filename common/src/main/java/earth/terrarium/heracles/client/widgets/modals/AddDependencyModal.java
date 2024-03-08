@@ -37,13 +37,14 @@ public class AddDependencyModal extends BaseModal {
         super(screenWidth, screenHeight, WIDTH, HEIGHT);
 
         // dependencies
-        this.dependencyBox = addChild(new AutocompleteEditBox<>(Minecraft.getInstance().font, x + 8, y + 19, 130, 16, (text, item) -> {
+        this.dependencyBox = addChild(new AutocompleteEditBox<>(null, "", 130, 16, (text, item) -> {
             text = text.toLowerCase(Locale.ROOT).trim();
             Quest quest = item.value();
             String title = quest.display().title().getString().toLowerCase(Locale.ROOT).trim();
             String id = item.key().toLowerCase(Locale.ROOT).trim();
             return (title.contains(text) || id.contains(text)) && !id.equals(text);
         }, ClientQuests.QuestEntry::key, value -> addDependency()));
+        this.dependencyBox.setPosition(x + 8, y + 19);
 
         this.addButton = addChild(
             new Button.Builder(ConstantComponents.PLUS, b -> addDependency())
@@ -80,7 +81,7 @@ public class AddDependencyModal extends BaseModal {
                     boolean removeHovered = mouseX >= x + 149 && mouseX <= x + 158 && mouseY >= tempY + 2 && mouseY <= tempY + 11;
                     graphics.blit(TEXTURE, x + 149, tempY + 2, 187, removeHovered ? 9 : 0, 9, 9);
                     CursorUtils.setCursor(removeHovered, CursorScreen.Cursor.POINTER);
-                    dependency.display().icon().render(graphics, scissor.stack(), x + 9, tempY + 1, 22, 22);
+                    dependency.display().icon().render(graphics, x + 9, tempY + 1, 22, 22);
                     graphics.drawString(
                         Minecraft.getInstance().font,
                         dependency.display().title(), x + 36, tempY + 6, EditorTheme.getModalDependenciesDependencyTitle(),

@@ -5,9 +5,7 @@ import com.teamresourceful.resourcefullib.common.network.base.ClientboundPacketT
 import com.teamresourceful.resourcefullib.common.network.base.PacketType;
 import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.client.handlers.ClientQuests;
-import earth.terrarium.heracles.client.screens.quest.BaseQuestScreen;
 import earth.terrarium.heracles.common.handlers.progress.QuestProgress;
-import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 
@@ -60,12 +58,7 @@ public record SyncQuestProgressPacket(Map<String, QuestProgress> quests) impleme
 
         @Override
         public Runnable handle(SyncQuestProgressPacket message) {
-            return () -> {
-                ClientQuests.mergeProgress(message.quests);
-                if (Minecraft.getInstance().screen instanceof BaseQuestScreen screen) {
-                    screen.updateProgress(message.quests.getOrDefault(screen.getQuestId(), null));
-                }
-            };
+            return () -> ClientQuests.mergeProgress(message.quests);
         }
     }
 }

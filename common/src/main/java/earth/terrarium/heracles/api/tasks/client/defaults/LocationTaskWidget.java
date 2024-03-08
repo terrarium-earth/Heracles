@@ -18,9 +18,8 @@ public record LocationTaskWidget(
     @Override
     public void render(GuiGraphics graphics, ScissorBoxStack scissor, int x, int y, int width, int mouseX, int mouseY, boolean hovered, float partialTicks) {
         Font font = Minecraft.getInstance().font;
-        WidgetUtils.drawBackground(graphics, x, y, width, getHeight(width));
         int iconSize = 32;
-        this.task.icon().render(graphics, scissor, x + 5, y + 5, iconSize, iconSize);
+        this.task.icon().render(graphics, x + 5, y + 5, iconSize, iconSize);
         graphics.drawString(font, this.task.title(), x + iconSize + 16, y + 6, QuestScreenTheme.getTaskTitle(), false);
         graphics.drawString(font, this.task.desc(), x + iconSize + 16, y + 8 + font.lineHeight, QuestScreenTheme.getTaskDescription(), false);
         WidgetUtils.drawProgressText(graphics, x, y, width, this.task, this.progress);

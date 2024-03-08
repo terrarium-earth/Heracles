@@ -35,9 +35,7 @@ public class SelectQuestHandler {
                 return;
             } else if (System.currentTimeMillis() - lastClickTime < 500) {
                 selectedQuest = null;
-                NetworkHandler.CHANNEL.sendToServer(new OpenQuestPacket(
-                    this.group, quest.id(), Minecraft.getInstance().screen instanceof QuestsEditScreen
-                ));
+                NetworkHandler.CHANNEL.sendToServer(new OpenQuestPacket(this.group, quest.id()));
             }
         } else if (mode == MouseMode.SELECT_LINK && selectedQuest != null) {
             ClientQuests.updateQuest(quest.entry(), value -> {

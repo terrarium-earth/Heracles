@@ -6,6 +6,7 @@ import com.teamresourceful.resourcefullib.client.screens.CursorScreen;
 import com.teamresourceful.resourcefullib.client.utils.CursorUtils;
 import com.teamresourceful.resourcefullib.client.utils.ScreenUtils;
 import earth.terrarium.heracles.api.quests.Quest;
+import earth.terrarium.heracles.client.HeraclesClient;
 import earth.terrarium.heracles.client.handlers.ClientQuests;
 import earth.terrarium.heracles.client.utils.ClientUtils;
 import earth.terrarium.heracles.common.constants.ConstantComponents;
@@ -57,7 +58,7 @@ public class QuestWidget {
             );
         }
         RenderSystem.disableBlend();
-        quest.display().icon().render(graphics, scissor, x + x() + 4, y + y() + 4, 24, 24);
+        quest.display().icon().render(graphics, x + x() + 4, y + y() + 4, 24, 24);
         CursorUtils.setCursor(hovered, CursorScreen.Cursor.POINTER);
         if (hovered && (!(ClientUtils.screen() instanceof QuestsScreen screen) || !screen.isTemporaryWidgetVisible())) {
             String subtitleText = quest.display().subtitle().getString().trim();
@@ -90,7 +91,7 @@ public class QuestWidget {
         if (ClientUtils.screen() instanceof QuestsScreen screen) {
             return this.quest.display().position(screen.getGroup());
         }
-        return new Vector2i();
+        return this.quest.display().position(HeraclesClient.lastGroup);
     }
 
     public String group() {

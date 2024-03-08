@@ -23,6 +23,10 @@ public class ClientQuests {
         return Optional.ofNullable(ENTRIES.get(key));
     }
 
+    public static Optional<Quest> getQuest(String key) {
+        return get(key).map(QuestEntry::value);
+    }
+
     public static List<String> groups() {
         return GROUPS;
     }

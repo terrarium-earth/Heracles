@@ -36,6 +36,7 @@ subprojects {
         maven(url = "https://maven.minecraftforge.net/")
         maven(url = "https://maven.teamresourceful.com/repository/maven-public/")
         mavenCentral()
+        mavenLocal()
     }
 
     dependencies {

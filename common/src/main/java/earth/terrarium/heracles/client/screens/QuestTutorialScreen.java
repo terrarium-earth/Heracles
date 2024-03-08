@@ -50,7 +50,7 @@ public class QuestTutorialScreen extends BaseCursorScreen {
         addRenderableWidget(ThemedButton.builder(ConstantComponents.Quests.VIEW, button -> {
             DisplayConfig.save();
             saved = true;
-            NetworkHandler.CHANNEL.sendToServer(new OpenGroupPacket("", false));
+            NetworkHandler.CHANNEL.sendToServer(new OpenGroupPacket(""));
         }).bounds(buttonX, this.height - 30, 150, 20).build());
     }
 

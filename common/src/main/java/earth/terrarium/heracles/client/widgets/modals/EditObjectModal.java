@@ -117,7 +117,7 @@ public class EditObjectModal extends BaseModal {
         this.children().clear();
         this.addChild(closeButton);
         for (String s : data.data().keySet()) {
-            this.widgets.put(s, (GuiEventListener) data.get((int) (this.width * 0.4f), s));
+            this.widgets.put(s, data.get(null, (int) (this.width * 0.4f), s));
         }
         this.save = save;
     }

@@ -30,11 +30,12 @@ import java.util.function.Supplier;
 
 public final class WidgetUtils {
     public static final ResourceLocation TEXTURE = new ResourceLocation(Heracles.MOD_ID, "textures/gui/widgets.png");
+    public static final ResourceLocation BACKGROUND = new ResourceLocation(Heracles.MOD_ID, "textures/gui/sprites/screen/widgets.png");
 
     public static void drawBackground(GuiGraphics graphics, int x, int y, int width, int height) {
         RenderSystem.enableBlend();
-        graphics.blitNineSliced(TEXTURE, x, y, 42, height, 3, 42, 42, 0, 0);
-        graphics.blitNineSliced(TEXTURE, x + 42, y, width - 42, height, 3, 86, 42, 42, 0);
+        graphics.blitNineSliced(BACKGROUND, x, y, 42, height, 3, 42, 42, 0, 0);
+        graphics.blitNineSliced(BACKGROUND, x + 42, y, width - 42, height, 3, 86, 42, 42, 0);
         RenderSystem.disableBlend();
     }
 
@@ -109,8 +110,9 @@ public final class WidgetUtils {
     public static boolean drawItemIcon(GuiGraphics graphics, ItemStack stack, int x, int y, int size) {
         if (stack != null && !stack.is(Items.AIR)) {
             int scale = size / 16;
+            int offset = (size - scale * 16) / 2;
             try (var pose = new CloseablePoseStack(graphics)) {
-                pose.translate(x, y, 0);
+                pose.translate(x + offset, y + offset, 0);
                 pose.scale(scale, scale, 1);
                 graphics.renderFakeItem(stack, 0, 0);
             }

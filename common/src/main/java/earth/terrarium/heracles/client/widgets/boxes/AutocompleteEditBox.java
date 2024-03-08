@@ -2,11 +2,9 @@ package earth.terrarium.heracles.client.widgets.boxes;
 
 import com.mojang.blaze3d.platform.InputConstants;
 import com.teamresourceful.resourcefullib.client.CloseablePoseStack;
+import earth.terrarium.heracles.client.components.widgets.textbox.TextBox;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.components.EditBox;
-import net.minecraft.network.chat.CommonComponents;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -16,7 +14,7 @@ import java.util.function.BiPredicate;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-public class AutocompleteEditBox<T> extends EditBox {
+public class AutocompleteEditBox<T> extends TextBox {
 
     private final List<T> suggestions = new ArrayList<>();
     private final List<String> filteredSuggestions = new ArrayList<>();
@@ -29,22 +27,23 @@ public class AutocompleteEditBox<T> extends EditBox {
     @Nullable
     private Consumer<String> responder;
 
-    public AutocompleteEditBox(Font font, int x, int y, int width, int height, BiPredicate<String, T> filter, Function<T, String> mapper, Consumer<String> onEnter) {
-        super(font, x, y, width, height, CommonComponents.EMPTY);
+    public AutocompleteEditBox(TextBox box, String value, int width, int height, BiPredicate<String, T> filter, Function<T, String> mapper, Consumer<String> onEnter) {
+        super(box, value, width, height, Short.MAX_VALUE);
         this.filter = filter;
         this.mapper = mapper;
         this.onEnter = onEnter;
-        super.setResponder(value -> {
-            if (this.responder != null) {
-                this.responder.accept(value);
-            }
-            filter();
-        });
+    }
+
+    public void setResponder(@Nullable Consumer<String> responder) {
+        this.responder = responder;
     }
 
     @Override
-    public void setResponder(@Nullable Consumer<String> responder) {
-        this.responder = responder;
+    protected void onValueChange() {
+        if (this.responder != null) {
+            this.responder.accept(this.getValue());
+        }
+        filter();
     }
 
     @Override
@@ -78,7 +77,7 @@ public class AutocompleteEditBox<T> extends EditBox {
             if (!filteredSuggestions.isEmpty()) {
                 String suggestion = filteredSuggestions.get((int) ((mouseY - (this.getY() + this.getHeight() + 1)) / 10));
                 this.setValue(suggestion);
-                this.moveCursorToEnd();
+                this.moveCursorTo(this.getValue().length());
             }
             return true;
         }

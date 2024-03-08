@@ -16,9 +16,7 @@ import java.util.Map;
 
 public record WidgetTagElement(DisplayWidget widget) implements TagElement {
 
-    public static WidgetTagElement ofTask(Map<String, String> parameters) {
-        String questId = parameters.get("quest");
-        Quest quest = ClientQuests.get(questId).map(ClientQuests.QuestEntry::value).orElse(null);
+    public static WidgetTagElement ofTask(Quest quest, String questId, Map<String, String> parameters) {
         if (quest == null) return new WidgetTagElement(null);
         var task = quest.tasks().get(parameters.get("task"));
         if (task == null) return new WidgetTagElement(null);
@@ -27,9 +25,7 @@ public record WidgetTagElement(DisplayWidget widget) implements TagElement {
         return new WidgetTagElement(QuestTaskWidgets.create(questId, ModUtils.cast(task), progress.getTask(task), status));
     }
 
-    public static WidgetTagElement ofReward(Map<String, String> parameters) {
-        String questId = parameters.get("quest");
-        Quest quest = ClientQuests.get(questId).map(ClientQuests.QuestEntry::value).orElse(null);
+    public static WidgetTagElement ofReward(Quest quest, Map<String, String> parameters) {
         if (quest == null) return new WidgetTagElement(null);
         var reward = quest.rewards().get(parameters.get("reward"));
         if (reward == null) return new WidgetTagElement(null);

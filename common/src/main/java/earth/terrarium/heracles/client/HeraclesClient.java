@@ -57,10 +57,10 @@ public class HeraclesClient {
             } else {
                 DisplayConfig.showTutorial = false;
                 DisplayConfig.save();
-                NetworkHandler.CHANNEL.sendToServer(new OpenGroupPacket(lastGroup, false));
+                NetworkHandler.CHANNEL.sendToServer(new OpenGroupPacket(lastGroup));
             }
         } else {
-            NetworkHandler.CHANNEL.sendToServer(new OpenGroupPacket(lastGroup, false));
+            NetworkHandler.CHANNEL.sendToServer(new OpenGroupPacket(lastGroup));
         }
     }
 

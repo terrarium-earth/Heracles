@@ -313,9 +313,7 @@ public class QuestsWidget extends BaseWidget {
                             this.selectHandler.clickQuest(mode, (int) mouseX, (int) mouseY, widget);
                         } else if (mode.canOpen()) {
                             Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1.0F));
-                            NetworkHandler.CHANNEL.sendToServer(new OpenQuestPacket(
-                                this.group, widget.id(), Minecraft.getInstance().screen instanceof QuestsEditScreen
-                            ));
+                            NetworkHandler.CHANNEL.sendToServer(new OpenQuestPacket(this.group, widget.id()));
                         }
                         return true;
                     }

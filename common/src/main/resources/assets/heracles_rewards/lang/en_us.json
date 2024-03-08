@@ -7,7 +7,7 @@
     "gui.heracles.rewards.unlocks_quest.title": "Unlocks %s",
     "gui.heracles.rewards.unlocks_quest.desc": "Grants you access to a new quest.",
 
-    "reward.heracles.xp": "☠ Experience",
+    "rewards.heracles.xp": "☠ Experience",
     "reward.heracles.xp.title.singular": "Receive: XP",
     "reward.heracles.xp.title.plural": "Receive: XP",
     "reward.heracles.xp.desc.singular": "Receive %s XP %s",
@@ -16,13 +16,13 @@
     "reward.heracles.xp.type.point": "point",
     "reward.heracles.xp.type.level": "level",
 
-    "reward.heracles.item": "\uD83E\uDDEA Item",
+    "rewards.heracles.item": "\uD83E\uDDEA Item",
     "reward.heracles.item.title.singular": "Receive: %s",
     "reward.heracles.item.title.plural": "Receive: %s",
     "reward.heracles.item.desc.singular": "Receive %sx %s",
     "reward.heracles.item.desc.plural": "Receive %sx %s",
 
-    "reward.heracles.loottable": "↔ Loot Table",
+    "rewards.heracles.loottable": "↔ Loot Table",
     "reward.heracles.loottable.title.singular": "Receive Random Loot",
     "reward.heracles.loottable.desc.singular": "From %s",
     "reward.heracles.loottable.tooltip.singular": "Loot Table: %s",
@@ -30,7 +30,7 @@
     "setting.heracles.loottable.icon": "Icon Override:",
     "setting.heracles.loottable.loottable": "Loot Table:",
 
-    "reward.heracles.select": "❓ Selection",
+    "rewards.heracles.select": "❓ Selection",
     "reward.heracles.select.title.singular": "Select a reward",
     "reward.heracles.select.title.plural": "Select rewards",
     "reward.heracles.select.desc.singular": "Click the button to select %s reward",
@@ -38,7 +38,7 @@
     "reward.heracles.select.modal.title.singular": "Select %s Reward",
     "reward.heracles.select.modal.title.plural": "Select %s Rewards",
 
-    "reward.heracles.command": "/ Command",
+    "rewards.heracles.command": "/ Command",
     "reward.heracles.command.title.singular": "Execute a Command",
     "reward.heracles.command.desc.singular": "%s ...",
     "reward.heracles.command.tooltip.singular": "Command: %s",

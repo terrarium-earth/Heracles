@@ -10,7 +10,7 @@ import earth.terrarium.heracles.common.menus.quests.QuestsContent;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 
-public record OpenQuestsScreenPacket(boolean editing, QuestsContent content) implements Packet<OpenQuestsScreenPacket> {
+public record OpenQuestsScreenPacket(QuestsContent content) implements Packet<OpenQuestsScreenPacket> {
 
     public static final ClientboundPacketType<OpenQuestsScreenPacket> TYPE = new Type();
 
@@ -32,27 +32,19 @@ public record OpenQuestsScreenPacket(boolean editing, QuestsContent content) imp
 
         @Override
         public void encode(OpenQuestsScreenPacket message, FriendlyByteBuf buffer) {
-            buffer.writeBoolean(message.editing);
             message.content.to(buffer);
         }
 
         @Override
         public OpenQuestsScreenPacket decode(FriendlyByteBuf buffer) {
-            return new OpenQuestsScreenPacket(
-                buffer.readBoolean(),
-                QuestsContent.from(buffer)
-            );
+            return new OpenQuestsScreenPacket(QuestsContent.from(buffer));
         }
 
         @Override
         public Runnable handle(OpenQuestsScreenPacket message) {
             return () -> {
-                ClientQuests.syncGroup(message.content);
-                if (message.editing) {
-                    ModScreens.openEditQuestsScreen(message.content);
-                } else {
-                    ModScreens.openQuestsScreen(message.content);
-                }
+                ClientQuests.syncGroup(message.content());
+                ModScreens.openQuests(message.content());
             };
         }
     }

@@ -1,1 +1,5 @@
+- Added JEI and EMI support for clicking on items in the UI (ThatGravyBoat)
+- Fix NPE if quest was trying to be reset while never being progressed (ThatGravyBoat)
+- Added dependency propagation visibility option (ThatGravyBoat)
+- Optimize client quest entry propagation (MsRandom)
 - Added loot condition "heracles:completed_quest" for loot tables (ThatGravyBoat)

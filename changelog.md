@@ -1,7 +1,1 @@
-- Fixed commands not being registered on forge. (ThatGravyBoat)
-- Adding scrolling to item modal (ThatGravyBoat)
-- Added history and undo/redo to text editor (ThatGravyBoat)
-- Added language support for zh_cn (SettingDust)
-- Changed how quest progress is checked should fix bugs where it would not complete for certain tasks (SettingDust)
-- Fixed certain buttons not having tooltips (ThatGravyBoat)
-- Added support for using REI keybinds on items in the quest book (ThatGravyBoat)
+- Added loot condition "heracles:completed_quest" for loot tables to use (ThatGravyBoat)

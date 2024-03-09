@@ -1,7 +1,5 @@
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
-rootProject.name = "heracles"
-
 pluginManagement {
     repositories {
         maven(url = "https://maven.architectury.dev/")

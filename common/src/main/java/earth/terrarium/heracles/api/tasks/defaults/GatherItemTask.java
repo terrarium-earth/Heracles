@@ -18,6 +18,7 @@ import earth.terrarium.heracles.common.utils.RegistryValue;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.NumericTag;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -43,6 +44,14 @@ public record GatherItemTask(
             if (this.item.is(stack.get().getItemHolder()) && nbt.matches(stack.get().getTag(), false)) {
                 return automatic(progress, container);
             }
+        }
+        return progress;
+    }
+
+    @Override
+    public NumericTag init(QuestTaskType<?> type, NumericTag progress, ServerPlayer player) {
+        if (this.collectionType != CollectionType.MANUAL) {
+            return automatic(progress, player.getInventory());
         }
         return progress;
     }

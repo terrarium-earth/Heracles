@@ -43,6 +43,8 @@ subprojects {
         val hermesLibVersion: String by project
         val mixinExtrasVersion: String by project
         val reiVersion: String by project
+        val emiVersion: String by project
+        val jeiVersion: String by project
 
         "minecraft"("::${minecraftVersion}")
 
@@ -70,11 +72,15 @@ subprojects {
             }
             "include"(hermes)
 
-            "modRuntimeOnly"("me.shedaniel:RoughlyEnoughItems-$modLoader:$reiVersion")
+//            "modRuntimeOnly"("me.shedaniel:RoughlyEnoughItems-$modLoader:$reiVersion")
             "modCompileOnly"("me.shedaniel:RoughlyEnoughItems-$modLoader:$reiVersion")
             "modCompileOnly"("me.shedaniel:RoughlyEnoughItems-api-$modLoader:$reiVersion")
             "modCompileOnly"("me.shedaniel:RoughlyEnoughItems-default-plugin-$modLoader:$reiVersion")
+            "modCompileOnly"(group = "dev.emi", name = "emi-$modLoader", version = "$emiVersion+$minecraftVersion", classifier = "api")
+            "modLocalRuntime"(group = "dev.emi", name = "emi-$modLoader", version = "$emiVersion+$minecraftVersion")
         } else {
+            "modCompileOnly"(group = "dev.emi", name = "emi-xplat-intermediary", version = "$emiVersion+$minecraftVersion", classifier = "api")
+            "modApi"(group = "mezz.jei", name = "jei-$minecraftVersion-common-api", version = jeiVersion)
             "modCompileOnly"("me.shedaniel:RoughlyEnoughItems-api:$reiVersion")
             "modCompileOnly"("me.shedaniel:RoughlyEnoughItems-default-plugin:$reiVersion")
         }

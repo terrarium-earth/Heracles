@@ -65,6 +65,7 @@ public record QuestsProgress(Map<String, QuestProgress> progress, CompletableQue
     }
 
     public void resetQuest(String quest, ServerPlayer player) {
+        if (!progress.containsKey(quest)) return;
         progress.get(quest).reset();
         this.completableQuests.updateCompleteQuests(this, player);
     }

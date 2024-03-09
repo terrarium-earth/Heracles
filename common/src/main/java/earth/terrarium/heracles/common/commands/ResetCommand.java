@@ -19,7 +19,13 @@ import java.util.List;
 public class ResetCommand {
 
     private static final SuggestionProvider<CommandSourceStack> QUESTS = (context, builder) -> {
-        SharedSuggestionProvider.suggest(QuestHandler.quests().keySet(), builder);
+        SharedSuggestionProvider.suggest(
+            QuestHandler.quests()
+                .keySet()
+                .stream()
+                .map(StringArgumentType::escapeIfRequired),
+            builder
+        );
         return builder.buildFuture();
     };
 

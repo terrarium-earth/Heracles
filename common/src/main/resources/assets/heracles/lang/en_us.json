@@ -8,6 +8,7 @@
     "quest.heracles.locked": "Locked",
     "quest.heracles.available": "Available",
     "quest.heracles.claimed": "Claimed",
+    "quest.heracles.dependencies_visible": "Parents Visible",
 
     "quest.heracles.toast": "Quest Complete!",
     "quest.heracles.toast.desc": "Press [%s] to open",

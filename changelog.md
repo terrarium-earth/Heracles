@@ -1,1 +1,1 @@
-- Fix certain tasks not checking progression on initialization (CodexAdrian)
+- Added loot condition "heracles:completed_quest" for loot tables (ThatGravyBoat)

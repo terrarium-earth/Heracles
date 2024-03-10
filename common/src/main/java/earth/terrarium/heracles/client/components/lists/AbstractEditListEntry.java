@@ -11,8 +11,8 @@ import earth.terrarium.heracles.client.handlers.ClientQuests;
 import earth.terrarium.heracles.client.ui.UIConstants;
 import earth.terrarium.heracles.client.ui.modals.DeleteConfirmModal;
 import earth.terrarium.heracles.client.utils.UIUtils;
+import earth.terrarium.heracles.common.constants.ConstantComponents;
 import net.minecraft.Util;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.layouts.FrameLayout;
 import net.minecraft.client.gui.layouts.GridLayout;
@@ -94,7 +94,7 @@ public abstract class AbstractEditListEntry<T> implements BaseListEntry<T> {
 
     private void tryDelete() {
         DeleteConfirmModal.open(
-            Component.literal("Delete"),
+            ConstantComponents.DELETE,
             Component.literal("Are you sure you want to delete this?"),
             this::delete
         );

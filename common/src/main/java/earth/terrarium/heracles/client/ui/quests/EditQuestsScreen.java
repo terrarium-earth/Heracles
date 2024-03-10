@@ -18,7 +18,6 @@ import earth.terrarium.heracles.common.utils.ModUtils;
 import net.minecraft.client.gui.layouts.GridLayout;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
-import net.minecraft.util.Mth;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector2i;
 
@@ -115,25 +114,19 @@ public class EditQuestsScreen extends AbstractQuestsScreen {
 
         @Override
         public boolean onRightClick(double mouseX, double mouseY, @Nullable QuestWidget widget) {
-            if (widget == null) {
-                ContextMenu.open(mouseX, mouseY, 100, menu -> {
-                    menu.button(Component.literal("Edit Details"), () -> System.out.println("Edit Details"));
-                    menu.button(Component.literal("Edit Settings"), () -> System.out.println("Edit Settings"));
-                    menu.divider();
-                    menu.dangerButton(Component.literal("Delete"), () -> System.out.println("Delete"));
-                });
-            } else {
-                ContextMenu.open(mouseX, mouseY, 100, menu -> {
-                    menu.button(Component.literal("Edit Details"), () -> System.out.println("Edit Details"));
-                    menu.button(Component.literal("Edit Settings"), () -> System.out.println("Edit Settings"));
-                    menu.divider();
-                    menu.button(Component.literal("Snap to Grid"), () ->
-                        setNewPosition(widget.entry(), widget.position(), true)
-                    );
-                    menu.divider();
-                    menu.dangerButton(Component.literal("Delete"), () -> System.out.println("Delete"));
-                });
-            }
+            if (widget == null) return false;
+            ContextMenu.open(mouseX, mouseY, 100, menu -> {
+                menu.button(Component.literal("Edit Details"), () -> System.out.println("Edit Details"));
+                menu.button(Component.literal("Edit Settings"), () -> System.out.println("Edit Settings"));
+                menu.divider();
+                menu.button(Component.literal("Snap to Grid"), () ->
+                    setNewPosition(widget.entry(), widget.position(), true)
+                );
+                menu.divider();
+                menu.dangerButton(ConstantComponents.DELETE, () ->
+                    widget.delete(quests)
+                );
+            });
             return true;
         }
 

@@ -4,12 +4,16 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.teamresourceful.resourcefullib.client.screens.CursorScreen;
 import earth.terrarium.heracles.api.quests.Quest;
 import earth.terrarium.heracles.client.components.base.BaseWidget;
+import earth.terrarium.heracles.client.handlers.ClientQuestNetworking;
 import earth.terrarium.heracles.client.handlers.ClientQuests;
+import earth.terrarium.heracles.client.ui.modals.DeleteConfirmModal;
 import earth.terrarium.heracles.client.utils.TexturePlacements;
 import earth.terrarium.heracles.common.constants.ConstantComponents;
+import earth.terrarium.heracles.common.network.packets.quests.data.NetworkQuestData;
 import earth.terrarium.heracles.common.utils.ModUtils;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.CommonComponents;
+import net.minecraft.network.chat.Component;
 import org.joml.Vector2i;
 
 public class QuestWidget extends BaseWidget {
@@ -107,5 +111,23 @@ public class QuestWidget extends BaseWidget {
 
     public Vector2i position() {
         return this.quest.display().position(this.group);
+    }
+
+    public void delete(QuestsWidget widget) {
+        DeleteConfirmModal.open(
+            ConstantComponents.DELETE,
+            Component.literal("Are you sure you want to delete this quest?"),
+            () -> {
+                if (this.entry.value().display().groups().size() == 1) {
+                    ClientQuestNetworking.remove(entry.key());
+                } else {
+                    ClientQuests.updateQuest(this.entry, quest -> {
+                        quest.display().groups().remove(this.group);
+                        return NetworkQuestData.builder().groups(quest.display().groups());
+                    });
+                }
+                widget.remove(this.entry);
+            }
+        );
     }
 }

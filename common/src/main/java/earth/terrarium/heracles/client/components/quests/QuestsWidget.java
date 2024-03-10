@@ -18,7 +18,6 @@ import earth.terrarium.heracles.common.menus.quests.QuestsContent;
 import earth.terrarium.heracles.common.utils.ModUtils;
 import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
 import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
-import net.minecraft.Optionull;
 import net.minecraft.Util;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
@@ -233,5 +232,10 @@ public class QuestsWidget extends BaseParentWidget {
 
     public OffsetBounds bounds() {
         return BOUNDS;
+    }
+
+    public void remove(ClientQuests.QuestEntry entry) {
+        this.removeWidget(value -> value instanceof QuestWidget widget && widget.entry == entry);
+        this.quests.remove(entry.key());
     }
 }

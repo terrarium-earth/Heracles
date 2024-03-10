@@ -18,7 +18,6 @@ import net.minecraft.core.BlockSource;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.NumericTag;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -65,8 +64,8 @@ public record BlockInteractTask(
         public Codec<BlockInteractTask> codec(String id) {
             return RecordCodecBuilder.create(instance -> instance.group(
                 RecordCodecBuilder.point(id),
-                Codec.STRING.fieldOf("title").orElse("").forGetter(BlockInteractTask::title),
-                QuestIcons.CODEC.fieldOf("icon").orElse(new ItemQuestIcon(Items.AIR)).forGetter(BlockInteractTask::icon),
+                Codec.STRING.optionalFieldOf("title", "").forGetter(BlockInteractTask::title),
+                QuestIcons.CODEC.optionalFieldOf("icon", ItemQuestIcon.AIR).forGetter(BlockInteractTask::icon),
                 RegistryValue.codec(Registries.BLOCK).fieldOf("block").forGetter(BlockInteractTask::block),
                 BlockStatePredicate.CODEC.fieldOf("state").orElse(BlockStatePredicate.ANY).forGetter(BlockInteractTask::state),
                 NbtPredicate.CODEC.fieldOf("nbt").orElse(NbtPredicate.ANY).forGetter(BlockInteractTask::nbt)

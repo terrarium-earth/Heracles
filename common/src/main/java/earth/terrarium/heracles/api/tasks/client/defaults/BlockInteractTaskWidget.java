@@ -12,19 +12,19 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.nbt.ByteTag;
+import net.minecraft.nbt.NumericTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 
 import java.util.List;
 
 public record BlockInteractTaskWidget(
-    BlockInteractTask task, TaskProgress<ByteTag> progress, List<ItemStack> stacks
+    BlockInteractTask task, TaskProgress<NumericTag> progress, List<ItemStack> stacks
 ) implements DisplayWidget {
 
     private static final String DESC = "task.heracles.block_interaction.desc.singular";
 
-    public BlockInteractTaskWidget(BlockInteractTask task, TaskProgress<ByteTag> progress) {
+    public BlockInteractTaskWidget(BlockInteractTask task, TaskProgress<NumericTag> progress) {
         this(task, progress, task.block().getValue().map(
             block -> List.of(block.asItem().getDefaultInstance()),
             tag -> ModUtils.getValue(Registries.BLOCK, tag).stream().map(ItemStack::new).toList()

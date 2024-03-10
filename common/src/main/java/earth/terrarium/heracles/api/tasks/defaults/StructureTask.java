@@ -16,7 +16,6 @@ import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.NumericTag;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.level.levelgen.structure.Structure;
 
 import java.util.Collection;
@@ -67,8 +66,8 @@ public record StructureTask(
         public Codec<StructureTask> codec(String id) {
             return RecordCodecBuilder.create(instance -> instance.group(
                 RecordCodecBuilder.point(id),
-                Codec.STRING.fieldOf("title").orElse("").forGetter(StructureTask::title),
-                QuestIcons.CODEC.fieldOf("icon").orElse(new ItemQuestIcon(Items.AIR)).forGetter(StructureTask::icon),
+                Codec.STRING.optionalFieldOf("title", "").forGetter(StructureTask::title),
+                QuestIcons.CODEC.optionalFieldOf("icon", ItemQuestIcon.AIR).forGetter(StructureTask::icon),
                 RegistryValue.codec(Registries.STRUCTURE).fieldOf("structures").forGetter(StructureTask::structures)
             ).apply(instance, StructureTask::new));
         }

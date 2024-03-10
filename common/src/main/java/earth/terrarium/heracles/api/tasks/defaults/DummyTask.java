@@ -55,7 +55,7 @@ public record DummyTask(
         public Codec<DummyTask> codec(String id) {
             return RecordCodecBuilder.create(instance -> instance.group(
                 RecordCodecBuilder.point(id),
-                Codec.STRING.fieldOf("title").orElse("").forGetter(DummyTask::title),
+                Codec.STRING.optionalFieldOf("title", "").forGetter(DummyTask::title),
                 DUMMY_TASK_ICON_CODEC.fieldOf("icon").orElse(new ItemQuestIcon(Items.AIR)).forGetter(DummyTask::icon),
                 Codec.STRING.fieldOf("value").forGetter(DummyTask::dummyId),
                 Codec.STRING.fieldOf("description").orElse("").forGetter(DummyTask::title)

@@ -14,7 +14,6 @@ import earth.terrarium.heracles.api.tasks.storage.defaults.BooleanTaskStorage;
 import net.minecraft.nbt.NumericTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Items;
 
 public record CheckTask(
     String id, String title, QuestIcon<?> icon, NbtPredicate nbt
@@ -56,8 +55,8 @@ public record CheckTask(
         public Codec<CheckTask> codec(String id) {
             return RecordCodecBuilder.create(instance -> instance.group(
                 RecordCodecBuilder.point(id),
-                Codec.STRING.fieldOf("title").orElse("").forGetter(CheckTask::title),
-                QuestIcons.CODEC.fieldOf("icon").orElse(new ItemQuestIcon(Items.AIR)).forGetter(CheckTask::icon),
+                Codec.STRING.optionalFieldOf("title", "").forGetter(CheckTask::title),
+                QuestIcons.CODEC.optionalFieldOf("icon", ItemQuestIcon.AIR).forGetter(CheckTask::icon),
                 NbtPredicate.CODEC.fieldOf("nbt").orElse(NbtPredicate.ANY).forGetter(CheckTask::nbt)
             ).apply(instance, CheckTask::new));
         }

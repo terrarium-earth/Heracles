@@ -15,7 +15,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.multiplayer.ClientPacketListener;
-import net.minecraft.nbt.ByteTag;
+import net.minecraft.nbt.NumericTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
@@ -32,7 +32,7 @@ public final class RecipeTaskWidget implements DisplayWidget {
     private static final String DESC_PLURAL = "task.heracles.recipe.desc.plural";
 
     private final RecipeTask task;
-    private final TaskProgress<ByteTag> progress;
+    private final TaskProgress<NumericTag> progress;
     private final Component title;
     private final List<ItemStack> icons;
     private final List<Component> titles;
@@ -40,7 +40,7 @@ public final class RecipeTaskWidget implements DisplayWidget {
     private boolean isOpened = false;
 
     public RecipeTaskWidget(
-        RecipeTask task, TaskProgress<ByteTag> progress,
+        RecipeTask task, TaskProgress<NumericTag> progress,
         Component title,
         List<ItemStack> icons, List<Component> titles
     ) {
@@ -51,7 +51,7 @@ public final class RecipeTaskWidget implements DisplayWidget {
         this.titles = titles;
     }
 
-    public RecipeTaskWidget(RecipeTask task, TaskProgress<ByteTag> progress) {
+    public RecipeTaskWidget(RecipeTask task, TaskProgress<NumericTag> progress) {
         this(task, progress, TaskTitleFormatter.create(task), getRecipeIcons(task), getRecipeTitles(task));
     }
 
@@ -122,7 +122,7 @@ public final class RecipeTaskWidget implements DisplayWidget {
     }
 
     private ItemStack getCurrentItem() {
-        if (this.icons.size() == 0) {
+        if (this.icons.isEmpty()) {
             return Items.CRAFTING_TABLE.getDefaultInstance();
         }
         int index = Math.max(0, (int) ((System.currentTimeMillis() / 1000) % this.icons.size()));

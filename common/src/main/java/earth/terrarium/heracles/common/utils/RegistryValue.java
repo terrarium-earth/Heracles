@@ -10,6 +10,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 
+import java.util.Objects;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
@@ -90,5 +91,18 @@ public sealed class RegistryValue<T> permits ItemValue {
 
     public Either<Holder<T>, TagKey<T>> value() {
         return value;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        RegistryValue<?> that = (RegistryValue<?>) obj;
+        return value.equals(that.value);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(value);
     }
 }

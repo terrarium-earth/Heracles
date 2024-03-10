@@ -134,8 +134,8 @@ public record GatherItemTask(
         public Codec<GatherItemTask> codec(String id) {
             Codec<GatherItemTask> newCodec = RecordCodecBuilder.create(instance -> instance.group(
                 RecordCodecBuilder.point(id),
-                Codec.STRING.fieldOf("title").orElse("").forGetter(GatherItemTask::title),
-                QuestIcons.CODEC.fieldOf("icon").orElse(new ItemQuestIcon(Items.AIR)).forGetter(GatherItemTask::icon),
+                Codec.STRING.optionalFieldOf("title", "").forGetter(GatherItemTask::title),
+                QuestIcons.CODEC.optionalFieldOf("icon", ItemQuestIcon.AIR).forGetter(GatherItemTask::icon),
                 RegistryValue.codec(Registries.ITEM).fieldOf("item").forGetter(GatherItemTask::item),
                 NbtPredicate.CODEC.fieldOf("nbt").orElse(NbtPredicate.ANY).forGetter(GatherItemTask::nbt),
                 Codec.INT.fieldOf("amount").orElse(1).forGetter(GatherItemTask::target),

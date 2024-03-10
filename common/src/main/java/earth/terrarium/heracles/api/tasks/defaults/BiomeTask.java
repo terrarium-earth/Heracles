@@ -15,7 +15,6 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.NumericTag;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.level.biome.Biome;
 
 public record BiomeTask(
@@ -55,8 +54,8 @@ public record BiomeTask(
         public Codec<BiomeTask> codec(String id) {
             return RecordCodecBuilder.create(instance -> instance.group(
                 RecordCodecBuilder.point(id),
-                Codec.STRING.fieldOf("title").orElse("").forGetter(BiomeTask::title),
-                QuestIcons.CODEC.fieldOf("icon").orElse(new ItemQuestIcon(Items.AIR)).forGetter(BiomeTask::icon),
+                Codec.STRING.optionalFieldOf("title", "").forGetter(BiomeTask::title),
+                QuestIcons.CODEC.optionalFieldOf("icon", ItemQuestIcon.AIR).forGetter(BiomeTask::icon),
                 RegistryValue.codec(Registries.BIOME).fieldOf("biomes").forGetter(BiomeTask::biomes)
             ).apply(instance, BiomeTask::new));
         }

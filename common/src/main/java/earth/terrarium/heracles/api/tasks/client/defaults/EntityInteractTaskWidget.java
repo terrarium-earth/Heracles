@@ -14,7 +14,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.nbt.ByteTag;
+import net.minecraft.nbt.NumericTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -22,12 +22,12 @@ import net.minecraft.world.entity.EntityType;
 import java.util.List;
 
 public record EntityInteractTaskWidget(
-    EntityInteractTask task, TaskProgress<ByteTag> progress, CacheableFunction<EntityType<?>, Entity> factory
+    EntityInteractTask task, TaskProgress<NumericTag> progress, CacheableFunction<EntityType<?>, Entity> factory
 ) implements DisplayWidget {
 
     private static final String DESC = "task.heracles.entity_interaction.desc.singular";
 
-    public EntityInteractTaskWidget(EntityInteractTask task, TaskProgress<ByteTag> progress) {
+    public EntityInteractTaskWidget(EntityInteractTask task, TaskProgress<NumericTag> progress) {
         this(task, progress, new CacheableFunction<>(type -> {
             Entity entity = type.create(Minecraft.getInstance().level);
             if (entity != null && task.nbt().tag() != null) {

@@ -14,7 +14,6 @@ import net.minecraft.nbt.NumericTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.stats.Stats;
-import net.minecraft.world.item.Items;
 
 public record StatTask(
     String id, String title, QuestIcon<?> icon, ResourceLocation stat, int target
@@ -62,8 +61,8 @@ public record StatTask(
         public Codec<StatTask> codec(String id) {
             return RecordCodecBuilder.create(instance -> instance.group(
                 RecordCodecBuilder.point(id),
-                Codec.STRING.fieldOf("title").orElse("").forGetter(StatTask::title),
-                QuestIcons.CODEC.fieldOf("icon").orElse(new ItemQuestIcon(Items.AIR)).forGetter(StatTask::icon),
+                Codec.STRING.optionalFieldOf("title", "").forGetter(StatTask::title),
+                QuestIcons.CODEC.optionalFieldOf("icon", ItemQuestIcon.AIR).forGetter(StatTask::icon),
                 ResourceLocation.CODEC.fieldOf("stat").forGetter(StatTask::stat),
                 Codec.INT.fieldOf("target").forGetter(StatTask::target)
             ).apply(instance, StatTask::new));

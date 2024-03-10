@@ -19,7 +19,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.ServerAdvancementManager;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.item.Items;
 
 import java.util.Set;
 
@@ -77,8 +76,8 @@ public record AdvancementTask(
         public Codec<AdvancementTask> codec(String id) {
             return RecordCodecBuilder.create(instance -> instance.group(
                 RecordCodecBuilder.point(id),
-                Codec.STRING.fieldOf("title").orElse("").forGetter(AdvancementTask::title),
-                QuestIcons.CODEC.fieldOf("icon").orElse(new ItemQuestIcon(Items.AIR)).forGetter(AdvancementTask::icon),
+                Codec.STRING.optionalFieldOf("title", "").forGetter(AdvancementTask::title),
+                QuestIcons.CODEC.optionalFieldOf("icon", ItemQuestIcon.AIR).forGetter(AdvancementTask::icon),
                 CodecExtras.set(ResourceLocation.CODEC).fieldOf("advancements").forGetter(AdvancementTask::advancements)
             ).apply(instance, AdvancementTask::new));
         }

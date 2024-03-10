@@ -3,7 +3,6 @@ package earth.terrarium.heracles.api.rewards.client.defaults;
 import com.teamresourceful.resourcefullib.client.scissor.ScissorBoxStack;
 import earth.terrarium.heracles.api.client.theme.QuestScreenTheme;
 import earth.terrarium.heracles.api.quests.QuestIcon;
-import earth.terrarium.heracles.api.quests.defaults.ItemQuestIcon;
 import earth.terrarium.heracles.api.rewards.defaults.SelectableReward;
 import earth.terrarium.heracles.client.handlers.ClientQuests;
 import earth.terrarium.heracles.client.screens.quest.BaseQuestScreen;
@@ -35,7 +34,7 @@ public record SelectableRewardWidget(SelectableReward reward, String quest, Ques
 
     @Override
     public QuestIcon<?> getIconOverride() {
-        return new ItemQuestIcon(Items.AIR);
+        return reward.icon();
     }
 
     @Override
@@ -79,7 +78,7 @@ public record SelectableRewardWidget(SelectableReward reward, String quest, Ques
         String desc = this.reward.amount() == 1 ? DESC_SINGULAR : DESC_PLURAL;
         graphics.drawString(
             font,
-            Component.translatable(title), x + 48, y + 6, QuestScreenTheme.getRewardTitle(),
+            this.reward().titleOr(Component.translatable(title)), x + 48, y + 6, QuestScreenTheme.getRewardTitle(),
             false
         );
         graphics.drawString(

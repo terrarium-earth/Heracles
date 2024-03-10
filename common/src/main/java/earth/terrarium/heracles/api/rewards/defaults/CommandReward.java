@@ -12,7 +12,6 @@ import earth.terrarium.heracles.api.rewards.QuestRewardType;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 
 import java.util.stream.Stream;
 
@@ -46,8 +45,8 @@ public record CommandReward(String id, String title, QuestIcon<?> icon, String c
         public Codec<CommandReward> codec(String id) {
             return RecordCodecBuilder.create(instance -> instance.group(
                 RecordCodecBuilder.point(id),
-                Codec.STRING.fieldOf("title").orElse("").forGetter(CommandReward::title),
-                QuestIcons.CODEC.fieldOf("icon").orElse(new ItemQuestIcon(Items.AIR)).forGetter(CommandReward::icon),
+                Codec.STRING.optionalFieldOf("title", "").forGetter(CommandReward::title),
+                QuestIcons.CODEC.optionalFieldOf("icon", ItemQuestIcon.AIR).forGetter(CommandReward::icon),
                 Codec.STRING.fieldOf("command").forGetter(CommandReward::command)
             ).apply(instance, CommandReward::new));
         }

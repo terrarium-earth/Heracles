@@ -3,6 +3,10 @@ package earth.terrarium.heracles.api.rewards.defaults;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import earth.terrarium.heracles.Heracles;
+import earth.terrarium.heracles.api.CustomizableQuestElement;
+import earth.terrarium.heracles.api.quests.QuestIcon;
+import earth.terrarium.heracles.api.quests.QuestIcons;
+import earth.terrarium.heracles.api.quests.defaults.ItemQuestIcon;
 import earth.terrarium.heracles.api.rewards.QuestReward;
 import earth.terrarium.heracles.api.rewards.QuestRewardType;
 import earth.terrarium.heracles.api.rewards.QuestRewards;
@@ -16,8 +20,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Stream;
 
-public record SelectableReward(String id, int amount,
-                               Map<String, QuestReward<?>> rewards) implements QuestReward<SelectableReward> {
+public record SelectableReward(String id, String title, QuestIcon<?> icon, int amount, Map<String, QuestReward<?>> rewards) implements QuestReward<SelectableReward>, CustomizableQuestElement {
 
     public static final Type TYPE = new Type();
 
@@ -68,6 +71,8 @@ public record SelectableReward(String id, int amount,
         public Codec<SelectableReward> codec(String id) {
             return RecordCodecBuilder.create(instance -> instance.group(
                 RecordCodecBuilder.point(id),
+                Codec.STRING.optionalFieldOf("title", "").forGetter(SelectableReward::title),
+                QuestIcons.CODEC.optionalFieldOf("icon", ItemQuestIcon.AIR).forGetter(SelectableReward::icon),
                 ExtraCodecs.POSITIVE_INT.fieldOf("amount").orElse(1).forGetter(SelectableReward::amount),
                 QuestRewards.CODEC.fieldOf("rewards").forGetter(SelectableReward::rewards)
             ).apply(instance, SelectableReward::new));

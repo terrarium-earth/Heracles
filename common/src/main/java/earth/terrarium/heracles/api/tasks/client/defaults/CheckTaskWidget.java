@@ -19,13 +19,13 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
-import net.minecraft.nbt.ByteTag;
+import net.minecraft.nbt.NumericTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 
 public record CheckTaskWidget(
-    String questId, CheckTask task, TaskProgress<ByteTag> progress, ModUtils.QuestStatus status
+    String questId, CheckTask task, TaskProgress<NumericTag> progress, ModUtils.QuestStatus status
 ) implements DisplayWidget {
 
     private static final ResourceLocation BUTTON_TEXTURE = new ResourceLocation(Heracles.MOD_ID, "textures/gui/buttons.png");

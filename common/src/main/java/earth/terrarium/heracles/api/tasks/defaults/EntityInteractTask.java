@@ -17,7 +17,6 @@ import net.minecraft.nbt.NumericTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.item.Items;
 
 public record EntityInteractTask(
     String id, String title, QuestIcon<?> icon, RegistryValue<EntityType<?>> entity, NbtPredicate nbt
@@ -54,8 +53,8 @@ public record EntityInteractTask(
         public Codec<EntityInteractTask> codec(String id) {
             return RecordCodecBuilder.create(instance -> instance.group(
                 RecordCodecBuilder.point(id),
-                Codec.STRING.fieldOf("title").orElse("").forGetter(EntityInteractTask::title),
-                QuestIcons.CODEC.fieldOf("icon").orElse(new ItemQuestIcon(Items.AIR)).forGetter(EntityInteractTask::icon),
+                Codec.STRING.optionalFieldOf("title", "").forGetter(EntityInteractTask::title),
+                QuestIcons.CODEC.optionalFieldOf("icon", ItemQuestIcon.AIR).forGetter(EntityInteractTask::icon),
                 RegistryValue.codec(Registries.ENTITY_TYPE).fieldOf("entity").forGetter(EntityInteractTask::entity),
                 NbtPredicate.CODEC.fieldOf("nbt").orElse(NbtPredicate.ANY).forGetter(EntityInteractTask::nbt)
             ).apply(instance, EntityInteractTask::new));

@@ -10,11 +10,11 @@ import earth.terrarium.heracles.common.handlers.progress.TaskProgress;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.nbt.ByteTag;
+import net.minecraft.nbt.NumericTag;
 import net.minecraft.network.chat.Component;
 
 public record DummyTaskWidget(
-    DummyTask task, TaskProgress<ByteTag> progress
+    DummyTask task, TaskProgress<NumericTag> progress
 ) implements DisplayWidget {
 
     @Override

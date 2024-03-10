@@ -13,7 +13,7 @@ import earth.terrarium.heracles.api.tasks.QuestTaskType;
 import earth.terrarium.heracles.api.tasks.storage.defaults.BooleanTaskStorage;
 import net.minecraft.Optionull;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.nbt.ByteTag;
+import net.minecraft.nbt.NumericTag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Items;
@@ -23,12 +23,12 @@ import java.util.Optional;
 
 public record ChangedDimensionTask(
     String id, String title, QuestIcon<?> icon, ResourceKey<Level> from, ResourceKey<Level> to
-) implements QuestTask<Pair<ResourceKey<Level>, ResourceKey<Level>>, ByteTag, ChangedDimensionTask>, CustomizableQuestElement {
+) implements QuestTask<Pair<ResourceKey<Level>, ResourceKey<Level>>, NumericTag, ChangedDimensionTask>, CustomizableQuestElement {
 
     public static final QuestTaskType<ChangedDimensionTask> TYPE = new Type();
 
     @Override
-    public ByteTag test(QuestTaskType<?> type, ByteTag progress, Pair<ResourceKey<Level>, ResourceKey<Level>> input) {
+    public NumericTag test(QuestTaskType<?> type, NumericTag progress, Pair<ResourceKey<Level>, ResourceKey<Level>> input) {
         final ResourceKey<Level> from = input.getFirst();
         final ResourceKey<Level> to = input.getSecond();
 
@@ -39,7 +39,7 @@ public record ChangedDimensionTask(
     }
 
     @Override
-    public float getProgress(ByteTag progress) {
+    public float getProgress(NumericTag progress) {
         return storage().readBoolean(progress) ? 1.0F : 0.0F;
     }
 

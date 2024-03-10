@@ -9,24 +9,24 @@ import earth.terrarium.heracles.api.tasks.QuestTaskType;
 import earth.terrarium.heracles.api.tasks.storage.defaults.BooleanTaskStorage;
 import earth.terrarium.heracles.common.utils.RegistryValue;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.nbt.ByteTag;
+import net.minecraft.nbt.NumericTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
 public record ItemUseTask(
     String id, RegistryValue<Item> item, NbtPredicate nbt
-) implements QuestTask<ItemStack, ByteTag, ItemUseTask> {
+) implements QuestTask<ItemStack, NumericTag, ItemUseTask> {
 
     public static final QuestTaskType<ItemUseTask> TYPE = new Type();
 
     @Override
-    public ByteTag test(QuestTaskType<?> type, ByteTag progress, ItemStack input) {
+    public NumericTag test(QuestTaskType<?> type, NumericTag progress, ItemStack input) {
         return storage().of(progress, item.is(input.getItemHolder()) && nbt().matches(input));
     }
 
     @Override
-    public float getProgress(ByteTag progress) {
+    public float getProgress(NumericTag progress) {
         return storage().readBoolean(progress) ? 1 : 0;
     }
 

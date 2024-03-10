@@ -12,25 +12,25 @@ import earth.terrarium.heracles.api.tasks.QuestTask;
 import earth.terrarium.heracles.api.tasks.QuestTaskType;
 import earth.terrarium.heracles.api.tasks.storage.defaults.BooleanTaskStorage;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.nbt.ByteTag;
+import net.minecraft.nbt.NumericTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Items;
 
 public record DummyTask(
     String id, String title, QuestIcon<?> icon, String dummyId, String description
-) implements QuestTask<String, ByteTag, DummyTask>, CustomizableQuestElement {
+) implements QuestTask<String, NumericTag, DummyTask>, CustomizableQuestElement {
     private static final Codec<QuestIcon<?>> LEGACY_ICON_CODEC = BuiltInRegistries.ITEM.byNameCodec().xmap(ItemQuestIcon::new, icon -> icon instanceof ItemQuestIcon itemIcon ? itemIcon.item().getDefaultInstance().getItem() : Items.BARRIER);
     private static final Codec<QuestIcon<?>> DUMMY_TASK_ICON_CODEC = CodecExtras.eitherLeft(Codec.either(QuestIcons.CODEC, LEGACY_ICON_CODEC));
 
     public static final QuestTaskType<DummyTask> TYPE = new Type();
 
     @Override
-    public ByteTag test(QuestTaskType<?> type, ByteTag progress, String input) {
+    public NumericTag test(QuestTaskType<?> type, NumericTag progress, String input) {
         return storage().of(progress, dummyId.equals(input));
     }
 
     @Override
-    public float getProgress(ByteTag progress) {
+    public float getProgress(NumericTag progress) {
         return storage().readBoolean(progress) ? 1.0F : 0.0F;
     }
 

@@ -16,7 +16,7 @@ import earth.terrarium.heracles.common.utils.RegistryValue;
 import net.minecraft.Optionull;
 import net.minecraft.core.BlockSource;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.nbt.ByteTag;
+import net.minecraft.nbt.NumericTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Block;
@@ -25,12 +25,12 @@ import net.minecraft.world.level.block.state.BlockState;
 
 public record BlockInteractTask(
     String id, String title, QuestIcon<?> icon, RegistryValue<Block> block, BlockStatePredicate state, NbtPredicate nbt
-) implements QuestTask<BlockSource, ByteTag, BlockInteractTask>, CustomizableQuestElement {
+) implements QuestTask<BlockSource, NumericTag, BlockInteractTask>, CustomizableQuestElement {
 
     public static final QuestTaskType<BlockInteractTask> TYPE = new Type();
 
     @Override
-    public ByteTag test(QuestTaskType<?> type, ByteTag progress, BlockSource input) {
+    public NumericTag test(QuestTaskType<?> type, NumericTag progress, BlockSource input) {
         BlockState blockState = input.getBlockState();
         BlockEntity blockEntity = input.getEntity();
         return storage().of(progress,
@@ -41,7 +41,7 @@ public record BlockInteractTask(
     }
 
     @Override
-    public float getProgress(ByteTag progress) {
+    public float getProgress(NumericTag progress) {
         return storage().readBoolean(progress) ? 1 : 0;
     }
 

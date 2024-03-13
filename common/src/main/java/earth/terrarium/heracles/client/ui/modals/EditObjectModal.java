@@ -3,16 +3,10 @@ package earth.terrarium.heracles.client.ui.modals;
 import com.teamresourceful.resourcefullib.client.utils.RenderUtils;
 import earth.terrarium.heracles.api.client.settings.SettingInitializer;
 import earth.terrarium.heracles.api.client.settings.SettingInitializer.CreationData;
-import earth.terrarium.heracles.api.client.settings.Settings;
 import earth.terrarium.heracles.api.client.settings.SettingsProvider;
 import earth.terrarium.heracles.api.client.theme.EditorTheme;
-import earth.terrarium.heracles.api.rewards.QuestReward;
-import earth.terrarium.heracles.api.rewards.QuestRewardType;
-import earth.terrarium.heracles.api.tasks.QuestTask;
-import earth.terrarium.heracles.api.tasks.QuestTaskType;
-import earth.terrarium.heracles.client.ui.UIConstants;
 import earth.terrarium.heracles.client.components.widgets.buttons.SpriteButton;
-import earth.terrarium.heracles.common.constants.ConstantComponents;
+import earth.terrarium.heracles.client.ui.UIConstants;
 import earth.terrarium.heracles.common.utils.ModUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -134,7 +128,7 @@ public class EditObjectModal extends BaseModal {
         Minecraft.getInstance().setScreen(modal);
     }
 
-    private static <T> void open(
+    public static <T> void open(
         @Nullable SettingInitializer<?> setting, ResourceLocation typeId,
         Component title, String id, T value, Consumer<T> saver
     ) {
@@ -162,9 +156,5 @@ public class EditObjectModal extends BaseModal {
 
     public static <T> void open(SettingsProvider<T> type, Component title, String id, T value, Consumer<T> saver) {
         open(type.factory(), type.id(), title, id, value, saver);
-    }
-
-    public static <T extends QuestReward<?>> void open(QuestRewardType<?> type, String id, @Nullable T reward, Consumer<T> saver) {
-        open(Settings.getFactory(type), type.id(), ConstantComponents.Rewards.EDIT, id, reward, saver);
     }
 }

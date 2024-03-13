@@ -1,6 +1,9 @@
 package earth.terrarium.heracles.client.ui.quests;
 
 import com.teamresourceful.resourcefullib.common.utils.TriState;
+import earth.terrarium.heracles.Heracles;
+import earth.terrarium.heracles.api.quests.Quest;
+import earth.terrarium.heracles.api.quests.QuestSettings;
 import earth.terrarium.heracles.client.components.AlignedLayout;
 import earth.terrarium.heracles.client.components.quests.QuestActionHandler;
 import earth.terrarium.heracles.client.components.quests.QuestWidget;
@@ -8,7 +11,9 @@ import earth.terrarium.heracles.client.components.widgets.buttons.SpriteButton;
 import earth.terrarium.heracles.client.components.widgets.context.ContextMenu;
 import earth.terrarium.heracles.client.handlers.ClientQuests;
 import earth.terrarium.heracles.client.handlers.DisplayConfig;
+import earth.terrarium.heracles.client.screens.quests.QuestSettingsInitalizer;
 import earth.terrarium.heracles.client.ui.UIConstants;
+import earth.terrarium.heracles.client.ui.modals.EditObjectModal;
 import earth.terrarium.heracles.common.constants.ConstantComponents;
 import earth.terrarium.heracles.common.menus.quests.QuestsContent;
 import earth.terrarium.heracles.common.network.NetworkHandler;
@@ -18,6 +23,7 @@ import earth.terrarium.heracles.common.utils.ModUtils;
 import net.minecraft.client.gui.layouts.GridLayout;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector2i;
 
@@ -115,9 +121,13 @@ public class EditQuestsScreen extends AbstractQuestsScreen {
         @Override
         public boolean onRightClick(double mouseX, double mouseY, @Nullable QuestWidget widget) {
             if (widget == null) return false;
+            Quest quest = widget.entry().value();
             ContextMenu.open(mouseX, mouseY, 100, menu -> {
                 menu.button(Component.literal("Edit Details"), () -> System.out.println("Edit Details"));
-                menu.button(Component.literal("Edit Settings"), () -> System.out.println("Edit Settings"));
+                menu.button(Component.literal("Edit Settings"), () -> EditObjectModal.open(
+                    QuestSettingsInitalizer.INSTANCE, new ResourceLocation(Heracles.MOD_ID, "quest"),
+                    ConstantComponents.Quests.EDIT_SETTINGS, null, quest.settings(), data -> setSettings(widget.entry(), data)
+                ));
                 menu.divider();
                 menu.button(Component.literal("Snap to Grid"), () ->
                     setNewPosition(widget.entry(), widget.position(), true)
@@ -166,6 +176,16 @@ public class EditQuestsScreen extends AbstractQuestsScreen {
                 }
                 return pos;
             }));
+        }
+
+        private void setSettings(ClientQuests.QuestEntry entry, QuestSettings settings) {
+            ClientQuests.updateQuest(entry, quest -> NetworkQuestData.builder()
+                .individualProgress(settings.individualProgress())
+                .hiddenUntil(settings.hiddenUntil())
+                .unlockNotification(settings.unlockNotification())
+                .showDependencyArrow(settings.showDependencyArrow())
+                .repeatable(settings.repeatable())
+            );
         }
     }
 }

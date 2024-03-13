@@ -102,6 +102,8 @@ public final class ConstantComponents {
 
         @Translate("Add Dependency")
         public static final Component ADD_DEPENDENCY = Component.translatable("gui.heracles.quests.add_dependency");
+
+        public static final Component EDIT_SETTINGS = Component.translatable("gui.heracles.quests.edit_quest_settings");
     }
 
     public static final class Tasks {

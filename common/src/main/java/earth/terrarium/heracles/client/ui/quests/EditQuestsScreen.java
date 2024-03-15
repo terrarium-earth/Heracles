@@ -1,40 +1,33 @@
 package earth.terrarium.heracles.client.ui.quests;
 
-import com.teamresourceful.resourcefullib.common.utils.TriState;
-import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.api.quests.Quest;
-import earth.terrarium.heracles.api.quests.QuestSettings;
 import earth.terrarium.heracles.client.components.AlignedLayout;
 import earth.terrarium.heracles.client.components.quests.QuestActionHandler;
-import earth.terrarium.heracles.client.components.quests.QuestWidget;
 import earth.terrarium.heracles.client.components.widgets.buttons.SpriteButton;
-import earth.terrarium.heracles.client.components.widgets.context.ContextMenu;
 import earth.terrarium.heracles.client.handlers.ClientQuests;
-import earth.terrarium.heracles.client.handlers.DisplayConfig;
-import earth.terrarium.heracles.client.screens.quests.QuestSettingsInitalizer;
+import earth.terrarium.heracles.client.ui.UIColors;
+import earth.terrarium.heracles.client.ui.UIComponents;
 import earth.terrarium.heracles.client.ui.UIConstants;
-import earth.terrarium.heracles.client.ui.modals.EditObjectModal;
 import earth.terrarium.heracles.common.constants.ConstantComponents;
 import earth.terrarium.heracles.common.menus.quests.QuestsContent;
-import earth.terrarium.heracles.common.network.NetworkHandler;
-import earth.terrarium.heracles.common.network.packets.quests.OpenQuestPacket;
-import earth.terrarium.heracles.common.network.packets.quests.data.NetworkQuestData;
-import earth.terrarium.heracles.common.utils.ModUtils;
+import net.minecraft.Optionull;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.layouts.GridLayout;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
-import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.NotNull;
 import org.joml.Vector2i;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class EditQuestsScreen extends AbstractQuestsScreen {
 
-    private final Handler handler = new Handler();
+    private final EditActionHandler handler;
 
     public EditQuestsScreen(Screen parent, QuestsContent content) {
         super(parent, content);
+
+        this.handler = new EditActionHandler(() -> this.quests, content);
     }
 
     @Override
@@ -81,111 +74,30 @@ public class EditQuestsScreen extends AbstractQuestsScreen {
     }
 
     @Override
+    public void render(@NotNull GuiGraphics graphics, int mouseX, int mouseY, float f) {
+        super.render(graphics, mouseX, mouseY, f);
+
+        int left = this.quests.getX() + 5;
+        int bottom = this.quests.getY() + this.quests.getHeight();
+
+        Quest quest = Optionull.map(this.handler.getSelected(), ClientQuests.QuestEntry::value);
+        if (quest == null) return;
+        Vector2i position = quest.display().position(this.content.group());
+
+        Component x = Component.translatable(UIComponents.X, position.x);
+        Component y = Component.translatable(UIComponents.Y, position.y);
+
+        int width = Math.max(font.width(x) + 10, font.width(y) + 10);
+        boolean isNear = mouseX >= left - 5 && mouseX <= left + width + 5 && mouseY >= bottom - 25 && mouseY <= bottom - 10;
+        int color = isNear ? UIColors.QUESTS_COORDINATES | 0x90000000 : UIColors.QUESTS_COORDINATES;
+
+        graphics.drawString(font, x, left, bottom - 20, color, false);
+        graphics.drawString(font, y, left, bottom - 10, color, false);
+    }
+
+    @Override
     protected QuestActionHandler handler() {
         return handler;
     }
 
-    private class Handler implements QuestActionHandler {
-
-        private ClientQuests.QuestEntry selected;
-        private long lastClick;
-
-        private ClientQuests.QuestEntry dragging;
-        private Vector2i start = new Vector2i();
-        private Vector2i startOffset = new Vector2i();
-
-        @Override
-        public boolean onLeftClick(double mouseX, double mouseY, @Nullable QuestWidget widget) {
-            if (widget == null) {
-                this.dragging = null;
-                quests.select(ModUtils.predicateFalse());
-                return false;
-            }
-            ClientQuests.QuestEntry entry = widget.entry();
-            if (entry.equals(selected) && System.currentTimeMillis() - lastClick < 500) {
-                NetworkHandler.CHANNEL.sendToServer(new OpenQuestPacket(content.group(), entry.key()));
-                this.selected = null;
-                this.lastClick = 0;
-            } else {
-                this.selected = entry;
-                this.lastClick = System.currentTimeMillis();
-                this.start = new Vector2i((int) mouseX, (int) mouseY);
-                this.startOffset = widget.position();
-                this.dragging = entry;
-                quests.select(questWidget -> questWidget == widget);
-            }
-
-            return true;
-        }
-
-        @Override
-        public boolean onRightClick(double mouseX, double mouseY, @Nullable QuestWidget widget) {
-            if (widget == null) return false;
-            Quest quest = widget.entry().value();
-            ContextMenu.open(mouseX, mouseY, 100, menu -> {
-                menu.button(Component.literal("Edit Details"), () -> System.out.println("Edit Details"));
-                menu.button(Component.literal("Edit Settings"), () -> EditObjectModal.open(
-                    QuestSettingsInitalizer.INSTANCE, new ResourceLocation(Heracles.MOD_ID, "quest"),
-                    ConstantComponents.Quests.EDIT_SETTINGS, null, quest.settings(), data -> setSettings(widget.entry(), data)
-                ));
-                menu.divider();
-                menu.button(Component.literal("Snap to Grid"), () ->
-                    setNewPosition(widget.entry(), widget.position(), true)
-                );
-                menu.divider();
-                menu.dangerButton(ConstantComponents.DELETE, () ->
-                    widget.delete(quests)
-                );
-            });
-            return true;
-        }
-
-        @Override
-        public boolean onRelease(double mouseX, double mouseY, int button) {
-            if (this.dragging != null) {
-                Vector2i position = dragging.value().display().position(content.group());
-                setNewPosition(dragging, position, DisplayConfig.snapToGrid);
-                this.dragging = null;
-                return true;
-            }
-            return false;
-        }
-
-        @Override
-        public TriState onDrag(double mouseX, double mouseY, int button, double dragX, double dragY) {
-            if (this.dragging != null) {
-                Vector2i position = new Vector2i((int) mouseX, (int) mouseY)
-                    .sub(this.start)
-                    .add(this.startOffset);
-                setNewPosition(dragging, position, false);
-                return TriState.TRUE;
-            }
-            return TriState.UNDEFINED;
-        }
-
-        private void setNewPosition(ClientQuests.QuestEntry entry, Vector2i position, boolean snapToGrid) {
-            ClientQuests.updateQuest(entry, quest -> NetworkQuestData.builder().group(quest, content.group(), pos -> {
-                if (snapToGrid) {
-                    int newX = Math.abs(position.x() % 32) > 16 ? position.x() / 32 * 32 + 32 : position.x() / 32 * 32;
-                    int newY = Math.abs(position.y() % 32) > 16 ? position.y() / 32 * 32 + 32 : position.y() / 32 * 32;
-                    pos.x = newX;
-                    pos.y = newY;
-                } else {
-                    pos.x = position.x();
-                    pos.y = position.y();
-                }
-                return pos;
-            }));
-        }
-
-        private void setSettings(ClientQuests.QuestEntry entry, QuestSettings settings) {
-            ClientQuests.updateQuest(entry, quest -> NetworkQuestData.builder()
-                .individualProgress(settings.individualProgress())
-                .hiddenUntil(settings.hiddenUntil())
-                .unlockNotification(settings.unlockNotification())
-                .showDependencyArrow(settings.showDependencyArrow())
-                .repeatable(settings.repeatable())
-            );
-        }
-    }
 }

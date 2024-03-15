@@ -106,5 +106,25 @@
     "commands.heracles.resetall.success": "[Heracles] Quests reset successfully.",
     "commands.heracles.pin.success.pinned": "[Heracles] Quest %s pinned.",
     "commands.heracles.pin.success.unpinned": "[Heracles] Quest %s unpinned.",
-    "commands.heracles.pin.dummy.completed": "[Heracles] Quest %s completed."
+    "commands.heracles.pin.dummy.completed": "[Heracles] Quest %s completed.",
+
+
+
+
+
+
+
+
+
+
+
+
+
+    "__comment__.heracles": "The below are keys for new ui elements, when adding new keys, please add them to the bottom of the file.",
+    "ui.heracles.open": "Open",
+    "ui.heracles.edit.details": "Edit Details",
+    "ui.heracles.edit.settings": "Edit Settings",
+    "ui.heracles.snap_to_grid": "Snap to Grid",
+    "ui.heracles.x": "x: %s",
+    "ui.heracles.y": "y: %s"
 }

@@ -1,6 +1,7 @@
 package earth.terrarium.heracles.client.components.widgets.textbox.editor;
 
 import com.mojang.blaze3d.platform.InputConstants;
+import com.teamresourceful.resourcefullib.client.components.CursorWidget;
 import com.teamresourceful.resourcefullib.client.screens.CursorScreen;
 import com.teamresourceful.resourcefullib.client.utils.CursorUtils;
 import net.minecraft.client.gui.Font;
@@ -13,13 +14,18 @@ import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 
-public class MultiLineEditBox extends AbstractScrollWidget {
+public class MultiLineTextBox extends AbstractScrollWidget implements CursorWidget {
 
 	protected final Font font;
 	protected final MultilineTextField field;
 	protected final TextHighlighter highlighter;
 
-	public MultiLineEditBox(Font font, int x, int y, int width, int height, TextHighlighter highlighter) {
+	public MultiLineTextBox(MultiLineTextBox box, Font font, int width, int height, TextHighlighter highlighter) {
+		this(font, 0, 0, width, height, highlighter);
+		if (box != null) this.copy(box);
+	}
+
+	public MultiLineTextBox(Font font, int x, int y, int width, int height, TextHighlighter highlighter) {
 		super(x, y, width, height, CommonComponents.EMPTY);
 		this.font = font;
 		this.field = new MultilineTextField(font, width - this.totalInnerPadding());
@@ -31,7 +37,7 @@ public class MultiLineEditBox extends AbstractScrollWidget {
 		this.field.setValue(fullText, true);
 	}
 
-	public void copy(MultiLineEditBox box) {
+	public void copy(MultiLineTextBox box) {
 		this.field.copy(box.field);
 	}
 
@@ -208,5 +214,10 @@ public class MultiLineEditBox extends AbstractScrollWidget {
 
 	public MultilineTextField field() {
 		return this.field;
+	}
+
+	@Override
+	public CursorScreen.Cursor getCursor() {
+		return CursorScreen.Cursor.TEXT;
 	}
 }

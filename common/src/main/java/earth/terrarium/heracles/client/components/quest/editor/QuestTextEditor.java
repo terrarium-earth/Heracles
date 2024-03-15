@@ -7,7 +7,7 @@ import earth.terrarium.heracles.client.components.quest.editor.overlays.color.Co
 import earth.terrarium.heracles.client.components.widgets.buttons.SpriteButton;
 import earth.terrarium.heracles.client.handlers.ClientQuests;
 import earth.terrarium.heracles.client.handlers.DisplayConfig;
-import earth.terrarium.heracles.client.components.widgets.textbox.editor.MultiLineEditBox;
+import earth.terrarium.heracles.client.components.widgets.textbox.editor.MultiLineTextBox;
 import earth.terrarium.heracles.client.components.widgets.textbox.editor.MultilineTextField;
 import net.minecraft.client.gui.layouts.GridLayout;
 import net.minecraft.client.gui.layouts.SpacerElement;
@@ -42,7 +42,7 @@ public class QuestTextEditor {
         return box;
     }
 
-    private static GridLayout createButtons(ClientQuests.QuestEntry quest, MultiLineEditBox editor) {
+    private static GridLayout createButtons(ClientQuests.QuestEntry quest, MultiLineTextBox editor) {
         MultilineTextField field = editor.field();
 
         int column = 0;

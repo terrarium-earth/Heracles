@@ -19,7 +19,7 @@ import java.util.function.Function;
 
 public final class QuestDisplay {
 
-    private static final ResourceLocation DEFAULT_BACKGROUND = new ResourceLocation(Heracles.MOD_ID, "textures/gui/quest_backgrounds/default.png");
+    public static final ResourceLocation DEFAULT_BACKGROUND = new ResourceLocation(Heracles.MOD_ID, "textures/gui/quest_backgrounds/default.png");
 
     public static final Codec<List<String>> DESCRIPTION_CODEC = Codec.either(Codec.STRING, Codec.STRING.listOf())
         .xmap(either -> either.map(List::of, Function.identity()), Either::right);

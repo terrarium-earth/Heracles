@@ -8,6 +8,7 @@ import earth.terrarium.heracles.client.handlers.ClientQuestNetworking;
 import earth.terrarium.heracles.client.handlers.ClientQuests;
 import earth.terrarium.heracles.client.handlers.QuestClipboard;
 import earth.terrarium.heracles.client.screens.AbstractQuestScreen;
+import earth.terrarium.heracles.client.ui.quests.QuestSettingsInitializer;
 import earth.terrarium.heracles.client.utils.ClientUtils;
 import earth.terrarium.heracles.client.widgets.base.BaseWidget;
 import earth.terrarium.heracles.client.widgets.boxes.IntEditBox;
@@ -155,9 +156,9 @@ public class SelectQuestWidget extends BaseWidget {
                     QuestSettings settings = this.entry.value().settings();
                     edit.init(
                         id,
-                        QuestSettingsInitalizer.INSTANCE.create(settings),
+                        QuestSettingsInitializer.INSTANCE.create(settings),
                         data -> updateQuest(quest -> {
-                            QuestSettings questSettings = QuestSettingsInitalizer.INSTANCE.create("quest", settings, data);
+                            QuestSettings questSettings = QuestSettingsInitializer.INSTANCE.create("quest", settings, data);
                             return NetworkQuestData.builder()
                                 .individualProgress(questSettings.individualProgress())
                                 .hiddenUntil(questSettings.hiddenUntil())

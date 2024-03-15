@@ -1,4 +1,4 @@
-package earth.terrarium.heracles.client.screens.quests;
+package earth.terrarium.heracles.client.ui.quests;
 
 import earth.terrarium.heracles.api.client.settings.SettingInitializer;
 import earth.terrarium.heracles.api.client.settings.base.BooleanSetting;
@@ -7,9 +7,9 @@ import earth.terrarium.heracles.api.quests.QuestSettings;
 import earth.terrarium.heracles.common.utils.ModUtils;
 import org.jetbrains.annotations.Nullable;
 
-public class QuestSettingsInitalizer implements SettingInitializer<QuestSettings> {
+public class QuestSettingsInitializer implements SettingInitializer<QuestSettings> {
 
-    public static final QuestSettingsInitalizer INSTANCE = new QuestSettingsInitalizer();
+    public static final QuestSettingsInitializer INSTANCE = new QuestSettingsInitializer();
 
     @Override
     public CreationData create(@Nullable QuestSettings object) {

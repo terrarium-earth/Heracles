@@ -23,4 +23,28 @@ public class RecipeViewerHelper {
             ReiViewerHelper.showItem(stack);
         }
     }
+
+    public static void showRecipes(ItemStack stack) {
+        if (stack == null) return;
+        if (stack.isEmpty()) return;
+        if (isEmiInstalled) {
+            EmiViewerHelper.showRecipes(stack);
+        } else if (isJeiInstalled) {
+            HeraclesJeiModPlugin.showRecipes(stack);
+        } else if (isReiInstalled) {
+            ReiViewerHelper.showRecipes(stack);
+        }
+    }
+
+    public static void showUsage(ItemStack stack) {
+        if (stack == null) return;
+        if (stack.isEmpty()) return;
+        if (isEmiInstalled) {
+            EmiViewerHelper.showUsage(stack);
+        } else if (isJeiInstalled) {
+            HeraclesJeiModPlugin.showUsage(stack);
+        } else if (isReiInstalled) {
+            ReiViewerHelper.showUsage(stack);
+        }
+    }
 }

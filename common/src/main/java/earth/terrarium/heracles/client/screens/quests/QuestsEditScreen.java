@@ -118,8 +118,12 @@ public class QuestsEditScreen extends QuestsScreen {
                 new HashMap<>(),
                 new HashMap<>()
             );
-            this.questsWidget.addQuest(ClientQuestNetworking.add(text, quest));
-        }, text -> text.toLowerCase(Locale.ROOT).replaceAll("[^a-zA-Z_-]", "").length() >= 2 && ClientQuests.get(text.trim()).isEmpty()));
+            String id = text.toLowerCase(Locale.ROOT).replaceAll("[^a-zA-Z_-]", "").trim();
+            this.questsWidget.addQuest(ClientQuestNetworking.add(id, quest));
+        }, text -> {
+            String id = text.toLowerCase(Locale.ROOT).replaceAll("[^a-zA-Z_-]", "").trim();
+            return id.length() >= 2 && ClientQuests.get(id).isEmpty();
+        }));
     }
 
     @Override

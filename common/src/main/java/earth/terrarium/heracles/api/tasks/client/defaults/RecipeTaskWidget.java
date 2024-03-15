@@ -4,7 +4,7 @@ import com.teamresourceful.resourcefullib.client.scissor.ScissorBoxStack;
 import com.teamresourceful.resourcefullib.client.screens.CursorScreen;
 import com.teamresourceful.resourcefullib.client.utils.CursorUtils;
 import earth.terrarium.heracles.Heracles;
-import earth.terrarium.heracles.api.client.DisplayWidget;
+import earth.terrarium.heracles.api.client.ItemDisplayWidget;
 import earth.terrarium.heracles.api.client.WidgetUtils;
 import earth.terrarium.heracles.api.client.theme.QuestScreenTheme;
 import earth.terrarium.heracles.api.tasks.client.display.TaskTitleFormatter;
@@ -26,7 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public final class RecipeTaskWidget implements DisplayWidget {
+public final class RecipeTaskWidget implements ItemDisplayWidget {
 
     private static final String DESC_SINGULAR = "task.heracles.recipe.desc.singular";
     private static final String DESC_PLURAL = "task.heracles.recipe.desc.plural";
@@ -101,6 +101,7 @@ public final class RecipeTaskWidget implements DisplayWidget {
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int mouseButton, int width) {
+        if (ItemDisplayWidget.super.mouseClicked(mouseX, mouseY, mouseButton, width)) return true;
         if (mouseY < 0 || mouseY > getHeight(width)) return false;
         if (mouseX < 32 || mouseX > width) return false;
         if (mouseButton != 0) return false;
@@ -121,7 +122,8 @@ public final class RecipeTaskWidget implements DisplayWidget {
         return 42;
     }
 
-    private ItemStack getCurrentItem() {
+    @Override
+    public ItemStack getCurrentItem() {
         if (this.icons.isEmpty()) {
             return Items.CRAFTING_TABLE.getDefaultInstance();
         }

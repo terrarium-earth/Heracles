@@ -14,9 +14,17 @@ public class EmiViewerHelper {
         boolean usages = InputConstants.isKeyDown(Minecraft.getInstance().getWindow().getWindow(), GLFW.GLFW_KEY_U);
         boolean recipes = InputConstants.isKeyDown(Minecraft.getInstance().getWindow().getWindow(), GLFW.GLFW_KEY_R);
         if (usages) {
-            EmiApi.displayUses(EmiStack.of(stack));
+            showUsage(stack);
         } else if (recipes) {
-            EmiApi.displayRecipes(EmiStack.of(stack));
+            showRecipes(stack);
         }
+    }
+
+    public static void showRecipes(ItemStack stack) {
+        EmiApi.displayRecipes(EmiStack.of(stack));
+    }
+
+    public static void showUsage(ItemStack stack) {
+        EmiApi.displayUses(EmiStack.of(stack));
     }
 }

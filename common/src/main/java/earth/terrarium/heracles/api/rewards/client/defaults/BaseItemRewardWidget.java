@@ -5,7 +5,7 @@ import com.teamresourceful.resourcefullib.client.screens.CursorScreen;
 import com.teamresourceful.resourcefullib.client.utils.CursorUtils;
 import com.teamresourceful.resourcefullib.client.utils.ScreenUtils;
 import earth.terrarium.heracles.Heracles;
-import earth.terrarium.heracles.api.client.DisplayWidget;
+import earth.terrarium.heracles.api.client.ItemDisplayWidget;
 import earth.terrarium.heracles.api.client.WidgetUtils;
 import earth.terrarium.heracles.api.quests.QuestIcon;
 import earth.terrarium.heracles.common.constants.ConstantComponents;
@@ -20,7 +20,7 @@ import net.minecraft.world.item.ItemStack;
 
 import java.util.List;
 
-public interface BaseItemRewardWidget extends DisplayWidget {
+public interface BaseItemRewardWidget extends ItemDisplayWidget {
     ResourceLocation BUTTON_TEXTURE = new ResourceLocation(Heracles.MOD_ID, "textures/gui/buttons.png");
     ResourceLocation LOOTBAG_TEXTURE = new ResourceLocation(Heracles.MOD_ID, "textures/item/lootbag.png");
 
@@ -33,6 +33,11 @@ public interface BaseItemRewardWidget extends DisplayWidget {
     void claimReward();
 
     boolean isInteractive();
+
+    @Override
+    default ItemStack getCurrentItem() {
+        return getIcon();
+    }
 
     @Override
     default void render(GuiGraphics graphics, ScissorBoxStack scissor, int x, int y, int width, int mouseX, int mouseY, boolean hovered, float partialTicks) {
@@ -56,6 +61,7 @@ public interface BaseItemRewardWidget extends DisplayWidget {
 
     @Override
     default boolean mouseClicked(double mouseX, double mouseY, int mouseButton, int width) {
+        if (ItemDisplayWidget.super.mouseClicked(mouseX, mouseY, mouseButton, width)) return true;
         if (isInteractive()) {
             int buttonY = 11;
             boolean buttonHovered = mouseX > width - 30 && mouseX < width - 10 && mouseY > buttonY && mouseY < buttonY + 20;

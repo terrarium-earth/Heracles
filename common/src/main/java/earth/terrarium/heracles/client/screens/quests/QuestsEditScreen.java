@@ -27,6 +27,7 @@ import net.minecraft.client.gui.components.ImageButton;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Unit;
+import org.intellij.lang.annotations.Language;
 import org.joml.Vector2i;
 
 import java.util.HashMap;
@@ -34,6 +35,9 @@ import java.util.HashSet;
 import java.util.Locale;
 
 public class QuestsEditScreen extends QuestsScreen {
+
+    @Language("RegExp")
+    private static final String REGEX = "[^\\x00-\\x7F]";
 
     private SelectableImageButton moveTool;
     private SelectableImageButton dragTool;
@@ -118,10 +122,10 @@ public class QuestsEditScreen extends QuestsScreen {
                 new HashMap<>(),
                 new HashMap<>()
             );
-            String id = text.toLowerCase(Locale.ROOT).replaceAll("[^a-zA-Z_-]", "").trim();
+            String id = text.toLowerCase(Locale.ROOT).replaceAll(REGEX, "").trim();
             this.questsWidget.addQuest(ClientQuestNetworking.add(id, quest));
         }, text -> {
-            String id = text.toLowerCase(Locale.ROOT).replaceAll("[^a-zA-Z_-]", "").trim();
+            String id = text.toLowerCase(Locale.ROOT).replaceAll(REGEX, "").trim();
             return id.length() >= 2 && ClientQuests.get(id).isEmpty();
         }));
     }

@@ -70,6 +70,13 @@ public record QuestsProgress(Map<String, QuestProgress> progress, CompletableQue
         this.completableQuests.updateCompleteQuests(this, player);
     }
 
+    public void completeQuest(String id, Quest quest, ServerPlayer player) {
+        QuestProgress progress = getProgress(id);
+        progress.setComplete(true);
+        this.progress.put(id, progress);
+        sendOutQuestChanged(id, quest, progress, player);
+    }
+
     public void reset() {
         progress.clear();
         completableQuests.updateCompleteQuests(this);

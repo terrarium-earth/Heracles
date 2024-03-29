@@ -16,7 +16,6 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.navigation.FocusNavigationEvent;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
@@ -304,7 +303,7 @@ public class TextBox extends BaseWidget {
 
             if (!truncatedValue.isEmpty()) {
                 String string2 = cursorVisible ? truncatedValue.substring(0, displayCursorDiff) : truncatedValue;
-                n = graphics.drawString(this.font, string2, l, m, showPlaceholder ? PLACEHOLDER_COLOR : getTextColor(), false);
+                n = graphics.drawString(this.font, string2, l, m, showPlaceholder ? PLACEHOLDER_COLOR : getTextColor(), false) + 1;
             }
 
             boolean bl3 = this.cursorPos < value.length() || value.length() >= this.maxLength;
@@ -321,7 +320,7 @@ public class TextBox extends BaseWidget {
             }
 
             if (showCursor) {
-                graphics.fill(RenderType.guiOverlay(), o, m - 1, o + 1, m + 1 + 9, -3092272);
+                graphics.fill(RenderType.guiOverlay(), o - 1, m - 1, o, m + 1 + 9, -3092272);
             }
 
             if (displayHighlightDiff != displayCursorDiff) {

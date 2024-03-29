@@ -78,6 +78,7 @@ public class EditQuestsScreen extends AbstractQuestsScreen {
         super.render(graphics, mouseX, mouseY, f);
 
         int left = this.quests.getX() + 5;
+        int right = this.quests.getX() + this.quests.getWidth() - 5;
         int bottom = this.quests.getY() + this.quests.getHeight();
 
         Quest quest = Optionull.map(this.handler.getSelected(), ClientQuests.QuestEntry::value);
@@ -87,12 +88,20 @@ public class EditQuestsScreen extends AbstractQuestsScreen {
         Component x = Component.translatable(UIComponents.X, position.x);
         Component y = Component.translatable(UIComponents.Y, position.y);
 
+        //left
         int width = Math.max(font.width(x) + 10, font.width(y) + 10);
-        boolean isNear = mouseX >= left - 5 && mouseX <= left + width + 5 && mouseY >= bottom - 25 && mouseY <= bottom - 10;
+        boolean isNear = mouseX >= left - 5 && mouseX <= left + width + 5 && mouseY >= bottom - 25 && mouseY <= bottom;
         int color = isNear ? UIColors.QUESTS_COORDINATES | 0x90000000 : UIColors.QUESTS_COORDINATES;
 
         graphics.drawString(font, x, left, bottom - 20, color, false);
         graphics.drawString(font, y, left, bottom - 10, color, false);
+
+        //right
+        width = font.width(this.handler.getSelected().key()) + 10;
+        isNear = mouseX >= left - 5 && mouseX <= left + width + 5 && mouseY >= bottom - 15 && mouseY <= bottom;
+        color = isNear ? UIColors.QUESTS_COORDINATES | 0x90000000 : UIColors.QUESTS_COORDINATES;
+
+        graphics.drawString(font, this.handler.getSelected().key(), right - (width - 10), bottom - 10, color, false);
     }
 
     @Override

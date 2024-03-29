@@ -16,6 +16,9 @@ import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import org.joml.Vector2i;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class QuestWidget extends BaseWidget {
 
     protected final String group;
@@ -68,17 +71,26 @@ public class QuestWidget extends BaseWidget {
         if (!isHovered()) return;
 
         if (this.status == ModUtils.QuestStatus.COMPLETED) {
-            withTooltip(CommonComponents.joinLines(
+            addTooltip(
                 this.quest.display().title(),
                 this.quest.display().subtitle(),
                 ConstantComponents.Quests.CLAIMABLE
-            ));
+            );
         } else {
-            withTooltip(CommonComponents.joinLines(
+            addTooltip(
                 this.quest.display().title(),
                 this.quest.display().subtitle()
-            ));
+            );
         }
+    }
+
+    private void addTooltip(Component... components) {
+        List<Component> tooltip = new ArrayList<>();
+        for (Component component : components) {
+            if (component == null || component.getString().isBlank()) continue;
+            tooltip.add(component);
+        }
+        withTooltip(CommonComponents.joinLines(tooltip));
     }
 
     @Override

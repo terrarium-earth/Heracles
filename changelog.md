@@ -1,1 +1,5 @@
 - Fixed stats task performance in situations where there were many players online (ThatGravyBoat)
+- Make icon title overrides optional as to not pollute jsons (ThatGravyBoat)
+- Add support for REI, JEI, and EMI in task lists (ThatGravyBoat)
+- Require new quest ids to be ascii only (ThatGravyBoat)
+- Fix selectable reward not have title and icon overridable (ThatGravyBoat)

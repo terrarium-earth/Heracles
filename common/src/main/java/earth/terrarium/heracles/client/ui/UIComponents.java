@@ -15,4 +15,6 @@ public class UIComponents {
     public static final Component ADD_QUEST = Component.translatable("ui.heracles.add_quest");
     public static final Component NAME = Component.translatable("ui.heracles.name");
     public static final Component ID = Component.translatable("ui.heracles.id");
+    public static final Component ADD_DEPENDENCY = Component.translatable("ui.heracles.dependency_add");
+    public static final Component REMOVE_DEPENDENCY = Component.translatable("ui.heracles.dependency_remove");
 }

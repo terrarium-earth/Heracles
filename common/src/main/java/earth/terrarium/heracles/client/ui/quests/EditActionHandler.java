@@ -19,6 +19,7 @@ import earth.terrarium.heracles.common.network.NetworkHandler;
 import earth.terrarium.heracles.common.network.packets.quests.OpenQuestPacket;
 import earth.terrarium.heracles.common.network.packets.quests.data.NetworkQuestData;
 import earth.terrarium.heracles.common.utils.ModUtils;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import org.jetbrains.annotations.Nullable;
@@ -85,6 +86,23 @@ class EditActionHandler implements QuestActionHandler {
                 menu.button(UIComponents.SNAP_TO_GRID, () ->
                     setNewPosition(widget.entry(), widget.position(), true)
                 );
+                if (this.selected != null && this.selected != widget.entry()) {
+                    ClientQuests.QuestEntry dependency = widget.entry();
+                    boolean disconnect = this.selected.value().dependencies().contains(dependency.key());
+                    Component title = disconnect ? UIComponents.REMOVE_DEPENDENCY : UIComponents.ADD_DEPENDENCY;
+                    menu.button(title, () -> ClientQuests.updateQuest(this.selected, selected -> {
+                        if (disconnect) {
+                            selected.dependencies().remove(dependency.key());
+                            this.selected.dependencies().remove(dependency);
+                            dependency.children().remove(this.selected);
+                        } else {
+                            selected.dependencies().add(dependency.key());
+                            this.selected.dependencies().add(dependency);
+                            dependency.children().add(this.selected);
+                        }
+                        return NetworkQuestData.builder().dependencies(selected.dependencies());
+                    }));
+                }
                 menu.divider();
                 menu.dangerButton(UIComponents.DELETE, () ->
                     widget.delete(quests.get())

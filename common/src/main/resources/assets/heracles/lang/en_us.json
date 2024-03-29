@@ -129,5 +129,7 @@
     "ui.heracles.y": "y: %s",
     "ui.heracles.add_quest": "Add Quest",
     "ui.heracles.name": "Name",
-    "ui.heracles.id": "ID"
+    "ui.heracles.id": "ID",
+    "ui.heracles.dependency_add": "Add as Dependency",
+    "ui.heracles.dependency_remove": "Remove as Dependency"
 }

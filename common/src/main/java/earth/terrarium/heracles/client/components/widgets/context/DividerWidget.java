@@ -9,8 +9,8 @@ public class DividerWidget extends BaseWidget {
 
     private static final ResourceLocation TEXTURE = new ResourceLocation(Heracles.MOD_ID, "textures/gui/sprites/context/divider.png");
 
-    public DividerWidget(int width) {
-        super(width, 10);
+    public DividerWidget() {
+        super(0, 10);
     }
 
     @Override

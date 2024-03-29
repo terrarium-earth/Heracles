@@ -110,15 +110,12 @@ public abstract class AbstractEditListEntry<T> implements BaseListEntry<T> {
             return true;
         }
         if (mouseButton == InputConstants.MOUSE_BUTTON_RIGHT) {
-            ContextMenu.open(
-                100,
-                menu -> {
-                    menu.button(Component.literal("Edit"), this::edit);
-                    menu.dangerButton(Component.literal("Delete"), this::tryDelete);
-                    menu.divider();
-                    menu.button(Component.literal("Copy ID"), () -> UIUtils.copyToClipboard(this.id()));
-                }
-            );
+            ContextMenu.open(menu -> {
+                menu.button(Component.literal("Edit"), this::edit);
+                menu.dangerButton(Component.literal("Delete"), this::tryDelete);
+                menu.divider();
+                menu.button(Component.literal("Copy ID"), () -> UIUtils.copyToClipboard(this.id()));
+            });
         }
 
         return this.widget.mouseClicked(mouseX, mouseY, mouseButton, width);

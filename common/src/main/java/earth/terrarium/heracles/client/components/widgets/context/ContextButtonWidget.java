@@ -25,8 +25,8 @@ public class ContextButtonWidget extends BaseWidget {
     private final Runnable action;
     private final boolean danger;
 
-    public ContextButtonWidget(int width, Component text, Runnable action, boolean danger) {
-        super(width, 16);
+    public ContextButtonWidget(Component text, Runnable action, boolean danger) {
+        super(Minecraft.getInstance().font.width(text) + PADDING * 2, 16);
 
         this.text = text;
         this.action = action;

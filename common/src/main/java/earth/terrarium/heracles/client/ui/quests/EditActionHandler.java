@@ -70,7 +70,7 @@ class EditActionHandler implements QuestActionHandler {
 
     @Override
     public boolean onRightClick(double mouseX, double mouseY, @Nullable QuestWidget widget) {
-        ContextMenu.open(mouseX, mouseY, 100, menu -> {
+        ContextMenu.open(mouseX, mouseY, menu -> {
             if (widget != null) {
                 Quest quest = widget.entry().value();
                 menu.button(UIComponents.EDIT_DETAILS, () -> EditObjectModal.open(

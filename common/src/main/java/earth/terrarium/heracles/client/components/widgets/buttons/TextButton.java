@@ -53,4 +53,13 @@ public class TextButton extends Button implements CursorWidget {
     public CursorScreen.Cursor getCursor() {
         return !this.isActive() ? CursorScreen.Cursor.DISABLED : CursorScreen.Cursor.POINTER;
     }
+
+    @Override
+    public boolean isMouseOver(double mouseX, double mouseY) {
+        return this.visible
+            && mouseX >= (double)this.getX()
+            && mouseY >= (double)this.getY()
+            && mouseX < (double)(this.getX() + this.width)
+            && mouseY < (double)(this.getY() + this.height);
+    }
 }

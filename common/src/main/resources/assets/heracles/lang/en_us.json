@@ -126,5 +126,8 @@
     "ui.heracles.edit.settings": "Edit Settings",
     "ui.heracles.snap_to_grid": "Snap to Grid",
     "ui.heracles.x": "x: %s",
-    "ui.heracles.y": "y: %s"
+    "ui.heracles.y": "y: %s",
+    "ui.heracles.add_quest": "Add Quest",
+    "ui.heracles.name": "Name",
+    "ui.heracles.id": "ID"
 }

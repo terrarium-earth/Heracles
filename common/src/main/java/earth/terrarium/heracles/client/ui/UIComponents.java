@@ -12,4 +12,7 @@ public class UIComponents {
     public static final Component SNAP_TO_GRID = Component.translatable("ui.heracles.snap_to_grid");
     public static final String X = "ui.heracles.x";
     public static final String Y = "ui.heracles.y";
+    public static final Component ADD_QUEST = Component.translatable("ui.heracles.add_quest");
+    public static final Component NAME = Component.translatable("ui.heracles.name");
+    public static final Component ID = Component.translatable("ui.heracles.id");
 }

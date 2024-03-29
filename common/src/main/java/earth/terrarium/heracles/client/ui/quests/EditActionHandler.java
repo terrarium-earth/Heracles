@@ -8,9 +8,11 @@ import earth.terrarium.heracles.client.components.quests.QuestActionHandler;
 import earth.terrarium.heracles.client.components.quests.QuestWidget;
 import earth.terrarium.heracles.client.components.quests.QuestsWidget;
 import earth.terrarium.heracles.client.components.widgets.context.ContextMenu;
+import earth.terrarium.heracles.client.handlers.ClientQuestNetworking;
 import earth.terrarium.heracles.client.handlers.ClientQuests;
 import earth.terrarium.heracles.client.handlers.DisplayConfig;
 import earth.terrarium.heracles.client.ui.UIComponents;
+import earth.terrarium.heracles.client.ui.modals.CreateQuestModal;
 import earth.terrarium.heracles.client.ui.modals.EditObjectModal;
 import earth.terrarium.heracles.common.menus.quests.QuestsContent;
 import earth.terrarium.heracles.common.network.NetworkHandler;
@@ -68,25 +70,34 @@ class EditActionHandler implements QuestActionHandler {
 
     @Override
     public boolean onRightClick(double mouseX, double mouseY, @Nullable QuestWidget widget) {
-        if (widget == null) return false;
-        Quest quest = widget.entry().value();
         ContextMenu.open(mouseX, mouseY, 100, menu -> {
-            menu.button(UIComponents.EDIT_DETAILS, () -> EditObjectModal.open(
-                QuestDetailsInitializer.INSTANCE, QUEST, UIComponents.EDIT_DETAILS, null,
-                new QuestDetailsInitializer.Details(quest), data -> setDetails(widget.entry(), data)
-            ));
-            menu.button(UIComponents.EDIT_SETTINGS, () -> EditObjectModal.open(
-                QuestSettingsInitializer.INSTANCE, QUEST, UIComponents.EDIT_SETTINGS, null,
-                quest.settings(), data -> setSettings(widget.entry(), data)
-            ));
-            menu.divider();
-            menu.button(UIComponents.SNAP_TO_GRID, () ->
-                setNewPosition(widget.entry(), widget.position(), true)
-            );
-            menu.divider();
-            menu.dangerButton(UIComponents.DELETE, () ->
-                widget.delete(quests.get())
-            );
+            if (widget != null) {
+                Quest quest = widget.entry().value();
+                menu.button(UIComponents.EDIT_DETAILS, () -> EditObjectModal.open(
+                    QuestDetailsInitializer.INSTANCE, QUEST, UIComponents.EDIT_DETAILS, null,
+                    new QuestDetailsInitializer.Details(quest), data -> setDetails(widget.entry(), data)
+                ));
+                menu.button(UIComponents.EDIT_SETTINGS, () -> EditObjectModal.open(
+                    QuestSettingsInitializer.INSTANCE, QUEST, UIComponents.EDIT_SETTINGS, null,
+                    quest.settings(), data -> setSettings(widget.entry(), data)
+                ));
+                menu.divider();
+                menu.button(UIComponents.SNAP_TO_GRID, () ->
+                    setNewPosition(widget.entry(), widget.position(), true)
+                );
+                menu.divider();
+                menu.dangerButton(UIComponents.DELETE, () ->
+                    widget.delete(quests.get())
+                );
+            } else {
+                menu.button(UIComponents.ADD_QUEST, () -> CreateQuestModal.open((id, name) -> {
+                    QuestsWidget quests = this.quests.get();
+                    Vector2i local = quests.toLocal(mouseX, mouseY);
+                    Quest quest = Quest.of(this.content.group(), name, local.sub(12, 12));
+                    ClientQuestNetworking.add(id, quest);
+                    NetworkHandler.CHANNEL.sendToServer(new OpenQuestPacket(content.group(), id));
+                }));
+            }
         });
         return true;
     }

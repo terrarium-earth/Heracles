@@ -134,6 +134,13 @@ public class QuestsWidget extends BaseParentWidget {
         widgets.forEach(widget -> widget.updatePosition(x, y));
     }
 
+    public Vector2i toLocal(double mouseX, double mouseY) {
+        return new Vector2i(
+            (int) (mouseX - this.getX() - this.getWidth() / 2 - BOUNDS.x()),
+            (int) (mouseY - this.getY() - this.getHeight() / 2 - BOUNDS.y())
+        );
+    }
+
     private void renderArrows(GuiGraphics graphics, List<QuestWidget> widgets) {
         RenderSystem.setShaderTexture(0, ARROW);
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);

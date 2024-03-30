@@ -1,5 +1,6 @@
 package earth.terrarium.heracles.client.ui.quests;
 
+import com.mojang.blaze3d.platform.InputConstants;
 import com.teamresourceful.resourcefullib.common.utils.TriState;
 import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.api.quests.Quest;
@@ -19,12 +20,14 @@ import earth.terrarium.heracles.common.network.NetworkHandler;
 import earth.terrarium.heracles.common.network.packets.quests.OpenQuestPacket;
 import earth.terrarium.heracles.common.network.packets.quests.data.NetworkQuestData;
 import earth.terrarium.heracles.common.utils.ModUtils;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector2i;
 
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
 
 class EditActionHandler implements QuestActionHandler {
@@ -143,6 +146,28 @@ class EditActionHandler implements QuestActionHandler {
         return TriState.UNDEFINED;
     }
 
+    @Override
+    public boolean onKeyPressed(int keyCode, int scanCode, int modifiers) {
+        if (this.selected != null) {
+            Vector2i position = this.selected.value().display().position(this.content.group());
+            boolean handled = true;
+            int offset = Screen.hasShiftDown() ? 10 : Screen.hasControlDown() ? 5 : 1;
+            switch (keyCode) {
+                case InputConstants.KEY_RIGHT -> setNewPosition(this.selected, position.add(offset, 0), false);
+                case InputConstants.KEY_LEFT -> setNewPosition(this.selected, position.add(offset * -1, 0), false);
+                case InputConstants.KEY_DOWN -> setNewPosition(this.selected, position.add(0, offset), false);
+                case InputConstants.KEY_UP -> setNewPosition(this.selected, position.add(0, offset * -1), false);
+                case InputConstants.KEY_DELETE -> {
+                    QuestWidget widget = this.getSelectedWidget();
+                    if (widget != null) widget.delete(this.quests.get());
+                }
+                default -> handled = false;
+            }
+            return handled;
+        }
+        return false;
+    }
+
     private void setNewPosition(ClientQuests.QuestEntry entry, Vector2i position, boolean snapToGrid) {
         ClientQuests.updateQuest(entry, quest -> NetworkQuestData.builder().group(quest, this.content.group(), pos -> {
             if (snapToGrid) {
@@ -175,6 +200,16 @@ class EditActionHandler implements QuestActionHandler {
         NetworkHandler.CHANNEL.sendToServer(new OpenQuestPacket(content.group(), this.selected.key()));
         this.selected = null;
         this.lastClick = 0;
+    }
+
+    private QuestWidget getSelectedWidget() {
+        AtomicReference<QuestWidget> widget = new AtomicReference<>(null);
+        this.quests.get().visit(QuestWidget.class, questWidget -> {
+            if (questWidget.entry().equals(this.selected)) {
+                widget.set(questWidget);
+            }
+        });
+        return widget.get();
     }
 
     public ClientQuests.QuestEntry getSelected() {

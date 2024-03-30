@@ -98,10 +98,11 @@ public class EditQuestsScreen extends AbstractQuestsScreen {
 
         //right
         width = font.width(this.handler.getSelected().key()) + 10;
+        left = right - (width - 10);
         isNear = mouseX >= left - 5 && mouseX <= left + width + 5 && mouseY >= bottom - 15 && mouseY <= bottom;
         color = isNear ? UIColors.QUESTS_COORDINATES | 0x90000000 : UIColors.QUESTS_COORDINATES;
 
-        graphics.drawString(font, this.handler.getSelected().key(), right - (width - 10), bottom - 10, color, false);
+        graphics.drawString(font, this.handler.getSelected().key(), left, bottom - 10, color, false);
     }
 
     @Override

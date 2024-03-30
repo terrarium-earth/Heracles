@@ -12,11 +12,13 @@ import net.minecraft.client.gui.layouts.GridLayout;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 
-import java.util.Locale;
 import java.util.function.BiConsumer;
 import java.util.function.BiPredicate;
+import java.util.regex.Pattern;
 
 public class CreateQuestModal extends BaseModal {
+
+    private static final Pattern REGEX = Pattern.compile("[\\x00-\\x7F]{2,}");
 
     private static final int WIDTH = 150;
     private static final int WIDGET_HEIGHT = 24;
@@ -86,7 +88,7 @@ public class CreateQuestModal extends BaseModal {
         Screen background = Minecraft.getInstance().screen;
         CreateQuestModal modal = new CreateQuestModal(
             background, callback,
-            (id, name) -> id.toLowerCase(Locale.ROOT).replaceAll("[^a-zA-Z_-]", "").length() >= 2 && ClientQuests.get(id.trim()).isEmpty()
+            (id, name) -> REGEX.matcher(id).matches() && ClientQuests.get(id.trim()).isEmpty()
         );
         Minecraft.getInstance().setScreen(modal);
     }

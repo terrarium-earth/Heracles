@@ -10,6 +10,7 @@ import com.mojang.math.Axis;
 import com.teamresourceful.resourcefullib.client.CloseablePoseStack;
 import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.api.quests.Quest;
+import earth.terrarium.heracles.api.quests.QuestDisplayStatus;
 import earth.terrarium.heracles.client.HeraclesClient;
 import earth.terrarium.heracles.client.components.base.BaseParentWidget;
 import earth.terrarium.heracles.client.handlers.ClientQuests;
@@ -106,14 +107,29 @@ public class QuestsWidget extends BaseParentWidget {
         var value = quest.value();
         boolean inGroup = value.display().groups().containsKey(group);
         if (!inGroup) return true;
-        if (value.settings().hiddenUntil() == ModUtils.QuestStatus.COMPLETED) {
+        return shouldHide(statuses, quest, value.settings().hiddenUntil());
+    }
+
+    private static boolean shouldHide(Object2BooleanMap<String> statuses, ClientQuests.QuestEntry quest, QuestDisplayStatus status) {
+        if (status == QuestDisplayStatus.COMPLETED) {
             return !statuses.getBoolean(quest.key());
-        } else if (value.settings().hiddenUntil() == ModUtils.QuestStatus.IN_PROGRESS) {
+        } else if (status == QuestDisplayStatus.IN_PROGRESS) {
             for (var dependency : quest.dependencies()) {
                 if (!statuses.getBoolean(dependency.key())) {
                     return true;
                 }
             }
+        } else if (status == QuestDisplayStatus.DEPENDENCIES_VISIBLE) {
+            boolean visible = statuses.getBoolean(quest.key());
+            if (visible) {
+                return false;
+            }
+            for (var dependency : quest.dependencies()) {
+                if (shouldHide(statuses, dependency, QuestDisplayStatus.DEPENDENCIES_VISIBLE)) {
+                    return true;
+                }
+            }
+            return quest.value().settings().hiddenUntil() != QuestDisplayStatus.DEPENDENCIES_VISIBLE;
         }
         return false;
     }
@@ -158,7 +174,7 @@ public class QuestsWidget extends BaseParentWidget {
 
             RenderSystem.setShaderColor(0.9F, 0.9F, 0.9F, widget.isHovered() ? 0.8f : 0.4F);
 
-            for (ClientQuests.QuestEntry child : entry.children()) {
+            for (ClientQuests.QuestEntry child : entry.dependents()) {
                 if (!child.value().display().groups().containsKey(this.group)) continue;
                 if (!this.quests.containsKey(child.key())) continue;
                 if (!child.value().settings().showDependencyArrow()) continue;

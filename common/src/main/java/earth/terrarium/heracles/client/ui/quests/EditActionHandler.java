@@ -94,11 +94,11 @@ class EditActionHandler implements QuestActionHandler {
                         if (disconnect) {
                             selected.dependencies().remove(dependency.key());
                             this.selected.dependencies().remove(dependency);
-                            dependency.children().remove(this.selected);
+                            dependency.dependents().remove(this.selected);
                         } else {
                             selected.dependencies().add(dependency.key());
                             this.selected.dependencies().add(dependency);
-                            dependency.children().add(this.selected);
+                            dependency.dependents().add(this.selected);
                         }
                         return NetworkQuestData.builder().dependencies(selected.dependencies());
                     }));

@@ -60,7 +60,7 @@ public class RewardsList extends QuestList<QuestReward<?>> {
             }
         }
 
-        for (ClientQuests.QuestEntry child : entry.children()) {
+        for (ClientQuests.QuestEntry child : entry.dependents()) {
             if (!child.value().display().groups().containsKey(group)) continue;
             dependents.add(new DependentRewardEntry(child.value()));
         }

@@ -6,6 +6,7 @@ import com.teamresourceful.resourcefullib.common.network.base.PacketType;
 import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.client.handlers.ClientQuests;
 import earth.terrarium.heracles.client.screens.quest.BaseQuestScreen;
+import earth.terrarium.heracles.client.screens.quests.QuestsScreen;
 import earth.terrarium.heracles.common.handlers.progress.QuestProgress;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
@@ -64,6 +65,8 @@ public record SyncQuestProgressPacket(Map<String, QuestProgress> quests) impleme
                 ClientQuests.mergeProgress(message.quests);
                 if (Minecraft.getInstance().screen instanceof BaseQuestScreen screen) {
                     screen.updateProgress(message.quests.getOrDefault(screen.getQuestId(), null));
+                } else if (Minecraft.getInstance().screen instanceof QuestsScreen screen) {
+                    screen.updateProgress(message.quests);
                 }
             };
         }

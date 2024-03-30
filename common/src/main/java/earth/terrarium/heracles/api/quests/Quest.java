@@ -7,6 +7,7 @@ import earth.terrarium.heracles.api.rewards.QuestReward;
 import earth.terrarium.heracles.api.rewards.QuestRewards;
 import earth.terrarium.heracles.api.tasks.QuestTask;
 import earth.terrarium.heracles.api.tasks.QuestTasks;
+import earth.terrarium.heracles.common.handlers.progress.QuestProgress;
 import earth.terrarium.heracles.common.handlers.progress.QuestProgressHandler;
 import earth.terrarium.heracles.common.handlers.progress.QuestsProgress;
 import earth.terrarium.heracles.common.network.NetworkHandler;
@@ -47,19 +48,23 @@ public record Quest(
     }
 
     public void claimAllowedRewards(ServerPlayer player, String id) {
-        QuestsProgress progress = QuestProgressHandler.getProgress(player.server, player.getUUID());
-        if (!progress.isComplete(id) && !this.tasks.isEmpty()) return;
-        if (progress.isClaimed(id, this)) return;
+        QuestsProgress progresses = QuestProgressHandler.getProgress(player.server, player.getUUID());
+        QuestProgress progress = progresses.getProgress(id);
+        if (progress == null) return;
+        if (!progress.isComplete() && !this.tasks.isEmpty()) return;
+        claimRewards(player, id, progresses, progress);
+    }
 
-        var questProgress = progress.getProgress(id);
+    public void claimRewards(ServerPlayer player, String id, QuestsProgress progresses, QuestProgress progress) {
+        if (progress.isClaimed(this)) return;
 
         claimRewards(
             id,
             player,
             rewards().values().stream().
                 filter(QuestReward::canBeMassClaimed)
-                .filter(reward -> !questProgress.claimedRewards().contains(reward.id()))
-                .peek(reward -> progress.claimReward(id, reward.id(), player))
+                .filter(reward -> !progress.claimedRewards().contains(reward.id()))
+                .peek(reward -> progresses.claimReward(id, reward.id(), player))
         );
     }
 

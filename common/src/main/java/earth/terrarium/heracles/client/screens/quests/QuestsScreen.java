@@ -8,9 +8,11 @@ import earth.terrarium.heracles.client.screens.AbstractQuestScreen;
 import earth.terrarium.heracles.client.screens.mousemode.MouseMode;
 import earth.terrarium.heracles.client.widgets.modals.ConfirmModal;
 import earth.terrarium.heracles.common.constants.ConstantComponents;
+import earth.terrarium.heracles.common.handlers.progress.QuestProgress;
 import earth.terrarium.heracles.common.menus.quests.QuestsContent;
 import earth.terrarium.heracles.common.network.NetworkHandler;
 import earth.terrarium.heracles.common.network.packets.groups.OpenGroupPacket;
+import earth.terrarium.heracles.common.network.packets.rewards.ClaimRewardsPacket;
 import earth.terrarium.heracles.common.utils.ModUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -20,6 +22,7 @@ import net.minecraft.network.chat.CommonComponents;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class QuestsScreen extends AbstractQuestScreen<QuestsContent> {
 
@@ -42,6 +45,13 @@ public class QuestsScreen extends AbstractQuestScreen<QuestsContent> {
                 NetworkHandler.CHANNEL.sendToServer(new OpenGroupPacket(this.content.group(), this.getClass() == QuestsScreen.class))
             )).setTooltip(Tooltip.create(ConstantComponents.TOGGLE_EDIT));
         }
+
+        if (!(this instanceof QuestsEditScreen)) {
+            addRenderableWidget(new ImageButton(sideBarWidth + 3, 1, 11, 11, 44, 15, 11, HEADING, 256, 256, (button) -> {
+                NetworkHandler.CHANNEL.sendToServer(new ClaimRewardsPacket());
+            })).setTooltip(Tooltip.create(ConstantComponents.Rewards.CLAIM));
+        }
+
         List<Pair<ClientQuests.QuestEntry, ModUtils.QuestStatus>> quests = new ArrayList<>();
         content.quests().forEach((id, status) ->
             ClientQuests.get(id)
@@ -121,5 +131,24 @@ public class QuestsScreen extends AbstractQuestScreen<QuestsContent> {
 
     public String getGroup() {
         return content.group();
+    }
+
+    public void updateProgress(Map<String, QuestProgress> quests) {
+        List<Pair<ClientQuests.QuestEntry, ModUtils.QuestStatus>> statues = new ArrayList<>();
+        for (var entry : this.content.quests().entrySet()) {
+            ClientQuests.QuestEntry quest = ClientQuests.get(entry.getKey())
+                .filter(q -> q.value().display().groups().containsKey(content.group()))
+                .orElse(null);
+            if (quest == null) continue;
+            if (entry.getValue() == ModUtils.QuestStatus.COMPLETED) {
+                QuestProgress progress = quests.get(entry.getKey());
+                if (progress != null && progress.isClaimed(quest.value())) {
+                    entry.setValue(ModUtils.QuestStatus.COMPLETED_CLAIMED);
+                }
+            }
+            statues.add(Pair.of(quest, entry.getValue()));
+        }
+        if (questsWidget == null) return;
+        questsWidget.update(this.content, statues);
     }
 }

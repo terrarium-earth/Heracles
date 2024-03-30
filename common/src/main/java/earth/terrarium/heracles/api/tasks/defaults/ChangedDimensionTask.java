@@ -13,22 +13,21 @@ import earth.terrarium.heracles.api.tasks.QuestTaskType;
 import earth.terrarium.heracles.api.tasks.storage.defaults.BooleanTaskStorage;
 import net.minecraft.Optionull;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.nbt.ByteTag;
+import net.minecraft.nbt.NumericTag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 
 import java.util.Optional;
 
 public record ChangedDimensionTask(
     String id, String title, QuestIcon<?> icon, ResourceKey<Level> from, ResourceKey<Level> to
-) implements QuestTask<Pair<ResourceKey<Level>, ResourceKey<Level>>, ByteTag, ChangedDimensionTask>, CustomizableQuestElement {
+) implements QuestTask<Pair<ResourceKey<Level>, ResourceKey<Level>>, NumericTag, ChangedDimensionTask>, CustomizableQuestElement {
 
     public static final QuestTaskType<ChangedDimensionTask> TYPE = new Type();
 
     @Override
-    public ByteTag test(QuestTaskType<?> type, ByteTag progress, Pair<ResourceKey<Level>, ResourceKey<Level>> input) {
+    public NumericTag test(QuestTaskType<?> type, NumericTag progress, Pair<ResourceKey<Level>, ResourceKey<Level>> input) {
         final ResourceKey<Level> from = input.getFirst();
         final ResourceKey<Level> to = input.getSecond();
 
@@ -39,7 +38,7 @@ public record ChangedDimensionTask(
     }
 
     @Override
-    public float getProgress(ByteTag progress) {
+    public float getProgress(NumericTag progress) {
         return storage().readBoolean(progress) ? 1.0F : 0.0F;
     }
 
@@ -64,8 +63,8 @@ public record ChangedDimensionTask(
         public Codec<ChangedDimensionTask> codec(String id) {
             return RecordCodecBuilder.create(instance -> instance.group(
                 RecordCodecBuilder.point(id),
-                Codec.STRING.fieldOf("title").orElse("").forGetter(ChangedDimensionTask::title),
-                QuestIcons.CODEC.fieldOf("icon").orElse(new ItemQuestIcon(Items.AIR)).forGetter(ChangedDimensionTask::icon),
+                Codec.STRING.optionalFieldOf("title", "").forGetter(ChangedDimensionTask::title),
+                QuestIcons.CODEC.optionalFieldOf("icon", ItemQuestIcon.AIR).forGetter(ChangedDimensionTask::icon),
                 ResourceKey.codec(Registries.DIMENSION).optionalFieldOf("from").forGetter(task -> Optional.ofNullable(task.from())),
                 ResourceKey.codec(Registries.DIMENSION).optionalFieldOf("to").forGetter(task -> Optional.ofNullable(task.to()))
             ).apply(instance, (i, title, icon, from, to) -> new ChangedDimensionTask(i, title, icon, from.orElse(null), to.orElse(null))));

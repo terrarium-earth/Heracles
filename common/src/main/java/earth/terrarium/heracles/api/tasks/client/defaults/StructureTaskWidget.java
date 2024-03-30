@@ -10,7 +10,7 @@ import earth.terrarium.heracles.common.handlers.progress.TaskProgress;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.nbt.ByteTag;
+import net.minecraft.nbt.NumericTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Items;
 
@@ -19,9 +19,9 @@ public final class StructureTaskWidget implements DisplayWidget {
     private static final Component DESCRIPTION = Component.translatable("task.heracles.structure.desc.singular");
 
     private final StructureTask task;
-    private final TaskProgress<ByteTag> progress;
+    private final TaskProgress<NumericTag> progress;
 
-    public StructureTaskWidget(StructureTask task, TaskProgress<ByteTag> progress) {
+    public StructureTaskWidget(StructureTask task, TaskProgress<NumericTag> progress) {
         this.task = task;
         this.progress = progress;
     }

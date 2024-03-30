@@ -14,28 +14,27 @@ import earth.terrarium.heracles.api.tasks.storage.defaults.BooleanTaskStorage;
 import earth.terrarium.heracles.mixins.common.PlayerAdvancementAccessor;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementProgress;
-import net.minecraft.nbt.ByteTag;
+import net.minecraft.nbt.NumericTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.ServerAdvancementManager;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.item.Items;
 
 import java.util.Set;
 
 public record AdvancementTask(
     String id, String title, QuestIcon<?> icon, Set<ResourceLocation> advancements
-) implements QuestTask<Advancement, ByteTag, AdvancementTask>, CustomizableQuestElement {
+) implements QuestTask<Advancement, NumericTag, AdvancementTask>, CustomizableQuestElement {
 
     public static final QuestTaskType<AdvancementTask> TYPE = new Type();
 
     @Override
-    public ByteTag test(QuestTaskType<?> type, ByteTag progress, Advancement input) {
+    public NumericTag test(QuestTaskType<?> type, NumericTag progress, Advancement input) {
         return storage().of(progress, advancements.contains(input.getId()));
     }
 
     @Override
-    public ByteTag init(QuestTaskType<?> type, ByteTag progress, ServerPlayer player) {
+    public NumericTag init(QuestTaskType<?> type, NumericTag progress, ServerPlayer player) {
         MinecraftServer server = player.getServer();
         if (server == null) return progress;
         ServerAdvancementManager manager = server.getAdvancements();
@@ -52,7 +51,7 @@ public record AdvancementTask(
     }
 
     @Override
-    public float getProgress(ByteTag progress) {
+    public float getProgress(NumericTag progress) {
         return storage().readBoolean(progress) ? 1.0F : 0.0F;
     }
 
@@ -77,8 +76,8 @@ public record AdvancementTask(
         public Codec<AdvancementTask> codec(String id) {
             return RecordCodecBuilder.create(instance -> instance.group(
                 RecordCodecBuilder.point(id),
-                Codec.STRING.fieldOf("title").orElse("").forGetter(AdvancementTask::title),
-                QuestIcons.CODEC.fieldOf("icon").orElse(new ItemQuestIcon(Items.AIR)).forGetter(AdvancementTask::icon),
+                Codec.STRING.optionalFieldOf("title", "").forGetter(AdvancementTask::title),
+                QuestIcons.CODEC.optionalFieldOf("icon", ItemQuestIcon.AIR).forGetter(AdvancementTask::icon),
                 CodecExtras.set(ResourceLocation.CODEC).fieldOf("advancements").forGetter(AdvancementTask::advancements)
             ).apply(instance, AdvancementTask::new));
         }

@@ -18,6 +18,7 @@ import earth.terrarium.heracles.common.utils.RegistryValue;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.NumericTag;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -43,6 +44,14 @@ public record GatherItemTask(
             if (this.item.is(stack.get().getItemHolder()) && nbt.matches(stack.get().getTag(), false)) {
                 return automatic(progress, container);
             }
+        }
+        return progress;
+    }
+
+    @Override
+    public NumericTag init(QuestTaskType<?> type, NumericTag progress, ServerPlayer player) {
+        if (this.collectionType != CollectionType.MANUAL) {
+            return automatic(progress, player.getInventory());
         }
         return progress;
     }
@@ -125,8 +134,8 @@ public record GatherItemTask(
         public Codec<GatherItemTask> codec(String id) {
             Codec<GatherItemTask> newCodec = RecordCodecBuilder.create(instance -> instance.group(
                 RecordCodecBuilder.point(id),
-                Codec.STRING.fieldOf("title").orElse("").forGetter(GatherItemTask::title),
-                QuestIcons.CODEC.fieldOf("icon").orElse(new ItemQuestIcon(Items.AIR)).forGetter(GatherItemTask::icon),
+                Codec.STRING.optionalFieldOf("title", "").forGetter(GatherItemTask::title),
+                QuestIcons.CODEC.optionalFieldOf("icon", ItemQuestIcon.AIR).forGetter(GatherItemTask::icon),
                 RegistryValue.codec(Registries.ITEM).fieldOf("item").forGetter(GatherItemTask::item),
                 NbtPredicate.CODEC.fieldOf("nbt").orElse(NbtPredicate.ANY).forGetter(GatherItemTask::nbt),
                 Codec.INT.fieldOf("amount").orElse(1).forGetter(GatherItemTask::target),

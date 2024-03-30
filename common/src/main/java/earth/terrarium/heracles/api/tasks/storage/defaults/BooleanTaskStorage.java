@@ -5,7 +5,7 @@ import net.minecraft.nbt.ByteTag;
 import net.minecraft.nbt.NumericTag;
 import net.minecraft.nbt.Tag;
 
-public final class BooleanTaskStorage implements TaskStorage<Boolean, ByteTag> {
+public final class BooleanTaskStorage implements TaskStorage<Boolean, NumericTag> {
 
     public static final BooleanTaskStorage INSTANCE = new BooleanTaskStorage();
 
@@ -13,12 +13,12 @@ public final class BooleanTaskStorage implements TaskStorage<Boolean, ByteTag> {
     }
 
     @Override
-    public ByteTag createDefault() {
+    public NumericTag createDefault() {
         return ByteTag.valueOf(false);
     }
 
     @Override
-    public Boolean read(ByteTag tag) {
+    public Boolean read(NumericTag tag) {
         return readBoolean(tag);
     }
 

@@ -16,7 +16,7 @@ import net.minecraft.advancements.DisplayInfo;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.nbt.ByteTag;
+import net.minecraft.nbt.NumericTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
@@ -32,7 +32,7 @@ public final class AdvancementTaskWidget implements DisplayWidget {
     private static final String DESC_PLURAL = "task.heracles.advancement.desc.plural";
 
     private final AdvancementTask task;
-    private final TaskProgress<ByteTag> progress;
+    private final TaskProgress<NumericTag> progress;
     private final Component title;
     private final List<ItemStack> icons;
     private final List<Component> titles;
@@ -40,7 +40,7 @@ public final class AdvancementTaskWidget implements DisplayWidget {
     private boolean isOpened = false;
 
     public AdvancementTaskWidget(
-        AdvancementTask task, TaskProgress<ByteTag> progress,
+        AdvancementTask task, TaskProgress<NumericTag> progress,
         Component title,
         List<ItemStack> icons, List<Component> titles
     ) {
@@ -51,7 +51,7 @@ public final class AdvancementTaskWidget implements DisplayWidget {
         this.titles = titles;
     }
 
-    public AdvancementTaskWidget(AdvancementTask task, TaskProgress<ByteTag> progress) {
+    public AdvancementTaskWidget(AdvancementTask task, TaskProgress<NumericTag> progress) {
         this(task, progress, TaskTitleFormatter.create(task), getAdvancementIcons(task), getAdvancementTitles(task));
     }
 
@@ -121,7 +121,7 @@ public final class AdvancementTaskWidget implements DisplayWidget {
     }
 
     private ItemStack getCurrentItem() {
-        if (this.icons.size() == 0) {
+        if (this.icons.isEmpty()) {
             return Items.KNOWLEDGE_BOOK.getDefaultInstance();
         }
         int index = Math.max(0, (int) ((System.currentTimeMillis() / 1000) % this.icons.size()));

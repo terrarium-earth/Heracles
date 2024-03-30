@@ -2,7 +2,7 @@ package earth.terrarium.heracles.api.tasks.client.defaults;
 
 import com.teamresourceful.resourcefullib.client.scissor.ScissorBoxStack;
 import com.teamresourceful.resourcefullib.common.codecs.predicates.NbtPredicate;
-import earth.terrarium.heracles.api.client.DisplayWidget;
+import earth.terrarium.heracles.api.client.ItemDisplayWidget;
 import earth.terrarium.heracles.api.client.WidgetUtils;
 import earth.terrarium.heracles.api.client.theme.QuestScreenTheme;
 import earth.terrarium.heracles.api.tasks.client.display.TaskTitleFormatter;
@@ -13,19 +13,19 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.nbt.ByteTag;
+import net.minecraft.nbt.NumericTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 
 import java.util.List;
 
 public record ItemInteractTaskWidget(
-    ItemInteractTask task, TaskProgress<ByteTag> progress, List<ItemStack> stacks
-) implements DisplayWidget {
+    ItemInteractTask task, TaskProgress<NumericTag> progress, List<ItemStack> stacks
+) implements ItemDisplayWidget {
 
     private static final String DESC = "task.heracles.item_interaction.desc.singular";
 
-    public ItemInteractTaskWidget(ItemInteractTask task, TaskProgress<ByteTag> progress) {
+    public ItemInteractTaskWidget(ItemInteractTask task, TaskProgress<NumericTag> progress) {
         this(
             task,
             progress,
@@ -60,7 +60,8 @@ public record ItemInteractTaskWidget(
         WidgetUtils.drawProgressBar(graphics, x + iconSize + 16, y + height - font.lineHeight - 5, x + width - 5, y + height - 6, this.task, this.progress);
     }
 
-    private ItemStack getCurrentItem() {
+    @Override
+    public ItemStack getCurrentItem() {
         if (this.stacks.isEmpty()) {
             return ItemStack.EMPTY;
         }

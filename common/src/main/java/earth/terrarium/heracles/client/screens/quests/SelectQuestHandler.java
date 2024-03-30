@@ -41,12 +41,12 @@ public class SelectQuestHandler {
             ClientQuests.updateQuest(quest.entry(), value -> {
                 if (Screen.hasShiftDown()) {
                     quest.quest().dependencies().remove(selectedQuest.id());
-                    selectedQuest.entry().children().remove(quest.entry());
+                    selectedQuest.entry().dependents().remove(quest.entry());
                     quest.entry().dependencies().remove(quest.entry());
                 } else {
-                    if (!quest.entry().children().contains(selectedQuest.entry())) {
+                    if (!quest.entry().dependents().contains(selectedQuest.entry())) {
                         if (quest.quest().dependencies().add(selectedQuest.id())) {
-                            selectedQuest.entry().children().add(quest.entry());
+                            selectedQuest.entry().dependents().add(quest.entry());
                             quest.entry().dependencies().add(selectedQuest.entry());
                         }
                     }

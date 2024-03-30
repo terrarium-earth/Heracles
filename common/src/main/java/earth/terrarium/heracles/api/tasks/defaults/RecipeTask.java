@@ -11,10 +11,9 @@ import earth.terrarium.heracles.api.quests.defaults.ItemQuestIcon;
 import earth.terrarium.heracles.api.tasks.QuestTask;
 import earth.terrarium.heracles.api.tasks.QuestTaskType;
 import earth.terrarium.heracles.api.tasks.storage.defaults.BooleanTaskStorage;
-import net.minecraft.nbt.ByteTag;
+import net.minecraft.nbt.NumericTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Recipe;
 
 import java.util.ArrayList;
@@ -24,17 +23,17 @@ import java.util.Set;
 
 public record RecipeTask(
     String id, String title, QuestIcon<?> icon, Set<ResourceLocation> recipes
-) implements QuestTask<Recipe<?>, ByteTag, RecipeTask>, CustomizableQuestElement {
+) implements QuestTask<Recipe<?>, NumericTag, RecipeTask>, CustomizableQuestElement {
 
     public static final QuestTaskType<RecipeTask> TYPE = new Type();
 
     @Override
-    public ByteTag test(QuestTaskType<?> type, ByteTag progress, Recipe<?> input) {
+    public NumericTag test(QuestTaskType<?> type, NumericTag progress, Recipe<?> input) {
         return storage().of(progress, recipes.contains(input.getId()));
     }
 
     @Override
-    public float getProgress(ByteTag progress) {
+    public float getProgress(NumericTag progress) {
         return storage().readBoolean(progress) ? 1.0F : 0.0F;
     }
 
@@ -71,8 +70,8 @@ public record RecipeTask(
         public Codec<RecipeTask> codec(String id) {
             return RecordCodecBuilder.create(instance -> instance.group(
                 RecordCodecBuilder.point(id),
-                Codec.STRING.fieldOf("title").orElse("").forGetter(RecipeTask::title),
-                QuestIcons.CODEC.fieldOf("icon").orElse(new ItemQuestIcon(Items.AIR)).forGetter(RecipeTask::icon),
+                Codec.STRING.optionalFieldOf("title", "").forGetter(RecipeTask::title),
+                QuestIcons.CODEC.optionalFieldOf("icon", ItemQuestIcon.AIR).forGetter(RecipeTask::icon),
                 CodecExtras.set(ResourceLocation.CODEC).fieldOf("recipes").forGetter(RecipeTask::recipes)
             ).apply(instance, RecipeTask::new));
         }

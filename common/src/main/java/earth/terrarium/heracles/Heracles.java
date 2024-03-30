@@ -5,6 +5,7 @@ import earth.terrarium.heracles.api.events.HeraclesEvents;
 import earth.terrarium.heracles.api.events.QuestEventTarget;
 import earth.terrarium.heracles.common.network.NetworkHandler;
 import earth.terrarium.heracles.common.regisitries.ModItems;
+import earth.terrarium.heracles.common.regisitries.ModLootConditions;
 import earth.terrarium.heracles.common.utils.PlatformLogger;
 import earth.terrarium.heracles.common.utils.PlatformSettings;
 import net.minecraft.core.RegistryAccess;
@@ -25,6 +26,7 @@ public class Heracles {
     public static void init(PlatformSettings settings) {
         settings.apply(Heracles.LOGGER);
         ModItems.ITEMS.init();
+        ModLootConditions.TYPES.init();
         NetworkHandler.init();
         HeraclesEvents.QuestCompleteListener.register(Heracles::playQuestCompleteSound);
     }

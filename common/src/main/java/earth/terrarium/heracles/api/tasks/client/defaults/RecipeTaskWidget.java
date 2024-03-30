@@ -4,7 +4,7 @@ import com.teamresourceful.resourcefullib.client.scissor.ScissorBoxStack;
 import com.teamresourceful.resourcefullib.client.screens.CursorScreen;
 import com.teamresourceful.resourcefullib.client.utils.CursorUtils;
 import earth.terrarium.heracles.Heracles;
-import earth.terrarium.heracles.api.client.DisplayWidget;
+import earth.terrarium.heracles.api.client.ItemDisplayWidget;
 import earth.terrarium.heracles.api.client.WidgetUtils;
 import earth.terrarium.heracles.api.client.theme.QuestScreenTheme;
 import earth.terrarium.heracles.api.tasks.client.display.TaskTitleFormatter;
@@ -15,7 +15,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.multiplayer.ClientPacketListener;
-import net.minecraft.nbt.ByteTag;
+import net.minecraft.nbt.NumericTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
@@ -26,13 +26,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public final class RecipeTaskWidget implements DisplayWidget {
+public final class RecipeTaskWidget implements ItemDisplayWidget {
 
     private static final String DESC_SINGULAR = "task.heracles.recipe.desc.singular";
     private static final String DESC_PLURAL = "task.heracles.recipe.desc.plural";
 
     private final RecipeTask task;
-    private final TaskProgress<ByteTag> progress;
+    private final TaskProgress<NumericTag> progress;
     private final Component title;
     private final List<ItemStack> icons;
     private final List<Component> titles;
@@ -40,7 +40,7 @@ public final class RecipeTaskWidget implements DisplayWidget {
     private boolean isOpened = false;
 
     public RecipeTaskWidget(
-        RecipeTask task, TaskProgress<ByteTag> progress,
+        RecipeTask task, TaskProgress<NumericTag> progress,
         Component title,
         List<ItemStack> icons, List<Component> titles
     ) {
@@ -51,7 +51,7 @@ public final class RecipeTaskWidget implements DisplayWidget {
         this.titles = titles;
     }
 
-    public RecipeTaskWidget(RecipeTask task, TaskProgress<ByteTag> progress) {
+    public RecipeTaskWidget(RecipeTask task, TaskProgress<NumericTag> progress) {
         this(task, progress, TaskTitleFormatter.create(task), getRecipeIcons(task), getRecipeTitles(task));
     }
 
@@ -100,6 +100,7 @@ public final class RecipeTaskWidget implements DisplayWidget {
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int mouseButton, int width) {
+        if (ItemDisplayWidget.super.mouseClicked(mouseX, mouseY, mouseButton, width)) return true;
         if (mouseY < 0 || mouseY > getHeight(width)) return false;
         if (mouseX < 32 || mouseX > width) return false;
         if (mouseButton != 0) return false;
@@ -120,8 +121,9 @@ public final class RecipeTaskWidget implements DisplayWidget {
         return 42;
     }
 
-    private ItemStack getCurrentItem() {
-        if (this.icons.size() == 0) {
+    @Override
+    public ItemStack getCurrentItem() {
+        if (this.icons.isEmpty()) {
             return Items.CRAFTING_TABLE.getDefaultInstance();
         }
         int index = Math.max(0, (int) ((System.currentTimeMillis() / 1000) % this.icons.size()));

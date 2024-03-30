@@ -10,7 +10,7 @@ import earth.terrarium.heracles.common.handlers.progress.TaskProgress;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.nbt.ByteTag;
+import net.minecraft.nbt.NumericTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -21,9 +21,9 @@ public final class BiomeTaskWidget implements DisplayWidget {
     private static final Component DESCRIPTION = Component.translatable("task.heracles.biome.desc.singular");
 
     private final BiomeTask task;
-    private final TaskProgress<ByteTag> progress;
+    private final TaskProgress<NumericTag> progress;
 
-    public BiomeTaskWidget(BiomeTask task, TaskProgress<ByteTag> progress) {
+    public BiomeTaskWidget(BiomeTask task, TaskProgress<NumericTag> progress) {
         this.task = task;
         this.progress = progress;
     }

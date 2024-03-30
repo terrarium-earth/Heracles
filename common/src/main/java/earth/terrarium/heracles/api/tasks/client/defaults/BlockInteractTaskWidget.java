@@ -1,7 +1,7 @@
 package earth.terrarium.heracles.api.tasks.client.defaults;
 
 import com.teamresourceful.resourcefullib.client.scissor.ScissorBoxStack;
-import earth.terrarium.heracles.api.client.DisplayWidget;
+import earth.terrarium.heracles.api.client.ItemDisplayWidget;
 import earth.terrarium.heracles.api.client.WidgetUtils;
 import earth.terrarium.heracles.api.client.theme.QuestScreenTheme;
 import earth.terrarium.heracles.api.tasks.client.display.TaskTitleFormatter;
@@ -12,19 +12,19 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.nbt.ByteTag;
+import net.minecraft.nbt.NumericTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 
 import java.util.List;
 
 public record BlockInteractTaskWidget(
-    BlockInteractTask task, TaskProgress<ByteTag> progress, List<ItemStack> stacks
-) implements DisplayWidget {
+    BlockInteractTask task, TaskProgress<NumericTag> progress, List<ItemStack> stacks
+) implements ItemDisplayWidget {
 
     private static final String DESC = "task.heracles.block_interaction.desc.singular";
 
-    public BlockInteractTaskWidget(BlockInteractTask task, TaskProgress<ByteTag> progress) {
+    public BlockInteractTaskWidget(BlockInteractTask task, TaskProgress<NumericTag> progress) {
         this(task, progress, task.block().getValue().map(
             block -> List.of(block.asItem().getDefaultInstance()),
             tag -> ModUtils.getValue(Registries.BLOCK, tag).stream().map(ItemStack::new).toList()
@@ -52,7 +52,8 @@ public record BlockInteractTaskWidget(
         WidgetUtils.drawProgressBar(graphics, x + iconSize + 16, y + height - font.lineHeight - 5, x + width - 5, y + height - 6, this.task, this.progress);
     }
 
-    private ItemStack getCurrentItem() {
+    @Override
+    public ItemStack getCurrentItem() {
         if (this.stacks.isEmpty()) {
             return ItemStack.EMPTY;
         }

@@ -5,12 +5,12 @@ import com.teamresourceful.bytecodecs.base.object.ObjectByteCodec;
 import com.teamresourceful.resourcefullib.common.utils.TriState;
 import earth.terrarium.heracles.api.quests.GroupDisplay;
 import earth.terrarium.heracles.api.quests.Quest;
+import earth.terrarium.heracles.api.quests.QuestDisplayStatus;
 import earth.terrarium.heracles.api.quests.QuestIcon;
 import earth.terrarium.heracles.api.rewards.QuestReward;
 import earth.terrarium.heracles.api.rewards.QuestRewards;
 import earth.terrarium.heracles.api.tasks.QuestTask;
 import earth.terrarium.heracles.api.tasks.QuestTasks;
-import earth.terrarium.heracles.common.utils.ModUtils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import org.joml.Vector2i;
@@ -65,7 +65,7 @@ public record NetworkQuestData(
         private List<String> description;
         private Map<String, GroupDisplay> groups;
         private TriState individualProgress = TriState.UNDEFINED;
-        private ModUtils.QuestStatus hiddenUntil = null;
+        private QuestDisplayStatus hiddenUntil = null;
         private TriState unlockNotification = TriState.UNDEFINED;
         private TriState showDependencyArrow = TriState.UNDEFINED;
         private TriState repeatable = TriState.UNDEFINED;
@@ -119,7 +119,7 @@ public record NetworkQuestData(
             return this;
         }
 
-        public Builder hiddenUntil(ModUtils.QuestStatus hiddenUntil) {
+        public Builder hiddenUntil(QuestDisplayStatus hiddenUntil) {
             this.hiddenUntil = hiddenUntil;
             return this;
         }

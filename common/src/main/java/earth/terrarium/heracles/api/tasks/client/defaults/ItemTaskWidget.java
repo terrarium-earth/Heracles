@@ -6,7 +6,7 @@ import com.teamresourceful.resourcefullib.client.screens.CursorScreen;
 import com.teamresourceful.resourcefullib.client.utils.CursorUtils;
 import com.teamresourceful.resourcefullib.client.utils.ScreenUtils;
 import com.teamresourceful.resourcefullib.common.codecs.predicates.NbtPredicate;
-import earth.terrarium.heracles.api.client.DisplayWidget;
+import earth.terrarium.heracles.api.client.ItemDisplayWidget;
 import earth.terrarium.heracles.api.client.WidgetUtils;
 import earth.terrarium.heracles.api.client.theme.QuestScreenTheme;
 import earth.terrarium.heracles.api.tasks.CollectionType;
@@ -29,7 +29,7 @@ import net.minecraft.world.item.ItemStack;
 import java.util.List;
 import java.util.Optional;
 
-public final class ItemTaskWidget implements DisplayWidget {
+public final class ItemTaskWidget implements ItemDisplayWidget {
 
     private static final String TITLE_ITEM = "task.heracles.item.title.item";
     private static final String TITLE_TAG = "task.heracles.item.title.tag";
@@ -113,6 +113,7 @@ public final class ItemTaskWidget implements DisplayWidget {
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int mouseButton, int width) {
+        if (ItemDisplayWidget.super.mouseClicked(mouseX, mouseY, mouseButton, width)) return true;
         if (task.collectionType() == CollectionType.MANUAL && !progress.isComplete()) {
             Font font = Minecraft.getInstance().font;
             int buttonY = getHeight(width) - font.lineHeight - 16;
@@ -130,7 +131,8 @@ public final class ItemTaskWidget implements DisplayWidget {
         return false;
     }
 
-    private ItemStack getCurrentItem() {
+    @Override
+    public ItemStack getCurrentItem() {
         if (this.stacks.isEmpty()) {
             return ItemStack.EMPTY;
         }

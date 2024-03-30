@@ -15,7 +15,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.stream.Stream;
@@ -54,8 +53,8 @@ public record XpQuestReward(String id, String title, QuestIcon<?> icon, XpType x
         public Codec<XpQuestReward> codec(String id) {
             return RecordCodecBuilder.create(instance -> instance.group(
                 RecordCodecBuilder.point(id),
-                Codec.STRING.fieldOf("title").orElse("").forGetter(XpQuestReward::title),
-                QuestIcons.CODEC.fieldOf("icon").orElse(new ItemQuestIcon(Items.AIR)).forGetter(XpQuestReward::icon),
+                Codec.STRING.optionalFieldOf("title", "").forGetter(XpQuestReward::title),
+                QuestIcons.CODEC.optionalFieldOf("icon", ItemQuestIcon.AIR).forGetter(XpQuestReward::icon),
                 EnumCodec.of(XpType.class).fieldOf("xptype").orElse(XpType.LEVEL).forGetter(XpQuestReward::xpType),
                 Codec.INT.fieldOf("amount").orElse(1).forGetter(XpQuestReward::amount)
             ).apply(instance, XpQuestReward::new));

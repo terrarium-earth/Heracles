@@ -8,6 +8,7 @@
     "quest.heracles.locked": "Locked",
     "quest.heracles.available": "Available",
     "quest.heracles.claimed": "Claimed",
+    "quest.heracles.dependencies_visible": "Parents Visible",
 
     "quest.heracles.toast": "Quest Complete!",
     "quest.heracles.toast.desc": "Press [%s] to open",
@@ -104,6 +105,8 @@
 
     "commands.heracles.reset.success": "[Heracles] Quest %s reset successfully.",
     "commands.heracles.resetall.success": "[Heracles] Quests reset successfully.",
+    "commands.heracles.complete.success": "[Heracles] Quest %s successfully completed.",
+    "commands.heracles.complete.failed": "[Heracles] Quest %s could not be completed.",
     "commands.heracles.pin.success.pinned": "[Heracles] Quest %s pinned.",
     "commands.heracles.pin.success.unpinned": "[Heracles] Quest %s unpinned.",
     "commands.heracles.pin.dummy.completed": "[Heracles] Quest %s completed.",

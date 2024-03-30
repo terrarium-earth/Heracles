@@ -60,6 +60,10 @@ public class QuestProgress {
         return complete;
     }
 
+    public void setComplete(boolean complete) {
+        this.complete = complete;
+    }
+
     public void claimReward(String reward) {
         claimed.add(reward);
     }

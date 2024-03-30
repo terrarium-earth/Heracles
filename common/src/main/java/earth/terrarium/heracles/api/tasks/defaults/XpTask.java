@@ -15,9 +15,9 @@ import earth.terrarium.heracles.api.tasks.storage.defaults.IntegerTaskStorage;
 import net.minecraft.nbt.NumericTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Items;
 import org.jetbrains.annotations.NotNull;
 
 public record XpTask(
@@ -34,6 +34,14 @@ public record XpTask(
                     xpType == XpType.LEVEL ? input.experienceLevel : input.totalExperience));
         } else if (collectionType == CollectionType.CONSUME || cause == Cause.MANUALLY_COMPLETED) {
             return deductXp(progress, input);
+        }
+        return progress;
+    }
+
+    @Override
+    public NumericTag init(QuestTaskType<?> type, NumericTag progress, ServerPlayer player) {
+        if (collectionType != CollectionType.MANUAL) {
+            return test(type, progress, player, Cause.GAINED_XP);
         }
         return progress;
     }
@@ -75,8 +83,8 @@ public record XpTask(
         public Codec<XpTask> codec(String id) {
             return RecordCodecBuilder.create(instance -> instance.group(
                 RecordCodecBuilder.point(id),
-                Codec.STRING.fieldOf("title").orElse("").forGetter(XpTask::title),
-                QuestIcons.CODEC.fieldOf("icon").orElse(new ItemQuestIcon(Items.AIR)).forGetter(XpTask::icon),
+                Codec.STRING.optionalFieldOf("title", "").forGetter(XpTask::title),
+                QuestIcons.CODEC.optionalFieldOf("icon", ItemQuestIcon.AIR).forGetter(XpTask::icon),
                 Codec.INT.fieldOf("amount").orElse(1).forGetter(XpTask::target),
                 EnumCodec.of(XpType.class).fieldOf("xpType").orElse(XpType.LEVEL).forGetter(XpTask::xpType),
                 EnumCodec.of(CollectionType.class).fieldOf("collectionType").orElse(CollectionType.CONSUME).forGetter(XpTask::collectionType)

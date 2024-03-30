@@ -10,12 +10,21 @@ import net.minecraft.world.item.ItemStack;
 public class ReiViewerHelper {
 
     public static void showItem(ItemStack stack) {
-        EntryStack<?> entry = EntryStack.of(VanillaEntryTypes.ITEM, stack);
         if (isDown(ConfigObject.getInstance().getRecipeKeybind())) {
-            ViewSearchBuilder.builder().addRecipesFor(entry).open();
+            showRecipes(stack);
         } else if (isDown(ConfigObject.getInstance().getUsageKeybind())) {
-            ViewSearchBuilder.builder().addUsagesFor(entry).open();
+            showUsage(stack);
         }
+    }
+
+    public static void showRecipes(ItemStack stack) {
+        EntryStack<?> entry = EntryStack.of(VanillaEntryTypes.ITEM, stack);
+        ViewSearchBuilder.builder().addRecipesFor(entry).open();
+    }
+
+    public static void showUsage(ItemStack stack) {
+        EntryStack<?> entry = EntryStack.of(VanillaEntryTypes.ITEM, stack);
+        ViewSearchBuilder.builder().addUsagesFor(entry).open();
     }
 
     private static boolean isDown(ModifierKeyCode code) {

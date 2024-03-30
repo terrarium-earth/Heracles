@@ -11,9 +11,11 @@ import earth.terrarium.heracles.common.utils.ItemValue;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Items;
 
 public record ItemQuestIcon(ItemValue item) implements QuestIcon<ItemQuestIcon> {
     public static final QuestIconType<ItemQuestIcon> TYPE = new Type();
+    public static final ItemQuestIcon AIR = new ItemQuestIcon(Items.AIR);
 
     public ItemQuestIcon(Item item) {
         this(new ItemValue(item));

@@ -10,9 +10,13 @@ import com.teamresourceful.resourcefullib.common.utils.FileUtils;
 import com.teamresourceful.resourcefullib.common.utils.Scheduling;
 import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.api.quests.Quest;
+import earth.terrarium.heracles.api.tasks.CacheableQuestTaskType;
+import earth.terrarium.heracles.api.tasks.QuestTask;
+import earth.terrarium.heracles.api.tasks.QuestTaskType;
 import earth.terrarium.heracles.common.utils.ModUtils;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.RegistryOps;
+import net.minecraft.resources.ResourceLocation;
 
 import java.io.File;
 import java.io.Reader;
@@ -29,6 +33,7 @@ public class QuestHandler {
     private static final Map<String, Quest> QUESTS = HashBiMap.create();
     private static final Set<String> QUEST_KEYS = Sets.newConcurrentHashSet();
     private static final List<String> GROUPS = new ArrayList<>();
+    private static final Map<ResourceLocation, Object> TASK_CACHES = new HashMap<>();
     private static Path lastPath;
 
     private static final Map<String, ScheduledFuture<?>> SAVING_FUTURES = new HashMap<>();
@@ -59,6 +64,7 @@ public class QuestHandler {
             value.dependencies().removeIf(Predicate.not(QUESTS::containsKey));
         }
         loadGroups(heraclesPath.resolve("groups.txt").toFile());
+        updateTaskCache();
     }
 
     private static void load(RegistryAccess access, Reader reader, String id, Map<String, Quest> quests) {
@@ -97,6 +103,7 @@ public class QuestHandler {
                 return;
             }
             Quest quest = QUESTS.get(id);
+            updateTaskCache();
             Path questsPath = lastPath.resolve("quests");
             File file = new File(questsPath.toFile(), pickQuestPath(quest) + "/" + id + ".json");
             JsonElement json = Quest.CODEC.encodeStart(RegistryOps.create(JsonOps.INSTANCE, Heracles.getRegistryAccess()), quest)
@@ -157,6 +164,7 @@ public class QuestHandler {
 
     public static void remove(String quest) {
         QUESTS.remove(quest);
+        updateTaskCache();
         QUEST_KEYS.remove(quest);
         if (SAVING_FUTURES.containsKey(quest)) SAVING_FUTURES.get(quest).cancel(true);
         SAVING_FUTURES.remove(quest);
@@ -196,5 +204,28 @@ public class QuestHandler {
             saveGroups();
         }
         return GROUPS;
+    }
+
+    private static void updateTaskCache() {
+        TASK_CACHES.clear();
+        for (Quest quest : QUESTS.values()) {
+            for (QuestTask<?, ?, ?> task : quest.tasks().values()) {
+                if (TASK_CACHES.containsKey(task.type().id())) continue;
+                if (task.type() instanceof CacheableQuestTaskType<?, ?> cacheable) {
+                    Object cache = cacheable.cache(QUESTS.values());
+                    TASK_CACHES.put(cacheable.id(), cache);
+                } else {
+                    TASK_CACHES.put(task.type().id(), null);
+                }
+            }
+        }
+    }
+
+    public static <T> T getTaskCache(CacheableQuestTaskType<?, T> type) {
+        return ModUtils.cast(TASK_CACHES.get(type.id()));
+    }
+
+    public static boolean isTaskUsed(QuestTaskType<?> type) {
+        return TASK_CACHES.containsKey(type.id());
     }
 }

@@ -7,6 +7,7 @@ import earth.terrarium.heracles.api.tasks.defaults.StatTask;
 import earth.terrarium.heracles.api.tasks.defaults.XpTask;
 import earth.terrarium.heracles.common.handlers.progress.QuestProgressHandler;
 import earth.terrarium.heracles.common.handlers.progress.QuestsProgress;
+import earth.terrarium.heracles.common.handlers.quests.QuestHandler;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
@@ -62,6 +63,7 @@ public abstract class ServerPlayerMixin {
         )
     )
     public void heracles$doTick(CallbackInfo ci) {
+        if (!QuestHandler.isTaskUsed(XpTask.TYPE)) return;
         ServerPlayer player = (ServerPlayer) (Object) this;
         QuestsProgress progress = QuestProgressHandler.getProgress(server, player.getUUID());
         progress.testAndProgressTaskType(player, Pair.of(player, XpTask.Cause.GAINED_XP), XpTask.TYPE);
@@ -73,7 +75,7 @@ public abstract class ServerPlayerMixin {
     )
     public void heracles$awardStat(Stat<?> stat, int increment, CallbackInfo ci) {
         ServerPlayer player = (ServerPlayer) (Object) this;
-        if (stat.getValue() instanceof ResourceLocation id) {
+        if (stat.getValue() instanceof ResourceLocation id && StatTask.hasStat(id)) {
             QuestsProgress progress = QuestProgressHandler.getProgress(server, player.getUUID());
             progress.testAndProgressTaskType(player, new Pair<>(id, this.stats.getValue(stat)), StatTask.TYPE);
         }

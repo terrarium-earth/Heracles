@@ -10,19 +10,19 @@ import java.util.Objects;
 public final class QuestSettings {
     public static final Codec<QuestSettings> CODEC = RecordCodecBuilder.create(instance -> instance.group(
         Codec.BOOL.fieldOf("individual_progress").orElse(false).forGetter(QuestSettings::individualProgress),
-        EnumCodec.of(ModUtils.QuestStatus.class).fieldOf("hidden").orElse(ModUtils.QuestStatus.LOCKED).forGetter(QuestSettings::hiddenUntil),
+        EnumCodec.of(QuestDisplayStatus.class).fieldOf("hidden").orElse(QuestDisplayStatus.LOCKED).forGetter(QuestSettings::hiddenUntil),
         Codec.BOOL.fieldOf("unlockNotification").orElse(false).forGetter(QuestSettings::unlockNotification),
         Codec.BOOL.fieldOf("showDependencyArrow").orElse(true).forGetter(QuestSettings::showDependencyArrow),
         Codec.BOOL.fieldOf("repeatable").orElse(false).forGetter(QuestSettings::repeatable)
     ).apply(instance, QuestSettings::new));
 
     private boolean individualProgress;
-    private ModUtils.QuestStatus hiddenUntil;
+    private QuestDisplayStatus hiddenUntil;
     private boolean unlockNotification;
     private boolean showDependencyArrow;
     private boolean repeatable;
 
-    public QuestSettings(boolean individualProgress, ModUtils.QuestStatus hiddenUntil, boolean unlockNotification, boolean showDependencyArrow, boolean repeatable) {
+    public QuestSettings(boolean individualProgress, QuestDisplayStatus hiddenUntil, boolean unlockNotification, boolean showDependencyArrow, boolean repeatable) {
         this.individualProgress = individualProgress;
         this.hiddenUntil = hiddenUntil;
         this.unlockNotification = unlockNotification;
@@ -31,14 +31,14 @@ public final class QuestSettings {
     }
 
     public static QuestSettings createDefault() {
-        return new QuestSettings(false, ModUtils.QuestStatus.LOCKED, false, true, false);
+        return new QuestSettings(false, QuestDisplayStatus.LOCKED, false, true, false);
     }
 
     public boolean individualProgress() {
         return individualProgress;
     }
 
-    public ModUtils.QuestStatus hiddenUntil() {
+    public QuestDisplayStatus hiddenUntil() {
         return hiddenUntil;
     }
 
@@ -84,7 +84,7 @@ public final class QuestSettings {
         this.individualProgress = individualProgress;
     }
 
-    public void setHiddenUntil(ModUtils.QuestStatus hiddenUntil) {
+    public void setHiddenUntil(QuestDisplayStatus hiddenUntil) {
         this.hiddenUntil = hiddenUntil;
     }
 

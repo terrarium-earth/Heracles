@@ -80,6 +80,10 @@ public class QuestProgress {
         return claimed;
     }
 
+    public boolean isClaimed(Quest quest) {
+        return claimedRewards().size() >= quest.rewards().size();
+    }
+
     public boolean canClaim(String reward) {
         return !claimed.contains(reward) && complete;
     }

@@ -13,6 +13,7 @@ public class UIConstants {
     public static final ResourceLocation SIDEBAR_HEADER = new ResourceLocation(Heracles.MOD_ID, "textures/gui/sprites/screen/sidebar_header.png");
     public static final ResourceLocation OVERVIEW = new ResourceLocation(Heracles.MOD_ID, "textures/gui/sprites/screen/overview.png");
     public static final ResourceLocation REWARD_OVERVIEW = new ResourceLocation(Heracles.MOD_ID, "textures/gui/sprites/screen/overview_info.png");
+    public static final ResourceLocation GROUPS = new ResourceLocation(Heracles.MOD_ID, "textures/gui/sprites/groups/background.png");
 
     public static final ResourceLocation LOCKED_HEADING = new ResourceLocation(Heracles.MOD_ID, "textures/gui/sprites/headings/locked.png");
     public static final ResourceLocation IN_PROGRESS_HEADING = new ResourceLocation(Heracles.MOD_ID, "textures/gui/sprites/headings/in_progress.png");

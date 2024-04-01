@@ -3,6 +3,7 @@ package earth.terrarium.heracles.client.ui.quests;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.datafixers.util.Pair;
 import com.teamresourceful.resourcefullib.client.screens.BaseCursorScreen;
+import earth.terrarium.heracles.client.components.base.ListWidget;
 import earth.terrarium.heracles.client.components.quests.QuestActionHandler;
 import earth.terrarium.heracles.client.components.quests.QuestWidget;
 import earth.terrarium.heracles.client.components.quests.QuestsWidget;
@@ -15,7 +16,6 @@ import earth.terrarium.heracles.common.menus.quests.QuestsContent;
 import earth.terrarium.heracles.common.utils.ModUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.components.StringWidget;
 import net.minecraft.client.gui.layouts.GridLayout;
 import net.minecraft.client.gui.layouts.SpacerElement;
 import net.minecraft.client.gui.screens.Screen;
@@ -79,9 +79,18 @@ public abstract class AbstractQuestsScreen extends BaseCursorScreen {
             0, 2,
             header.newCellSettings().padding(1)
         );
+        header.addChild(SpacerElement.height(HEADER_HEIGHT + SPACER), 0, 3);
         layout.addChild(header, row.getAndIncrement(), 0);
 
-        //TODO groupings
+        ListWidget groups = new ListWidget(this.sideBarWidth - 2 - SPACER, this.contentHeight);
+        for (String group : ClientQuests.groups()) {
+            groups.add(new GroupEntry(this.sideBarWidth, 20, group, group.equals(this.content.group())));
+        }
+        layout.addChild(
+            groups, row.getAndIncrement(), 0,
+            layout.newCellSettings().padding(1).paddingVertical(9)
+        );
+
         return layout;
     }
 
@@ -146,6 +155,7 @@ public abstract class AbstractQuestsScreen extends BaseCursorScreen {
         UIConstants.blitWithEdge(graphics, UIConstants.CONTENT_HEADER, this.sideBarWidth, 0, this.contentWidth, HEADER_HEIGHT + SPACER, 2);
         UIConstants.blitWithEdge(graphics, UIConstants.SIDEBAR, 0, HEADER_HEIGHT + SPACER, this.sideBarWidth, this.height - HEADER_HEIGHT + SPACER, 2);
         UIConstants.blitWithEdge(graphics, UIConstants.CONTENT, this.sideBarWidth, HEADER_HEIGHT + SPACER, this.contentWidth, this.height - HEADER_HEIGHT + SPACER, 2);
+        UIConstants.blitWithEdge(graphics, UIConstants.GROUPS, 0, HEADER_HEIGHT + SPACER, this.sideBarWidth - SPACER, this.height - HEADER_HEIGHT + SPACER, 2);
     }
 
     @Override

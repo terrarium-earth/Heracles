@@ -1,6 +1,5 @@
 package earth.terrarium.heracles.client.components.base;
 
-import com.teamresourceful.resourcefullib.client.screens.CursorScreen;
 import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.client.utils.UIUtils;
 import net.minecraft.client.gui.GuiGraphics;
@@ -65,7 +64,7 @@ public class ListWidget extends BaseParentWidget {
         boolean showsScrollBar = this.lastHeight > this.height;
         int actualWidth = getWidth() - (showsScrollBar ? SCROLLBAR_WIDTH + SCROLLBAR_PADDING * 2 : 0);
 
-        graphics.enableScissor(getX() + 1, getY(), getX() + actualWidth, getY() + this.height);
+        graphics.enableScissor(getX(), getY(), getX() + actualWidth, getY() + this.height);
 
         int y = this.getY() - (int) scroll;
         this.lastHeight = 0;
@@ -171,11 +170,6 @@ public class ListWidget extends BaseParentWidget {
             this.lastHeight += item.getHeight();
             y += item.getHeight();
         }
-    }
-
-    @Override
-    public CursorScreen.Cursor getCursor() {
-        return CursorScreen.Cursor.POINTER;
     }
 
     @Override

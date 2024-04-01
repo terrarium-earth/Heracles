@@ -40,7 +40,7 @@ public class QuestsEditScreen extends QuestsScreen {
 
     private static final Pattern NON_ASCII = Pattern.compile("[^\\x00-\\x7F]");
     private static final Pattern NON_ALPHANUMERIC = Pattern.compile("[^a-zA-Z0-9_]");
-    private static final Pattern RESERVED_WINDOWS_FILENAMES = Pattern.compile(".*\\.|(?:CLOCK\\$|CON|PRN|AUX|NUL|COM[0-9]|LPT[0-9])(?:\\..*)?", 2);
+    private static final Pattern RESERVED_WINDOWS_FILENAMES = Pattern.compile(".*\\.|(?:CLOCK\\$|CON|PRN|AUX|NUL|COM[0-9]|LPT[0-9])(?:\\..*)?", Pattern.CASE_INSENSITIVE);
 
     private SelectableImageButton moveTool;
     private SelectableImageButton dragTool;

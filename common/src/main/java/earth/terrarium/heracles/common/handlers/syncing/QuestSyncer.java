@@ -1,6 +1,7 @@
 package earth.terrarium.heracles.common.handlers.syncing;
 
 import com.google.common.collect.Maps;
+import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.api.quests.Quest;
 import earth.terrarium.heracles.api.quests.QuestDisplay;
 import earth.terrarium.heracles.common.handlers.pinned.PinnedQuestHandler;
@@ -17,13 +18,17 @@ import java.util.*;
 public final class QuestSyncer {
 
     public static void syncToAll(MinecraftServer server, List<ServerPlayer> players) {
-        NetworkHandler.CHANNEL.sendToPlayers(createPacket(), players);
+        SyncQuestsPacket packet = createPacket();
+        Heracles.LOGGER.debug("Syncing quests to {} players with {} quests", players.size(), packet.quests().size());
+        NetworkHandler.CHANNEL.sendToPlayers(packet, players);
         syncDescriptions(players);
         QuestProgressHandler.read(server).updatePossibleQuests();
     }
 
     public static void sync(ServerPlayer player) {
-        NetworkHandler.CHANNEL.sendToPlayer(createPacket(), player);
+        SyncQuestsPacket packet = createPacket();
+        Heracles.LOGGER.debug("Syncing quests to player {} with {} quests", player.getGameProfile().getName(), packet.quests().size());
+        NetworkHandler.CHANNEL.sendToPlayer(packet, player);
         PinnedQuestHandler.sync(player);
         syncDescriptions(List.of(player));
     }

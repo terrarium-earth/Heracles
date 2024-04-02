@@ -1,5 +1,6 @@
 package earth.terrarium.heracles.client.handlers;
 
+import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.api.quests.Quest;
 import earth.terrarium.heracles.common.handlers.progress.QuestProgress;
 import earth.terrarium.heracles.common.menus.quests.QuestsContent;
@@ -28,6 +29,7 @@ public class ClientQuests {
     }
 
     public static void sync(Map<String, Quest> quests, List<String> groups) {
+        Heracles.LOGGER.debug("Synced quests");
         ENTRIES.clear();
         BY_GROUPS.clear();
         GROUPS.clear();

@@ -30,6 +30,8 @@ public class ClientQuests {
 
     public static void sync(Map<String, Quest> quests, List<String> groups) {
         Heracles.LOGGER.debug("Synced quests");
+        Heracles.LOGGER.debug("Quests: {}", quests.keySet());
+        Heracles.LOGGER.debug("Groups: {}", groups);
         ENTRIES.clear();
         BY_GROUPS.clear();
         GROUPS.clear();

@@ -1,5 +1,6 @@
 package earth.terrarium.heracles.client;
 
+import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.client.screens.quest.QuestEditScreen;
 import earth.terrarium.heracles.client.screens.quest.QuestScreen;
 import earth.terrarium.heracles.client.screens.quests.QuestsEditScreen;
@@ -19,10 +20,12 @@ public class ModScreens {
     }
 
     public static void openEditQuestsScreen(QuestsContent content) {
+        Heracles.LOGGER.debug("Opening edit quests screen for {}", content);
         Minecraft.getInstance().setScreen(new QuestsEditScreen(content));
     }
 
     public static void openQuestsScreen(QuestsContent content) {
+        Heracles.LOGGER.debug("Opening quests screen for {}", content);
         Minecraft.getInstance().setScreen(new QuestsScreen(content));
     }
 }

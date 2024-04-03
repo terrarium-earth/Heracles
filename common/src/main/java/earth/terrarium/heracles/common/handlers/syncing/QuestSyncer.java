@@ -19,7 +19,7 @@ public final class QuestSyncer {
 
     public static void syncToAll(MinecraftServer server, List<ServerPlayer> players) {
         SyncQuestsPacket packet = createPacket();
-        Heracles.LOGGER.debug("Syncing quests to {} players with {} quests", players.size(), packet.quests().size());
+        Heracles.LOGGER.debug("Syncing quests to {} players with {} quests and {} groups", players.size(), packet.quests().size(), packet.groups().size());
         NetworkHandler.CHANNEL.sendToPlayers(packet, players);
         syncDescriptions(players);
         QuestProgressHandler.read(server).updatePossibleQuests();
@@ -27,7 +27,7 @@ public final class QuestSyncer {
 
     public static void sync(ServerPlayer player) {
         SyncQuestsPacket packet = createPacket();
-        Heracles.LOGGER.debug("Syncing quests to player {} with {} quests", player.getGameProfile().getName(), packet.quests().size());
+        Heracles.LOGGER.debug("Syncing quests to player {} with {} quests and {} groups", player.getGameProfile().getName(), packet.quests().size(), packet.groups().size());
         NetworkHandler.CHANNEL.sendToPlayer(packet, player);
         PinnedQuestHandler.sync(player);
         syncDescriptions(List.of(player));

@@ -1,6 +1,7 @@
 package earth.terrarium.heracles.common.handlers.progress;
 
 import earth.terrarium.heracles.Heracles;
+import earth.terrarium.heracles.api.events.HeraclesEvents;
 import earth.terrarium.heracles.api.quests.Quest;
 import earth.terrarium.heracles.api.teams.TeamProviders;
 import earth.terrarium.heracles.common.handlers.quests.QuestHandler;
@@ -13,12 +14,22 @@ import net.minecraft.world.level.saveddata.SavedData;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
 
 public class QuestProgressHandler extends SavedData {
 
     private final Map<UUID, QuestsProgress> progress = new HashMap<>();
 
     public QuestProgressHandler() {
+        HeraclesEvents.QuestCompleteListener.register(it -> {
+            if (it.quest().settings().autoClaimRewards()) {
+                // For avoiding the reward trigger the task checking again.
+                CompletableFuture.runAsync(() -> {
+                    var questsProgress = getProgress(it.player().getUUID());
+                    it.quest().claimRewards(it.player(), it.id(), questsProgress, questsProgress.getProgress(it.id()));
+                });
+            }
+        });
     }
 
     public QuestsProgress getProgress(UUID uuid) {

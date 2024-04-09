@@ -19,6 +19,7 @@ public class QuestSettingsInitalizer implements SettingInitializer<QuestSettings
         settings.put("unlock_notification", BooleanSetting.FALSE, object != null && object.unlockNotification());
         settings.put("show_dependency_arrow", BooleanSetting.TRUE, object != null && object.showDependencyArrow());
         settings.put("repeatable", BooleanSetting.FALSE, object != null && object.repeatable());
+        settings.put("auto_claim_rewards", BooleanSetting.FALSE, object != null && object.autoClaimRewards());
         return settings;
     }
 
@@ -29,7 +30,8 @@ public class QuestSettingsInitalizer implements SettingInitializer<QuestSettings
             data.get("hidden", new EnumSetting<>(QuestDisplayStatus.class, QuestDisplayStatus.LOCKED)).orElse(object != null ? object.hiddenUntil() : QuestDisplayStatus.LOCKED),
             data.get("unlock_notification", BooleanSetting.FALSE).orElse(object != null && object.unlockNotification()),
             data.get("show_dependency_arrow", BooleanSetting.TRUE).orElse(object != null && object.showDependencyArrow()),
-            data.get("repeatable", BooleanSetting.FALSE).orElse(object != null && object.repeatable())
+            data.get("repeatable", BooleanSetting.FALSE).orElse(object != null && object.repeatable()),
+            data.get("auto_claim_rewards", BooleanSetting.FALSE).orElse(object != null && object.autoClaimRewards())
         );
     }
 }

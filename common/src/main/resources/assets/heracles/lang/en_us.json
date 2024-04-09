@@ -99,6 +99,7 @@
     "setting.heracles.quest.unlock_notification": "Unlock Notification",
     "setting.heracles.quest.show_dependency_arrow": "Show Dependency Arrow",
     "setting.heracles.quest.repeatable": "Repeatable",
+    "setting.heracles.quest.auto_claim_rewards": "Auto Claim Rewards",
 
     "rei.sections.odyssey": "Project Odyssey",
     "rei.heracles.heracles.tooltip": "Open Quests",

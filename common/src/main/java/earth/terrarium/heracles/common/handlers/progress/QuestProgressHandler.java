@@ -14,7 +14,6 @@ import net.minecraft.world.level.saveddata.SavedData;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
-import java.util.concurrent.CompletableFuture;
 
 public class QuestProgressHandler extends SavedData {
 
@@ -24,7 +23,7 @@ public class QuestProgressHandler extends SavedData {
         HeraclesEvents.QuestCompleteListener.register(it -> {
             if (it.quest().settings().autoClaimRewards()) {
                 // For avoiding the reward trigger the task checking again.
-                CompletableFuture.runAsync(() -> {
+                it.player().server.execute(() -> {
                     var questsProgress = getProgress(it.player().getUUID());
                     it.quest().claimRewards(it.player(), it.id(), questsProgress, questsProgress.getProgress(it.id()));
                 });

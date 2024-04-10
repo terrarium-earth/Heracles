@@ -61,16 +61,17 @@ public final class QuestSettings {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        QuestSettings that = (QuestSettings) o;
-        return individualProgress == that.individualProgress &&
-               unlockNotification == that.unlockNotification &&
-               showDependencyArrow == that.showDependencyArrow &&
-               repeatable == that.repeatable &&
-               autoClaimRewards == that.autoClaimRewards &&
-               hiddenUntil == that.hiddenUntil;
+    public boolean equals(Object obj) {
+        if (obj == this) return true;
+        if (obj == null || obj.getClass() != this.getClass()) return false;
+        var that = (QuestSettings) obj;
+        return
+            this.individualProgress == that.individualProgress &&
+            this.hiddenUntil == that.hiddenUntil &&
+            this.unlockNotification == that.unlockNotification &&
+            this.showDependencyArrow == that.showDependencyArrow &&
+            this.repeatable == that.repeatable &&
+            this.autoClaimRewards == that.autoClaimRewards;
     }
 
     @Override

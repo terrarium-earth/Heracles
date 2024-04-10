@@ -45,7 +45,7 @@ public abstract class BaseQuestScreen extends AbstractQuestScreen<QuestContent> 
 
     public BaseQuestScreen(QuestContent content) {
         super(content, Optionull.mapOrDefault(quest(content), quest -> quest.display().title(), CommonComponents.EMPTY));
-        ClientQuests.updateProgress(Map.of(content.id(), content.progress()));
+        ClientQuests.mergeProgress(Map.of(content.id(), content.progress()));
     }
 
     public void updateProgress(@Nullable QuestProgress newProgress) {

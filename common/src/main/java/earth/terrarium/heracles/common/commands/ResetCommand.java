@@ -51,7 +51,7 @@ public class ResetCommand {
     private static int resetAll(Collection<ServerPlayer> players, CommandContext<CommandSourceStack> context) {
         CommandSourceStack source = context.getSource();
         for (ServerPlayer player : players) {
-            QuestProgressHandler.getProgress(source.getServer(), player.getUUID()).reset();
+            QuestProgressHandler.getProgress(source.getServer(), player.getUUID()).reset(player);
         }
         source.sendSuccess(
             () -> Component.translatable("commands.heracles.resetall.success"),

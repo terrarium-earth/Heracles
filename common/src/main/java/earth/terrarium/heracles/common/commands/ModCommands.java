@@ -31,6 +31,7 @@ public class ModCommands {
             .then(ResetCommand.reset())
             .then(ResetCommand.resetAll())
             .then(CompleteCommand.complete())
+            .then(BarrierCommand.barrier())
             .then(Commands.literal("dummy")
                 .requires(source -> source.hasPermission(2))
                 .then(Commands.argument("id", StringArgumentType.string())

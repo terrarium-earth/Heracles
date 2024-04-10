@@ -2,6 +2,7 @@ package earth.terrarium.heracles.api.client.settings.base;
 
 import earth.terrarium.heracles.api.client.settings.Setting;
 import earth.terrarium.heracles.client.handlers.ClientAdvancementDisplays;
+import earth.terrarium.heracles.client.handlers.ClientlootTableDisplays;
 import earth.terrarium.heracles.client.widgets.boxes.AutocompleteEditBox;
 import net.minecraft.Optionull;
 import net.minecraft.client.Minecraft;
@@ -31,6 +32,12 @@ public record AutocompleteTextSetting<T>(
 
     public static final AutocompleteTextSetting<ResourceLocation> ALL_ADVANCEMENT = new AutocompleteTextSetting<>(
         () -> ClientAdvancementDisplays.getAdvancements().stream().toList(),
+        (text, item) -> item.toString().toLowerCase(Locale.ROOT).contains(text.toLowerCase(Locale.ROOT)) && !item.toString().equalsIgnoreCase(text),
+        r -> Optionull.mapOrDefault(r, ResourceLocation::toString, "")
+    );
+
+    public static final AutocompleteTextSetting<ResourceLocation> ALL_LOOT_TABLES = new AutocompleteTextSetting<>(
+        () -> ClientlootTableDisplays.getLootTables().stream().toList(),
         (text, item) -> item.toString().toLowerCase(Locale.ROOT).contains(text.toLowerCase(Locale.ROOT)) && !item.toString().equalsIgnoreCase(text),
         r -> Optionull.mapOrDefault(r, ResourceLocation::toString, "")
     );

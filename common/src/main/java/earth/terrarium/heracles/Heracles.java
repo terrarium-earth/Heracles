@@ -4,6 +4,7 @@ import com.mojang.logging.LogUtils;
 import earth.terrarium.heracles.api.events.HeraclesEvents;
 import earth.terrarium.heracles.api.events.QuestEventTarget;
 import earth.terrarium.heracles.common.network.NetworkHandler;
+import earth.terrarium.heracles.common.regisitries.ModBlocks;
 import earth.terrarium.heracles.common.regisitries.ModItems;
 import earth.terrarium.heracles.common.regisitries.ModLootConditions;
 import earth.terrarium.heracles.common.utils.PlatformLogger;
@@ -25,6 +26,8 @@ public class Heracles {
 
     public static void init(PlatformSettings settings) {
         settings.apply(Heracles.LOGGER);
+        ModBlocks.BLOCKS.init();
+        ModBlocks.BLOCK_ENTITIES.init();
         ModItems.ITEMS.init();
         ModLootConditions.TYPES.init();
         NetworkHandler.init();

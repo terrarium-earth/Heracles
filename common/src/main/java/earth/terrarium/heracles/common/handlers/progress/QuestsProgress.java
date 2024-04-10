@@ -58,8 +58,7 @@ public record QuestsProgress(Map<String, QuestProgress> progress, CompletableQue
         Set<String> updatedQuests = new HashSet<>();
         editedQuests.forEach(pair -> updatedQuests.add(pair.id()));
         PinnedQuestHandler.syncIfChanged(player, updatedQuests);
-
-
+        QuestProgressHandler.sync(player, updatedQuests);
         this.completableQuests.updateCompleteQuests(this, player);
         syncToTeam(player, editedQuests);
     }
@@ -68,6 +67,7 @@ public record QuestsProgress(Map<String, QuestProgress> progress, CompletableQue
         if (!progress.containsKey(quest)) return;
         progress.get(quest).reset();
         this.completableQuests.updateCompleteQuests(this, player);
+        QuestProgressHandler.sync(player, List.of(quest));
     }
 
     public void completeQuest(String id, Quest quest, ServerPlayer player) {
@@ -75,11 +75,14 @@ public record QuestsProgress(Map<String, QuestProgress> progress, CompletableQue
         progress.setComplete(true);
         this.progress.put(id, progress);
         sendOutQuestChanged(id, quest, progress, player);
+        QuestProgressHandler.sync(player, List.of(id));
     }
 
-    public void reset() {
+    public void reset(ServerPlayer player) {
+        List<String> quests = new ArrayList<>(progress.keySet());
         progress.clear();
         completableQuests.updateCompleteQuests(this);
+        QuestProgressHandler.sync(player, quests);
     }
 
 
@@ -136,6 +139,10 @@ public record QuestsProgress(Map<String, QuestProgress> progress, CompletableQue
                     }
                 }
                 memberProgress.completableQuests.updateCompleteQuests(memberProgress, serverPlayer);
+                List<String> questIds = memberProgress.completableQuests.getQuests(memberProgress);
+                if (serverPlayer != null) {
+                    QuestProgressHandler.sync(serverPlayer, questIds);
+                }
             });
     }
 

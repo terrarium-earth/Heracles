@@ -27,17 +27,20 @@ import net.minecraft.client.gui.components.ImageButton;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Unit;
-import org.intellij.lang.annotations.Language;
 import org.joml.Vector2i;
 
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Locale;
+import java.util.regex.Pattern;
 
 public class QuestsEditScreen extends QuestsScreen {
 
-    @Language("RegExp")
-    private static final String REGEX = "[^\\x00-\\x7F]";
+    private static final Pattern NON_ASCII = Pattern.compile("[^\\x00-\\x7F]");
+    private static final Pattern NON_ALPHANUMERIC = Pattern.compile("[^a-zA-Z0-9_]");
+    private static final Pattern RESERVED_WINDOWS_FILENAMES = Pattern.compile(".*\\.|(?:CLOCK\\$|CON|PRN|AUX|NUL|COM[0-9]|LPT[0-9])(?:\\..*)?", Pattern.CASE_INSENSITIVE);
 
     private SelectableImageButton moveTool;
     private SelectableImageButton dragTool;
@@ -122,12 +125,23 @@ public class QuestsEditScreen extends QuestsScreen {
                 new HashMap<>(),
                 new HashMap<>()
             );
-            String id = text.toLowerCase(Locale.ROOT).replaceAll(REGEX, "").trim();
-            this.questsWidget.addQuest(ClientQuestNetworking.add(id, quest));
+            this.questsWidget.addQuest(ClientQuestNetworking.add(toSafeFilename(text), quest));
         }, text -> {
-            String id = text.toLowerCase(Locale.ROOT).replaceAll(REGEX, "").trim();
+            String id = toSafeFilename(text);
             return id.length() >= 2 && ClientQuests.get(id).isEmpty();
         }));
+    }
+
+    private static String toSafeFilename(String text) {
+        text = text.trim();
+        text = text.replace(" ", "_");
+        text = NON_ASCII.matcher(text).replaceAll(result -> Base64.getEncoder().encodeToString(result.group().getBytes(StandardCharsets.UTF_8)));
+        text = NON_ALPHANUMERIC.matcher(text).replaceAll("");
+        text = text.toLowerCase(Locale.ROOT);
+        if (RESERVED_WINDOWS_FILENAMES.matcher(text).matches()) {
+            return "";
+        }
+        return text;
     }
 
     @Override

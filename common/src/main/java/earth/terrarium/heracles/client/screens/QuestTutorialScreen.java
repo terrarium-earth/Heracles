@@ -9,7 +9,7 @@ import earth.terrarium.heracles.common.network.NetworkHandler;
 import earth.terrarium.heracles.common.network.packets.groups.OpenGroupPacket;
 import earth.terrarium.hermes.api.DefaultTagProvider;
 import earth.terrarium.hermes.api.TagElement;
-import earth.terrarium.hermes.api.defaults.ParagraphTagElement;
+import earth.terrarium.hermes.api.defaults.TextTagElement;
 import earth.terrarium.hermes.api.themes.DefaultTheme;
 import earth.terrarium.hermes.client.DocumentWidget;
 import net.minecraft.client.gui.GuiGraphics;
@@ -41,9 +41,13 @@ public class QuestTutorialScreen extends BaseCursorScreen {
             elements = new DefaultTagProvider().parse(QuestTutorial.tutorialText());
         } catch (Exception e) {
             elements = new ArrayList<>();
-            var e1 = new ParagraphTagElement(Map.of());
-            e1.setContent("Error parsing tutorial text: " + e.getMessage());
-            elements.add(e1);
+            TextTagElement error = new TextTagElement(Map.of(
+                "align", "center"
+            ));
+            error.addText("Error parsing tutorial text");
+            error.addText("\n");
+            error.addText(e.getMessage());
+            elements.add(error);
         }
         this.document = addRenderableOnly(new DocumentWidget(widgetOffset, 0, widgetWidth, height - 30, new DefaultTheme(), elements));
         int buttonX = (this.width - 150) / 2;

@@ -66,7 +66,7 @@ public abstract class AbstractQuestScreen extends BaseCursorScreen {
         this.content = content;
         this.tab = tab;
 
-        ClientQuests.updateProgress(Map.of(content.id(), content.progress()));
+        ClientQuests.mergeProgress(Map.of(content.id(), content.progress()));
     }
 
     public Quest quest() {

@@ -61,11 +61,6 @@ public class ClientQuests {
         }
     }
 
-    public static void updateProgress(Map<String, QuestProgress> progress) {
-        PROGRESS.clear();
-        PROGRESS.putAll(progress);
-    }
-
     public static void mergeProgress(Map<String, QuestProgress> progress) {
         PROGRESS.putAll(progress);
     }

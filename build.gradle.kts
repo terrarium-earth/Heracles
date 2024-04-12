@@ -113,7 +113,9 @@ subprojects {
         }
 
         dependencies {
-            compileOnly(rootProject.projects.common)
+            compileOnly(rootProject.projects.common.copy().apply {
+                targetConfiguration = "namedElements"
+            })
         }
     }
 

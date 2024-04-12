@@ -163,7 +163,8 @@ public class SelectQuestWidget extends BaseWidget {
                                 .hiddenUntil(questSettings.hiddenUntil())
                                 .unlockNotification(questSettings.unlockNotification())
                                 .showDependencyArrow(questSettings.showDependencyArrow())
-                                .repeatable(questSettings.repeatable());
+                                .repeatable(questSettings.repeatable())
+                                .autoClaimRewards(questSettings.autoClaimRewards());
                         })
                     );
                     edit.setTitle(Component.translatable("gui.heracles.quests.edit_quest_settings"));

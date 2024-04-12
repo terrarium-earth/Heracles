@@ -69,6 +69,7 @@ public record NetworkQuestData(
         private TriState unlockNotification = TriState.UNDEFINED;
         private TriState showDependencyArrow = TriState.UNDEFINED;
         private TriState repeatable = TriState.UNDEFINED;
+        private TriState autoClaimRewards = TriState.UNDEFINED;
         private Set<String> dependencies;
         private Map<String, QuestTask<?, ?, ?>> tasks;
         private Map<String, QuestReward<?>> rewards;
@@ -139,6 +140,11 @@ public record NetworkQuestData(
             return this;
         }
 
+        public Builder autoClaimRewards(boolean autoClaimRewards) {
+            this.autoClaimRewards = TriState.of(autoClaimRewards);
+            return this;
+        }
+
         public Builder dependencies(Set<String> dependencies) {
             this.dependencies = new HashSet<>(dependencies);
             return this;
@@ -173,7 +179,8 @@ public record NetworkQuestData(
                     Optional.ofNullable(hiddenUntil),
                     Optional.ofNullable(unlockNotification.isUndefined() ? null : unlockNotification.isTrue()),
                     Optional.ofNullable(showDependencyArrow.isUndefined() ? null : showDependencyArrow.isTrue()),
-                    Optional.ofNullable(repeatable.isUndefined() ? null : repeatable.isTrue())
+                    Optional.ofNullable(repeatable.isUndefined() ? null : repeatable.isTrue()),
+                    Optional.ofNullable(autoClaimRewards.isUndefined() ? null : autoClaimRewards.isTrue())
                 );
             }
 

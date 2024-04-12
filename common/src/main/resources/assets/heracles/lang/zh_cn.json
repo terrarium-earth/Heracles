@@ -98,6 +98,7 @@
     "setting.heracles.quest.unlock_notification": "解锁通知",
     "setting.heracles.quest.show_dependency_arrow": "显示依赖箭头",
     "setting.heracles.quest.repeatable": "可重复",
+    "setting.heracles.quest.auto_claim_rewards": "自动领取奖励",
 
     "rei.sections.odyssey": "Project Odyssey",
     "rei.heracles.heracles.tooltip": "打开任务",

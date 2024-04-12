@@ -162,12 +162,20 @@ public class QuestHandler {
         markDirty(id);
     }
 
-    public static void remove(String quest) {
-        QUESTS.remove(quest);
+    public static void remove(String questId) {
+        var quest = QUESTS.get(questId);
+        if (quest != null) {
+            for (var entry : QUESTS.entrySet()) {
+                if (entry.getValue().dependencies().remove(questId)) {
+                    markDirty(entry.getKey());
+                }
+            }
+        }
+        QUESTS.remove(questId);
         updateTaskCache();
-        QUEST_KEYS.remove(quest);
-        if (SAVING_FUTURES.containsKey(quest)) SAVING_FUTURES.get(quest).cancel(true);
-        SAVING_FUTURES.remove(quest);
+        QUEST_KEYS.remove(questId);
+        if (SAVING_FUTURES.containsKey(questId)) SAVING_FUTURES.get(questId).cancel(true);
+        SAVING_FUTURES.remove(questId);
         if (delayedDeletion != null) {
             delayedDeletion.cancel(true);
         }

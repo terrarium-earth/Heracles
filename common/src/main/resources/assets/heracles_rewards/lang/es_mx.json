@@ -1,0 +1,48 @@
+{
+    "reward.heracles.progress.desc.incomplete.singular": "%s recompensa disponible",
+    "reward.heracles.progress.desc.incomplete.plural": "%s recompensas disponibles",
+    "reward.heracles.progress.desc.locked": "No hay recompensas disponibles",
+    "reward.heracles.progress.desc.complete": "Todas las recompensas reclamadas",
+
+    "gui.heracles.rewards.unlocks_quest.title": "Desbloquea %s",
+    "gui.heracles.rewards.unlocks_quest.desc": "Te otorga acceso a una nueva misión.",
+
+    "reward.heracles.xp": "☠ Experiencia",
+    "reward.heracles.xp.title.singular": "Recibir: XP",
+    "reward.heracles.xp.title.plural": "Recibir: XP",
+    "reward.heracles.xp.desc.singular": "Recibir %s XP %s",
+    "reward.heracles.xp.desc.plural": "Recibir %s XP %ss",
+
+    "reward.heracles.xp.type.point": "punto",
+    "reward.heracles.xp.type.level": "nivel",
+
+    "reward.heracles.item": "\uD83E\uDDEA Objeto",
+    "reward.heracles.item.title.singular": "Recibir: %s",
+    "reward.heracles.item.title.plural": "Recibir: %s",
+    "reward.heracles.item.desc.singular": "Recibir %sx %s",
+    "reward.heracles.item.desc.plural": "Recibir %sx %s",
+
+    "reward.heracles.loottable": "↔ Tabla de loot",
+    "reward.heracles.loottable.title.singular": "Recibir loot aleatorio",
+    "reward.heracles.loottable.desc.singular": "De %s",
+    "reward.heracles.loottable.tooltip.singular": "Tabla de loot: %s",
+    "setting.heracles.loottable.title": "Anulación de título:",
+    "setting.heracles.loottable.icon": "Anulación de icono:",
+    "setting.heracles.loottable.loottable": "Tabla de loot:",
+
+    "reward.heracles.select": "❓ Selección",
+    "reward.heracles.select.title.singular": "Selecciona una recompensa",
+    "reward.heracles.select.title.plural": "Selecciona recompensas",
+    "reward.heracles.select.desc.singular": "Haz clic en el botón para seleccionar %s recompensa",
+    "reward.heracles.select.desc.plural": "Haz clic en el botón para seleccionar %s recompensas",
+    "reward.heracles.select.modal.title.singular": "Seleccionar %s Recompensa",
+    "reward.heracles.select.modal.title.plural": "Seleccionar %s Recompensas",
+
+    "reward.heracles.command": "/ Comando",
+    "reward.heracles.command.title.singular": "Ejecutar un comando",
+    "reward.heracles.command.desc.singular": "%s ...",
+    "reward.heracles.command.tooltip.singular": "Comando: %s",
+    "setting.heracles.command.title": "Anulación de título:",
+    "setting.heracles.command.icon": "Anulación de icono:",
+    "setting.heracles.command.command": "Comando:"
+}

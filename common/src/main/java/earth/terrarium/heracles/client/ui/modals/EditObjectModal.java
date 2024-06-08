@@ -7,6 +7,7 @@ import earth.terrarium.heracles.api.client.settings.SettingsProvider;
 import earth.terrarium.heracles.api.client.theme.EditorTheme;
 import earth.terrarium.heracles.client.components.widgets.buttons.SpriteButton;
 import earth.terrarium.heracles.client.ui.UIConstants;
+import earth.terrarium.heracles.common.constants.ConstantComponents;
 import earth.terrarium.heracles.common.utils.ModUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -69,7 +70,7 @@ public class EditObjectModal extends BaseModal {
     protected GridLayout initButtons(int position) {
         GridLayout layout = super.initButtons(position + 1);
         layout.addChild(
-            SpriteButton.create(11, 11, UIConstants.MODAL_SAVE, this::save),
+            SpriteButton.create(11, 11, UIConstants.MODAL_SAVE, this::save).withTooltip(ConstantComponents.SAVE),
             0, position
         );
         return layout;

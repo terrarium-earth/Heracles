@@ -5,6 +5,7 @@ import earth.terrarium.heracles.client.ui.Overlay;
 import earth.terrarium.heracles.client.ui.UIConstants;
 import earth.terrarium.heracles.client.components.widgets.buttons.SpriteButton;
 import earth.terrarium.heracles.client.utils.UIUtils;
+import earth.terrarium.heracles.common.constants.ConstantComponents;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.layouts.GridLayout;
 import net.minecraft.client.gui.screens.Screen;
@@ -60,7 +61,7 @@ public abstract class BaseModal extends Overlay {
         GridLayout layout = new GridLayout().columnSpacing(INNER_PADDING);
 
         layout.addChild(
-            SpriteButton.create(11, 11, UIConstants.MODAL_CLOSE, this::onClose),
+            SpriteButton.create(11, 11, UIConstants.MODAL_CLOSE, this::onClose).withTooltip(ConstantComponents.CLOSE),
             0, position
         );
         return layout;

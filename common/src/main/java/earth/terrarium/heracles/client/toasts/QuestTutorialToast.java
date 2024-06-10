@@ -8,7 +8,10 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.toasts.Toast;
 import net.minecraft.client.gui.components.toasts.ToastComponent;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.Items;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Objects;
 
 public class QuestTutorialToast implements Toast {
     private static final Component TITLE_TEXT = Component.translatable("quest.heracles.tutorial.title");
@@ -31,7 +34,7 @@ public class QuestTutorialToast implements Toast {
             false
         );
 
-        graphics.renderFakeItem(ModItems.QUEST_BOOK.get().getDefaultInstance(), 8, 8);
+        graphics.renderFakeItem(Objects.requireNonNullElse(ModItems.QUEST_BOOK.get(), Items.KNOWLEDGE_BOOK).getDefaultInstance(), 8, 8);
 
         return DisplayConfig.showTutorial && QuestTutorial.toast == this ? Visibility.SHOW : Visibility.HIDE;
     }

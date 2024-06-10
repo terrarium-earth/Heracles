@@ -6,6 +6,7 @@ import earth.terrarium.heracles.api.tasks.defaults.EntityInteractTask;
 import earth.terrarium.heracles.api.tasks.defaults.ItemInteractTask;
 import earth.terrarium.heracles.api.tasks.defaults.KillEntityQuestTask;
 import earth.terrarium.heracles.common.commands.ModCommands;
+import earth.terrarium.heracles.common.handlers.CommonConfig;
 import earth.terrarium.heracles.common.handlers.progress.QuestProgressHandler;
 import earth.terrarium.heracles.common.utils.PlatformSettings;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
@@ -24,6 +25,7 @@ import net.minecraft.world.item.ItemStack;
 public class HeraclesFabric {
     public static void init() {
         Heracles.setConfigPath(FabricLoader.getInstance().getConfigDir());
+        CommonConfig.load(FabricLoader.getInstance().getGameDir());
         Heracles.init(new PlatformSettings(true));
 
         CommandRegistrationCallback.EVENT.register((dispatcher, context, env) -> ModCommands.init(dispatcher));

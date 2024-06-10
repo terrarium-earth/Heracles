@@ -24,6 +24,7 @@ public class ClientLevelMixin {
         if (this.minecraft.player == null) return;
         if (this.minecraft.gameMode == null) return;
         if (this.minecraft.gameMode.getPlayerMode() != GameType.CREATIVE) return;
+        if (ModItems.BARRIER == null) return;
         ItemStack itemStack = this.minecraft.player.getMainHandItem();
         if (itemStack.is(ModItems.BARRIER.get())) {
             cir.setReturnValue(ModBlocks.BARRIER_BLOCK.get());

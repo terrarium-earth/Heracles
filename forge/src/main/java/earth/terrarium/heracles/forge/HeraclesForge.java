@@ -3,6 +3,7 @@ package earth.terrarium.heracles.forge;
 import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.api.tasks.defaults.*;
 import earth.terrarium.heracles.common.commands.ModCommands;
+import earth.terrarium.heracles.common.handlers.CommonConfig;
 import earth.terrarium.heracles.common.handlers.progress.QuestProgressHandler;
 import earth.terrarium.heracles.common.handlers.progress.QuestsProgress;
 import earth.terrarium.heracles.common.utils.PlatformSettings;
@@ -29,6 +30,7 @@ public class HeraclesForge {
 
     public HeraclesForge() {
         Heracles.setConfigPath(FMLPaths.CONFIGDIR.get());
+        CommonConfig.load(FMLPaths.GAMEDIR.get());
         Heracles.init(new PlatformSettings(false));
 
         MinecraftForge.EVENT_BUS.addListener(HeraclesForge::onServerStarting);

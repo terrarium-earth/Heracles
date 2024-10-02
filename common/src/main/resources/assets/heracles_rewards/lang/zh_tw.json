@@ -1,0 +1,48 @@
+{
+    "reward.heracles.progress.desc.incomplete.singular": "1 個獎勵可供領取",
+    "reward.heracles.progress.desc.incomplete.plural": "%s 個獎勵可供領取",
+    "reward.heracles.progress.desc.locked": "沒有可供領取的獎勵",
+    "reward.heracles.progress.desc.complete": "所有獎勵都已領取",
+
+    "gui.heracles.rewards.unlocks_quest.title": "解鎖 %s",
+    "gui.heracles.rewards.unlocks_quest.desc": "讓你能夠進行新的任務。",
+
+    "reward.heracles.xp": "☠ 經驗值",
+    "reward.heracles.xp.title.singular": "獲得：經驗值",
+    "reward.heracles.xp.title.plural": "獲得：經驗值",
+    "reward.heracles.xp.desc.singular": "獲得 %s 點經驗值",
+    "reward.heracles.xp.desc.plural": "獲得 %s 級經驗值",
+
+    "reward.heracles.xp.type.point": "點",
+    "reward.heracles.xp.type.level": "級",
+
+    "reward.heracles.item": "🧪 物品",
+    "reward.heracles.item.title.singular": "獲得：%s",
+    "reward.heracles.item.title.plural": "獲得：%s",
+    "reward.heracles.item.desc.singular": "獲得 %s 個 %s",
+    "reward.heracles.item.desc.plural": "獲得 %s 個 %s",
+
+    "reward.heracles.loottable": "↔ 戰利品表",
+    "reward.heracles.loottable.title.singular": "獲得隨機戰利品",
+    "reward.heracles.loottable.desc.singular": "來自 %s",
+    "reward.heracles.loottable.tooltip.singular": "戰利品表：%s",
+    "setting.heracles.loottable.title": "覆蓋標題：",
+    "setting.heracles.loottable.icon": "覆蓋圖示：",
+    "setting.heracles.loottable.loottable": "戰利品表：",
+
+    "reward.heracles.select": "❓ 選擇",
+    "reward.heracles.select.title.singular": "選擇獎勵",
+    "reward.heracles.select.title.plural": "選擇獎勵",
+    "reward.heracles.select.desc.singular": "點擊按鈕選擇 1 個獎勵",
+    "reward.heracles.select.desc.plural": "點擊按鈕選擇 %s 個獎勵",
+    "reward.heracles.select.modal.title.singular": "選擇 1 個獎勵",
+    "reward.heracles.select.modal.title.plural": "選擇 %s 個獎勵",
+
+    "reward.heracles.command": "/ 指令",
+    "reward.heracles.command.title.singular": "執行指令",
+    "reward.heracles.command.desc.singular": "%s ...",
+    "reward.heracles.command.tooltip.singular": "指令：%s",
+    "setting.heracles.command.title": "覆蓋標題：",
+    "setting.heracles.command.icon": "覆蓋圖示：",
+    "setting.heracles.command.command": "指令："
+}

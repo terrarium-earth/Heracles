@@ -20,6 +20,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.gui.components.events.GuiEventListener;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.FormattedCharSequence;
@@ -226,5 +227,10 @@ public abstract class BaseQuestScreen extends AbstractQuestScreen<QuestContent> 
 
     public String getQuestId() {
         return this.content.id();
+    }
+
+    @Override
+    public void onClose() {
+        goBack();
     }
 }

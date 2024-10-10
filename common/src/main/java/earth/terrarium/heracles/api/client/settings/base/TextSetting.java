@@ -33,8 +33,8 @@ public record TextSetting<O>(Predicate<String> charFilter, Predicate<String> fil
     public ValidatingEditBox createWidget(int width, O value) {
         ValidatingEditBox box = new ValidatingEditBox(Minecraft.getInstance().font, 0, 0, width, 11, CommonComponents.EMPTY, filter);
         box.setFilter(charFilter);
-        box.setValue(decoder.apply(value));
         box.setMaxLength(32767);
+        box.setValue(decoder.apply(value));
         return box;
     }
 

@@ -8,6 +8,7 @@ import earth.terrarium.heracles.client.handlers.ClientAdvancementDisplays;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.DisplayInfo;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 
@@ -37,17 +38,12 @@ public record ClientboundAdvancementDisplayPacket(
 
     private static class Type implements ClientboundPacketType<ClientboundAdvancementDisplayPacket> {
         @Override
-        public Class<ClientboundAdvancementDisplayPacket> type() {
-            return ClientboundAdvancementDisplayPacket.class;
-        }
-
-        @Override
         public ResourceLocation id() {
-            return new ResourceLocation(Heracles.MOD_ID, "advancement_display");
+            return ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "advancement_display");
         }
 
         @Override
-        public void encode(ClientboundAdvancementDisplayPacket message, FriendlyByteBuf buffer) {
+        public void encode(ClientboundAdvancementDisplayPacket message, RegistryFriendlyByteBuf buffer) {
             buffer.writeMap(
                 message.infos,
                 FriendlyByteBuf::writeResourceLocation,
@@ -56,7 +52,7 @@ public record ClientboundAdvancementDisplayPacket(
         }
 
         @Override
-        public ClientboundAdvancementDisplayPacket decode(FriendlyByteBuf buffer) {
+        public ClientboundAdvancementDisplayPacket decode(RegistryFriendlyByteBuf buffer) {
             return new ClientboundAdvancementDisplayPacket(
                 buffer.readMap(
                     FriendlyByteBuf::readResourceLocation,

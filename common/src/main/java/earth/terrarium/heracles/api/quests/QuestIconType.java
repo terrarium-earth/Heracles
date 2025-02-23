@@ -1,11 +1,11 @@
 package earth.terrarium.heracles.api.quests;
 
-import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import net.minecraft.resources.ResourceLocation;
 
 public interface QuestIconType<T extends QuestIcon<T>> {
 
     ResourceLocation id();
 
-    Codec<T> codec();
+    MapCodec<T> codec();
 }

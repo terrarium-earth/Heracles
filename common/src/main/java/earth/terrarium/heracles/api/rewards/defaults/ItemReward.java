@@ -1,6 +1,7 @@
 package earth.terrarium.heracles.api.rewards.defaults;
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.teamresourceful.resourcefullib.common.codecs.recipes.ItemStackCodec;
 import earth.terrarium.heracles.Heracles;
@@ -36,12 +37,12 @@ public record ItemReward(String id, String title, QuestIcon<?> icon, ItemStack s
 
         @Override
         public ResourceLocation id() {
-            return new ResourceLocation(Heracles.MOD_ID, "item");
+            return ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "item");
         }
 
         @Override
-        public Codec<ItemReward> codec(String id) {
-            return RecordCodecBuilder.create(instance -> instance.group(
+        public MapCodec<ItemReward> codec(String id) {
+            return RecordCodecBuilder.mapCodec(instance -> instance.group(
                 RecordCodecBuilder.point(id),
                 Codec.STRING.optionalFieldOf("title", "").forGetter(ItemReward::title),
                 QuestIcons.CODEC.optionalFieldOf("icon", ItemQuestIcon.AIR).forGetter(ItemReward::icon),

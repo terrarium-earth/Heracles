@@ -21,8 +21,8 @@ import net.minecraft.sounds.SoundEvents;
 
 @SuppressWarnings("UnstableApiUsage")
 public class HeraclesFavoriteEntry extends FavoriteEntry {
-    public static final ResourceLocation ID = new ResourceLocation(Heracles.MOD_ID, "heracles");
-    private static final ResourceLocation TEXTURE = new ResourceLocation(Heracles.MOD_ID, "textures/item/quest_book.png");
+    public static final ResourceLocation ID = ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "heracles");
+    private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "textures/item/quest_book.png");
 
     @Override
     public boolean isInvalid() {

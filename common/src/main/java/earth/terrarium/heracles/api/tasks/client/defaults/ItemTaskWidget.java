@@ -52,7 +52,7 @@ public final class ItemTaskWidget implements ItemDisplayWidget {
         this.stacks = task.item().getValue().map(
             item -> {
                 ItemStack stack = item.getDefaultInstance();
-                if (!NbtPredicate.isEmpty(task.nbt().tag())) stack.getOrCreateTag().merge(task.nbt().tag());
+                if (!NbtPredicate.isEmpty(task.components().tag())) stack.getOrCreateTag().merge(task.components().tag());
                 return List.of(stack);
             },
             tag -> ModUtils.getValue(Registries.ITEM, tag).stream().map(ItemStack::new).toList()

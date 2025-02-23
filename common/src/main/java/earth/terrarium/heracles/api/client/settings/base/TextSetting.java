@@ -16,15 +16,17 @@ public record TextSetting<O>(Predicate<String> charFilter, Predicate<String> fil
                              Function<O, String> decoder) implements Setting<O, ValidatingEditBox> {
 
     public static final TextSetting<String> INSTANCE = new TextSetting<>(s -> true, s -> true, Function.identity(), Function.identity());
+
     public static final TextSetting<ResourceLocation> RESOURCELOCATION = new TextSetting<>(
         s -> s.chars().mapToObj(i -> (char) i).allMatch(ResourceLocation::isAllowedInResourceLocation),
-        ResourceLocation::isValidResourceLocation,
+        TextSetting::isValidResourceLocation,
         ResourceLocation::tryParse,
         id -> id == null ? "" : id.toString()
     );
+
     public static final TextSetting<ResourceKey<Level>> DIMENSION = new TextSetting<>(
         s -> s.chars().mapToObj(i -> (char) i).allMatch(ResourceLocation::isAllowedInResourceLocation),
-        ResourceLocation::isValidResourceLocation,
+        TextSetting::isValidResourceLocation,
         s -> ResourceKey.create(Registries.DIMENSION, ResourceLocation.tryParse(s)),
         key -> key == null ? "" : key.location().toString()
     );
@@ -41,5 +43,9 @@ public record TextSetting<O>(Predicate<String> charFilter, Predicate<String> fil
     @Override
     public O getValue(ValidatingEditBox widget) {
         return widget.isValid() ? encoder.apply(widget.getValue()) : null;
+    }
+
+    private static boolean isValidResourceLocation(String location) {
+        return ResourceLocation.tryParse(location) != null;
     }
 }

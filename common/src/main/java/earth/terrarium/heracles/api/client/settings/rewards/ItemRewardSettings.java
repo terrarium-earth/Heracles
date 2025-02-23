@@ -33,7 +33,7 @@ public class ItemRewardSettings implements SettingInitializer<ItemReward>, Custo
             .map(Function.identity(), key -> new ItemStack(Items.AIR));
         stack.setCount(data.get("amount", IntSetting.ONE).orElse(getDefaultCount(object)));
         if (object != null) {
-            stack.setTag(object.stack().getTag());
+            stack.applyComponents(object.stack().getComponents());
         }
 
         return create(object, data, (title, icon) -> new ItemReward(

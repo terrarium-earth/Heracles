@@ -33,7 +33,7 @@ import java.util.function.Consumer;
 
 public class ItemModal extends BaseModal {
 
-    public static final ResourceLocation TEXTURE = new ResourceLocation(Heracles.MOD_ID, "textures/gui/icons.png");
+    public static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "textures/gui/icons.png");
     public static final Component TITLE = Component.translatable("gui.heracles.choose_item");
     public static final Component MODE_TOOLTIP = Component.translatable("gui.heracles.switch_mode");
     private static final int WIDTH = 168;
@@ -175,9 +175,9 @@ public class ItemModal extends BaseModal {
     }
 
     @Override
-    public boolean mouseScrolled(double mouseX, double mouseY, double delta) {
+    public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
         if (!isVisible()) return false;
-        if (super.mouseScrolled(mouseX, mouseY, delta)) return true;
+        if (super.mouseScrolled(mouseX, mouseY, scrollX, scrollY)) return true;
         float itemMaxForSearch = 0;
         for (ItemValue item : this.items) {
             if (matches(item, this.search.getValue())) {
@@ -185,7 +185,7 @@ public class ItemModal extends BaseModal {
             }
         }
         int maxRows = Mth.ceil(itemMaxForSearch / ITEM_COLUMNS);
-        scroll = Mth.clamp(this.scroll - (int) delta * ITEM_COLUMNS, 0, (maxRows - ITEM_ROWS) * ITEM_COLUMNS);
+        scroll = Mth.clamp(this.scroll - (int) scrollY * ITEM_COLUMNS, 0, (maxRows - ITEM_ROWS) * ITEM_COLUMNS);
         return true;
     }
 

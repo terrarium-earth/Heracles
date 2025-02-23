@@ -8,6 +8,8 @@ import earth.terrarium.heracles.common.items.QuestBookItem;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.Item;
 
+import java.util.Set;
+
 public class ModItems {
 
     public static final ItemLikeResourcefulRegistry<Item> ITEMS = new ItemLikeResourcefulRegistry<>(BuiltInRegistries.ITEM, Heracles.MOD_ID);

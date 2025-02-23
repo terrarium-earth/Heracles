@@ -5,7 +5,10 @@ import com.teamresourceful.resourcefullib.common.network.base.ClientboundPacketT
 import com.teamresourceful.resourcefullib.common.network.base.PacketType;
 import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.client.handlers.ClientlootTableDisplays;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.level.storage.loot.LootDataType;
@@ -20,7 +23,7 @@ public record ClientboundLootTablesDisplayPacket(
     public static final ClientboundPacketType<ClientboundLootTablesDisplayPacket> TYPE = new Type();
 
     public ClientboundLootTablesDisplayPacket(MinecraftServer server) {
-        this(new HashSet<>(server.getLootData().getKeys(LootDataType.TABLE)));
+        this(new HashSet<>(server.reloadableRegistries().getKeys(Registries.LOOT_TABLE)));
     }
 
     @Override
@@ -30,17 +33,12 @@ public record ClientboundLootTablesDisplayPacket(
 
     private static class Type implements ClientboundPacketType<ClientboundLootTablesDisplayPacket> {
         @Override
-        public Class<ClientboundLootTablesDisplayPacket> type() {
-            return ClientboundLootTablesDisplayPacket.class;
-        }
-
-        @Override
         public ResourceLocation id() {
-            return new ResourceLocation(Heracles.MOD_ID, "loottable_display");
+            return ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "loottable_display");
         }
 
         @Override
-        public void encode(ClientboundLootTablesDisplayPacket message, FriendlyByteBuf buffer) {
+        public void encode(ClientboundLootTablesDisplayPacket message, RegistryFriendlyByteBuf buffer) {
             buffer.writeCollection(
                 message.tables,
                 FriendlyByteBuf::writeResourceLocation
@@ -48,7 +46,7 @@ public record ClientboundLootTablesDisplayPacket(
         }
 
         @Override
-        public ClientboundLootTablesDisplayPacket decode(FriendlyByteBuf buffer) {
+        public ClientboundLootTablesDisplayPacket decode(RegistryFriendlyByteBuf buffer) {
             Set<ResourceLocation> ids = buffer.readCollection(HashSet::new, FriendlyByteBuf::readResourceLocation);
             return new ClientboundLootTablesDisplayPacket(ids);
         }

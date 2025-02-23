@@ -29,7 +29,7 @@ public record ServerboundAddQuestPacket(
         return TYPE;
     }
 
-    private static class Type implements ServerboundPacketType<ServerboundAddQuestPacket>, CodecPacketType<ServerboundAddQuestPacket> {
+    private static class Type extends CodecPacketType<ServerboundAddQuestPacket> implements ServerboundPacketType<ServerboundAddQuestPacket> {
 
         private static final ByteCodec<ServerboundAddQuestPacket> CODEC = ObjectByteCodec.create(
             ByteCodec.STRING.fieldOf(ServerboundAddQuestPacket::id),
@@ -37,19 +37,8 @@ public record ServerboundAddQuestPacket(
             ServerboundAddQuestPacket::new
         );
 
-        @Override
-        public Class<ServerboundAddQuestPacket> type() {
-            return ServerboundAddQuestPacket.class;
-        }
-
-        @Override
-        public ResourceLocation id() {
-            return new ResourceLocation(Heracles.MOD_ID, "add_server_quest");
-        }
-
-        @Override
-        public ByteCodec<ServerboundAddQuestPacket> codec() {
-            return CODEC;
+        public Type() {
+            super(ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "add_server_quest"), CODEC);
         }
 
         @Override

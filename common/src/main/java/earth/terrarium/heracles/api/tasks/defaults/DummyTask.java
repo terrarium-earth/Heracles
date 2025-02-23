@@ -48,7 +48,7 @@ public record DummyTask(
 
         @Override
         public ResourceLocation id() {
-            return new ResourceLocation(Heracles.MOD_ID, "dummy");
+            return ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "dummy");
         }
 
         @Override

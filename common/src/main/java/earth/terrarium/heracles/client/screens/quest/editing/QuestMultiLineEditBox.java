@@ -19,7 +19,7 @@ import java.util.function.Function;
 
 public class QuestMultiLineEditBox extends MultiLineEditBox implements CursorWidget {
 
-    private static final ResourceLocation TEXTURE = new ResourceLocation(Heracles.MOD_ID, "textures/gui/editor.png");
+    private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "textures/gui/editor.png");
 
     private CursorScreen.Cursor cursor = null;
     
@@ -45,11 +45,11 @@ public class QuestMultiLineEditBox extends MultiLineEditBox implements CursorWid
     }
 
     @Override
-    public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
+    public void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
         this.cursor = null;
         graphics.fill(this.getX() - 1, this.getY() - 13, this.getX() + this.width + 1, this.getY() + this.height + 1, 0xFF000000);
         graphics.fill(this.getX(), this.getY(), this.getX() + this.width, this.getY() + this.height, 0xFFF0F0F0);
-        super.render(graphics, mouseX, mouseY, partialTicks);
+        super.render(graphics, mouseX, mouseY, partialTick);
 
         try (var ignored = RenderUtils.createScissor(Minecraft.getInstance(), graphics, this.getX(), this.getY() - 12, this.width, 11)) {
 

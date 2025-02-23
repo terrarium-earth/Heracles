@@ -105,10 +105,10 @@ public class Dropdown<T> extends AbstractWidget implements Renderable {
     }
 
     @Override
-    public boolean mouseScrolled(double mouseX, double mouseY, double delta) {
+    public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
         if (!isFocused()) return false;
         if (options.size() > MAX_OPTIONS_SHOWN) {
-            move(delta * 10);
+            move(scrollY * 10);
         }
         return true;
     }

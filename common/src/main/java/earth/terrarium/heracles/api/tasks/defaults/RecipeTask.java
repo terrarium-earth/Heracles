@@ -15,6 +15,7 @@ import net.minecraft.nbt.NumericTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeHolder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,13 +24,13 @@ import java.util.Set;
 
 public record RecipeTask(
     String id, String title, QuestIcon<?> icon, Set<ResourceLocation> recipes
-) implements QuestTask<Recipe<?>, NumericTag, RecipeTask>, CustomizableQuestElement {
+) implements QuestTask<RecipeHolder<?>, NumericTag, RecipeTask>, CustomizableQuestElement {
 
     public static final QuestTaskType<RecipeTask> TYPE = new Type();
 
     @Override
-    public NumericTag test(QuestTaskType<?> type, NumericTag progress, Recipe<?> input) {
-        return storage().of(progress, recipes.contains(input.getId()));
+    public NumericTag test(QuestTaskType<?> type, NumericTag progress, RecipeHolder<?> input) {
+        return storage().of(progress, recipes.contains(input.id()));
     }
 
     @Override
@@ -63,7 +64,7 @@ public record RecipeTask(
 
         @Override
         public ResourceLocation id() {
-            return new ResourceLocation(Heracles.MOD_ID, "recipe");
+            return ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "recipe");
         }
 
         @Override

@@ -24,23 +24,12 @@ public record ServerboundRemoveQuestPacket(String id) implements Packet<Serverbo
         return TYPE;
     }
 
-    private static class Type implements ServerboundPacketType<ServerboundRemoveQuestPacket>, CodecPacketType<ServerboundRemoveQuestPacket> {
+    private static class Type extends CodecPacketType<ServerboundRemoveQuestPacket> implements ServerboundPacketType<ServerboundRemoveQuestPacket> {
 
         private static final ByteCodec<ServerboundRemoveQuestPacket> CODEC = ByteCodec.STRING.map(ServerboundRemoveQuestPacket::new, ServerboundRemoveQuestPacket::id);
 
-        @Override
-        public Class<ServerboundRemoveQuestPacket> type() {
-            return ServerboundRemoveQuestPacket.class;
-        }
-
-        @Override
-        public ResourceLocation id() {
-            return new ResourceLocation(Heracles.MOD_ID, "remove_server_quest");
-        }
-
-        @Override
-        public ByteCodec<ServerboundRemoveQuestPacket> codec() {
-            return CODEC;
+        public Type() {
+            super(ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "remove_server_quest"), CODEC);
         }
 
         @Override

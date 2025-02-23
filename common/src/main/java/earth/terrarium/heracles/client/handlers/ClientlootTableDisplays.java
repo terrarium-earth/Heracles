@@ -1,6 +1,7 @@
 package earth.terrarium.heracles.client.handlers;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.entity.player.Player;
@@ -24,7 +25,7 @@ public class ClientlootTableDisplays {
         if (player != null) {
             MinecraftServer server = player.getServer();
             if (server != null) {
-                lootTables.addAll(server.getLootData().getKeys(LootDataType.TABLE));
+                lootTables.addAll(server.reloadableRegistries().getKeys(Registries.LOOT_TABLE));
             }
         }
         lootTables.addAll(LOOT_TABLES);

@@ -29,7 +29,7 @@ import java.util.List;
 import java.util.function.Supplier;
 
 public final class WidgetUtils {
-    public static final ResourceLocation TEXTURE = new ResourceLocation(Heracles.MOD_ID, "textures/gui/widgets.png");
+    public static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "textures/gui/widgets.png");
 
     public static void drawBackground(GuiGraphics graphics, int x, int y, int width, int height) {
         RenderSystem.enableBlend();

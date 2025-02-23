@@ -7,7 +7,7 @@ plugins {
     java
     id("maven-publish")
     id("com.teamresourceful.resourcefulgradle") version "0.0.+"
-    id("dev.architectury.loom") version "1.2-SNAPSHOT" apply false
+    id("dev.architectury.loom") version "1.9-SNAPSHOT" apply false
     id("architectury-plugin") version "3.4-SNAPSHOT" apply false
     id("io.github.juuxel.loom-quiltflower") version "1.8.0" apply false
 }
@@ -32,16 +32,19 @@ subprojects {
     }
 
     repositories {
+        mavenLocal()
         maven(url = "https://maven.architectury.dev/")
-        maven(url = "https://maven.minecraftforge.net/")
+        maven(url = "https://maven.neoforged.net/releases")
         maven(url = "https://maven.teamresourceful.com/repository/maven-public/")
+        maven(url = "https://maven.dediamondpro.dev/releases")
+        maven(url = "https://mcef-download.cinemamod.com/repositories/releases")
         mavenCentral()
     }
 
     dependencies {
         val resourcefulLibVersion: String by project
         val hermesLibVersion: String by project
-        val mixinExtrasVersion: String by project
+        val olympusVersion: String by project
         val reiVersion: String by project
         val emiVersion: String by project
         val jeiVersion: String by project
@@ -57,19 +60,21 @@ subprojects {
             parchment(create(group = "org.parchmentmc.data", name = "parchment-$minecraftVersion", version = parchmentVersion))
         })
 
-        compileOnly(group = "org.jetbrains", name = "annotations", version = "24.0.1")
-        "modImplementation"(group = "com.teamresourceful.resourcefullib", name = "resourcefullib-$modLoader-$minecraftVersion", version = resourcefulLibVersion)
-        val hermes = "modImplementation"(group = "earth.terrarium.hermes", name = "hermes-$modLoader-1.20", version = "latest.release") {
-            isTransitive = false
-        }
+        compileOnly(group = "com.google.auto.service", name = "auto-service-annotations", version = "1.1.1")
+        annotationProcessor(group = "com.google.auto.service", name = "auto-service", version = "1.1.1")
 
-        implementation("annotationProcessor"(group = "io.github.llamalad7", name = "mixinextras-common", version = mixinExtrasVersion))
+        compileOnly(group = "org.jetbrains", name = "annotations", version = "24.0.1")
+        "modImplementation"(group = "com.teamresourceful.resourcefullib", name = "resourcefullib-$modLoader-1.21", version = resourcefulLibVersion)
+        val hermes = "modImplementation"(group = "earth.terrarium.hermes", name = "hermes-$modLoader-$minecraftVersion", version = hermesLibVersion)
+        "modImplementation"(group = "earth.terrarium.olympus", name = "olympus-$modLoader-1.21", version = olympusVersion)
+
+        // implementation("annotationProcessor"(group = "io.github.llamalad7", name = "mixinextras-common", version = mixinExtrasVersion))
 
         if (!isCommon) {
-            "annotationProcessor"(group = "io.github.llamalad7", name = "mixinextras-$modLoader", version = mixinExtrasVersion).apply {
-                implementation(this)
-                "include"(this)
-            }
+//            "annotationProcessor"(group = "io.github.llamalad7", name = "mixinextras-$modLoader", version = mixinExtrasVersion).apply {
+//                implementation(this)
+//                "include"(this)
+//            }
             "include"(hermes)
 
 //            "modRuntimeOnly"("me.shedaniel:RoughlyEnoughItems-$modLoader:$reiVersion")

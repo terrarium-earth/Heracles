@@ -6,21 +6,21 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import com.mojang.brigadier.suggestion.SuggestionProvider;
+import earth.terrarium.heracles.common.blocks.BarrierBlockEntity;
 import earth.terrarium.heracles.common.regisitries.ModItems;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.SharedSuggestionProvider;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.StringTag;
-import net.minecraft.nbt.Tag;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.nbt.*;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.CustomData;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class BarrierCommand {
 
@@ -30,9 +30,9 @@ public class BarrierCommand {
     private static final SuggestionProvider<CommandSourceStack> QUESTS = (context, builder) -> {
         ItemStack stack = context.getSource().getPlayerOrException().getMainHandItem();
         if (!stack.is(ModItems.BARRIER.get())) return builder.buildFuture();
-        List<String> quests = getQuests(stack.getTag());
+        var questData = getQuests(stack);
         SharedSuggestionProvider.suggest(
-            quests.stream().map(StringArgumentType::escapeIfRequired),
+            questData.quests().stream().map(StringArgumentType::escapeIfRequired),
             builder
         );
         return builder.buildFuture();
@@ -73,31 +73,27 @@ public class BarrierCommand {
                 throw NO_BARRIER.create();
             }
         }
-        CompoundTag tag = stack.getOrCreateTag();
-        List<String> quests = getQuests(tag);
+
+        var quests = new ArrayList<>(getQuests(stack).quests());
+
         if (add) {
             quests.add(quest);
         } else {
             quests.remove(quest);
         }
-        ListTag listTag = new ListTag();
-        quests.forEach(q -> listTag.add(StringTag.valueOf(q)));
-        CompoundTag blockEntityTag = tag.getCompound("BlockEntityTag");
-        blockEntityTag.put("quests", listTag);
-        tag.put("BlockEntityTag", blockEntityTag);
-        stack.setTag(tag);
+
+        BarrierBlockEntity.BarrierQuests.CODEC.codec().encodeStart(NbtOps.INSTANCE, new BarrierBlockEntity.BarrierQuests(new HashSet<>(quests)));
+
         return 1;
     }
 
-    private static List<String> getQuests(CompoundTag tag) {
-        if (tag == null) return new ArrayList<>();
-        List<String> quests = new ArrayList<>();
-        if (tag.contains("BlockEntityTag") && tag.getCompound("BlockEntityTag").contains("quests")) {
-            ListTag questsTag = tag.getCompound("BlockEntityTag").getList("quests", Tag.TAG_STRING);
-            for (int i = 0; i < questsTag.size(); i++) {
-                quests.add(questsTag.getString(i));
-            }
+    private static BarrierBlockEntity.BarrierQuests getQuests(ItemStack stack) {
+        CustomData blockEntityData = stack.get(DataComponents.BLOCK_ENTITY_DATA);
+
+        if (blockEntityData == null) {
+            return new BarrierBlockEntity.BarrierQuests(Set.of());
         }
-        return quests;
+
+        return blockEntityData.read(BarrierBlockEntity.BarrierQuests.CODEC).getOrThrow();
     }
 }

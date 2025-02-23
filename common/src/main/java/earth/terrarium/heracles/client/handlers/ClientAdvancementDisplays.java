@@ -1,16 +1,11 @@
 package earth.terrarium.heracles.client.handlers;
 
-import net.minecraft.advancements.Advancement;
-import net.minecraft.advancements.AdvancementList;
 import net.minecraft.advancements.DisplayInfo;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.resources.ResourceLocation;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class ClientAdvancementDisplays {
 
@@ -21,26 +16,29 @@ public class ClientAdvancementDisplays {
         ADVANCEMENTS.putAll(advancements);
     }
 
-    public static DisplayInfo get(ResourceLocation id) {
+    public static Optional<DisplayInfo> get(ResourceLocation id) {
         ClientPacketListener connection = Minecraft.getInstance().getConnection();
         if (connection != null) {
-            AdvancementList list = connection.getAdvancements().getAdvancements();
-            Advancement advancement = list.get(id);
+            var list = connection.getAdvancements();
+            var advancement = list.get(id);
+
             if (advancement != null) {
-                return advancement.getDisplay();
+                return advancement.value().display();
             }
         }
-        return ADVANCEMENTS.get(id);
+        return Optional.ofNullable(ADVANCEMENTS.get(id));
     }
 
     public static Set<ResourceLocation> getAdvancements() {
         Set<ResourceLocation> advancements = new HashSet<>();
         ClientPacketListener connection = Minecraft.getInstance().getConnection();
         if (connection != null) {
-            AdvancementList list = connection.getAdvancements().getAdvancements();
-            for (Advancement advancement : list.getAllAdvancements()) {
-                if (advancement.getDisplay() == null) continue;
-                advancements.add(advancement.getId());
+            var list = connection.getAdvancements().getTree();
+            for (var node : list.nodes()) {
+                var display = node.advancement().display();
+                if (display.isPresent()) {
+                    advancements.add(node.holder().id());
+                }
             }
         }
         advancements.addAll(ADVANCEMENTS.keySet());

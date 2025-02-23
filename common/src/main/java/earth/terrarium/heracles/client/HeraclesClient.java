@@ -12,12 +12,14 @@ import earth.terrarium.heracles.client.toasts.QuestCompletedToast;
 import earth.terrarium.heracles.client.toasts.QuestUnlockedToast;
 import earth.terrarium.heracles.common.network.NetworkHandler;
 import earth.terrarium.heracles.common.network.packets.groups.OpenGroupPacket;
+import earth.terrarium.hermes.impl.HermesStyle;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.PreparableReloadListener;
 import net.minecraft.world.item.Item;
+import org.apache.commons.lang3.NotImplementedException;
 
 import java.util.List;
 import java.util.function.BiConsumer;
@@ -77,6 +79,15 @@ public class HeraclesClient {
     }
 
     public static void initReloadListeners(BiConsumer<ResourceLocation, PreparableReloadListener> init) {
-        init.accept(new ResourceLocation(Heracles.MOD_ID, "theme"), ThemeHandler.INSTANCE);
+        init.accept(ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "theme"), ThemeHandler.INSTANCE);
+    }
+
+    private static HermesStyle getDefaultStyle() {
+        throw new NotImplementedException("Not yet implemented");
+    }
+
+    public static HermesStyle getCurrentStyle() {
+        // TODO Custom styles
+        return getDefaultStyle();
     }
 }

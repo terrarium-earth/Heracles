@@ -16,7 +16,7 @@ import org.lwjgl.glfw.GLFW;
 @JeiPlugin
 public class HeraclesJeiModPlugin implements IModPlugin {
 
-    private static final ResourceLocation ID = new ResourceLocation(Heracles.MOD_ID, "jei");
+    private static final ResourceLocation ID = ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "jei");
     private static IJeiRuntime runtime = null;
 
     @Override

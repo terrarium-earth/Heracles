@@ -7,7 +7,7 @@ import com.teamresourceful.resourcefullib.common.network.base.ServerboundPacketT
 import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.api.tasks.defaults.GatherItemTask;
 import earth.terrarium.heracles.common.handlers.progress.QuestProgressHandler;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
@@ -26,23 +26,18 @@ public record ManualItemTaskPacket(String quest, String task) implements Packet<
     private static class Type implements ServerboundPacketType<ManualItemTaskPacket> {
 
         @Override
-        public Class<ManualItemTaskPacket> type() {
-            return ManualItemTaskPacket.class;
-        }
-
-        @Override
         public ResourceLocation id() {
-            return new ResourceLocation(Heracles.MOD_ID, "check_item");
+            return ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "check_item");
         }
 
         @Override
-        public void encode(ManualItemTaskPacket message, FriendlyByteBuf buffer) {
+        public void encode(ManualItemTaskPacket message, RegistryFriendlyByteBuf buffer) {
             buffer.writeUtf(message.quest);
             buffer.writeUtf(message.task);
         }
 
         @Override
-        public ManualItemTaskPacket decode(FriendlyByteBuf buffer) {
+        public ManualItemTaskPacket decode(RegistryFriendlyByteBuf buffer) {
             return new ManualItemTaskPacket(buffer.readUtf(), buffer.readUtf());
         }
 

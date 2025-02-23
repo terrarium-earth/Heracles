@@ -28,8 +28,8 @@ public record CheckTaskWidget(
     String questId, CheckTask task, TaskProgress<NumericTag> progress, ModUtils.QuestStatus status
 ) implements DisplayWidget {
 
-    private static final ResourceLocation BUTTON_TEXTURE = new ResourceLocation(Heracles.MOD_ID, "textures/gui/buttons.png");
-    private static final ResourceLocation CHECK_TEXTURE = new ResourceLocation(Heracles.MOD_ID, "textures/item/check.png");
+    private static final ResourceLocation BUTTON_TEXTURE = ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "textures/gui/buttons.png");
+    private static final ResourceLocation CHECK_TEXTURE = ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "textures/item/check.png");
 
     private static final String DESC_SINGULAR = "task.heracles.check.desc.singular";
 

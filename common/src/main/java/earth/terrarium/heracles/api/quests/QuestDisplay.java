@@ -9,6 +9,7 @@ import earth.terrarium.heracles.api.quests.defaults.ItemQuestIcon;
 import net.minecraft.Optionull;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.ComponentSerialization;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.item.Items;
@@ -19,7 +20,7 @@ import java.util.function.Function;
 
 public final class QuestDisplay {
 
-    private static final ResourceLocation DEFAULT_BACKGROUND = new ResourceLocation(Heracles.MOD_ID, "textures/gui/quest_backgrounds/default.png");
+    private static final ResourceLocation DEFAULT_BACKGROUND = ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "textures/gui/quest_backgrounds/default.png");
 
     public static final Codec<List<String>> DESCRIPTION_CODEC = Codec.either(Codec.STRING, Codec.STRING.listOf())
         .xmap(either -> either.map(List::of, Function.identity()), Either::right);
@@ -27,8 +28,8 @@ public final class QuestDisplay {
     public static Codec<QuestDisplay> CODEC = RecordCodecBuilder.create(instance -> instance.group(
         QuestIcons.CODEC.fieldOf("icon").orElse(new ItemQuestIcon(Items.MAP)).forGetter(QuestDisplay::icon),
         ResourceLocation.CODEC.fieldOf("icon_background").orElse(DEFAULT_BACKGROUND).forGetter(QuestDisplay::iconBackground),
-        ExtraCodecs.COMPONENT.fieldOf("title").orElse(Component.literal("New Quest")).forGetter(QuestDisplay::title),
-        ExtraCodecs.COMPONENT.fieldOf("subtitle").orElse(CommonComponents.EMPTY).forGetter(QuestDisplay::subtitle),
+        ComponentSerialization.CODEC.fieldOf("title").orElse(Component.literal("New Quest")).forGetter(QuestDisplay::title),
+        ComponentSerialization.CODEC.fieldOf("subtitle").orElse(CommonComponents.EMPTY).forGetter(QuestDisplay::subtitle),
         DESCRIPTION_CODEC.fieldOf("description").orElse(List.of()).forGetter(QuestDisplay::description),
         DispatchMapCodec.of(Codec.STRING, GroupDisplay::codec).fieldOf("groups").orElse(Map.of("Main", GroupDisplay.createDefault())).forGetter(QuestDisplay::groups)
     ).apply(instance, QuestDisplay::new));

@@ -14,6 +14,7 @@ import net.minecraft.advancements.critereon.LocationPredicate;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.NumericTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.ComponentSerialization;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.ExtraCodecs;
@@ -51,7 +52,7 @@ public record LocationTask(
 
         @Override
         public ResourceLocation id() {
-            return new ResourceLocation(Heracles.MOD_ID, "location");
+            return ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "location");
         }
 
         @Override
@@ -60,8 +61,8 @@ public record LocationTask(
                 RecordCodecBuilder.point(id),
                 Codec.STRING.fieldOf("title").forGetter(LocationTask::title),
                 DUMMY_TASK_ICON_CODEC.fieldOf("icon").orElse(new ItemQuestIcon(Items.FILLED_MAP)).forGetter(LocationTask::icon),
-                ExtraCodecs.COMPONENT.fieldOf("description").forGetter(LocationTask::desc),
-                CodecExtras.passthrough(LocationPredicate::serializeToJson, net.minecraft.advancements.critereon.LocationPredicate::fromJson).fieldOf("predicate").forGetter(LocationTask::predicate)
+                ComponentSerialization.CODEC.fieldOf("description").forGetter(LocationTask::desc),
+                LocationPredicate.CODEC.fieldOf("predicate").forGetter(LocationTask::predicate)
             ).apply(instance, LocationTask::new));
         }
     }

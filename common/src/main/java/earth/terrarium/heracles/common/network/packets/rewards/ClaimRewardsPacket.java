@@ -8,7 +8,7 @@ import earth.terrarium.heracles.api.quests.Quest;
 import earth.terrarium.heracles.common.handlers.progress.QuestProgressHandler;
 import earth.terrarium.heracles.common.handlers.progress.QuestsProgress;
 import earth.terrarium.heracles.common.handlers.quests.QuestHandler;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
@@ -37,23 +37,18 @@ public record ClaimRewardsPacket(String quest, String reward) implements Packet<
     private static class Type implements ServerboundPacketType<ClaimRewardsPacket> {
 
         @Override
-        public Class<ClaimRewardsPacket> type() {
-            return ClaimRewardsPacket.class;
-        }
-
-        @Override
         public ResourceLocation id() {
-            return new ResourceLocation(Heracles.MOD_ID, "claim_rewards");
+            return ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "claim_rewards");
         }
 
         @Override
-        public void encode(ClaimRewardsPacket message, FriendlyByteBuf buffer) {
+        public void encode(ClaimRewardsPacket message, RegistryFriendlyByteBuf buffer) {
             buffer.writeUtf(message.quest);
             buffer.writeUtf(message.reward);
         }
 
         @Override
-        public ClaimRewardsPacket decode(FriendlyByteBuf buffer) {
+        public ClaimRewardsPacket decode(RegistryFriendlyByteBuf buffer) {
             return new ClaimRewardsPacket(buffer.readUtf(), buffer.readUtf());
         }
 

@@ -9,7 +9,8 @@ import earth.terrarium.heracles.client.screens.quest.BaseQuestScreen;
 import earth.terrarium.heracles.client.screens.quests.QuestsScreen;
 import earth.terrarium.heracles.common.handlers.progress.QuestProgress;
 import net.minecraft.client.Minecraft;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.LinkedHashMap;
@@ -27,17 +28,12 @@ public record SyncQuestProgressPacket(Map<String, QuestProgress> quests) impleme
     private static class Type implements ClientboundPacketType<SyncQuestProgressPacket> {
 
         @Override
-        public Class<SyncQuestProgressPacket> type() {
-            return SyncQuestProgressPacket.class;
-        }
-
-        @Override
         public ResourceLocation id() {
-            return new ResourceLocation(Heracles.MOD_ID, "sync_quest_progress");
+            return ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "sync_quest_progress");
         }
 
         @Override
-        public void encode(SyncQuestProgressPacket message, FriendlyByteBuf buffer) {
+        public void encode(SyncQuestProgressPacket message, RegistryFriendlyByteBuf buffer) {
             buffer.writeVarInt(message.quests.size());
             for (var entry : message.quests.entrySet()) {
                 buffer.writeUtf(entry.getKey());
@@ -46,7 +42,7 @@ public record SyncQuestProgressPacket(Map<String, QuestProgress> quests) impleme
         }
 
         @Override
-        public SyncQuestProgressPacket decode(FriendlyByteBuf buffer) {
+        public SyncQuestProgressPacket decode(RegistryFriendlyByteBuf buffer) {
             Map<String, QuestProgress> quests = new LinkedHashMap<>();
             int size = buffer.readVarInt();
             for (int i = 0; i < size; i++) {

@@ -1,13 +1,13 @@
 package earth.terrarium.heracles.api.client.settings.tasks;
 
 import com.mojang.datafixers.util.Either;
-import com.teamresourceful.resourcefullib.common.codecs.predicates.NbtPredicate;
 import earth.terrarium.heracles.api.client.settings.CustomizableQuestElementSettings;
 import earth.terrarium.heracles.api.client.settings.SettingInitializer;
 import earth.terrarium.heracles.api.client.settings.base.ItemSetting;
 import earth.terrarium.heracles.api.tasks.defaults.ItemInteractTask;
 import earth.terrarium.heracles.common.utils.RegistryValue;
 import net.minecraft.Optionull;
+import net.minecraft.core.component.DataComponentPredicate;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -32,7 +32,7 @@ public class ItemInteractTaskSettings implements SettingInitializer<ItemInteract
             title,
             icon,
             new RegistryValue<>(item.mapLeft(ItemStack::getItemHolder)),
-            getNbt(item, getDefaultNbt(object))
+            getComponents(item, getDefaultNbt(object))
         ));
     }
 
@@ -40,20 +40,20 @@ public class ItemInteractTaskSettings implements SettingInitializer<ItemInteract
         return Optionull.mapOrDefault(object,
             task -> task.item().getValue().map(item -> {
                 ItemStack stack = new ItemStack(item);
-                stack.setTag(task.nbt().tag());
+                stack.applyComponents(task.components().asPatch());
                 return Either.left(stack);
             }, Either::right),
             Either.left(Items.AIR.getDefaultInstance())
         );
     }
 
-    private static NbtPredicate getDefaultNbt(ItemInteractTask object) {
-        return Optionull.mapOrDefault(object, ItemInteractTask::nbt, NbtPredicate.ANY);
+    private static DataComponentPredicate getDefaultNbt(ItemInteractTask object) {
+        return Optionull.mapOrDefault(object, ItemInteractTask::components, DataComponentPredicate.EMPTY);
     }
 
-    private static NbtPredicate getNbt(Either<ItemStack, TagKey<Item>> item, NbtPredicate backup) {
+    private static DataComponentPredicate getComponents(Either<ItemStack, TagKey<Item>> item, DataComponentPredicate backup) {
         return item.map(
-            stack -> stack.hasTag() ? new NbtPredicate(stack.getTag()) : backup,
+            stack -> stack.getComponents().isEmpty() ? DataComponentPredicate.allOf(stack.getComponents()) : backup,
             tag -> backup
         );
     }

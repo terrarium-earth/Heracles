@@ -5,7 +5,8 @@ import com.teamresourceful.resourcefullib.common.network.base.PacketType;
 import com.teamresourceful.resourcefullib.common.network.base.ServerboundPacketType;
 import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.common.handlers.quests.QuestHandler;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 
@@ -22,23 +23,18 @@ public record CreateGroupPacket(String group) implements Packet<CreateGroupPacke
     private static class Type implements ServerboundPacketType<CreateGroupPacket> {
 
         @Override
-        public Class<CreateGroupPacket> type() {
-            return CreateGroupPacket.class;
-        }
-
-        @Override
-        public void encode(CreateGroupPacket message, FriendlyByteBuf buffer) {
+        public void encode(CreateGroupPacket message, RegistryFriendlyByteBuf buffer) {
             buffer.writeUtf(message.group);
         }
 
         @Override
-        public CreateGroupPacket decode(FriendlyByteBuf buffer) {
+        public CreateGroupPacket decode(RegistryFriendlyByteBuf buffer) {
             return new CreateGroupPacket(buffer.readUtf());
         }
 
         @Override
         public ResourceLocation id() {
-            return new ResourceLocation(Heracles.MOD_ID, "create_group");
+            return ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "create_group");
         }
 
         @Override

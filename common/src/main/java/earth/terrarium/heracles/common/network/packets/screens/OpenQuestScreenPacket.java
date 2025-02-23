@@ -6,7 +6,7 @@ import com.teamresourceful.resourcefullib.common.network.base.PacketType;
 import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.client.ModScreens;
 import earth.terrarium.heracles.common.menus.quest.QuestContent;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 
 public record OpenQuestScreenPacket(boolean editing, QuestContent content) implements Packet<OpenQuestScreenPacket> {
@@ -20,23 +20,18 @@ public record OpenQuestScreenPacket(boolean editing, QuestContent content) imple
 
     private static class Type implements ClientboundPacketType<OpenQuestScreenPacket> {
         @Override
-        public Class<OpenQuestScreenPacket> type() {
-            return OpenQuestScreenPacket.class;
-        }
-
-        @Override
         public ResourceLocation id() {
-            return new ResourceLocation(Heracles.MOD_ID, "open_quest_screen");
+            return ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "open_quest_screen");
         }
 
         @Override
-        public void encode(OpenQuestScreenPacket message, FriendlyByteBuf buffer) {
+        public void encode(OpenQuestScreenPacket message, RegistryFriendlyByteBuf buffer) {
             buffer.writeBoolean(message.editing);
             message.content.to(buffer);
         }
 
         @Override
-        public OpenQuestScreenPacket decode(FriendlyByteBuf buffer) {
+        public OpenQuestScreenPacket decode(RegistryFriendlyByteBuf buffer) {
             return new OpenQuestScreenPacket(
                 buffer.readBoolean(),
                 QuestContent.from(buffer)

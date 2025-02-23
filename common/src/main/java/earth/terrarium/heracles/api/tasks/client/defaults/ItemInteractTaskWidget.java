@@ -32,7 +32,7 @@ public record ItemInteractTaskWidget(
             task.item().getValue().map(
                 item -> {
                     ItemStack stack = item.getDefaultInstance();
-                    if (!NbtPredicate.isEmpty(task.nbt().tag())) stack.getOrCreateTag().merge(task.nbt().tag());
+                    stack.applyComponents(task.components().asPatch());
                     return List.of(stack);
                 },
                 tag -> ModUtils.getValue(Registries.ITEM, tag).stream().map(ItemStack::new).toList()

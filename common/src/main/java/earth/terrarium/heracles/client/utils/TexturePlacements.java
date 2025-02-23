@@ -2,11 +2,11 @@ package earth.terrarium.heracles.client.utils;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import com.teamresourceful.resourcefullib.client.utils.CodecMetadataSectionSerializer;
 import com.teamresourceful.resourcefullib.common.caches.CacheableFunction;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.metadata.MetadataSectionSerializer;
+import net.minecraft.server.packs.metadata.MetadataSectionType;
 import net.minecraft.server.packs.resources.Resource;
 
 import java.util.Optional;
@@ -50,7 +50,7 @@ public class TexturePlacements {
             Codec.INT.fieldOf("height").forGetter(Info::height)
         ).apply(instance, Info::new));
 
-        public static final MetadataSectionSerializer<Info> METADATA = new CodecMetadataSectionSerializer<>(CODEC, new ResourceLocation("heracles", "texture_placement"));
+        public static final MetadataSectionSerializer<Info> METADATA = MetadataSectionType.fromCodec(ResourceLocation.fromNamespaceAndPath("heracles", "texture_placement").toString(), CODEC);
     }
 
     public interface ThrowingFunction<I, O> {

@@ -19,7 +19,7 @@ public class ModBlocks {
 
     public static final RegistryEntry<Block> BARRIER_BLOCK = BLOCKS.register(
         "barrier",
-        () -> new BarrierBlock(Block.Properties.copy(Blocks.BARRIER))
+        () -> new BarrierBlock(Block.Properties.ofFullCopy(Blocks.BARRIER))
     );
 
     public static final RegistryEntry<BlockEntityType<BarrierBlockEntity>> BARRIER_BLOCK_ENTITY = BLOCK_ENTITIES.register(

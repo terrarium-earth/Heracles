@@ -12,6 +12,7 @@ import earth.terrarium.heracles.common.handlers.progress.QuestProgressHandler;
 import earth.terrarium.heracles.common.handlers.progress.QuestsProgress;
 import earth.terrarium.heracles.common.handlers.quests.QuestHandler;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
@@ -36,24 +37,19 @@ public record ClaimSelectableRewardsPacket(
     private static class Type implements ServerboundPacketType<ClaimSelectableRewardsPacket> {
 
         @Override
-        public Class<ClaimSelectableRewardsPacket> type() {
-            return ClaimSelectableRewardsPacket.class;
-        }
-
-        @Override
         public ResourceLocation id() {
-            return new ResourceLocation(Heracles.MOD_ID, "claim_selectable_rewards");
+            return ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "claim_selectable_rewards");
         }
 
         @Override
-        public void encode(ClaimSelectableRewardsPacket message, FriendlyByteBuf buffer) {
+        public void encode(ClaimSelectableRewardsPacket message, RegistryFriendlyByteBuf buffer) {
             buffer.writeUtf(message.quest);
             buffer.writeUtf(message.reward);
             buffer.writeCollection(message.rewards, FriendlyByteBuf::writeUtf);
         }
 
         @Override
-        public ClaimSelectableRewardsPacket decode(FriendlyByteBuf buffer) {
+        public ClaimSelectableRewardsPacket decode(RegistryFriendlyByteBuf buffer) {
             return new ClaimSelectableRewardsPacket(
                 buffer.readUtf(),
                 buffer.readUtf(),

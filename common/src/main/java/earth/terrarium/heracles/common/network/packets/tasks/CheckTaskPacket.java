@@ -5,7 +5,8 @@ import com.teamresourceful.resourcefullib.common.network.base.PacketType;
 import com.teamresourceful.resourcefullib.common.network.base.ServerboundPacketType;
 import earth.terrarium.heracles.api.tasks.defaults.CheckTask;
 import earth.terrarium.heracles.common.handlers.progress.QuestProgressHandler;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
@@ -24,23 +25,18 @@ public record CheckTaskPacket(String quest, String task) implements Packet<Check
     private static class Type implements ServerboundPacketType<CheckTaskPacket> {
 
         @Override
-        public Class<CheckTaskPacket> type() {
-            return CheckTaskPacket.class;
-        }
-
-        @Override
         public ResourceLocation id() {
-            return new ResourceLocation("heracles", "check_task");
+            return ResourceLocation.fromNamespaceAndPath("heracles", "check_task");
         }
 
         @Override
-        public void encode(CheckTaskPacket message, FriendlyByteBuf buffer) {
+        public void encode(CheckTaskPacket message, RegistryFriendlyByteBuf buffer) {
             buffer.writeUtf(message.quest);
             buffer.writeUtf(message.task);
         }
 
         @Override
-        public CheckTaskPacket decode(FriendlyByteBuf buffer) {
+        public CheckTaskPacket decode(RegistryFriendlyByteBuf buffer) {
             return new CheckTaskPacket(buffer.readUtf(), buffer.readUtf());
         }
 

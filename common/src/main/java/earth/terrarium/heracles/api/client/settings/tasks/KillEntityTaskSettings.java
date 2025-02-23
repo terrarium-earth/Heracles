@@ -1,6 +1,5 @@
 package earth.terrarium.heracles.api.client.settings.tasks;
 
-import com.teamresourceful.resourcefullib.common.codecs.predicates.NbtPredicate;
 import com.teamresourceful.resourcefullib.common.codecs.predicates.RestrictedEntityPredicate;
 import earth.terrarium.heracles.api.client.settings.CustomizableQuestElementSettings;
 import earth.terrarium.heracles.api.client.settings.SettingInitializer;
@@ -8,12 +7,10 @@ import earth.terrarium.heracles.api.client.settings.base.IntSetting;
 import earth.terrarium.heracles.api.client.settings.base.RegistrySetting;
 import earth.terrarium.heracles.api.tasks.defaults.KillEntityQuestTask;
 import net.minecraft.Optionull;
-import net.minecraft.advancements.critereon.EntityFlagsPredicate;
-import net.minecraft.advancements.critereon.EntityPredicate;
-import net.minecraft.advancements.critereon.LocationPredicate;
-import net.minecraft.advancements.critereon.MobEffectsPredicate;
 import net.minecraft.world.entity.EntityType;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.Optional;
 
 public class KillEntityTaskSettings implements SettingInitializer<KillEntityQuestTask>, CustomizableQuestElementSettings<KillEntityQuestTask> {
 
@@ -30,15 +27,15 @@ public class KillEntityTaskSettings implements SettingInitializer<KillEntityQues
     @Override
     public KillEntityQuestTask create(String id, KillEntityQuestTask object, Data data) {
         EntityType<?> entityType = data.get("entity", RegistrySetting.ENTITY).orElse(getDefaultEntity(object));
-        RestrictedEntityPredicate old = Optionull.map(object, KillEntityQuestTask::entity);
+        Optional<RestrictedEntityPredicate> old = Optional.ofNullable(object).map(KillEntityQuestTask::entity);
 
         RestrictedEntityPredicate entity = new RestrictedEntityPredicate(
             entityType,
-            Optionull.mapOrDefault(old, RestrictedEntityPredicate::location, LocationPredicate.ANY),
-            Optionull.mapOrDefault(old, RestrictedEntityPredicate::effects, MobEffectsPredicate.ANY),
-            Optionull.mapOrDefault(old, RestrictedEntityPredicate::nbt, NbtPredicate.ANY),
-            Optionull.mapOrDefault(old, RestrictedEntityPredicate::flags, EntityFlagsPredicate.ANY),
-            Optionull.mapOrDefault(old, RestrictedEntityPredicate::targetedEntity, EntityPredicate.ANY)
+            old.flatMap(RestrictedEntityPredicate::location),
+            old.flatMap(RestrictedEntityPredicate::effects),
+            old.flatMap(RestrictedEntityPredicate::nbt),
+            old.flatMap(RestrictedEntityPredicate::flags),
+            old.flatMap(RestrictedEntityPredicate::targetedEntity)
         );
 
         return create(object, data, (title, icon) -> new KillEntityQuestTask(

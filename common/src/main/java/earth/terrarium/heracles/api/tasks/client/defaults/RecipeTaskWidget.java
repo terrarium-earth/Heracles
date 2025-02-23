@@ -154,7 +154,7 @@ public final class RecipeTaskWidget implements ItemDisplayWidget {
         List<ItemStack> icons = new ArrayList<>();
         for (ResourceLocation id : task.recipes()) {
             manager.byKey(id)
-                .map(recipe -> recipe.getResultItem(Heracles.getRegistryAccess()))
+                .map(recipe -> recipe.value().getResultItem(Heracles.getRegistryAccess()))
                 .map(ItemStack::copy)
                 .ifPresent(icons::add);
         }

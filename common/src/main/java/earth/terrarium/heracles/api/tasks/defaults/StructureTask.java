@@ -59,7 +59,7 @@ public record StructureTask(
 
         @Override
         public ResourceLocation id() {
-            return new ResourceLocation(Heracles.MOD_ID, "structure");
+            return ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "structure");
         }
 
         @Override

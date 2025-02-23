@@ -7,7 +7,7 @@ import com.teamresourceful.resourcefullib.common.network.base.ServerboundPacketT
 import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.api.tasks.defaults.XpTask;
 import earth.terrarium.heracles.common.handlers.progress.QuestProgressHandler;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
@@ -25,23 +25,18 @@ public record ManualXpTaskPacket(String quest, String task) implements Packet<Ma
     private static class Type implements ServerboundPacketType<ManualXpTaskPacket> {
 
         @Override
-        public Class<ManualXpTaskPacket> type() {
-            return ManualXpTaskPacket.class;
-        }
-
-        @Override
         public ResourceLocation id() {
-            return new ResourceLocation(Heracles.MOD_ID, "check_xp");
+            return ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "check_xp");
         }
 
         @Override
-        public void encode(ManualXpTaskPacket message, FriendlyByteBuf buffer) {
+        public void encode(ManualXpTaskPacket message, RegistryFriendlyByteBuf buffer) {
             buffer.writeUtf(message.quest);
             buffer.writeUtf(message.task);
         }
 
         @Override
-        public ManualXpTaskPacket decode(FriendlyByteBuf buffer) {
+        public ManualXpTaskPacket decode(RegistryFriendlyByteBuf buffer) {
             return new ManualXpTaskPacket(buffer.readUtf(), buffer.readUtf());
         }
 

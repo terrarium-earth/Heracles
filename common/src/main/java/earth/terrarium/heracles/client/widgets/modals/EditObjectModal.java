@@ -105,8 +105,8 @@ public class EditObjectModal extends BaseModal {
     }
 
     @Override
-    public boolean mouseScrolled(double mouseX, double mouseY, double scrollAmount) {
-        this.scrollAmount = Mth.clamp(this.scrollAmount - scrollAmount * 10, 0.0D, Math.max(0, this.lastFullHeight - this.height));
+    public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
+        this.scrollAmount = Mth.clamp(this.scrollAmount - scrollY * 10, 0.0D, Math.max(0, this.lastFullHeight - this.height));
         return true;
     }
 

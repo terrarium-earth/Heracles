@@ -6,7 +6,7 @@ import com.teamresourceful.resourcefullib.common.network.base.ServerboundPacketT
 import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.common.handlers.quests.QuestHandler;
 import earth.terrarium.heracles.common.utils.ModUtils;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
@@ -24,23 +24,18 @@ public record OpenGroupPacket(String group, boolean edit) implements Packet<Open
     private static class Type implements ServerboundPacketType<OpenGroupPacket> {
 
         @Override
-        public Class<OpenGroupPacket> type() {
-            return OpenGroupPacket.class;
-        }
-
-        @Override
         public ResourceLocation id() {
-            return new ResourceLocation(Heracles.MOD_ID, "open_group");
+            return ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "open_group");
         }
 
         @Override
-        public void encode(OpenGroupPacket message, FriendlyByteBuf buffer) {
+        public void encode(OpenGroupPacket message, RegistryFriendlyByteBuf buffer) {
             buffer.writeUtf(message.group);
             buffer.writeBoolean(message.edit);
         }
 
         @Override
-        public OpenGroupPacket decode(FriendlyByteBuf buffer) {
+        public OpenGroupPacket decode(RegistryFriendlyByteBuf buffer) {
             return new OpenGroupPacket(buffer.readUtf(), buffer.readBoolean());
         }
 

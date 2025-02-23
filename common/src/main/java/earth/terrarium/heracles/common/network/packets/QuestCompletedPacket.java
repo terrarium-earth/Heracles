@@ -5,7 +5,7 @@ import com.teamresourceful.resourcefullib.common.network.base.ClientboundPacketT
 import com.teamresourceful.resourcefullib.common.network.base.PacketType;
 import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.client.HeraclesClient;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 
 public record QuestCompletedPacket(String id) implements Packet<QuestCompletedPacket> {
@@ -18,22 +18,17 @@ public record QuestCompletedPacket(String id) implements Packet<QuestCompletedPa
 
     private static class Type implements ClientboundPacketType<QuestCompletedPacket> {
         @Override
-        public Class<QuestCompletedPacket> type() {
-            return QuestCompletedPacket.class;
-        }
-
-        @Override
         public ResourceLocation id() {
-            return new ResourceLocation(Heracles.MOD_ID, "quest_complete");
+            return ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "quest_complete");
         }
 
         @Override
-        public void encode(QuestCompletedPacket message, FriendlyByteBuf buffer) {
+        public void encode(QuestCompletedPacket message, RegistryFriendlyByteBuf buffer) {
             buffer.writeUtf(message.id);
         }
 
         @Override
-        public QuestCompletedPacket decode(FriendlyByteBuf buffer) {
+        public QuestCompletedPacket decode(RegistryFriendlyByteBuf buffer) {
             return new QuestCompletedPacket(buffer.readUtf());
         }
 

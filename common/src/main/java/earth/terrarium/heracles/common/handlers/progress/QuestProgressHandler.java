@@ -4,9 +4,11 @@ import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.api.events.HeraclesEvents;
 import earth.terrarium.heracles.api.quests.Quest;
 import earth.terrarium.heracles.api.teams.TeamProviders;
+import earth.terrarium.heracles.common.handlers.pinned.PinnedQuestHandler;
 import earth.terrarium.heracles.common.handlers.quests.QuestHandler;
 import earth.terrarium.heracles.common.network.NetworkHandler;
 import earth.terrarium.heracles.common.network.packets.quests.SyncQuestProgressPacket;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
@@ -29,6 +31,33 @@ public class QuestProgressHandler extends SavedData {
                 });
             }
         });
+    }
+
+    public QuestProgressHandler(CompoundTag tag, HolderLookup.Provider registries) {
+        this();
+
+        Set<String> badQuests = new HashSet<>();
+        for (var player : tag.getAllKeys()) {
+            CompoundTag progress = tag.getCompound(player);
+            Map<String, QuestProgress> questProgress = new HashMap<>();
+            for (var quest : progress.getAllKeys()) {
+                Quest questObj = QuestHandler.get(quest);
+                if (questObj == null) {
+                    badQuests.add(quest);
+                    continue;
+                }
+                try {
+                    QuestProgress progressObj = new QuestProgress(questObj, progress.getCompound(quest));
+                    questProgress.put(quest, progressObj);
+                } catch (Exception e) {
+                    Heracles.LOGGER.error("Failed to load quest progress for player {}", player, e);
+                }
+                this.progress.put(UUID.fromString(player), new QuestsProgress(questProgress));
+            }
+        }
+        if (!badQuests.isEmpty()) {
+            Heracles.LOGGER.error("Failed to load quest progress for quests: {}", String.join(", ", badQuests));
+        }
     }
 
     public QuestsProgress getProgress(UUID uuid) {
@@ -93,7 +122,7 @@ public class QuestProgressHandler extends SavedData {
     }
 
     @Override
-    public @NotNull CompoundTag save(CompoundTag tag) {
+    public @NotNull CompoundTag save(CompoundTag tag, HolderLookup.Provider registries) {
         for (var entry : progress.entrySet()) {
             CompoundTag progressTag = new CompoundTag();
             entry.getValue().progress().forEach((id, progress) -> {
@@ -111,39 +140,14 @@ public class QuestProgressHandler extends SavedData {
         return tag;
     }
 
-    public void load(CompoundTag tag) {
-        Set<String> badQuests = new HashSet<>();
-        for (var player : tag.getAllKeys()) {
-            CompoundTag progress = tag.getCompound(player);
-            Map<String, QuestProgress> questProgress = new HashMap<>();
-            for (var quest : progress.getAllKeys()) {
-                Quest questObj = QuestHandler.get(quest);
-                if (questObj == null) {
-                    badQuests.add(quest);
-                    continue;
-                }
-                try {
-                    QuestProgress progressObj = new QuestProgress(questObj, progress.getCompound(quest));
-                    questProgress.put(quest, progressObj);
-                } catch (Exception e) {
-                    Heracles.LOGGER.error("Failed to load quest progress for player {}", player, e);
-                }
-                this.progress.put(UUID.fromString(player), new QuestsProgress(questProgress));
-            }
-        }
-        if (!badQuests.isEmpty()) {
-            Heracles.LOGGER.error("Failed to load quest progress for quests: {}", String.join(", ", badQuests));
-        }
-    }
-
     public static QuestProgressHandler read(MinecraftServer server) {
         return server
             .overworld()
             .getDataStorage()
-            .computeIfAbsent(tag -> {
-                QuestProgressHandler handler = new QuestProgressHandler();
-                handler.load(tag);
-                return handler;
-            }, QuestProgressHandler::new, "heracles_quest_progress");
+            .computeIfAbsent(new SavedData.Factory<>(
+                QuestProgressHandler::new,
+                QuestProgressHandler::new,
+                null
+            ), "heracles_quest_progress");
     }
 }

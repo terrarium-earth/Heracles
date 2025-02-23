@@ -1,6 +1,7 @@
 package earth.terrarium.heracles.api.rewards.defaults;
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.teamresourceful.resourcefullib.common.codecs.EnumCodec;
 import earth.terrarium.heracles.Heracles;
@@ -46,12 +47,12 @@ public record XpQuestReward(String id, String title, QuestIcon<?> icon, XpType x
 
         @Override
         public ResourceLocation id() {
-            return new ResourceLocation(Heracles.MOD_ID, "xp");
+            return ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "xp");
         }
 
         @Override
-        public Codec<XpQuestReward> codec(String id) {
-            return RecordCodecBuilder.create(instance -> instance.group(
+        public MapCodec<XpQuestReward> codec(String id) {
+            return RecordCodecBuilder.mapCodec(instance -> instance.group(
                 RecordCodecBuilder.point(id),
                 Codec.STRING.optionalFieldOf("title", "").forGetter(XpQuestReward::title),
                 QuestIcons.CODEC.optionalFieldOf("icon", ItemQuestIcon.AIR).forGetter(XpQuestReward::icon),

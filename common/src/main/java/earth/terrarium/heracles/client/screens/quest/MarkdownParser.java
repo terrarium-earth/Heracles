@@ -1,6 +1,7 @@
 package earth.terrarium.heracles.client.screens.quest;
 
 import net.minecraft.ChatFormatting;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 
@@ -36,7 +37,7 @@ public class MarkdownParser {
         return text;
     }
 
-    public static List<String> parse(List<String> lines) {
+    public static List<String> parse(List<String> lines, HolderLookup.Provider registries) {
         State state = null;
         List<String> builder = new ArrayList<>();
         for (String line : lines) {
@@ -65,13 +66,13 @@ public class MarkdownParser {
                     state = State.BLOCKQUOTE;
                     builder.add("<blockquote>");
                 }
-                builder.add(parse(List.of(line.substring(2).trim())).stream().reduce("", (a, b) -> a + b));
+                builder.add(parse(List.of(line.substring(2).trim()), registries).stream().reduce("", (a, b) -> a + b));
             } else if (trimedText.trim().startsWith("<")) {
                 builder.add(line);
             } else if (trimedText.isEmpty()) {
                 builder.add("<br/>");
             } else {
-                String json = Component.Serializer.toJson(parseTextToComponent(line));
+                String json = Component.Serializer.toJson(parseTextToComponent(line), registries);
                 builder.add("<component>" + xmlEncode(json) + "</component>");
             }
         }

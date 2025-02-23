@@ -12,6 +12,7 @@ import earth.terrarium.heracles.api.tasks.QuestTask;
 import earth.terrarium.heracles.api.tasks.QuestTaskType;
 import earth.terrarium.heracles.api.tasks.storage.defaults.BooleanTaskStorage;
 import earth.terrarium.heracles.common.utils.RegistryValue;
+import net.minecraft.core.component.DataComponentPredicate;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.NumericTag;
 import net.minecraft.resources.ResourceLocation;
@@ -19,13 +20,13 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
 public record ItemInteractTask(
-    String id, String title, QuestIcon<?> icon, RegistryValue<Item> item, NbtPredicate nbt
+    String id, String title, QuestIcon<?> icon, RegistryValue<Item> item, DataComponentPredicate components
 ) implements QuestTask<ItemStack, NumericTag, ItemInteractTask>, CustomizableQuestElement {
     public static final QuestTaskType<ItemInteractTask> TYPE = new Type();
 
     @Override
     public NumericTag test(QuestTaskType<?> type, NumericTag progress, ItemStack input) {
-        return storage().of(progress, item.is(input.getItemHolder()) && nbt().matches(input));
+        return storage().of(progress, item.is(input.getItemHolder()) && components().test(input));
     }
 
     @Override
@@ -46,7 +47,7 @@ public record ItemInteractTask(
     private static class Type implements QuestTaskType<ItemInteractTask> {
         @Override
         public ResourceLocation id() {
-            return new ResourceLocation(Heracles.MOD_ID, "item_interaction");
+            return ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "item_interaction");
         }
 
         @Override
@@ -56,7 +57,7 @@ public record ItemInteractTask(
                 Codec.STRING.optionalFieldOf("title", "").forGetter(ItemInteractTask::title),
                 QuestIcons.CODEC.optionalFieldOf("icon", ItemQuestIcon.AIR).forGetter(ItemInteractTask::icon),
                 RegistryValue.codec(Registries.ITEM).fieldOf("item").forGetter(ItemInteractTask::item),
-                NbtPredicate.CODEC.fieldOf("nbt").orElse(NbtPredicate.ANY).forGetter(ItemInteractTask::nbt)
+                DataComponentPredicate.CODEC.fieldOf("components").orElse(DataComponentPredicate.EMPTY).forGetter(ItemInteractTask::components)
             ).apply(instance, ItemInteractTask::new));
         }
     }

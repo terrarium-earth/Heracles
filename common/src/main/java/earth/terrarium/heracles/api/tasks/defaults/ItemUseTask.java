@@ -43,7 +43,7 @@ public record ItemUseTask(
     private static class Type implements QuestTaskType<ItemUseTask> {
         @Override
         public ResourceLocation id() {
-            return new ResourceLocation(Heracles.MOD_ID, "item_use");
+            return ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "item_use");
         }
 
         @Override
@@ -51,7 +51,7 @@ public record ItemUseTask(
             return RecordCodecBuilder.create(instance -> instance.group(
                 RecordCodecBuilder.point(id),
                 RegistryValue.codec(Registries.ITEM).fieldOf("item").forGetter(ItemUseTask::item),
-                NbtPredicate.CODEC.fieldOf("nbt").orElse(NbtPredicate.ANY).forGetter(ItemUseTask::nbt)
+                NbtPredicate.CODEC.fieldOf("components").orElse(NbtPredicate.ANY).forGetter(ItemUseTask::nbt)
             ).apply(instance, ItemUseTask::new));
         }
     }

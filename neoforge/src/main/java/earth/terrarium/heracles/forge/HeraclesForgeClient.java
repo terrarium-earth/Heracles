@@ -8,7 +8,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.RegisterClientReloadListenersEvent;
 import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
 import net.minecraftforge.client.event.ScreenEvent;
-import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.NeoForge;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -28,8 +28,8 @@ public class HeraclesForgeClient {
         DisplayConfig.load(FMLPaths.GAMEDIR.get());
         QuestTutorial.load(FMLPaths.CONFIGDIR.get());
         event.enqueueWork(HeraclesClient::init);
-        MinecraftForge.EVENT_BUS.addListener(HeraclesForgeClient::onClientTick);
-        MinecraftForge.EVENT_BUS.addListener(HeraclesForgeClient::onMouseClickedPreScreen);
+        NeoForge.EVENT_BUS.addListener(HeraclesForgeClient::onClientTick);
+        NeoForge.EVENT_BUS.addListener(HeraclesForgeClient::onMouseClickedPreScreen);
         FMLJavaModLoadingContext.get().getModEventBus().addListener(HeraclesForgeClient::onClientReloadListeners);
     }
 

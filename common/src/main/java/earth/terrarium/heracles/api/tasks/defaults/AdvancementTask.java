@@ -13,6 +13,7 @@ import earth.terrarium.heracles.api.tasks.QuestTaskType;
 import earth.terrarium.heracles.api.tasks.storage.defaults.BooleanTaskStorage;
 import earth.terrarium.heracles.mixins.common.PlayerAdvancementAccessor;
 import net.minecraft.advancements.Advancement;
+import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.advancements.AdvancementProgress;
 import net.minecraft.nbt.NumericTag;
 import net.minecraft.resources.ResourceLocation;
@@ -24,13 +25,13 @@ import java.util.Set;
 
 public record AdvancementTask(
     String id, String title, QuestIcon<?> icon, Set<ResourceLocation> advancements
-) implements QuestTask<Advancement, NumericTag, AdvancementTask>, CustomizableQuestElement {
+) implements QuestTask<AdvancementHolder, NumericTag, AdvancementTask>, CustomizableQuestElement {
 
     public static final QuestTaskType<AdvancementTask> TYPE = new Type();
 
     @Override
-    public NumericTag test(QuestTaskType<?> type, NumericTag progress, Advancement input) {
-        return storage().of(progress, advancements.contains(input.getId()));
+    public NumericTag test(QuestTaskType<?> type, NumericTag progress, AdvancementHolder input) {
+        return storage().of(progress, advancements.contains(input.id()));
     }
 
     @Override
@@ -39,10 +40,10 @@ public record AdvancementTask(
         if (server == null) return progress;
         ServerAdvancementManager manager = server.getAdvancements();
         for (ResourceLocation id : advancements) {
-            Advancement advancement = manager.getAdvancement(id);
+            AdvancementHolder advancement = manager.get(id);
             if (advancement == null) continue;
             PlayerAdvancementAccessor advancements = (PlayerAdvancementAccessor) player.getAdvancements();
-            AdvancementProgress advancementProgress = advancements.progress().get(advancement);
+            AdvancementProgress advancementProgress = advancements.progress().get(advancement.value());
             if (advancementProgress == null) continue;
             if (!advancementProgress.isDone()) continue;
             progress = test(type, progress, advancement);
@@ -69,7 +70,7 @@ public record AdvancementTask(
 
         @Override
         public ResourceLocation id() {
-            return new ResourceLocation(Heracles.MOD_ID, "advancement");
+            return ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "advancement");
         }
 
         @Override

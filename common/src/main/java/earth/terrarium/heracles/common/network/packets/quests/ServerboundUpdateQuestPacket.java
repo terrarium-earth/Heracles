@@ -12,6 +12,8 @@ import earth.terrarium.heracles.common.handlers.progress.QuestProgressHandler;
 import earth.terrarium.heracles.common.handlers.quests.QuestHandler;
 import earth.terrarium.heracles.common.network.NetworkHandler;
 import earth.terrarium.heracles.common.network.packets.quests.data.NetworkQuestData;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 
@@ -29,7 +31,7 @@ public record ServerboundUpdateQuestPacket(
         return TYPE;
     }
 
-    private static class Type implements ServerboundPacketType<ServerboundUpdateQuestPacket>, CodecPacketType<ServerboundUpdateQuestPacket> {
+    private static class Type extends CodecPacketType<ServerboundUpdateQuestPacket> implements ServerboundPacketType<ServerboundUpdateQuestPacket>{
 
         private static final ByteCodec<ServerboundUpdateQuestPacket> CODEC = ObjectByteCodec.create(
             ByteCodec.STRING.fieldOf(ServerboundUpdateQuestPacket::id),
@@ -38,19 +40,8 @@ public record ServerboundUpdateQuestPacket(
             ServerboundUpdateQuestPacket::new
         );
 
-        @Override
-        public Class<ServerboundUpdateQuestPacket> type() {
-            return ServerboundUpdateQuestPacket.class;
-        }
-
-        @Override
-        public ResourceLocation id() {
-            return new ResourceLocation(Heracles.MOD_ID, "update_server_quest");
-        }
-
-        @Override
-        public ByteCodec<ServerboundUpdateQuestPacket> codec() {
-            return CODEC;
+        public Type() {
+            super(ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "update_server_quest"), CODEC);
         }
 
         @Override

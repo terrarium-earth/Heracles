@@ -1,7 +1,6 @@
 package earth.terrarium.heracles.api.client.settings.tasks;
 
 import com.mojang.datafixers.util.Either;
-import com.teamresourceful.resourcefullib.common.codecs.predicates.NbtPredicate;
 import earth.terrarium.heracles.api.client.settings.CustomizableQuestElementSettings;
 import earth.terrarium.heracles.api.client.settings.SettingInitializer;
 import earth.terrarium.heracles.api.client.settings.base.EnumSetting;
@@ -11,6 +10,7 @@ import earth.terrarium.heracles.api.tasks.CollectionType;
 import earth.terrarium.heracles.api.tasks.defaults.GatherItemTask;
 import earth.terrarium.heracles.common.utils.RegistryValue;
 import net.minecraft.Optionull;
+import net.minecraft.core.component.DataComponentPredicate;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -40,7 +40,7 @@ public class ItemTaskSettings implements SettingInitializer<GatherItemTask>, Cus
                 title,
                 icon,
                 new RegistryValue<>(item.mapLeft(ItemStack::getItemHolder)),
-                getNbt(item, getDefaultNbt(object)),
+                getComponents(item, getDefaultComponents(object)),
                 data.get("amount", IntSetting.ONE).orElse(getDefaultCount(object)),
                 data.get("collection_type", COLLECTION_TYPE).orElse(Optionull.mapOrDefault(object, GatherItemTask::collectionType, CollectionType.AUTOMATIC))
             );
@@ -51,7 +51,7 @@ public class ItemTaskSettings implements SettingInitializer<GatherItemTask>, Cus
         return Optionull.mapOrDefault(object,
             task -> task.item().getValue().map(item -> {
                 ItemStack stack = new ItemStack(item);
-                stack.setTag(task.nbt().tag());
+                stack.applyComponents(task.components().asPatch());
                 return Either.left(stack);
             }, Either::right),
             Either.left(Items.AIR.getDefaultInstance())
@@ -62,13 +62,13 @@ public class ItemTaskSettings implements SettingInitializer<GatherItemTask>, Cus
         return Optionull.mapOrDefault(object, GatherItemTask::target, 1);
     }
 
-    private static NbtPredicate getDefaultNbt(GatherItemTask object) {
-        return Optionull.mapOrDefault(object, GatherItemTask::nbt, NbtPredicate.ANY);
+    private static DataComponentPredicate getDefaultComponents(GatherItemTask object) {
+        return Optionull.mapOrDefault(object, GatherItemTask::components, DataComponentPredicate.EMPTY);
     }
 
-    private static NbtPredicate getNbt(Either<ItemStack, TagKey<Item>> item, NbtPredicate backup) {
+    private static DataComponentPredicate getComponents(Either<ItemStack, TagKey<Item>> item, DataComponentPredicate backup) {
         return item.map(
-            stack -> stack.hasTag() ? new NbtPredicate(stack.getTag()) : backup,
+            stack -> stack.getComponents().isEmpty() ? DataComponentPredicate.allOf(stack.getComponents()) : backup,
             tag -> backup
         );
     }

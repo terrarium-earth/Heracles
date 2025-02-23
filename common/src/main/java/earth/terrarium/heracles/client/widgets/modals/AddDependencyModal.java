@@ -22,7 +22,7 @@ import java.util.Locale;
 
 public class AddDependencyModal extends BaseModal {
 
-    private static final ResourceLocation TEXTURE = new ResourceLocation(Heracles.MOD_ID, "textures/gui/dependencies.png");
+    private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "textures/gui/dependencies.png");
     private static final int WIDTH = 168;
     private static final int HEIGHT = 179;
 

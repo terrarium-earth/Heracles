@@ -5,7 +5,8 @@ import com.teamresourceful.resourcefullib.common.network.base.ClientboundPacketT
 import com.teamresourceful.resourcefullib.common.network.base.PacketType;
 import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.client.HeraclesClient;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 
@@ -21,23 +22,18 @@ public record QuestRewardClaimedPacket(String id, List<Item> items) implements P
 
     private static class Type implements ClientboundPacketType<QuestRewardClaimedPacket> {
         @Override
-        public Class<QuestRewardClaimedPacket> type() {
-            return QuestRewardClaimedPacket.class;
-        }
-
-        @Override
         public ResourceLocation id() {
-            return new ResourceLocation(Heracles.MOD_ID, "quest_reward_claimed");
+            return ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "quest_reward_claimed");
         }
 
         @Override
-        public void encode(QuestRewardClaimedPacket message, FriendlyByteBuf buffer) {
+        public void encode(QuestRewardClaimedPacket message, RegistryFriendlyByteBuf buffer) {
             buffer.writeUtf(message.id());
             buffer.writeCollection(message.items(), (buf, item) -> buf.writeVarInt(Item.getId(item)));
         }
 
         @Override
-        public QuestRewardClaimedPacket decode(FriendlyByteBuf buffer) {
+        public QuestRewardClaimedPacket decode(RegistryFriendlyByteBuf buffer) {
             return new QuestRewardClaimedPacket(
                 buffer.readUtf(),
                 buffer.readList(buf -> Item.byId(buf.readVarInt()))

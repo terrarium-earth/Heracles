@@ -24,7 +24,7 @@ import java.util.List;
 
 public class UploadModal extends BaseModal implements FileWidget {
 
-    public static final ResourceLocation TEXTURE = new ResourceLocation(Heracles.MOD_ID, "textures/gui/uploading.png");
+    public static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "textures/gui/uploading.png");
     private static final int WIDTH = 168;
     private static final int HEIGHT = 173;
 
@@ -125,8 +125,8 @@ public class UploadModal extends BaseModal implements FileWidget {
     }
 
     @Override
-    public boolean mouseScrolled(double mouseX, double mouseY, double scrollAmount) {
-        this.scrollAmount = Mth.clamp(this.scrollAmount - scrollAmount * 10, 0.0D, Math.max(0, (this.items.size() * 28) - 130));
+    public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
+        this.scrollAmount = Mth.clamp(this.scrollAmount - scrollY * 10, 0.0D, Math.max(0, (this.items.size() * 28) - 130));
         return true;
     }
 

@@ -12,9 +12,9 @@ import earth.terrarium.heracles.api.quests.defaults.ItemQuestIcon;
 import earth.terrarium.heracles.api.tasks.QuestTask;
 import earth.terrarium.heracles.api.tasks.QuestTaskType;
 import earth.terrarium.heracles.api.tasks.storage.defaults.BooleanTaskStorage;
+import earth.terrarium.heracles.common.blocks.BlockSource;
 import earth.terrarium.heracles.common.utils.RegistryValue;
 import net.minecraft.Optionull;
-import net.minecraft.core.BlockSource;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.NumericTag;
 import net.minecraft.resources.ResourceLocation;
@@ -30,12 +30,12 @@ public record BlockInteractTask(
 
     @Override
     public NumericTag test(QuestTaskType<?> type, NumericTag progress, BlockSource input) {
-        BlockState blockState = input.getBlockState();
-        BlockEntity blockEntity = input.getEntity();
+        BlockState blockState = input.blockState();
+        BlockEntity blockEntity = input.blockEntity();
         return storage().of(progress,
             block().is(blockState.getBlockHolder()) &&
                 state().matches(blockState) &&
-                nbt().matches(Optionull.map(blockEntity, BlockEntity::saveWithFullMetadata))
+                nbt().matches(Optionull.map(blockEntity, (BlockEntity entity) -> entity.saveWithFullMetadata(input.level().registryAccess())))
         );
     }
 
@@ -57,7 +57,7 @@ public record BlockInteractTask(
     private static class Type implements QuestTaskType<BlockInteractTask> {
         @Override
         public ResourceLocation id() {
-            return new ResourceLocation(Heracles.MOD_ID, "block_interaction");
+            return ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "block_interaction");
         }
 
         @Override
@@ -68,7 +68,7 @@ public record BlockInteractTask(
                 QuestIcons.CODEC.optionalFieldOf("icon", ItemQuestIcon.AIR).forGetter(BlockInteractTask::icon),
                 RegistryValue.codec(Registries.BLOCK).fieldOf("block").forGetter(BlockInteractTask::block),
                 BlockStatePredicate.CODEC.fieldOf("state").orElse(BlockStatePredicate.ANY).forGetter(BlockInteractTask::state),
-                NbtPredicate.CODEC.fieldOf("nbt").orElse(NbtPredicate.ANY).forGetter(BlockInteractTask::nbt)
+                NbtPredicate.CODEC.fieldOf("components").orElse(NbtPredicate.ANY).forGetter(BlockInteractTask::nbt)
             ).apply(instance, BlockInteractTask::new));
         }
     }

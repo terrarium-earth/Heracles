@@ -47,7 +47,7 @@ public record BiomeTask(
 
         @Override
         public ResourceLocation id() {
-            return new ResourceLocation(Heracles.MOD_ID, "biome");
+            return ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "biome");
         }
 
         @Override

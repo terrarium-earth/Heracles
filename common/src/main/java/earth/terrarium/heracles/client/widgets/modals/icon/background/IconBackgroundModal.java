@@ -19,7 +19,7 @@ import java.util.function.Consumer;
 
 public class IconBackgroundModal extends BaseModal {
 
-    public static final ResourceLocation TEXTURE = new ResourceLocation(Heracles.MOD_ID, "textures/gui/uploading.png");
+    public static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "textures/gui/uploading.png");
     public static final Component TITLE = Component.translatable("gui.heracles.quests.choose_background");
     private static final int WIDTH = 168;
     private static final int HEIGHT = 173;
@@ -95,8 +95,8 @@ public class IconBackgroundModal extends BaseModal {
     }
 
     @Override
-    public boolean mouseScrolled(double mouseX, double mouseY, double scrollAmount) {
-        this.scrollAmount = Mth.clamp(this.scrollAmount - scrollAmount * 10, 0.0D, Math.max(0, innerHeight - 130));
+    public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
+        this.scrollAmount = Mth.clamp(this.scrollAmount - scrollY * 10, 0.0D, Math.max(0, innerHeight - 130));
         return true;
     }
 

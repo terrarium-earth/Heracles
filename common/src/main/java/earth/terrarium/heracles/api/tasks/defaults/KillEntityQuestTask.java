@@ -51,7 +51,7 @@ public record KillEntityQuestTask(
 
         @Override
         public ResourceLocation id() {
-            return new ResourceLocation(Heracles.MOD_ID, "kill_entity");
+            return ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "kill_entity");
         }
 
         @Override

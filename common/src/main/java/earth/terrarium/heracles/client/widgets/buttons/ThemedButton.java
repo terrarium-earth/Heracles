@@ -10,7 +10,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public interface ThemedButton {
-    ResourceLocation TEXTURE = new ResourceLocation(Heracles.MOD_ID, "textures/gui/buttons.png");
+    ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "textures/gui/buttons.png");
 
     default ResourceLocation getTexture() {
         return TEXTURE;

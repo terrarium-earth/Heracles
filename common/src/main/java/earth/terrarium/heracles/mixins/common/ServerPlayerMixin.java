@@ -16,6 +16,7 @@ import net.minecraft.stats.Stat;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -38,7 +39,7 @@ public abstract class ServerPlayerMixin {
 
     @SuppressWarnings("DataFlowIssue")
     @Inject(method = "triggerRecipeCrafted", at = @At("HEAD"))
-    private void heracles$triggerRecipeCrafted(Recipe<?> recipe, List<ItemStack> items, CallbackInfo ci) {
+    private void heracles$triggerRecipeCrafted(RecipeHolder<?> recipe, List<ItemStack> items, CallbackInfo ci) {
         ServerPlayer player = (ServerPlayer) (Object) this;
         QuestsProgress progress = QuestProgressHandler.getProgress(server, player.getUUID());
         progress.testAndProgressTaskType(player, recipe, RecipeTask.TYPE);

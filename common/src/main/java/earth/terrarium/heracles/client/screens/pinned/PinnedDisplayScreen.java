@@ -17,7 +17,7 @@ import java.util.List;
 
 public class PinnedDisplayScreen extends Screen {
 
-    private static final ResourceLocation TEXTURE = new ResourceLocation(Heracles.MOD_ID, "textures/gui/pinned.png");
+    private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "textures/gui/pinned.png");
 
     private int sectionWidth = 0;
     private int sectionHeight = 0;

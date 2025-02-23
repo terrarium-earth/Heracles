@@ -5,6 +5,7 @@ import earth.terrarium.heracles.api.tasks.defaults.BlockInteractTask;
 import earth.terrarium.heracles.api.tasks.defaults.EntityInteractTask;
 import earth.terrarium.heracles.api.tasks.defaults.ItemInteractTask;
 import earth.terrarium.heracles.api.tasks.defaults.KillEntityQuestTask;
+import earth.terrarium.heracles.common.blocks.BlockSource;
 import earth.terrarium.heracles.common.commands.ModCommands;
 import earth.terrarium.heracles.common.handlers.progress.QuestProgressHandler;
 import earth.terrarium.heracles.common.utils.PlatformSettings;
@@ -15,7 +16,6 @@ import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.fabricmc.fabric.api.event.player.UseEntityCallback;
 import net.fabricmc.fabric.api.event.player.UseItemCallback;
 import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.core.BlockSourceImpl;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
@@ -50,7 +50,7 @@ public class HeraclesFabric {
             if (!(player instanceof ServerPlayer serverPlayer)) return InteractionResult.PASS;
 
             QuestProgressHandler.getProgress(serverPlayer.server, serverPlayer.getUUID())
-                .testAndProgressTaskType(serverPlayer, new BlockSourceImpl(serverPlayer.serverLevel(), hitResult.getBlockPos()), BlockInteractTask.TYPE);
+                .testAndProgressTaskType(serverPlayer, new BlockSource(serverPlayer.serverLevel(), hitResult.getBlockPos()), BlockInteractTask.TYPE);
 
             return InteractionResult.PASS;
         });

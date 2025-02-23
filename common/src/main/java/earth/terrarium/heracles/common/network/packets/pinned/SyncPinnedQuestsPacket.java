@@ -7,7 +7,7 @@ import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.client.handlers.ClientQuests;
 import earth.terrarium.heracles.client.handlers.PinnedQuests;
 import earth.terrarium.heracles.common.handlers.progress.QuestProgress;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.LinkedHashMap;
@@ -25,17 +25,12 @@ public record SyncPinnedQuestsPacket(Map<String, QuestProgress> quests) implemen
     private static class Type implements ClientboundPacketType<SyncPinnedQuestsPacket> {
 
         @Override
-        public Class<SyncPinnedQuestsPacket> type() {
-            return SyncPinnedQuestsPacket.class;
-        }
-
-        @Override
         public ResourceLocation id() {
-            return new ResourceLocation(Heracles.MOD_ID, "sync_pinned_quests");
+            return ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "sync_pinned_quests");
         }
 
         @Override
-        public void encode(SyncPinnedQuestsPacket message, FriendlyByteBuf buffer) {
+        public void encode(SyncPinnedQuestsPacket message, RegistryFriendlyByteBuf buffer) {
             buffer.writeVarInt(message.quests.size());
             for (var entry : message.quests.entrySet()) {
                 buffer.writeUtf(entry.getKey());
@@ -44,7 +39,7 @@ public record SyncPinnedQuestsPacket(Map<String, QuestProgress> quests) implemen
         }
 
         @Override
-        public SyncPinnedQuestsPacket decode(FriendlyByteBuf buffer) {
+        public SyncPinnedQuestsPacket decode(RegistryFriendlyByteBuf buffer) {
             Map<String, QuestProgress> quests = new LinkedHashMap<>();
             int size = buffer.readVarInt();
             for (int i = 0; i < size; i++) {

@@ -48,7 +48,7 @@ public record CheckTask(
 
         @Override
         public ResourceLocation id() {
-            return new ResourceLocation(Heracles.MOD_ID, "check");
+            return ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "check");
         }
 
         @Override
@@ -57,7 +57,7 @@ public record CheckTask(
                 RecordCodecBuilder.point(id),
                 Codec.STRING.optionalFieldOf("title", "").forGetter(CheckTask::title),
                 QuestIcons.CODEC.optionalFieldOf("icon", ItemQuestIcon.AIR).forGetter(CheckTask::icon),
-                NbtPredicate.CODEC.fieldOf("nbt").orElse(NbtPredicate.ANY).forGetter(CheckTask::nbt)
+                NbtPredicate.CODEC.fieldOf("components").orElse(NbtPredicate.ANY).forGetter(CheckTask::nbt)
             ).apply(instance, CheckTask::new));
         }
     }

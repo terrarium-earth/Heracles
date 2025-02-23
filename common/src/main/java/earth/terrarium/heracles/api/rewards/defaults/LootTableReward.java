@@ -1,6 +1,7 @@
 package earth.terrarium.heracles.api.rewards.defaults;
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.api.CustomizableQuestElement;
@@ -9,7 +10,9 @@ import earth.terrarium.heracles.api.quests.QuestIcons;
 import earth.terrarium.heracles.api.quests.defaults.ItemQuestIcon;
 import earth.terrarium.heracles.api.rewards.QuestReward;
 import earth.terrarium.heracles.api.rewards.QuestRewardType;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
@@ -37,7 +40,7 @@ public record LootTableReward(
             .withParameter(LootContextParams.ORIGIN, player.position())
             .withOptionalParameter(LootContextParams.THIS_ENTITY, player)
             .create(LootContextParamSets.CHEST);
-        LootTable table = player.server.getLootData().getLootTable(lootTable);
+        LootTable table = player.server.reloadableRegistries().getLootTable(ResourceKey.create(Registries.LOOT_TABLE, lootTable));
         if (table == LootTable.EMPTY) {
             player.sendSystemMessage(Component.translatable("gui.heracles.error.loot.not_found", lootTable));
             return Stream.empty();
@@ -60,7 +63,7 @@ public record LootTableReward(
 
     public static void mergeItemStacks(List<ItemStack> items, ItemStack stack) {
         for (ItemStack item : items) {
-            if (ItemStack.isSameItemSameTags(item, stack)) {
+            if (ItemStack.isSameItemSameComponents(item, stack)) {
                 item.grow(stack.getCount());
                 return;
             }
@@ -77,12 +80,12 @@ public record LootTableReward(
 
         @Override
         public ResourceLocation id() {
-            return new ResourceLocation(Heracles.MOD_ID, "loottable");
+            return ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "loottable");
         }
 
         @Override
-        public Codec<LootTableReward> codec(String id) {
-            return RecordCodecBuilder.create(instance -> instance.group(
+        public MapCodec<LootTableReward> codec(String id) {
+            return RecordCodecBuilder.mapCodec(instance -> instance.group(
                 RecordCodecBuilder.point(id),
                 Codec.STRING.optionalFieldOf("title", "").forGetter(LootTableReward::title),
                 QuestIcons.CODEC.optionalFieldOf("icon", ItemQuestIcon.AIR).forGetter(LootTableReward::icon),

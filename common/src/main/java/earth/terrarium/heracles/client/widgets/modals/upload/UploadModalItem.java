@@ -57,8 +57,8 @@ public record UploadModalItem(Path path, @Nullable Quest quest, String size, Lis
                 try {
                     JsonObject json = Constants.PRETTY_GSON.fromJson(content, JsonObject.class);
                     final String finalSize = size;
-                    return Quest.CODEC.parse(RegistryOps.create(JsonOps.INSTANCE, Heracles.getRegistryAccess()), json).get()
-                        .map(
+                    return Quest.CODEC.parse(RegistryOps.create(JsonOps.INSTANCE, Heracles.getRegistryAccess()), json)
+                        .mapOrElse(
                             quest -> new UploadModalItem(path, quest, finalSize, List.of(), Icon.SUCCESS),
                             error -> {
                                 var errors = new ArrayList<Component>();

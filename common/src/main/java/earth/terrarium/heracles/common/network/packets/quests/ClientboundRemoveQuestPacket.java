@@ -5,7 +5,7 @@ import com.teamresourceful.resourcefullib.common.network.base.ClientboundPacketT
 import com.teamresourceful.resourcefullib.common.network.base.PacketType;
 import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.client.handlers.ClientQuests;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 
 public record ClientboundRemoveQuestPacket(String id) implements Packet<ClientboundRemoveQuestPacket> {
@@ -20,22 +20,17 @@ public record ClientboundRemoveQuestPacket(String id) implements Packet<Clientbo
     private static class Type implements ClientboundPacketType<ClientboundRemoveQuestPacket> {
 
         @Override
-        public Class<ClientboundRemoveQuestPacket> type() {
-            return ClientboundRemoveQuestPacket.class;
-        }
-
-        @Override
         public ResourceLocation id() {
-            return new ResourceLocation(Heracles.MOD_ID, "remove_client_quest");
+            return ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "remove_client_quest");
         }
 
         @Override
-        public void encode(ClientboundRemoveQuestPacket message, FriendlyByteBuf buffer) {
+        public void encode(ClientboundRemoveQuestPacket message, RegistryFriendlyByteBuf buffer) {
             buffer.writeUtf(message.id);
         }
 
         @Override
-        public ClientboundRemoveQuestPacket decode(FriendlyByteBuf buffer) {
+        public ClientboundRemoveQuestPacket decode(RegistryFriendlyByteBuf buffer) {
             return new ClientboundRemoveQuestPacket(buffer.readUtf());
         }
 

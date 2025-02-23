@@ -1,6 +1,6 @@
 package earth.terrarium.heracles.api.quests.defaults;
 
-import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.teamresourceful.resourcefullib.client.scissor.ScissorBoxStack;
 import earth.terrarium.heracles.Heracles;
@@ -35,12 +35,12 @@ public record ItemQuestIcon(ItemValue item) implements QuestIcon<ItemQuestIcon> 
 
         @Override
         public ResourceLocation id() {
-            return new ResourceLocation(Heracles.MOD_ID, "item");
+            return ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "item");
         }
 
         @Override
-        public Codec<ItemQuestIcon> codec() {
-            return RecordCodecBuilder.create(instance -> instance.group(
+        public MapCodec<ItemQuestIcon> codec() {
+            return RecordCodecBuilder.mapCodec(instance -> instance.group(
                 ItemValue.CODEC.fieldOf("item").forGetter(ItemQuestIcon::item)
             ).apply(instance, ItemQuestIcon::new));
         }

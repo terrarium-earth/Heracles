@@ -1,15 +1,20 @@
 package earth.terrarium.heracles.client.screens.quest;
 
-import earth.terrarium.heracles.client.tags.SubtitleTagElement;
+import com.google.auto.service.AutoService;
+import earth.terrarium.heracles.client.tags.SubtitleElement;
 import earth.terrarium.heracles.client.tags.WidgetTagElement;
-import earth.terrarium.hermes.api.DefaultTagProvider;
+import earth.terrarium.hermes.api.ElementExtension;
+import earth.terrarium.hermes.api.rendering.HtmlRenderer;
+import earth.terrarium.hermes.api.rendering.HtmlStyle;
+import dev.dediamondpro.minemark.MineMarkCoreBuilder;
 
-public class QuestTagProvider extends DefaultTagProvider {
+@AutoService(ElementExtension.class)
+public class QuestTagProvider implements ElementExtension {
 
-    public QuestTagProvider() {
-        super();
-        addSerializer("subtitle", SubtitleTagElement::new);
-        addSerializer("task", WidgetTagElement::ofTask);
-        addSerializer("reward", WidgetTagElement::ofReward);
+    @Override
+    public void addDefaultElements(MineMarkCoreBuilder<HtmlStyle, HtmlRenderer> builder) {
+        builder.addElement("subtitle", SubtitleElement::new);
+        builder.addElement("task", WidgetTagElement::ofTask);
+        builder.addElement("reward", WidgetTagElement::ofReward);
     }
 }

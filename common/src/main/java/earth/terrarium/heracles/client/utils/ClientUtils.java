@@ -83,8 +83,7 @@ public class ClientUtils {
             RenderSystem.setShaderTexture(0, atlasLocation);
             RenderSystem.setShader(GameRenderer::getPositionTexShader);
             this.matrix4f = graphics.pose().last().pose();
-            this.bufferBuilder = Tesselator.getInstance().getBuilder();
-            bufferBuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
+            this.bufferBuilder = Tesselator.getInstance().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
         }
 
         public void addBlit(int x, int y, int uOffset, int vOffset, int uWidth, int vHeight) {
@@ -97,15 +96,15 @@ public class ClientUtils {
         }
 
         private void innerAddBlit(int x1, int x2, int y1, int y2, float minU, float maxU, float minV, float maxV) {
-            bufferBuilder.vertex(matrix4f, x1, y1, 0).uv(minU, minV).endVertex();
-            bufferBuilder.vertex(matrix4f, x1, y2, 0).uv(minU, maxV).endVertex();
-            bufferBuilder.vertex(matrix4f, x2, y2, 0).uv(maxU, maxV).endVertex();
-            bufferBuilder.vertex(matrix4f, x2, y1, 0).uv(maxU, minV).endVertex();
+            bufferBuilder.addVertex(matrix4f, x1, y1, 0).setUv(minU, minV);
+            bufferBuilder.addVertex(matrix4f, x1, y2, 0).setUv(minU, maxV);
+            bufferBuilder.addVertex(matrix4f, x2, y2, 0).setUv(maxU, maxV);
+            bufferBuilder.addVertex(matrix4f, x2, y1, 0).setUv(maxU, minV);
         }
 
         @Override
         public void close() {
-            BufferUploader.drawWithShader(bufferBuilder.end());
+            BufferUploader.drawWithShader(bufferBuilder.buildOrThrow());
         }
     }
 }

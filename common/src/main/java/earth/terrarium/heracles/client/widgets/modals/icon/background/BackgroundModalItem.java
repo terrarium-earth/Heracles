@@ -34,13 +34,12 @@ public record BackgroundModalItem(ResourceLocation texture) {
 
         RenderSystem.enableBlend();
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
-        BufferBuilder bufferBuilder = Tesselator.getInstance().getBuilder();
-        bufferBuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
-        bufferBuilder.vertex(matrix, x + xStart, y + 2, 0).uv(0, 0).endVertex();
-        bufferBuilder.vertex(matrix, x + xStart, y + 2 + info.height(), 0).uv(0, 1).endVertex();
-        bufferBuilder.vertex(matrix, x + xStart + info.width() * 5, y + 2 + info.height(), 0).uv(1, 1).endVertex();
-        bufferBuilder.vertex(matrix, x + xStart + info.width() * 5, y + 2, 0).uv(1, 0).endVertex();
-        BufferUploader.drawWithShader(bufferBuilder.end());
+        BufferBuilder bufferBuilder = Tesselator.getInstance().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
+        bufferBuilder.addVertex(matrix, x + xStart, y + 2, 0).setUv(0, 0);
+        bufferBuilder.addVertex(matrix, x + xStart, y + 2 + info.height(), 0).setUv(0, 1);
+        bufferBuilder.addVertex(matrix, x + xStart + info.width() * 5, y + 2 + info.height(), 0).setUv(1, 1);
+        bufferBuilder.addVertex(matrix, x + xStart + info.width() * 5, y + 2, 0).setUv(1, 0);
+        BufferUploader.drawWithShader(bufferBuilder.buildOrThrow());
         RenderSystem.disableBlend();
 
         if (hovering && mouseX >= x && mouseX <= x + WIDTH && mouseY >= y && mouseY <= y + info.height() + 4) {

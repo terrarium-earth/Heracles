@@ -78,7 +78,7 @@ public class AutocompleteEditBox<T> extends EditBox {
             if (!filteredSuggestions.isEmpty()) {
                 String suggestion = filteredSuggestions.get((int) ((mouseY - (this.getY() + this.getHeight() + 1)) / 10));
                 this.setValue(suggestion);
-                this.moveCursorToEnd();
+                this.moveCursorToEnd(isFocused());
             }
             return true;
         }

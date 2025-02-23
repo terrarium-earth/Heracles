@@ -20,7 +20,7 @@ import java.util.List;
 
 public class PinnedQuestDisplay {
 
-    private static final ResourceLocation TEXTURE = new ResourceLocation(Heracles.MOD_ID, "textures/gui/pinned.png");
+    private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "textures/gui/pinned.png");
 
     public static void render(GuiGraphics graphics) {
         Minecraft mc = Minecraft.getInstance();

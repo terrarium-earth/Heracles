@@ -1,18 +1,17 @@
 architectury {
-    forge()
+    neoForge()
 }
 
 loom {
-    forge {
-        mixinConfig("heracles-common.mixins.json")
+    neoForge {
+        // mixinConfig("heracles-common.mixins.json")
     }
 }
 
 dependencies {
-    val minecraftVersion: String by project
-    val forgeVersion: String by project
+    val neoforgeVersion: String by project
 
-    forge(group = "net.minecraftforge", name = "forge", version = "$minecraftVersion-$forgeVersion")
+    neoForge(group = "net.neoforged", name = "neoforge", version = neoforgeVersion)
 
     compileOnly("com.teamresourceful:yabn:1.0.3")
     forgeRuntimeLibrary("com.teamresourceful:yabn:1.0.3")

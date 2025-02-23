@@ -23,7 +23,7 @@ import java.util.function.BooleanSupplier;
 
 public class CreateObjectModal extends BaseModal {
 
-    public static final ResourceLocation TEXTURE = new ResourceLocation(Heracles.MOD_ID, "textures/gui/create_object.png");
+    public static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "textures/gui/create_object.png");
     private static final int WIDTH = 168;
     private static final int HEIGHT = 84;
 

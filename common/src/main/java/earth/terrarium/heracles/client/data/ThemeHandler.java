@@ -18,7 +18,7 @@ import java.util.Optional;
 public class ThemeHandler extends SimplePreparableReloadListener<Optional<Theme>> {
     public static final ThemeHandler INSTANCE = new ThemeHandler();
 
-    private static final ResourceLocation THEME_LOCATION = new ResourceLocation(Heracles.MOD_ID, "theme.json");
+    private static final ResourceLocation THEME_LOCATION = ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "theme.json");
     private static final Gson GSON = new Gson();
 
     @Override

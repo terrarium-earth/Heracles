@@ -2,10 +2,7 @@ package earth.terrarium.heracles.client.screens.quests;
 
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.BufferBuilder;
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
-import com.mojang.blaze3d.vertex.Tesselator;
-import com.mojang.blaze3d.vertex.VertexFormat;
+import com.mojang.blaze3d.vertex.*;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.math.Axis;
 import com.teamresourceful.resourcefullib.client.CloseablePoseStack;
@@ -49,7 +46,7 @@ public class QuestsWidget extends BaseWidget {
     private static final Vector2i MAX = new Vector2i(5000, 5000);
     private static final Vector2i MIN = new Vector2i(-5000, -5000);
 
-    private static final ResourceLocation ARROW = new ResourceLocation(Heracles.MOD_ID, "textures/gui/arrow.png");
+    private static final ResourceLocation ARROW = ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "textures/gui/arrow.png");
 
 
     private final Set<String> visibleQuests = new HashSet<>();
@@ -223,7 +220,6 @@ public class QuestsWidget extends BaseWidget {
             RenderSystem.enableBlend();
 
             Tesselator tesselator = Tesselator.getInstance();
-            BufferBuilder buffer = tesselator.getBuilder();
 
             final Set<Pair<Vector2i, Vector2i>> lines = new HashSet<>();
 
@@ -259,12 +255,12 @@ public class QuestsWidget extends BaseWidget {
                         pose.translate(x + offset.x(), y + offset.y(), 0);
                         pose.mulPose(Axis.ZP.rotation((float) Mth.atan2(cy - py, cx - px)));
 
-                        buffer.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
-                        buffer.vertex(pose.last().pose(), 0, -2, 0).uv(0, 0).endVertex();
-                        buffer.vertex(pose.last().pose(), 0, 2, 0).uv(0, 1).endVertex();
-                        buffer.vertex(pose.last().pose(), length, 2, 0).uv(length / 3f, 1).endVertex();
-                        buffer.vertex(pose.last().pose(), length, -2, 0).uv(length / 3f, 0).endVertex();
-                        tesselator.end();
+                        BufferBuilder buffer = tesselator.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
+                        buffer.addVertex(pose.last().pose(), 0, -2, 0).setUv(0, 0);
+                        buffer.addVertex(pose.last().pose(), 0, 2, 0).setUv(0, 1);
+                        buffer.addVertex(pose.last().pose(), length, 2, 0).setUv(length / 3f, 1);
+                        buffer.addVertex(pose.last().pose(), length, -2, 0).setUv(length / 3f, 0);
+                        BufferUploader.drawWithShader(buffer.buildOrThrow());
                     }
                 }
             }
@@ -306,11 +302,11 @@ public class QuestsWidget extends BaseWidget {
     }
 
     @Override
-    public boolean mouseScrolled(double mouseX, double mouseY, double scrollAmount) {
+    public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
         if (Screen.hasShiftDown()) {
-            offset.add((int) scrollAmount * 10, 0);
+            offset.add((int) scrollY * 10, 0);
         } else {
-            offset.add(0, (int) scrollAmount * 10);
+            offset.add(0, (int) scrollY * 10);
         }
         offset.set(-Mth.clamp(-offset.x(), minX, maxX), -Mth.clamp(-offset.y(), minY, maxY)); // Flip offset to use bounds properly (fix offset itself eventually)
         return true;

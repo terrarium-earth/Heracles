@@ -151,7 +151,7 @@ public class SelectQuestWidget extends BaseWidget {
         addChild(ThemedButton.builder(Component.literal("\uD83D\uDD89"), b -> {
                 if (Minecraft.getInstance().screen instanceof QuestsEditScreen screen && this.entry != null) {
                     EditObjectModal edit = screen.findOrCreateEditWidget();
-                    ResourceLocation id = new ResourceLocation(Heracles.MOD_ID, "quest");
+                    ResourceLocation id = ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "quest");
                     QuestSettings settings = this.entry.value().settings();
                     edit.init(
                         id,

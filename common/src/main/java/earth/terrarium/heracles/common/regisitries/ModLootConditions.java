@@ -12,5 +12,5 @@ public class ModLootConditions {
 
     public static final ResourcefulRegistry<LootItemConditionType> TYPES = ResourcefulRegistries.create(BuiltInRegistries.LOOT_CONDITION_TYPE, Heracles.MOD_ID);
 
-    public static final RegistryEntry<LootItemConditionType> COMPLETED_QUEST = TYPES.register("completed_quest", () -> new LootItemConditionType(new CompletedQuestCondition.Serializer()));
+    public static final RegistryEntry<LootItemConditionType> COMPLETED_QUEST = TYPES.register("completed_quest", () -> new LootItemConditionType(CompletedQuestCondition.CODEC));
 }

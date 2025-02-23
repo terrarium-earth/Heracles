@@ -15,6 +15,7 @@ import earth.terrarium.heracles.api.tasks.PairQuestTask;
 import earth.terrarium.heracles.api.tasks.QuestTaskType;
 import earth.terrarium.heracles.api.tasks.storage.defaults.IntegerTaskStorage;
 import earth.terrarium.heracles.common.utils.RegistryValue;
+import net.minecraft.core.component.DataComponentPredicate;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.NumericTag;
 import net.minecraft.resources.ResourceLocation;
@@ -29,7 +30,7 @@ import java.util.List;
 import java.util.Optional;
 
 public record GatherItemTask(
-    String id, String title, QuestIcon<?> icon, RegistryValue<Item> item, NbtPredicate nbt, int target, CollectionType collectionType
+    String id, String title, QuestIcon<?> icon, RegistryValue<Item> item, DataComponentPredicate components, int target, CollectionType collectionType
 ) implements PairQuestTask<Optional<ItemStack>, Container, NumericTag, GatherItemTask>, CustomizableQuestElement {
 
     public static final QuestTaskType<GatherItemTask> TYPE = new Type();
@@ -41,7 +42,7 @@ public record GatherItemTask(
                 return manual(progress, container);
             }
         } else if (stack.isPresent()) {
-            if (this.item.is(stack.get().getItemHolder()) && nbt.matches(stack.get().getTag(), false)) {
+            if (this.item.is(stack.get().getItemHolder()) && components.test(stack.get())) {
                 return automatic(progress, container);
             }
         }
@@ -61,7 +62,7 @@ public record GatherItemTask(
         int amount = 0;
         for (int i = 0; i < container.getContainerSize(); i++) {
             ItemStack itemStack = container.getItem(i);
-            if (this.item.is(itemStack.getItemHolder()) && nbt.matches(itemStack.getTag(), false)) {
+            if (this.item.is(itemStack.getItemHolder()) && components.test(itemStack)) {
                 amount += itemStack.getCount();
                 list.add(itemStack);
             }
@@ -90,7 +91,7 @@ public record GatherItemTask(
         List<ItemStack> list = new ArrayList<>();
         for (int i = 0; i < input.getContainerSize(); i++) {
             ItemStack itemStack = input.getItem(i);
-            if (this.item.is(itemStack.getItemHolder()) && nbt.matches(itemStack.getTag(), false)) {
+            if (this.item.is(itemStack.getItemHolder()) && components.test(itemStack)) {
                 amountFound += itemStack.getCount();
                 list.add(itemStack);
                 if (amountFound >= shrink) break;
@@ -127,7 +128,7 @@ public record GatherItemTask(
 
         @Override
         public ResourceLocation id() {
-            return new ResourceLocation(Heracles.MOD_ID, "item");
+            return ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "item");
         }
 
         @Override
@@ -137,7 +138,7 @@ public record GatherItemTask(
                 Codec.STRING.optionalFieldOf("title", "").forGetter(GatherItemTask::title),
                 QuestIcons.CODEC.optionalFieldOf("icon", ItemQuestIcon.AIR).forGetter(GatherItemTask::icon),
                 RegistryValue.codec(Registries.ITEM).fieldOf("item").forGetter(GatherItemTask::item),
-                NbtPredicate.CODEC.fieldOf("nbt").orElse(NbtPredicate.ANY).forGetter(GatherItemTask::nbt),
+                DataComponentPredicate.CODEC.fieldOf("components").orElse(DataComponentPredicate.EMPTY).forGetter(GatherItemTask::components),
                 Codec.INT.fieldOf("amount").orElse(1).forGetter(GatherItemTask::target),
                 EnumCodec.of(CollectionType.class).fieldOf("collection").orElse(CollectionType.AUTOMATIC).forGetter(GatherItemTask::collectionType)
             ).apply(instance, GatherItemTask::new));
@@ -149,7 +150,7 @@ public record GatherItemTask(
             return RecordCodecBuilder.create(instance -> instance.group(
                 RecordCodecBuilder.point(id),
                 RegistryValue.codec(Registries.ITEM).fieldOf("item").forGetter(GatherItemTask::item),
-                NbtPredicate.CODEC.fieldOf("nbt").orElse(NbtPredicate.ANY).forGetter(GatherItemTask::nbt),
+                DataComponentPredicate.CODEC.fieldOf("components").orElse(DataComponentPredicate.EMPTY).forGetter(GatherItemTask::components),
                 Codec.INT.fieldOf("amount").orElse(1).forGetter(GatherItemTask::target),
                 Codec.BOOL.fieldOf("manual").orElse(false).forGetter(task -> task.collectionType == CollectionType.MANUAL)
             ).apply(instance, (i, item, nbt, amount, manual) -> new GatherItemTask(i, "", new ItemQuestIcon(Items.AIR), item, nbt, amount, manual ? CollectionType.MANUAL : CollectionType.CONSUME)));

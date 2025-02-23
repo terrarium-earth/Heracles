@@ -1,5 +1,6 @@
 package earth.terrarium.heracles.common.blocks;
 
+import com.mojang.serialization.MapCodec;
 import earth.terrarium.heracles.common.regisitries.ModItems;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.BlockGetter;
@@ -21,7 +22,11 @@ public class BarrierBlock extends BaseEntityBlock {
     }
 
     @Override
-    @SuppressWarnings("deprecation")
+    protected MapCodec<? extends BaseEntityBlock> codec() {
+        return simpleCodec(BarrierBlock::new);
+    }
+
+    @Override
     public @NotNull VoxelShape getCollisionShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
         if (context instanceof EntityCollisionContext entityContext) {
             if (level.getBlockEntity(pos) instanceof BarrierBlockEntity barrier) {
@@ -34,7 +39,6 @@ public class BarrierBlock extends BaseEntityBlock {
     }
 
     @Override
-    @SuppressWarnings("deprecation")
     public @NotNull VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
         if (context.isHoldingItem(ModItems.BARRIER.get())) {
             return Shapes.block();
@@ -43,8 +47,7 @@ public class BarrierBlock extends BaseEntityBlock {
     }
 
     @Override
-    @SuppressWarnings("deprecation")
-    public boolean isPathfindable(BlockState state, BlockGetter level, BlockPos pos, PathComputationType type) {
+    protected boolean isPathfindable(BlockState state, PathComputationType pathComputationType) {
         return false;
     }
 
@@ -54,7 +57,6 @@ public class BarrierBlock extends BaseEntityBlock {
     }
 
     @Override
-    @SuppressWarnings("deprecation")
     public float getShadeBrightness(BlockState state, BlockGetter level, BlockPos pos) {
         return 1.0F;
     }

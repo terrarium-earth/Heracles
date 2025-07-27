@@ -16,6 +16,7 @@
         "client.AbstractButtonMixin",
         "client.ClientLevelMixin",
         "client.InternalKeyPressedScreen",
+        "client.MinecraftClientMixin",
         "client.ScreenMixin"
     ],
     "injectors": {

@@ -13,6 +13,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.ImageButton;
 import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.gui.components.Tooltip;
+import net.minecraft.client.gui.components.WidgetSprites;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
@@ -53,11 +54,11 @@ public abstract class AbstractQuestScreen<T> extends BaseCursorScreen {
         questContentWidth = (int) (width * QUEST_CONTENT_PORTION);
 
         if (hasBackButton) {
-            addRenderableWidget(new ImageButton(1, 1, 11, 11, 0, 15, 11, HEADING, 256, 256, (button) ->
+            addRenderableWidget(new ImageButton(1, 1, 11, 11, getWidgetSprites("heading/add"), (button) ->
                 goBack()
             )).setTooltip(Tooltip.create(CommonComponents.GUI_BACK));
         }
-        addRenderableWidget(new ImageButton(this.width - 12, 1, 11, 11, 11, 15, 11, HEADING, 256, 256, (button) -> {
+        addRenderableWidget(new ImageButton(this.width - 12, 1, 11, 11, getWidgetSprites("heading/close"), (button) -> {
             if (this.minecraft != null && this.minecraft.player != null) {
                 this.minecraft.player.closeContainer();
             }
@@ -209,5 +210,11 @@ public abstract class AbstractQuestScreen<T> extends BaseCursorScreen {
     @Override
     public boolean isPauseScreen() {
         return false;
+    }
+
+    public static WidgetSprites getWidgetSprites(String name) {
+        ResourceLocation normal = ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, name);
+        ResourceLocation hovered = ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, name + "_hovered");
+        return new WidgetSprites(normal, normal, hovered);
     }
 }

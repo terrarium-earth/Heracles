@@ -1,53 +1,50 @@
 package earth.terrarium.heracles.client.widgets;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import earth.terrarium.heracles.client.widgets.buttons.ThemedButton;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.components.ImageButton;
+import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.function.IntConsumer;
 
-public class StateImageButton extends ImageButton implements ThemedButton {
+public class StateImageButton extends Button implements ThemedButton {
 
     private final IntConsumer onPress;
     private final int states;
 
     private int selected;
 
+    private final ResourceLocation resourceLocation;
+
     public StateImageButton(
         int x, int y,
         int width, int height,
-        int xTexStart, int yTexStart, int diffTex,
-        ResourceLocation resourceLocation, int textureWidth, int textureHeight,
+        ResourceLocation resourceLocation,
         int states,
         IntConsumer onPress
     ) {
         super(
             x, y,
             width, height,
-            xTexStart, yTexStart,
-            diffTex,
-            resourceLocation,
-            textureWidth, textureHeight,
-            b -> {}, CommonComponents.EMPTY
+            CommonComponents.EMPTY,
+            b -> {},
+            DEFAULT_NARRATION
         );
+        this.resourceLocation = resourceLocation;
         this.states = states;
         this.onPress = onPress;
     }
 
     @Override
     public void renderWidget(GuiGraphics graphics, int i, int j, float f) {
-        int u = xTexStart;
-        int v = yTexStart;
+        ResourceLocation actualRL = resourceLocation;
         if (this.isHovered()) {
-            v += yDiffTex;
+            actualRL = actualRL.withSuffix("_hovered");
         }
-        u += yDiffTex * selected;
+        actualRL = actualRL.withSuffix("_" + selected);
 
-        RenderSystem.enableDepthTest();
-        graphics.blit(resourceLocation, getX(), getY(), u, v, width, height, textureWidth, textureHeight);
+        graphics.blitSprite(actualRL, getX(), getY(), width, height);
     }
 
     @Override

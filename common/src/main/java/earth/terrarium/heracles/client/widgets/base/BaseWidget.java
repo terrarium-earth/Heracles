@@ -34,7 +34,7 @@ public abstract class BaseWidget extends AbstractContainerEventHandler implement
             }
         }
         if (Minecraft.getInstance().screen instanceof CursorScreen cursorScreen) {
-            cursorScreen.setCursor(children);
+            cursorScreen.setCursor(children, mouseX, mouseY);
         }
     }
 

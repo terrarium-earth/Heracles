@@ -15,6 +15,7 @@ import earth.terrarium.olympus.client.ui.modals.BaseModal;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 
@@ -36,43 +37,43 @@ public class SelectRewardsModal extends BaseModal {
     private double scrollAmount;
     private int lastFullHeight;
 
-    public SelectRewardsModal(int screenWidth, int screenHeight) {
-        super(screenWidth, screenHeight, (int) (screenWidth * 0.75f), (int) (screenHeight * 0.8f));
+    public SelectRewardsModal(Screen screen) {
+        super(Component.empty(), screen);
 
-        claimButton = addChild(ThemedButton.builder(ConstantComponents.Rewards.CLAIM_REWARD, b -> {
-            this.setVisible(false);
+        claimButton = addWidget(ThemedButton.builder(ConstantComponents.Rewards.CLAIM_REWARD, b -> {
+            onClose();
             if (callback != null) {
                 callback.accept(selected);
             }
-        }).bounds(this.x + this.width - 58, this.y + this.height - 20, 50, 16).build());
+        }).bounds(this.left + this.width - 58, this.top + this.height - 20, 50, 16).build());
 
         this.lastFullHeight = this.height - 42;
     }
 
-    @Override
-    protected void renderBackground(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+    /*@Override
+    public void renderBackground(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
         graphics.blitNineSliced(TEXTURE, x, y, width, height, 4, 4, 4, 4, 128, 128, 0, 0);
         graphics.blitNineSliced(TEXTURE, x + 7, y + 18, width - 14, height - 40, 1, 1, 1, 1, 128, 128, 128, 0);
 
         renderChildren(graphics, mouseX, mouseY, partialTick);
-    }
+    }*/
 
     @Override
-    protected void renderForeground(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+    public void renderForeground(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
         graphics.drawString(
             font,
-            Component.translatable(maxSelectable > 1 ? TITLE_PLURAL : TITLE_SINGULAR, maxSelectable), x + 10, y + 6, ModalsTheme.getTitle(),
+            Component.translatable(maxSelectable > 1 ? TITLE_PLURAL : TITLE_SINGULAR, maxSelectable), left + 10, top + 6, ModalsTheme.getTitle(),
             false
         );
         graphics.drawString(
             font,
-            selected.size() + "/" + maxSelectable, x + 10, y + height - 15, ModalsTheme.getRewardsAmount(),
+            selected.size() + "/" + maxSelectable, left + 10, top + height - 15, ModalsTheme.getRewardsAmount(),
             false
         );
 
         int fullHeight = 0;
-        int x = this.x + 10;
-        int y = this.y + 19;
+        int x = this.left + 10;
+        int y = this.top + 19;
         int width = this.width - 20;
         int height = this.height - 46;
 
@@ -82,7 +83,7 @@ public class SelectRewardsModal extends BaseModal {
                 DisplayWidget widget = entry.getValue();
                 String id = entry.getKey();
                 var itemheight = widget.getHeight(width) + 4;
-                if (mouseY >= y - this.scrollAmount && mouseY < y + itemheight - this.scrollAmount && mouseY >= this.y + 19 && mouseY < this.y + this.height - 24 && mouseX >= this.x + 10 && mouseX < this.x + this.width - 10) {
+                if (mouseY >= y - this.scrollAmount && mouseY < y + itemheight - this.scrollAmount && mouseY >= this.top + 19 && mouseY < this.left + this.height - 24 && mouseX >= this.top + 10 && mouseX < this.left + this.width - 10) {
                     CursorUtils.setCursor(true, CursorScreen.Cursor.POINTER);
                 }
                 if (this.selected.contains(id)) {
@@ -111,12 +112,12 @@ public class SelectRewardsModal extends BaseModal {
         boolean result = super.mouseClicked(mouseX, mouseY, button);
         if (result) return true;
         if (isMouseOver(mouseX, mouseY)) {
-            int y = this.y + 19;
+            int y = this.top + 19;
             for (var entry : this.widgets.entrySet()) {
                 DisplayWidget widget = entry.getValue();
                 String id = entry.getKey();
                 var itemheight = widget.getHeight(this.width - 20) + 4;
-                if (mouseY >= y - this.scrollAmount && mouseY <= y + itemheight - this.scrollAmount && mouseY >= this.y + 19 && mouseY < this.y + this.height - 24 && mouseX >= this.x + 10 && mouseX < this.x + this.width - 10) {
+                if (mouseY >= y - this.scrollAmount && mouseY <= y + itemheight - this.scrollAmount && mouseY >= this.top + 19 && mouseY < this.top + this.height - 24 && mouseX >= this.left + 10 && mouseX < this.left + this.width - 10) {
                     if (this.selected.contains(id)) {
                         this.selected.remove(id);
                     } else if (selected.size() < maxSelectable) {

@@ -33,7 +33,7 @@ import java.util.function.Consumer;
 
 public class ItemModal extends BaseModal {
 
-    public static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "textures/gui/icons.png");
+    public static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "icons/mode");
     public static final Component TITLE = Component.translatable("gui.heracles.choose_item");
     public static final Component MODE_TOOLTIP = Component.translatable("gui.heracles.switch_mode");
     private static final int WIDTH = 168;
@@ -55,7 +55,7 @@ public class ItemModal extends BaseModal {
 
     public ItemModal(int screenWidth, int screenHeight) {
         super(screenWidth, screenHeight, WIDTH, HEIGHT, 2);
-        this.modeButton = addChild(new StateImageButton(x + 7, y + 5, 11, 11, 168, 0, 11, TEXTURE, 256, 256, 3, this::update));
+        this.modeButton = addChild(new StateImageButton(x + 7, y + 5, 11, 11, TEXTURE, 3, this::update));
         this.search = addChild(new EditBox(Minecraft.getInstance().font, x + 8, y + 19, 152, 14, ConstantComponents.SEARCH));
         this.search.setResponder(text -> this.scroll = 0);
     }

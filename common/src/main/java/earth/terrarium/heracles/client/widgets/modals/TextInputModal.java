@@ -19,7 +19,7 @@ import java.util.function.Predicate;
 
 public class TextInputModal<T> extends BaseModal {
 
-    public static final ResourceLocation TEXTURE = new ResourceLocation(Heracles.MOD_ID, "textures/gui/text.png");
+    public static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "textures/gui/text.png");
     private static final int WIDTH = 168;
     private static final int HEIGHT = 57;
 

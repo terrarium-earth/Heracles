@@ -181,7 +181,7 @@ public class SelectQuestWidget extends BaseWidget {
         if (this.entry == null) return;
         updateWidgets();
 
-        graphics.blitRepeating(AbstractQuestScreen.HEADING, this.x - 2, this.y, 2, this.height, 128, 0, 2, 256);
+        graphics.blitSprite(ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "gui/heading/select_quest_background"), this.x - 2, this.y, 2, this.height);
 
         //Title
         graphics.drawString(

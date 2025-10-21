@@ -9,6 +9,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.toasts.Toast;
 import net.minecraft.client.gui.components.toasts.ToastComponent;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -16,6 +17,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.*;
 
 public class QuestClaimedToast implements Toast {
+    private static final ResourceLocation BACKGROUND_SPRITE = ResourceLocation.withDefaultNamespace("toast/advancement");
     private static final long DISPLAY_TIME = 5000L;
     private static final Component TITLE_TEXT = Component.translatable("rewards." + Heracles.MOD_ID + ".toast");
     private final Map<Quest, Set<Item>> questItems = new LinkedHashMap<>();
@@ -60,7 +62,7 @@ public class QuestClaimedToast implements Toast {
         } else {
             Pair<Quest, ItemStack> entry = renderItems.get((int) (timeSinceLastVisible / Math.max(1L, (DISPLAY_TIME * questItems.size()) / renderItems.size()) % renderItems.size()));
 
-            graphics.blit(TEXTURE, 0, 0, 0, 0, width(), height());
+            graphics.blitSprite(BACKGROUND_SPRITE, 0, 0, width(), height());
             graphics.drawString(
                 toastComponent.getMinecraft().font,
                 TITLE_TEXT, 30, 7, ToastsTheme.getClaimedTitle(),

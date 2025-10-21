@@ -133,11 +133,9 @@ public final class AdvancementTaskWidget implements DisplayWidget {
         List<Component> titles = new ArrayList<>();
         for (ResourceLocation id : task.advancements()) {
             titles.add(
-                Optionull.mapOrDefault(
-                    ClientAdvancementDisplays.get(id),
-                    display -> Optionull.mapOrDefault(display, DisplayInfo::getTitle, getTranslation(id)),
-                    getTranslation(id)
-                )
+                ClientAdvancementDisplays.get(id).map(
+                    display -> Optionull.mapOrDefault(display, DisplayInfo::getTitle, getTranslation(id))
+                ).orElse(getTranslation(id))
             );
         }
         titles.removeIf(Objects::isNull);
@@ -155,10 +153,9 @@ public final class AdvancementTaskWidget implements DisplayWidget {
         List<ItemStack> icons = new ArrayList<>();
         for (ResourceLocation id : task.advancements()) {
             icons.add(
-                Optionull.map(
-                    ClientAdvancementDisplays.get(id),
+                ClientAdvancementDisplays.get(id).map(
                     display -> Optionull.map(display, DisplayInfo::getIcon)
-                )
+                ).orElse(null)
             );
         }
         icons.removeIf(Objects::isNull);

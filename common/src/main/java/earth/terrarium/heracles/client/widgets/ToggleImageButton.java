@@ -6,12 +6,11 @@ import net.minecraft.resources.ResourceLocation;
 
 public class ToggleImageButton extends StateImageButton implements ThemedButton {
 
-    public ToggleImageButton(int x, int y, int width, int height, int xTexStart, int yTexStart, int yDiffTex, ResourceLocation resourceLocation, int textureWidth, int textureHeight, BooleanConsumer onPress) {
+    public ToggleImageButton(int x, int y, int width, int height, ResourceLocation resourceLocation, BooleanConsumer onPress) {
         super(
             x, y,
             width, height,
-            xTexStart, yTexStart, yDiffTex,
-            resourceLocation, textureWidth, textureHeight,
+            resourceLocation,
             2, i -> onPress.accept(i == 1)
         );
     }

@@ -101,7 +101,7 @@ public final class WidgetUtils {
             pose.mulPose(Axis.YP.rotationDegrees(rot));
             EntityRenderDispatcher entityRenderer = mc.getEntityRenderDispatcher();
             MultiBufferSource.BufferSource buffer = mc.renderBuffers().bufferSource();
-            entityRenderer.render(entity, 0, 0, 0.0D, mc.getFrameTime(), 1, pose, buffer, LightTexture.FULL_BRIGHT);
+            entityRenderer.render(entity, 0, 0, 0.0D, mc.getTimer().getGameTimeDeltaPartialTick(true), 1, pose, buffer, LightTexture.FULL_BRIGHT);
             buffer.endBatch();
         }
     }

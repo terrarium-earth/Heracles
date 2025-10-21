@@ -8,15 +8,17 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.toasts.Toast;
 import net.minecraft.client.gui.components.toasts.ToastComponent;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 
 public class QuestTutorialToast implements Toast {
+    private static final ResourceLocation BACKGROUND_SPRITE = ResourceLocation.withDefaultNamespace("toast/tutorial");
     private static final Component TITLE_TEXT = Component.translatable("quest.heracles.tutorial.title");
 
     @Override
     @NotNull
     public Toast.Visibility render(GuiGraphics graphics, ToastComponent toastComponent, long timeSinceLastVisible) {
-        graphics.blit(TEXTURE, 0, 0, 0, 96, this.width(), this.height());
+        graphics.blitSprite(BACKGROUND_SPRITE, 0, 0, this.width(), this.height());
         graphics.drawString(
             toastComponent.getMinecraft().font,
             TITLE_TEXT, 32, 7, ToastsTheme.getTutorialTitle(),

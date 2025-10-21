@@ -51,7 +51,7 @@ public record SelectableRewardWidget(SelectableReward reward, String quest, Ques
     public void claimReward() {
         if (Minecraft.getInstance().screen instanceof BaseQuestScreen screen) {
             boolean found = false;
-            SelectRewardsModal widget = new SelectRewardsModal(screen.width, screen.height);
+            SelectRewardsModal widget = new SelectRewardsModal(screen);
             for (TemporaryWidget temporaryWidget : screen.temporaryWidgets()) {
                 if (temporaryWidget instanceof SelectRewardsModal modal) {
                     found = true;
@@ -59,14 +59,14 @@ public record SelectableRewardWidget(SelectableReward reward, String quest, Ques
                     break;
                 }
             }
-            widget.setVisible(true);
+            Minecraft.getInstance().setScreen(widget);
             widget.updateRewards(this.reward.rewards().values(), this.reward.amount(), stuff -> {
                 this.progress.claimReward(this.reward.id());
                 NetworkHandler.CHANNEL.sendToServer(new ClaimSelectableRewardsPacket(this.quest, this.reward.id(), stuff));
             });
-            if (!found) {
+            /*if (!found) {
                 screen.addTemporary(widget);
-            }
+            }*/
         }
     }
 

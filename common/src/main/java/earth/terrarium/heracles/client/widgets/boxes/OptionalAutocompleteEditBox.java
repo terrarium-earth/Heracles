@@ -49,7 +49,9 @@ public class OptionalAutocompleteEditBox<T> extends AutocompleteEditBox<T> {
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        return this.checkbox.mouseClicked(mouseX, mouseY, button) | super.mouseClicked(mouseX, mouseY, button);
+        boolean value = this.checkbox.mouseClicked(mouseX, mouseY, button) | super.mouseClicked(mouseX, mouseY, button);
+        this.updateEditBoxEditability();
+        return value;
     }
 
     @Override
@@ -59,7 +61,9 @@ public class OptionalAutocompleteEditBox<T> extends AutocompleteEditBox<T> {
 
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-        return this.checkbox.keyPressed(keyCode, scanCode, modifiers) | super.keyPressed(keyCode, scanCode, modifiers);
+        boolean value = this.checkbox.keyPressed(keyCode, scanCode, modifiers) | super.keyPressed(keyCode, scanCode, modifiers);
+        this.updateEditBoxEditability();
+        return value;
     }
 
     @Override

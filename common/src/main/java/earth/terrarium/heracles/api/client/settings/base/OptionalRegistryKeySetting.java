@@ -26,26 +26,25 @@ public record OptionalRegistryKeySetting<T>(
 
     @Override
     public OptionalAutocompleteEditBox<String> createWidget(int width, ResourceKey<T> value) {
-        OptionalAutocompleteEditBox<String> optionalBox = new OptionalAutocompleteEditBox<>(Minecraft.getInstance().font, 0, 0, width, 11,
+        OptionalAutocompleteEditBox<String> box = new OptionalAutocompleteEditBox<>(Minecraft.getInstance().font, 0, 0, width, 11,
             (text, item) -> item.contains(text) && !item.equals(text), Function.identity(), s -> {});
-        AutocompleteEditBox<String> box = optionalBox.getEditBox();
         box.setMaxLength(Short.MAX_VALUE);
         List<String> suggestions = new ArrayList<>();
         var registry = Heracles.getRegistryAccess().registry(key).orElse(null);
         if (registry == null) {
-            return optionalBox;
+            return box;
         }
         registry.keySet().stream().map(ResourceLocation::toString).forEach(suggestions::add);
         box.setSuggestions(suggestions);
 
         String id = Optionull.map(value, key -> key.location().toString());
-        optionalBox.setValue(id);
-        return optionalBox;
+        box.setValue(id);
+        return box;
     }
 
     @Override
     public ResourceKey<T> getValue(OptionalAutocompleteEditBox<String> widget) {
-        String value = widget.value();
+        String value = widget.nullableValue();
         if (value == null) return null;
         ResourceLocation id = ResourceLocation.tryParse(value);
         return Optional.ofNullable(id)

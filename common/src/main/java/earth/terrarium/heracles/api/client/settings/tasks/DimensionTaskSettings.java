@@ -27,8 +27,8 @@ public class DimensionTaskSettings implements SettingInitializer<ChangedDimensio
             id,
             title,
             icon,
-            data.get("from", OptionalRegistryKeySetting.DIMENSION).orElse(Optionull.map(object, ChangedDimensionTask::from)),
-            data.get("to", OptionalRegistryKeySetting.DIMENSION).orElse(Optionull.map(object, ChangedDimensionTask::to))
+            data.get("from", OptionalRegistryKeySetting.DIMENSION).orElse(null),
+            data.get("to", OptionalRegistryKeySetting.DIMENSION).orElse(null)
         ));
     }
 }

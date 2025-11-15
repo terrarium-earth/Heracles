@@ -9,6 +9,9 @@ import net.minecraft.nbt.Tag;
 
 import java.util.*;
 
+/**
+ * Records a player’s progress for an individual quest.
+ */
 public class QuestProgress {
 
     private final Map<String, TaskProgress<?>> tasks = new HashMap<>();

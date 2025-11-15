@@ -21,6 +21,11 @@ import net.minecraft.server.level.ServerPlayer;
 
 import java.util.*;
 
+/**
+ * Records a player’s progress for all quests.
+ * @param progress a map between quest IDs and the progress for the corresponding quest
+ * @param completableQuests a record of which quests a player can make progress toward
+ */
 public record QuestsProgress(Map<String, QuestProgress> progress, CompletableQuests completableQuests) {
 
     public QuestsProgress(Map<String, QuestProgress> progress) {

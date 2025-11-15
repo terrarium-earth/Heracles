@@ -100,7 +100,7 @@ public record QuestsProgress(Map<String, QuestProgress> progress, CompletableQue
     }
 
     public <I, T extends QuestTask<I, ?, T>> boolean testAndProgressTask(ServerPlayer player, String id, String task, I input, QuestTaskType<T> taskType) {
-        List<String> completableQuests = this.completableQuests.getQuests(this);
+        Collection<String> completableQuests = this.completableQuests.getQuests(this);
         if (!completableQuests.contains(id)) return false;
         QuestProgress questProgress = getProgress(id);
         Quest quest = QuestHandler.get(id);
@@ -144,7 +144,7 @@ public record QuestsProgress(Map<String, QuestProgress> progress, CompletableQue
                     }
                 }
                 memberProgress.completableQuests.updateCompleteQuests(memberProgress, serverPlayer);
-                List<String> questIds = memberProgress.completableQuests.getQuests(memberProgress);
+                Collection<String> questIds = memberProgress.completableQuests.getQuests(memberProgress);
                 if (serverPlayer != null) {
                     QuestProgressHandler.sync(serverPlayer, questIds);
                 }

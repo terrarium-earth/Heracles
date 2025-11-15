@@ -12,18 +12,15 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.server.level.ServerPlayer;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.BiConsumer;
 
 public class CompletableQuests {
 
     private boolean updated = false;
-    private final List<String> quests = new ArrayList<>();
+    private final Set<String> quests = new HashSet<>();
 
-    public List<String> getQuests(QuestsProgress progress) {
+    public Collection<String> getQuests(QuestsProgress progress) {
         if (!this.updated) {
             this.updateCompleteQuests(progress);
         }

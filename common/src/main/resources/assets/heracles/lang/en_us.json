@@ -9,6 +9,8 @@
     "quest.heracles.available": "Available",
     "quest.heracles.claimed": "Claimed",
     "quest.heracles.dependencies_visible": "Parents Visible",
+    "quest.heracles.linear": "Linear",
+    "quest.heracles.flexible": "Flexible",
 
     "quest.heracles.toast": "Quest Complete!",
     "quest.heracles.toast.desc": "Press [%s] to open",
@@ -101,6 +103,7 @@
     "setting.heracles.quest.show_dependency_arrow": "Show Dependency Arrow",
     "setting.heracles.quest.repeatable": "Repeatable",
     "setting.heracles.quest.auto_claim_rewards": "Auto Claim Rewards",
+    "setting.heracles.quest.progression_mode": "Progression Mode",
 
     "rei.sections.odyssey": "Project Odyssey",
     "rei.heracles.heracles.tooltip": "Open Quests",

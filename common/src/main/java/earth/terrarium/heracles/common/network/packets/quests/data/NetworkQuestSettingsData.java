@@ -4,6 +4,7 @@ import com.teamresourceful.bytecodecs.base.ByteCodec;
 import com.teamresourceful.bytecodecs.base.object.ObjectByteCodec;
 import earth.terrarium.heracles.api.quests.Quest;
 import earth.terrarium.heracles.api.quests.QuestDisplayStatus;
+import earth.terrarium.heracles.api.quests.QuestProgressionMode;
 import earth.terrarium.heracles.api.quests.QuestSettings;
 
 import java.util.Optional;
@@ -14,7 +15,8 @@ public record NetworkQuestSettingsData(
     Optional<Boolean> unlockNotification,
     Optional<Boolean> showDependencyArrow,
     Optional<Boolean> repeatable,
-    Optional<Boolean> autoClaimRewards
+    Optional<Boolean> autoClaimRewards,
+    Optional<QuestProgressionMode> progressionMode
 ) {
 
     public static final ByteCodec<NetworkQuestSettingsData> CODEC = ObjectByteCodec.create(
@@ -24,6 +26,7 @@ public record NetworkQuestSettingsData(
         ByteCodec.BOOLEAN.optionalFieldOf(NetworkQuestSettingsData::showDependencyArrow),
         ByteCodec.BOOLEAN.optionalFieldOf(NetworkQuestSettingsData::repeatable),
         ByteCodec.BOOLEAN.optionalFieldOf(NetworkQuestSettingsData::autoClaimRewards),
+        ByteCodec.ofEnum(QuestProgressionMode.class).optionalFieldOf(NetworkQuestSettingsData::progressionMode),
         NetworkQuestSettingsData::new
     );
 
@@ -35,5 +38,6 @@ public record NetworkQuestSettingsData(
         showDependencyArrow.ifPresent(settings::setShowDependencyArrow);
         repeatable.ifPresent(settings::setRepeatable);
         autoClaimRewards.ifPresent(settings::setAutoClaimRewards);
+        progressionMode.ifPresent(settings::setProgressionMode);
     }
 }

@@ -3,10 +3,7 @@ package earth.terrarium.heracles.common.network.packets.quests.data;
 import com.teamresourceful.bytecodecs.base.ByteCodec;
 import com.teamresourceful.bytecodecs.base.object.ObjectByteCodec;
 import com.teamresourceful.resourcefullib.common.utils.TriState;
-import earth.terrarium.heracles.api.quests.GroupDisplay;
-import earth.terrarium.heracles.api.quests.Quest;
-import earth.terrarium.heracles.api.quests.QuestDisplayStatus;
-import earth.terrarium.heracles.api.quests.QuestIcon;
+import earth.terrarium.heracles.api.quests.*;
 import earth.terrarium.heracles.api.rewards.QuestReward;
 import earth.terrarium.heracles.api.rewards.QuestRewards;
 import earth.terrarium.heracles.api.tasks.QuestTask;
@@ -70,6 +67,7 @@ public record NetworkQuestData(
         private TriState showDependencyArrow = TriState.UNDEFINED;
         private TriState repeatable = TriState.UNDEFINED;
         private TriState autoClaimRewards = TriState.UNDEFINED;
+        private QuestProgressionMode progressionMode = null;
         private Set<String> dependencies;
         private Map<String, QuestTask<?, ?, ?>> tasks;
         private Map<String, QuestReward<?>> rewards;
@@ -145,6 +143,11 @@ public record NetworkQuestData(
             return this;
         }
 
+        public Builder progressionMode(QuestProgressionMode progressionMode) {
+            this.progressionMode = progressionMode;
+            return this;
+        }
+
         public Builder dependencies(Set<String> dependencies) {
             this.dependencies = new HashSet<>(dependencies);
             return this;
@@ -173,14 +176,15 @@ public record NetworkQuestData(
                 );
             }
             NetworkQuestSettingsData settings = null;
-            if (individualProgress != TriState.UNDEFINED || hiddenUntil != null || unlockNotification != TriState.UNDEFINED) {
+            if (individualProgress != TriState.UNDEFINED || hiddenUntil != null || unlockNotification != TriState.UNDEFINED || showDependencyArrow != TriState.UNDEFINED || repeatable != TriState.UNDEFINED || autoClaimRewards != TriState.UNDEFINED || progressionMode != null) {
                 settings = new NetworkQuestSettingsData(
                     Optional.ofNullable(individualProgress.isUndefined() ? null : individualProgress.isTrue()),
                     Optional.ofNullable(hiddenUntil),
                     Optional.ofNullable(unlockNotification.isUndefined() ? null : unlockNotification.isTrue()),
                     Optional.ofNullable(showDependencyArrow.isUndefined() ? null : showDependencyArrow.isTrue()),
                     Optional.ofNullable(repeatable.isUndefined() ? null : repeatable.isTrue()),
-                    Optional.ofNullable(autoClaimRewards.isUndefined() ? null : autoClaimRewards.isTrue())
+                    Optional.ofNullable(autoClaimRewards.isUndefined() ? null : autoClaimRewards.isTrue()),
+                    Optional.ofNullable(progressionMode)
                 );
             }
 

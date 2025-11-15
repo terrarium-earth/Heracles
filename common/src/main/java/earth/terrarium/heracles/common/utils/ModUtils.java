@@ -119,15 +119,18 @@ public class ModUtils {
         Map<String, QuestStatus> quests = new HashMap<>();
         QuestsProgress progress = QuestProgressHandler.getProgress(player.server, player.getUUID());
         CompletableQuests completableQuests = progress.completableQuests();
-        for (String quest : completableQuests.getQuests(progress)) {
-            quests.put(quest, QuestStatus.IN_PROGRESS);
-        }
-        for (String quest : completableQuests.getProvisionallyCompletedQuests(progress)) {
-            quests.put(quest, QuestStatus.PROVISIONALLY_COMPLETED);
-        }
         QuestHandler.quests().forEach((id, quest) -> {
             if (!quests.containsKey(id)) {
-                quests.put(id, progress.isComplete(id) ? (progress.isClaimed(id, quest) ? QuestStatus.COMPLETED_CLAIMED : QuestStatus.COMPLETED) : QuestStatus.LOCKED);
+                boolean complete = progress.isComplete(id);
+                boolean unlocked = progress.isUnlocked(id);
+                boolean claimed = progress.isClaimed(id, quest);
+                quests.put(
+                    id,
+                    unlocked ?
+                        (complete ?
+                            (claimed ? QuestStatus.COMPLETED_CLAIMED : QuestStatus.COMPLETED) :
+                            QuestStatus.IN_PROGRESS) :
+                        (complete ? QuestStatus.PROVISIONALLY_COMPLETED : QuestStatus.LOCKED));
             }
         });
         return quests;

@@ -21,7 +21,6 @@ public class CompletableQuests {
     private boolean updated = false;
     private final Set<String> quests = new HashSet<>();
     private final Set<String> provisionalQuests = new HashSet<>();
-    private final Set<String> completedProvisionalQuests = new HashSet<>();
 
     public Collection<String> getQuests(QuestsProgress progress) {
         if (!this.updated) {
@@ -46,33 +45,26 @@ public class CompletableQuests {
             Iterables.transform(this.provisionalQuests, id -> new Entry(id, true)));
     }
 
-    public Collection<String> getProvisionallyCompletedQuests(QuestsProgress progress) {
-        if (!this.updated) {
-            this.updateCompleteQuests(progress);
-        }
-        return this.completedProvisionalQuests;
-    }
-
     public void updateCompleteQuests(QuestsProgress progress, BiConsumer<String, Quest> onUnlocked) {
         this.updated = true;
         this.provisionalQuests.clear();
-        this.completedProvisionalQuests.clear();
         List<String> tempQuests = new ArrayList<>();
         for (var entry : QuestHandler.quests().entrySet()) {
             Quest quest = entry.getValue();
             String id = entry.getKey();
             boolean complete = progress.isComplete(id);
             boolean flexible = quest.settings().progressionMode().isFlexible();
-            if (complete && !flexible) continue;
             if (quest.tasks().isEmpty()) continue;
             if (quest.dependencies().isEmpty()) {
+                progress.setUnlocked(id, true);
                 if (complete) continue;
                 tempQuests.add(id);
                 if (!this.quests.contains(id)) {
                     onUnlocked.accept(id, quest);
                 }
             } else {
-                boolean unlocked = progress.isUnlocked(quest);
+                boolean unlocked = progress.calculateUnlockedStatus(quest);
+                progress.setUnlocked(id, unlocked);
                 if (unlocked) {
                     if (complete) continue;
                     tempQuests.add(id);
@@ -80,7 +72,9 @@ public class CompletableQuests {
                         onUnlocked.accept(id, quest);
                     }
                 } else if (flexible) {
-                    (complete ? completedProvisionalQuests : provisionalQuests).add(id);
+                    if (!complete) {
+                        provisionalQuests.add(id);
+                    }
                 }
             }
         }

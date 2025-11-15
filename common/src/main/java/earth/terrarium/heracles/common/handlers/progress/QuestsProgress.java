@@ -117,20 +117,18 @@ public record QuestsProgress(Map<String, QuestProgress> progress, CompletableQue
     }
 
     public void sendOutQuestChanged(String id, Quest quest, QuestProgress questProgress, ServerPlayer player) {
-        Collection<String> provisionallyCompleted = this.completableQuests().getProvisionallyCompletedQuests(this);
         questProgress.update(quest);
         this.progress.put(id, questProgress);
         PinnedQuestHandler.syncIfChanged(player, List.of(id));
         QuestEntry entry = QuestEntry.of(id, quest);
         if (questProgress.isComplete()) {
-            sendOutQuestComplete(entry, player, provisionallyCompleted.contains(id));
+            sendOutQuestComplete(entry, player, !questProgress.isUnlocked());
         }
         this.completableQuests.updateCompleteQuests(this, player);
         syncToTeam(player, List.of(entry));
     }
 
     private void syncToTeam(ServerPlayer player, List<QuestEntry> quests) {
-        Collection<String> provisionallyCompleted = this.completableQuests().getProvisionallyCompletedQuests(this);
         TeamProviders.getMembers(player)
             .forEach(member -> {
                 QuestsProgress memberProgress = QuestProgressHandler.getProgress(player.server, member);
@@ -143,7 +141,7 @@ public record QuestsProgress(Map<String, QuestProgress> progress, CompletableQue
                     var newTasks = copyTasks(questProgress.tasks());
                     memberProgress.progress.put(entry.id(), new QuestProgress(questProgress.isComplete(), Set.copyOf(Optionull.mapOrDefault(currentProgress, QuestProgress::claimedRewards, new HashSet<>())), newTasks));
                     if (serverPlayer != null && (questProgress.isComplete() && !wasComplete)) {
-                        sendOutQuestComplete(entry, player, provisionallyCompleted.contains(entry.id()));
+                        sendOutQuestComplete(entry, player, !questProgress.isUnlocked());
                     }
                 }
                 memberProgress.completableQuests.updateCompleteQuests(memberProgress, serverPlayer);
@@ -171,7 +169,17 @@ public record QuestsProgress(Map<String, QuestProgress> progress, CompletableQue
         return Optionull.mapOrDefault(progress.get(id), QuestProgress::isComplete, false);
     }
 
-    public boolean isUnlocked(Quest quest) {
+    public boolean isUnlocked(String id) {
+        return Optionull.mapOrDefault(progress.get(id), QuestProgress::isUnlocked, false);
+    }
+
+    public void setUnlocked(String id, boolean unlocked) {
+        QuestProgress progress = this.progress.get(id);
+        if (progress == null && !unlocked) return;
+        this.getProgress(id).setUnlocked(unlocked);
+    }
+
+    public boolean calculateUnlockedStatus(Quest quest) {
         return quest.dependencies().stream().allMatch(this::isComplete);
     }
 

@@ -51,13 +51,13 @@ public record Quest(
         QuestsProgress progresses = QuestProgressHandler.getProgress(player.server, player.getUUID());
         QuestProgress progress = progresses.getProgress(id);
         if (progress == null) return;
-        if (!progresses.isUnlocked(this)) return;
+        if (!progress.isUnlocked()) return;
         if (!progress.isComplete() && !this.tasks.isEmpty()) return;
         claimRewards(player, id, progresses, progress);
     }
 
     public void claimRewards(ServerPlayer player, String id, QuestsProgress progresses, QuestProgress progress) {
-        if (!progresses.isUnlocked(this)) return;
+        if (!progress.isUnlocked()) return;
         if (progress.isClaimed(this)) return;
 
         claimRewards(
@@ -73,7 +73,7 @@ public record Quest(
     public void claimAllowedReward(ServerPlayer player, String id, String rewardId) {
         QuestsProgress progress = QuestProgressHandler.getProgress(player.server, player.getUUID());
         if (!progress.isComplete(id) && !this.tasks.isEmpty()) return;
-        if (!progress.isUnlocked(this)) return;
+        if (!progress.isUnlocked(id)) return;
         if (progress.isClaimed(id, this)) return;
 
         var questProgress = progress.getProgress(id);

@@ -14,7 +14,7 @@ public final class QuestSettings {
         Codec.BOOL.fieldOf("showDependencyArrow").orElse(true).forGetter(QuestSettings::showDependencyArrow),
         Codec.BOOL.fieldOf("repeatable").orElse(false).forGetter(QuestSettings::repeatable),
         Codec.BOOL.fieldOf("autoClaimRewards").orElse(false).forGetter(QuestSettings::autoClaimRewards),
-        EnumCodec.of(QuestProgressionMode.class).fieldOf("progression_mode").forGetter(QuestSettings::progressionMode)
+        EnumCodec.of(QuestProgressionMode.class).fieldOf("progression_mode").orElse(QuestProgressionMode.LINEAR).forGetter(QuestSettings::progressionMode)
     ).apply(instance, QuestSettings::new));
 
     private boolean individualProgress;

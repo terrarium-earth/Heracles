@@ -25,4 +25,8 @@ public enum QuestProgressionMode implements StringRepresentable {
     public @NotNull String getSerializedName() {
         return "quest.heracles.%s".formatted(name().toLowerCase(Locale.ROOT));
     }
+
+    public boolean isFlexible() {
+        return this == FLEXIBLE;
+    }
 }

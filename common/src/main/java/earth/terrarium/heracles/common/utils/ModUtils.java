@@ -11,6 +11,7 @@ import com.teamresourceful.yabn.reader.ArrayByteReader;
 import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.common.handlers.progress.QuestProgressHandler;
 import earth.terrarium.heracles.common.handlers.progress.QuestsProgress;
+import earth.terrarium.heracles.common.handlers.quests.CompletableQuests;
 import earth.terrarium.heracles.common.handlers.quests.QuestHandler;
 import earth.terrarium.heracles.common.menus.quest.QuestContent;
 import earth.terrarium.heracles.common.menus.quests.QuestsContent;
@@ -117,8 +118,12 @@ public class ModUtils {
     private static Map<String, QuestStatus> getQuests(ServerPlayer player) {
         Map<String, QuestStatus> quests = new HashMap<>();
         QuestsProgress progress = QuestProgressHandler.getProgress(player.server, player.getUUID());
-        for (String quest : progress.completableQuests().getQuests(progress)) {
+        CompletableQuests completableQuests = progress.completableQuests();
+        for (String quest : completableQuests.getQuests(progress)) {
             quests.put(quest, QuestStatus.IN_PROGRESS);
+        }
+        for (String quest : completableQuests.getProvisionallyCompletedQuests(progress)) {
+            quests.put(quest, QuestStatus.PROVISIONALLY_COMPLETED);
         }
         QuestHandler.quests().forEach((id, quest) -> {
             if (!quests.containsKey(id)) {
@@ -132,7 +137,8 @@ public class ModUtils {
         LOCKED,
         IN_PROGRESS,
         COMPLETED,
-        COMPLETED_CLAIMED;
+        COMPLETED_CLAIMED,
+        PROVISIONALLY_COMPLETED;
 
         public boolean isComplete() {
             return this == COMPLETED || this == COMPLETED_CLAIMED;

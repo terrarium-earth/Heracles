@@ -14,6 +14,8 @@
 
     "quest.heracles.toast": "Quest Complete!",
     "quest.heracles.toast.desc": "Press [%s] to open",
+    "quest.heracles.toast.provisional": "Quest Tasks Complete!",
+    "quest.heracles.toast.provisional.desc": "You can claim rewards once unlocked",
 
     "quest_unlocked.heracles.toast": "Quest Unlocked!",
     "quest_unlocked.heracles.toast.desc": "Press [%s] to open",

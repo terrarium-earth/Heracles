@@ -68,8 +68,8 @@ public class HeraclesClient {
         QuestClaimedToast.addOrUpdate(Minecraft.getInstance().getToasts(), id, items);
     }
 
-    public static void displayQuestCompleteToast(String id) {
-        QuestCompletedToast.add(Minecraft.getInstance().getToasts(), id);
+    public static void displayQuestCompleteToast(String id, boolean provisional) {
+        QuestCompletedToast.add(Minecraft.getInstance().getToasts(), id, provisional);
     }
 
     public static void displayQuestUnlockedToast(String id) {

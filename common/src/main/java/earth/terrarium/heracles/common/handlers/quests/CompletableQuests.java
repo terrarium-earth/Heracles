@@ -54,23 +54,24 @@ public class CompletableQuests {
             String id = entry.getKey();
             boolean complete = progress.isComplete(id);
             boolean flexible = quest.settings().progressionMode().isFlexible();
+            boolean previouslyUnlocked = progress.isUnlocked(id);
             if (quest.tasks().isEmpty()) continue;
             if (quest.dependencies().isEmpty()) {
+                if (!this.quests.contains(id) && !previouslyUnlocked) {
+                    onUnlocked.accept(id, quest);
+                }
                 progress.setUnlocked(id, true);
                 if (complete) continue;
                 tempQuests.add(id);
-                if (!this.quests.contains(id)) {
-                    onUnlocked.accept(id, quest);
-                }
             } else {
                 boolean unlocked = progress.calculateUnlockedStatus(quest);
                 progress.setUnlocked(id, unlocked);
                 if (unlocked) {
-                    if (complete) continue;
-                    tempQuests.add(id);
-                    if (!this.quests.contains(id)) {
+                    if (!this.quests.contains(id) && !previouslyUnlocked) {
                         onUnlocked.accept(id, quest);
                     }
+                    if (complete) continue;
+                    tempQuests.add(id);
                 } else if (flexible) {
                     if (!complete) {
                         provisionalQuests.add(id);

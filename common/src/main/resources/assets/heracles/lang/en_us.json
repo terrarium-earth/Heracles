@@ -33,6 +33,7 @@
     "gui.heracles.pinned_quests.move": "Move Pinned Quests",
     "gui.heracles.pinned_quests.placeholder": "Quest %s",
     "gui.heracles.quest.title.complete": "✔ %s ✔",
+    "gui.heracles.quest.title.provisional": "⏳ %s ⏳",
     "gui.heracles.progress.title.incomplete": "Incomplete",
     "gui.heracles.progress.title.complete": "Complete",
     "gui.heracles.progress.desc.incomplete.singular": "%s Task Left",

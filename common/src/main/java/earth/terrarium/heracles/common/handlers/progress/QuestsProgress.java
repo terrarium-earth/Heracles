@@ -174,9 +174,23 @@ public record QuestsProgress(Map<String, QuestProgress> progress, CompletableQue
     }
 
     public void setUnlocked(String id, boolean unlocked) {
-        QuestProgress progress = this.progress.get(id);
-        if (progress == null && !unlocked) return;
-        this.getProgress(id).setUnlocked(unlocked);
+        this.progress.compute(
+            id,
+            (k, v) -> {
+                if (v == null) {
+                    if (unlocked) {
+                        QuestProgress progress = new QuestProgress();
+                        progress.setUnlocked(true);
+                        return progress;
+                    } else {
+                        return null;
+                    }
+                } else {
+                    v.setUnlocked(true);
+                    return v;
+                }
+            }
+        );
     }
 
     public boolean calculateUnlockedStatus(Quest quest) {

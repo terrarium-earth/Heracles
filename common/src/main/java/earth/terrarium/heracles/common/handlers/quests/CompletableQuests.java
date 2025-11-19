@@ -1,5 +1,6 @@
 package earth.terrarium.heracles.common.handlers.quests;
 
+import com.google.common.collect.Iterables;
 import earth.terrarium.heracles.api.quests.Quest;
 import earth.terrarium.heracles.api.tasks.QuestTask;
 import earth.terrarium.heracles.common.handlers.progress.QuestProgress;
@@ -12,49 +13,68 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.server.level.ServerPlayer;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.BiConsumer;
 
 public class CompletableQuests {
 
     private boolean updated = false;
-    private final List<String> quests = new ArrayList<>();
+    private final Set<String> quests = new HashSet<>();
+    private final Set<String> provisionalQuests = new HashSet<>();
 
-    public List<String> getQuests(QuestsProgress progress) {
+    public Collection<String> getQuests(QuestsProgress progress) {
         if (!this.updated) {
             this.updateCompleteQuests(progress);
         }
         return this.quests;
     }
 
+    public Iterable<String> getProgressableQuests(QuestsProgress progress) {
+        if (!this.updated) {
+            this.updateCompleteQuests(progress);
+        }
+        return Iterables.concat(this.quests, this.provisionalQuests);
+    }
+
+    public Iterable<Entry> getProgressableQuestEntries(QuestsProgress progress) {
+        if (!this.updated) {
+            this.updateCompleteQuests(progress);
+        }
+        return Iterables.concat(
+            Iterables.transform(this.quests, id -> new Entry(id, false)),
+            Iterables.transform(this.provisionalQuests, id -> new Entry(id, true)));
+    }
+
     public void updateCompleteQuests(QuestsProgress progress, BiConsumer<String, Quest> onUnlocked) {
         this.updated = true;
+        this.provisionalQuests.clear();
         List<String> tempQuests = new ArrayList<>();
         for (var entry : QuestHandler.quests().entrySet()) {
             Quest quest = entry.getValue();
             String id = entry.getKey();
-            if (progress.isComplete(id)) continue;
+            boolean complete = progress.isComplete(id);
+            boolean flexible = quest.settings().progressionMode().isFlexible();
+            boolean previouslyUnlocked = progress.isUnlocked(id);
             if (quest.tasks().isEmpty()) continue;
             if (quest.dependencies().isEmpty()) {
-                tempQuests.add(id);
-                if (!this.quests.contains(id)) {
+                if (!this.quests.contains(id) && !previouslyUnlocked) {
                     onUnlocked.accept(id, quest);
                 }
+                progress.setUnlocked(id, true);
+                if (complete) continue;
+                tempQuests.add(id);
             } else {
-                boolean complete = true;
-                for (String dependency : quest.dependencies()) {
-                    if (!progress.isComplete(dependency)) {
-                        complete = false;
-                        break;
-                    }
-                }
-                if (complete) {
-                    tempQuests.add(id);
-                    if (!this.quests.contains(id)) {
+                boolean unlocked = progress.calculateUnlockedStatus(quest);
+                progress.setUnlocked(id, unlocked);
+                if (unlocked) {
+                    if (!this.quests.contains(id) && !previouslyUnlocked) {
                         onUnlocked.accept(id, quest);
+                    }
+                    if (complete) continue;
+                    tempQuests.add(id);
+                } else if (flexible) {
+                    if (!complete) {
+                        provisionalQuests.add(id);
                     }
                 }
             }
@@ -114,4 +134,5 @@ public class CompletableQuests {
     }
 
     private record UpdatedEntry(String id, Quest quest, Map<String, Tag> newProgress) {}
+    public record Entry(String id, boolean provisional) {}
 }

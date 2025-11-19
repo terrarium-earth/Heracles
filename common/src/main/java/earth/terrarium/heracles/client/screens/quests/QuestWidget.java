@@ -20,6 +20,7 @@ import java.util.List;
 
 public class QuestWidget {
 
+    private static final int NUM_STATUSES = ModUtils.QuestStatus.values().length;
     private final ClientQuests.QuestEntry entry;
     private final Quest quest;
     private final ModUtils.QuestStatus status;
@@ -45,15 +46,15 @@ public class QuestWidget {
             x + x() + info.xOffset(), y + y() + info.yOffset(),
             status.ordinal() * info.width(), 0,
             info.width(), info.height(),
-            info.width() * 5, info.height()
+            info.width() * (NUM_STATUSES + 1), info.height()
         );
 
         if (hovered) {
             graphics.blit(quest.display().iconBackground(),
                 x + x() + info.xOffset(), y + y() + info.yOffset(),
-                4 * info.width(), 0,
+                NUM_STATUSES * info.width(), 0,
                 info.width(), info.height(),
-                info.width() * 5, info.height()
+                info.width() * (NUM_STATUSES + 1), info.height()
             );
         }
         RenderSystem.disableBlend();

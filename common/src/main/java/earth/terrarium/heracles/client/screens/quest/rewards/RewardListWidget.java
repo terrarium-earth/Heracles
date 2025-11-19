@@ -95,7 +95,9 @@ public class RewardListWidget extends AbstractContainerEventHandler implements R
 
             DisplayWidget widget = QuestRewardWidgets.create(reward);
             if (widget == null) continue;
-            if (progress.canClaim(reward.id())) {
+            if (!progress.isUnlocked()) {
+                locked.add(new MutablePair<>(reward, widget));
+            } else if (progress.canClaim(reward.id())) {
                 available.add(new MutablePair<>(reward, widget));
             } else if (progress.isComplete()) {
                 claimed.add(new MutablePair<>(reward, widget));

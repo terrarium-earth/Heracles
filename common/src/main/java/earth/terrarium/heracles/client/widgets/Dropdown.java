@@ -4,7 +4,7 @@ import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.teamresourceful.resourcefullib.client.CloseablePoseStack;
 import com.teamresourceful.resourcefullib.client.utils.RenderUtils;
-import earth.terrarium.heracles.client.widgets.base.BaseModal;
+import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.common.constants.ConstantComponents;
 import net.minecraft.Optionull;
 import net.minecraft.client.Minecraft;
@@ -16,6 +16,7 @@ import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.util.Mth;
 import org.jetbrains.annotations.Nullable;
@@ -72,7 +73,7 @@ public class Dropdown<T> extends AbstractWidget implements Renderable {
         RenderSystem.disableDepthTest();
         RenderSystem.disableBlend();
         if (isFocused()) {
-            graphics.blitNineSliced(BaseModal.TEXTURE, x - 1, y + height + 1, width + 2, (10 * Math.min(MAX_OPTIONS_SHOWN, options.size())) + 2, 2, 2, 2, 2, 128, 128, 128, 1);
+            graphics.blitSprite(ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "modal/dropdown_background"), x - 1, y + height + 1, width + 2, (10 * Math.min(MAX_OPTIONS_SHOWN, options.size())) + 2);
 
             try (var pose = new CloseablePoseStack(graphics)) {
                 pose.translate(0, 0, 10); // This is because minecraft has a weird bug with shadowed text rendered behind other text

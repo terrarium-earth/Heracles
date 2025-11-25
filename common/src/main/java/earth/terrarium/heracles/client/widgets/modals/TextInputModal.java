@@ -19,7 +19,7 @@ import java.util.function.Predicate;
 
 public class TextInputModal<T> extends BaseModal {
 
-    public static final ResourceLocation TEXTURE = new ResourceLocation(Heracles.MOD_ID, "textures/gui/text.png");
+    public static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "textures/gui/text.png");
     private static final int WIDTH = 168;
     private static final int HEIGHT = 57;
 
@@ -75,8 +75,7 @@ public class TextInputModal<T> extends BaseModal {
 
     private Button createButton(Component component, int x, int y, Button.OnPress onPress) {
         int width = Minecraft.getInstance().font.width(component) + 8;
-        return ThemedButton.builder(component, onPress)
-            .bounds(x - width, y, width, 15)
+        return ThemedButton.builder(component, onPress).bounds(x - width, y, width, 15)
             .build();
     }
 

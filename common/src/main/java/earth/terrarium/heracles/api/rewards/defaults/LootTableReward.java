@@ -88,7 +88,7 @@ public record LootTableReward(
             return RecordCodecBuilder.mapCodec(instance -> instance.group(
                 RecordCodecBuilder.point(id),
                 Codec.STRING.optionalFieldOf("title", "").forGetter(LootTableReward::title),
-                QuestIcons.CODEC.optionalFieldOf("icon", ItemQuestIcon.AIR).forGetter(LootTableReward::icon),
+                QuestIcons.CODEC.lenientOptionalFieldOf("icon", ItemQuestIcon.AIR).forGetter(LootTableReward::icon),
                 ResourceLocation.CODEC.fieldOf("loot_table").forGetter(LootTableReward::lootTable)
             ).apply(instance, LootTableReward::new));
         }

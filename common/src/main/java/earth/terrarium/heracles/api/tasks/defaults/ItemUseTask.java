@@ -1,6 +1,6 @@
 package earth.terrarium.heracles.api.tasks.defaults;
 
-import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.teamresourceful.resourcefullib.common.codecs.predicates.NbtPredicate;
 import earth.terrarium.heracles.Heracles;
@@ -47,8 +47,8 @@ public record ItemUseTask(
         }
 
         @Override
-        public Codec<ItemUseTask> codec(String id) {
-            return RecordCodecBuilder.create(instance -> instance.group(
+        public MapCodec<ItemUseTask> codec(String id) {
+            return RecordCodecBuilder.mapCodec(instance -> instance.group(
                 RecordCodecBuilder.point(id),
                 RegistryValue.codec(Registries.ITEM).fieldOf("item").forGetter(ItemUseTask::item),
                 NbtPredicate.CODEC.fieldOf("components").orElse(NbtPredicate.ANY).forGetter(ItemUseTask::nbt)

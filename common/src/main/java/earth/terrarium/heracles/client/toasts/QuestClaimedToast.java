@@ -60,7 +60,7 @@ public class QuestClaimedToast implements Toast {
         } else {
             Pair<Quest, ItemStack> entry = renderItems.get((int) (timeSinceLastVisible / Math.max(1L, (DISPLAY_TIME * questItems.size()) / renderItems.size()) % renderItems.size()));
 
-            graphics.blit(TEXTURE, 0, 0, 0, 0, width(), height());
+            toastComponent.render(graphics);
             graphics.drawString(
                 toastComponent.getMinecraft().font,
                 TITLE_TEXT, 30, 7, ToastsTheme.getClaimedTitle(),

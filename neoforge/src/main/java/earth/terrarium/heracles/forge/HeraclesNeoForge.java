@@ -10,6 +10,7 @@ import earth.terrarium.heracles.common.utils.PlatformSettings;
 import it.unimi.dsi.fastutil.longs.LongSet;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.levelgen.structure.Structure;
+import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.fml.loading.FMLPaths;
@@ -25,24 +26,24 @@ import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 import java.util.Map;
 
 @Mod(Heracles.MOD_ID)
-public class HeraclesForge {
+public final class HeraclesNeoForge {
 
-    public HeraclesForge() {
+    public HeraclesNeoForge(IEventBus modEventBus) {
         Heracles.setConfigPath(FMLPaths.CONFIGDIR.get());
         Heracles.init(new PlatformSettings(false));
 
-        NeoForge.EVENT_BUS.addListener(HeraclesForge::onServerStarting);
-        NeoForge.EVENT_BUS.addListener(HeraclesForge::onAdvancementEarn);
-        NeoForge.EVENT_BUS.addListener(HeraclesForge::onTick);
-        NeoForge.EVENT_BUS.addListener(HeraclesForge::onItemUse);
-        NeoForge.EVENT_BUS.addListener(HeraclesForge::onItemInteract);
-        NeoForge.EVENT_BUS.addListener(HeraclesForge::onBlockInteract);
-        NeoForge.EVENT_BUS.addListener(HeraclesForge::onEntityInteract);
-        NeoForge.EVENT_BUS.addListener(HeraclesForge::onEntityDeath);
-        NeoForge.EVENT_BUS.addListener(HeraclesForge::onRegisterCommands);
+        NeoForge.EVENT_BUS.addListener(HeraclesNeoForge::onServerStarting);
+        NeoForge.EVENT_BUS.addListener(HeraclesNeoForge::onAdvancementEarn);
+        NeoForge.EVENT_BUS.addListener(HeraclesNeoForge::onTick);
+        NeoForge.EVENT_BUS.addListener(HeraclesNeoForge::onItemUse);
+        NeoForge.EVENT_BUS.addListener(HeraclesNeoForge::onItemInteract);
+        NeoForge.EVENT_BUS.addListener(HeraclesNeoForge::onBlockInteract);
+        NeoForge.EVENT_BUS.addListener(HeraclesNeoForge::onEntityInteract);
+        NeoForge.EVENT_BUS.addListener(HeraclesNeoForge::onEntityDeath);
+        NeoForge.EVENT_BUS.addListener(HeraclesNeoForge::onRegisterCommands);
 
         if (FMLEnvironment.dist.isClient()) {
-            HeraclesForgeClient.init();
+            HeraclesNeoForgeClient.init(modEventBus);
         }
     }
 
@@ -65,7 +66,7 @@ public class HeraclesForge {
             .testAndProgressTaskType(player, event.getAdvancement(), AdvancementTask.TYPE);
     }
 
-    private static void onTick(PlayerTickEvent event) {
+    private static void onTick(PlayerTickEvent.Pre event) {
         if (event.getEntity().tickCount % 20 != 0) return;
         if (!(event.getEntity() instanceof ServerPlayer player)) return;
 

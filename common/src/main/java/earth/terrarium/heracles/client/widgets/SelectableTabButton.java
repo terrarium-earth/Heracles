@@ -5,6 +5,7 @@ import earth.terrarium.heracles.client.widgets.buttons.ThemedButton;
 import net.minecraft.client.gui.components.AbstractButton;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 
 public class SelectableTabButton extends AbstractButton implements ThemedButton {
@@ -38,8 +39,8 @@ public class SelectableTabButton extends AbstractButton implements ThemedButton 
     }
 
     @Override
-    public int getTextureY(boolean active, boolean hovered) {
-        return 60 + (selected ? 40 : 0) + (hovered ? 20 : 0);
+    public ResourceLocation getSprite(boolean active, boolean hovered) {
+        return SimpleThemedButton.woodStyleButtons.get(selected, hovered);
     }
 
     @Override

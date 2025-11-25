@@ -47,7 +47,7 @@ public record CommandReward(String id, String title, QuestIcon<?> icon, String c
             return RecordCodecBuilder.mapCodec(instance -> instance.group(
                 RecordCodecBuilder.point(id),
                 Codec.STRING.optionalFieldOf("title", "").forGetter(CommandReward::title),
-                QuestIcons.CODEC.optionalFieldOf("icon", ItemQuestIcon.AIR).forGetter(CommandReward::icon),
+                QuestIcons.CODEC.lenientOptionalFieldOf("icon", ItemQuestIcon.AIR).forGetter(CommandReward::icon),
                 Codec.STRING.fieldOf("command").forGetter(CommandReward::command)
             ).apply(instance, CommandReward::new));
         }

@@ -41,13 +41,13 @@ public class QuestsScreen extends AbstractQuestScreen<QuestsContent> {
     protected void init() {
         super.init();
         if (Minecraft.getInstance().player != null && Minecraft.getInstance().player.hasPermissions(2)) {
-            addRenderableWidget(new ImageButton(this.width - 24, 1, 11, 11, 33, 15, 11, HEADING, 256, 256, (button) ->
+            addRenderableWidget(new ImageButton(this.width - 24, 1, 11, 11, AbstractQuestScreen.getWidgetSprites("heading/edit"), (button) ->
                 NetworkHandler.CHANNEL.sendToServer(new OpenGroupPacket(this.content.group(), this.getClass() == QuestsScreen.class))
             )).setTooltip(Tooltip.create(ConstantComponents.TOGGLE_EDIT));
         }
 
         if (!(this instanceof QuestsEditScreen)) {
-            addRenderableWidget(new ImageButton(sideBarWidth + 3, 1, 11, 11, 44, 15, 11, HEADING, 256, 256, (button) -> {
+            addRenderableWidget(new ImageButton(sideBarWidth + 3, 1, 11, 11, AbstractQuestScreen.getWidgetSprites("heading/claim"), (button) -> {
                 NetworkHandler.CHANNEL.sendToServer(new ClaimRewardsPacket());
             })).setTooltip(Tooltip.create(ConstantComponents.Rewards.CLAIM));
         }

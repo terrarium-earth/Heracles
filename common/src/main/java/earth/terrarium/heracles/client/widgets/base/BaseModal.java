@@ -18,7 +18,7 @@ import net.minecraft.resources.ResourceLocation;
 
 public abstract class BaseModal extends BaseWidget implements TemporaryWidget {
 
-    public static final ResourceLocation TEXTURE = new ResourceLocation(Heracles.MOD_ID, "textures/gui/modal.png");
+    public static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "textures/gui/modal.png");
 
     protected final int screenWidth;
     protected final int screenHeight;
@@ -41,7 +41,7 @@ public abstract class BaseModal extends BaseWidget implements TemporaryWidget {
         this.x = (screenWidth / 2) - (width / 2);
         this.y = (screenHeight / 2) - (height / 2);
 
-        addChild(new ImageButton(this.x + width - 18, this.y + 5, 11, 11, 11, 15, 11, AbstractQuestScreen.HEADING, 256, 256, b ->
+        addChild(new ImageButton(this.x + width - 18, this.y + 5, 11, 11, AbstractQuestScreen.getWidgetSprites("heading/close"), b ->
             setVisible(false)
         )).setTooltip(Tooltip.create(ConstantComponents.CLOSE));
     }

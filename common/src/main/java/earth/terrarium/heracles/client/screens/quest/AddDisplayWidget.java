@@ -18,7 +18,11 @@ public record AddDisplayWidget(Runnable onClicked) implements DisplayWidget {
         hovered = mouseX >= x && mouseX <= x + width && mouseY >= y && mouseY <= y + 30;
 
         RenderSystem.enableBlend();
-        graphics.blitNineSliced(TEXTURE, x, y, width, 30, 3, 128, 30, 128, hovered ? 196 : 226);
+        if(hovered) {
+            graphics.blitSprite(ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "widgets/add_display_widget_hovered"), x, y, width, 30);
+        } else {
+            graphics.blitSprite(ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "widgets/add_display_widget"), x, y, width, 30);
+        }
         graphics.blit(TEXTURE, x + (width / 2) - 16, y, 96, hovered ? 196 : 226, 30, 30);
         RenderSystem.disableBlend();
         CursorUtils.setCursor(hovered, CursorScreen.Cursor.POINTER);

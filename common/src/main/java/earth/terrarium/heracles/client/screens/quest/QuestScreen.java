@@ -2,6 +2,7 @@ package earth.terrarium.heracles.client.screens.quest;
 
 import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.client.HeraclesClient;
+import earth.terrarium.heracles.client.screens.AbstractQuestScreen;
 import earth.terrarium.heracles.client.screens.quest.rewards.RewardListWidget;
 import earth.terrarium.heracles.client.screens.quest.tasks.TaskListWidget;
 import earth.terrarium.heracles.common.constants.ConstantComponents;
@@ -60,7 +61,7 @@ public class QuestScreen extends BaseQuestScreen {
             Heracles.LOGGER.error("Error parsing quest description: ", e);
         }
         if (Minecraft.getInstance().player != null && Minecraft.getInstance().player.hasPermissions(2)) {
-            addRenderableWidget(new ImageButton(this.width - 24, 1, 11, 11, 33, 15, 11, HEADING, 256, 256, (button) ->
+            addRenderableWidget(new ImageButton(this.width - 24, 1, 11, 11, AbstractQuestScreen.getWidgetSprites("heading/edit"), (button) ->
                 NetworkHandler.CHANNEL.sendToServer(new OpenQuestPacket(this.content.fromGroup(), this.content.id(), true))
             )).setTooltip(Tooltip.create(ConstantComponents.TOGGLE_EDIT));
         }

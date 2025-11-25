@@ -87,9 +87,7 @@ public class CreateObjectModal extends BaseModal {
 
     private Button createButton(Component component, int x, int y, Button.OnPress onPress) {
         int width = Minecraft.getInstance().font.width(component) + 8;
-        return ThemedButton.builder(component, onPress)
-            .bounds(x - width, y, width, 15)
-            .build();
+        return ThemedButton.builder(component, onPress).bounds(x - width, y, width, 15).build();
     }
 
     @Override

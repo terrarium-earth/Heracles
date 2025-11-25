@@ -4,18 +4,20 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.teamresourceful.resourcefullib.client.screens.CursorScreen;
 import com.teamresourceful.resourcefullib.client.utils.CursorUtils;
 import com.teamresourceful.resourcefullib.client.utils.RenderUtils;
+import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.api.client.DisplayWidget;
-import earth.terrarium.heracles.api.client.WidgetUtils;
 import earth.terrarium.heracles.api.client.theme.ModalsTheme;
 import earth.terrarium.heracles.api.rewards.QuestReward;
 import earth.terrarium.heracles.api.rewards.client.QuestRewardWidgets;
+import earth.terrarium.heracles.client.widgets.base.BaseModal;
 import earth.terrarium.heracles.client.widgets.buttons.ThemedButton;
 import earth.terrarium.heracles.common.constants.ConstantComponents;
-import earth.terrarium.olympus.client.ui.modals.BaseModal;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 
 import java.util.*;
@@ -51,8 +53,8 @@ public class SelectRewardsModal extends BaseModal {
 
     @Override
     protected void renderBackground(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
-        graphics.blitNineSliced(TEXTURE, x, y, width, height, 4, 4, 4, 4, 128, 128, 0, 0);
-        graphics.blitNineSliced(TEXTURE, x + 7, y + 18, width - 14, height - 40, 1, 1, 1, 1, 128, 128, 128, 0);
+        graphics.blitSprite(ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "modal/modal_background_0"), x, y, width, height);
+        graphics.blitSprite(ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "modal/modal_background_1"), x + 7, y + 18, width - 14, height - 40);
 
         renderChildren(graphics, mouseX, mouseY, partialTick);
     }
@@ -87,7 +89,7 @@ public class SelectRewardsModal extends BaseModal {
                 }
                 if (this.selected.contains(id)) {
                     RenderSystem.enableBlend();
-                    graphics.blitNineSliced(WidgetUtils.TEXTURE, x - 1, y + 1 - (int) this.scrollAmount, width + 2, itemheight - 2, 3, 128, 42, 0, 42);
+                    graphics.blitSprite(ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "widgets/selected_reward"), x - 1, y + 1 - (int) this.scrollAmount, width + 2, itemheight - 2);
                     RenderSystem.disableBlend();
                 }
                 widget.render(graphics, scissor.stack(), x, y + 2 - (int) this.scrollAmount, width, mouseX, mouseY, this.isMouseOver(mouseX, mouseY), partialTick);

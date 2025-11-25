@@ -33,8 +33,8 @@ public final class WidgetUtils {
 
     public static void drawBackground(GuiGraphics graphics, int x, int y, int width, int height) {
         RenderSystem.enableBlend();
-        graphics.blitNineSliced(TEXTURE, x, y, 42, height, 3, 42, 42, 0, 0);
-        graphics.blitNineSliced(TEXTURE, x + 42, y, width - 42, height, 3, 86, 42, 42, 0);
+        graphics.blitSprite(ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "widgets/background"), x, y, 42, height);
+        graphics.blitSprite(ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "widgets/background2"), x + 42, y, width - 42, height);
         RenderSystem.disableBlend();
     }
 
@@ -44,17 +44,34 @@ public final class WidgetUtils {
 
     public static void drawStatusSummaryBackground(GuiGraphics graphics, int x, int y, int width, int height, ModUtils.QuestStatus status) {
         RenderSystem.enableBlend();
-        graphics.blitNineSliced(TEXTURE, x, y, width, height, 3, 128, 42, 128, 42 * status.ordinal());
+        switch (status.ordinal()) {
+            case 0:
+                graphics.blitSprite(ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "widgets/summary_background_0"), x, y, width, height);
+                break;
+            case 1:
+                graphics.blitSprite(ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "widgets/summary_background_1"), x, y, width, height);
+                break;
+            case 2:
+                graphics.blitSprite(ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "widgets/summary_background_2"), x, y, width, height);
+                break;
+            case 3:
+                graphics.blitSprite(ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "widgets/summary_background_3"), x, y, width, height);
+                break;
+        }
         RenderSystem.disableBlend();
     }
 
     public static <T extends Tag> void drawProgressBar(GuiGraphics graphics, int minX, int minY, int maxX, int maxY, QuestTask<?, T, ?> task, TaskProgress<T> progress) {
         RenderSystem.enableBlend();
-        graphics.blitNineSliced(TEXTURE, minX, minY, maxX - minX, maxY - minY, 3, 128, 8, 0, 168 + (progress.isComplete() ? 8 : 0));
+        if(progress.isComplete()) {
+            graphics.blitSprite(ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "widgets/progress_bar_1"), minX, minY, maxX - minX, maxY - minY);
+        } else {
+            graphics.blitSprite(ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "widgets/progress_bar_0"), minX, minY, maxX - minX, maxY - minY);
+        }
         float fill = Math.min(1f, task.getProgress(progress.progress()));
         if (fill != 0.0 && !progress.isComplete()) {
             int progressWidth = (int) ((maxX - minX) * fill);
-            graphics.blitNineSliced(TEXTURE, minX, minY, progressWidth, maxY - minY, 3, 128, 8, 0, 168 + 8 + 8);
+            graphics.blitSprite(ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "widgets/progress_bar_2"), minX, minY, progressWidth, maxY - minY);
         }
         RenderSystem.disableBlend();
     }
@@ -101,7 +118,7 @@ public final class WidgetUtils {
             pose.mulPose(Axis.YP.rotationDegrees(rot));
             EntityRenderDispatcher entityRenderer = mc.getEntityRenderDispatcher();
             MultiBufferSource.BufferSource buffer = mc.renderBuffers().bufferSource();
-            entityRenderer.render(entity, 0, 0, 0.0D, mc.getFrameTime(), 1, pose, buffer, LightTexture.FULL_BRIGHT);
+            entityRenderer.render(entity, 0, 0, 0.0D, mc.getTimer().getGameTimeDeltaPartialTick(true), 1, pose, buffer, LightTexture.FULL_BRIGHT);
             buffer.endBatch();
         }
     }

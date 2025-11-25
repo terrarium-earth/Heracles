@@ -23,6 +23,7 @@ import java.util.Locale;
 public class AddDependencyModal extends BaseModal {
 
     private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "textures/gui/dependencies.png");
+    private static final ResourceLocation BUTTON_BACKGROUND = ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "dependencies/button_background");
     private static final int WIDTH = 168;
     private static final int HEIGHT = 179;
 
@@ -76,7 +77,7 @@ public class AddDependencyModal extends BaseModal {
         if (dependencies != null) {
             try (var scissor = RenderUtils.createScissor(Minecraft.getInstance(), graphics, x + 8, y + 43, 152, 120)) {
                 for (Quest dependency : dependencies) {
-                    graphics.blitNineSliced(TEXTURE, x + 8, tempY, 152, 24, 1, 1, 1, 1, 19, 19, 168, 0);
+                    graphics.blitSprite(BUTTON_BACKGROUND, x + 8, tempY, 152, 24);
                     boolean removeHovered = mouseX >= x + 149 && mouseX <= x + 158 && mouseY >= tempY + 2 && mouseY <= tempY + 11;
                     graphics.blit(TEXTURE, x + 149, tempY + 2, 187, removeHovered ? 9 : 0, 9, 9);
                     CursorUtils.setCursor(removeHovered, CursorScreen.Cursor.POINTER);

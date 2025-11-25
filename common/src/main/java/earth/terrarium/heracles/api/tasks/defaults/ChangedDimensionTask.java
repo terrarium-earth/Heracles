@@ -2,6 +2,7 @@ package earth.terrarium.heracles.api.tasks.defaults;
 
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.api.CustomizableQuestElement;
@@ -60,11 +61,11 @@ public record ChangedDimensionTask(
         }
 
         @Override
-        public Codec<ChangedDimensionTask> codec(String id) {
-            return RecordCodecBuilder.create(instance -> instance.group(
+        public MapCodec<ChangedDimensionTask> codec(String id) {
+            return RecordCodecBuilder.mapCodec(instance -> instance.group(
                 RecordCodecBuilder.point(id),
-                Codec.STRING.optionalFieldOf("title", "").forGetter(ChangedDimensionTask::title),
-                QuestIcons.CODEC.optionalFieldOf("icon", ItemQuestIcon.AIR).forGetter(ChangedDimensionTask::icon),
+                Codec.STRING.lenientOptionalFieldOf("title", "").forGetter(ChangedDimensionTask::title),
+                QuestIcons.CODEC.lenientOptionalFieldOf("icon", ItemQuestIcon.AIR).forGetter(ChangedDimensionTask::icon),
                 ResourceKey.codec(Registries.DIMENSION).optionalFieldOf("from").forGetter(task -> Optional.ofNullable(task.from())),
                 ResourceKey.codec(Registries.DIMENSION).optionalFieldOf("to").forGetter(task -> Optional.ofNullable(task.to()))
             ).apply(instance, (i, title, icon, from, to) -> new ChangedDimensionTask(i, title, icon, from.orElse(null), to.orElse(null))));

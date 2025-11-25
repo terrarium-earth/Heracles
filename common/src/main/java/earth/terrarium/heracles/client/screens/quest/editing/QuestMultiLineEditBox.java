@@ -15,6 +15,7 @@ import net.minecraft.util.Mth;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Function;
 
 public class QuestMultiLineEditBox extends MultiLineEditBox implements CursorWidget {
@@ -49,7 +50,7 @@ public class QuestMultiLineEditBox extends MultiLineEditBox implements CursorWid
         this.cursor = null;
         graphics.fill(this.getX() - 1, this.getY() - 13, this.getX() + this.width + 1, this.getY() + this.height + 1, 0xFF000000);
         graphics.fill(this.getX(), this.getY(), this.getX() + this.width, this.getY() + this.height, 0xFFF0F0F0);
-        super.render(graphics, mouseX, mouseY, partialTick);
+        super.renderWidget(graphics, mouseX, mouseY, partialTick);
 
         try (var ignored = RenderUtils.createScissor(Minecraft.getInstance(), graphics, this.getX(), this.getY() - 12, this.width, 11)) {
 
@@ -109,40 +110,47 @@ public class QuestMultiLineEditBox extends MultiLineEditBox implements CursorWid
     }
 
     private enum Buttons {
-        BOLD("**"),
-        ITALIC("--"),
-        UNDERLINE("__"),
-        STRIKETHROUGH("~~"),
+        BOLD("b"),
+        ITALIC("i"),
+        UNDERLINE("u"),
+        STRIKETHROUGH("strike"),
         BLOCKQUOTE(content -> {
             MultilineTextField.StringView selection = content.getSelected();
             blockquote(content, selection.beginIndex(), selection.endIndex());
             return true;
         }),
-        OBFUSCATED("||"),
+        OBFUSCATED("obf"),
         EMPTY(content -> false),
-        DARK_RED("/4/"),
-        RED("/c/"),
-        GOLD("/6/"),
-        YELLOW("/e/"),
-        DARK_GREEN("/2/"),
-        GREEN("/a/"),
-        AQUA("/b/"),
-        DARK_AQUA("/3/"),
-        DARK_BLUE("/1/"),
-        BLUE("/9/"),
-        LIGHT_PURPLE("/d/"),
-        DARK_PURPLE("/5/"),
-        WHITE("/f/"),
-        GRAY("/7/"),
-        DARK_GRAY("/8/"),
-        BLACK("/0/"),
+        DARK_RED("#AA0000"),
+        RED("#FF5555"),
+        GOLD("#FFAA00"),
+        YELLOW("#FFFF55"),
+        DARK_GREEN("#00AA00"),
+        GREEN("#55FF55"),
+        AQUA("#55FFFF"),
+        DARK_AQUA("#00AAAA"),
+        DARK_BLUE("#0000AA"),
+        BLUE("#5555FF"),
+        LIGHT_PURPLE("#FF55FF"),
+        DARK_PURPLE("#AA00AA"),
+        WHITE("#FFFFFF"),
+        GRAY("#AAAAAA"),
+        DARK_GRAY("#555555"),
+        BLACK("#000000"),
         ;
         private final Function<MultilineTextField, Boolean> change;
 
         Buttons(String text) {
             this((MultilineTextField content) -> {
                 if (!content.hasSelection()) return false;
-                content.insertText(text + content.getSelectedText() + text);
+                if (Objects.equals(text, "obf")) {
+                    content.insertText("<obf>" + content.getSelectedText() + "</obf>");
+                    return true;
+                } else if (text.contains("#")) {
+                    content.insertText("<span style=\"color:" + text + "\">" + content.getSelectedText() + "</span>");
+                    return true;
+                }
+                content.insertText("<" + text + ">" + content.getSelectedText() + "</" + text + ">");
                 return true;
             });
         }

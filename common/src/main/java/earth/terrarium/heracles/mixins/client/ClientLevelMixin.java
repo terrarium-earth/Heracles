@@ -1,9 +1,11 @@
 package earth.terrarium.heracles.mixins.client;
 
+import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.common.regisitries.ModBlocks;
 import earth.terrarium.heracles.common.regisitries.ModItems;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.block.Block;
@@ -19,13 +21,15 @@ public class ClientLevelMixin {
 
     @Shadow @Final private Minecraft minecraft;
 
+    private static final ResourceLocation BARRIER_ITEM_ID = ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "barrier");
+
     @Inject(method = "getMarkerParticleTarget", at = @At("TAIL"), cancellable = true)
     private void getMarkerParticleTarget(CallbackInfoReturnable<Block> cir) {
         if (this.minecraft.player == null) return;
         if (this.minecraft.gameMode == null) return;
         if (this.minecraft.gameMode.getPlayerMode() != GameType.CREATIVE) return;
         ItemStack itemStack = this.minecraft.player.getMainHandItem();
-        if (itemStack.is(ModItems.BARRIER.get())) {
+        if (itemStack.getItem().builtInRegistryHolder().is(BARRIER_ITEM_ID)) {
             cir.setReturnValue(ModBlocks.BARRIER_BLOCK.get());
         }
     }

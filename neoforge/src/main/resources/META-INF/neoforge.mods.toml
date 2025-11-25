@@ -1,5 +1,5 @@
 modLoader="javafml"
-loaderVersion="[46,)"
+loaderVersion="[2,)"
 license="MIT"
 
 [[mods]]
@@ -10,16 +10,16 @@ authors="ThatGravyBoat"
 description="Heracles is a comprehensive questing mod that allows pack makers to create tree style quests that can be distributed via the config folder for users to play and complete."
 
 [[dependencies.heracles]]
-modId="forge"
+modId="neoforge"
 mandatory=true
-versionRange="[46,)"
+versionRange="[21,)"
 ordering="NONE"
 side="BOTH"
 
 [[dependencies.heracles]]
 modId="minecraft"
 mandatory=true
-versionRange="[1.20,)"
+versionRange="[1.21.1,)"
 ordering="NONE"
 side="BOTH"
 
@@ -29,3 +29,6 @@ mandatory = true
 versionRange = "[2.1.17,)"
 ordering = "NONE"
 side = "BOTH"
+
+[[mixins]]
+config = "heracles-common.mixins.json"

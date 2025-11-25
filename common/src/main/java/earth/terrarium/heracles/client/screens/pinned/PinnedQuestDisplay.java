@@ -21,6 +21,9 @@ import java.util.List;
 public class PinnedQuestDisplay {
 
     private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "textures/gui/pinned.png");
+    private static final ResourceLocation PINNED_FAKE_POPUP_BACKGROUND = ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "pinned/pinned_fake_popup_background");
+    private static final ResourceLocation PINNED_FAKE_POPUP_BACKGROUND_HOVERED = ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "pinned/pinned_fake_popup_background_hovered");
+    private static final ResourceLocation PINNED_FAKE_POPUP_BORDER = ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "pinned/pinned_fake_popup_border");
 
     public static void render(GuiGraphics graphics) {
         Minecraft mc = Minecraft.getInstance();
@@ -39,10 +42,10 @@ public class PinnedQuestDisplay {
         boolean hovered = mc.screen instanceof ChatScreen && mouseX >= x && mouseX <= x + PinnedQuests.width() + 10 && mouseY >= y && mouseY <= y + PinnedQuests.height() + 2;
 
         RenderSystem.enableBlend();
-        graphics.blitNineSliced(TEXTURE, x, y, PinnedQuests.width() + 10, 10, 3, 64, 10, 0, 0);
-        graphics.blitNineSliced(TEXTURE, x, y + 10, PinnedQuests.width() + 10, PinnedQuests.height() + 2 - 10, 3, 64, 10, 0, 10);
+        graphics.blitSprite(PINNED_FAKE_POPUP_BACKGROUND, x, y, PinnedQuests.width() + 10, 10);
+        graphics.blitSprite(PINNED_FAKE_POPUP_BORDER, x, y + 10, PinnedQuests.width() + 10, PinnedQuests.height() + 2 - 10);
         if (hovered) {
-            graphics.blitNineSliced(TEXTURE, x, y, PinnedQuests.width() + 10, PinnedQuests.height() + 2, 3, 64, 10, 0, 20);
+            graphics.blitSprite(PINNED_FAKE_POPUP_BACKGROUND_HOVERED, x, y, PinnedQuests.width() + 10, PinnedQuests.height() + 2);
         }
         RenderSystem.disableBlend();
 

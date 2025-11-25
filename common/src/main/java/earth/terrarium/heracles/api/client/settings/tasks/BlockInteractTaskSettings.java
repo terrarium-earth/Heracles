@@ -9,6 +9,7 @@ import earth.terrarium.heracles.api.client.settings.base.RegistryValueSetting;
 import earth.terrarium.heracles.api.tasks.defaults.BlockInteractTask;
 import earth.terrarium.heracles.common.utils.RegistryValue;
 import net.minecraft.Optionull;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import org.jetbrains.annotations.Nullable;
@@ -32,7 +33,7 @@ public class BlockInteractTaskSettings implements SettingInitializer<BlockIntera
             icon,
             data.get("block", RegistryValueSetting.BLOCK).orElse(getDefaultBlock(object)),
             Optionull.mapOrDefault(object, BlockInteractTask::state, BlockStatePredicate.ANY),
-            Optionull.mapOrDefault(object, BlockInteractTask::nbt, NbtPredicate.ANY)
+            Optionull.mapOrDefault(object, BlockInteractTask::nbt, new NbtPredicate(new CompoundTag()))
         ));
     }
 

@@ -29,12 +29,12 @@ public record SyncDescriptionsPacket(Map<String, String> descriptions) implement
 
         @Override
         public void encode(SyncDescriptionsPacket message, RegistryFriendlyByteBuf buffer) {
-            buffer.writeMap(message.descriptions(), FriendlyByteBuf::writeUtf, FriendlyByteBuf::writeUtf);
+            buffer.writeMap(message.descriptions(), (buf, key) -> buf.writeUtf(key), (buf, value) -> buf.writeUtf(value));
         }
 
         @Override
         public SyncDescriptionsPacket decode(RegistryFriendlyByteBuf buffer) {
-            return new SyncDescriptionsPacket(buffer.readMap(FriendlyByteBuf::readUtf, FriendlyByteBuf::readUtf));
+            return new SyncDescriptionsPacket(buffer.readMap(buf -> buf.readUtf(), buf -> buf.readUtf()));
         }
 
         @Override

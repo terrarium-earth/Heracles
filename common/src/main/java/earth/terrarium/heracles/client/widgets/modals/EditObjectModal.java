@@ -1,6 +1,7 @@
 package earth.terrarium.heracles.client.widgets.modals;
 
 import com.teamresourceful.resourcefullib.client.utils.RenderUtils;
+import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.api.client.settings.SettingInitializer;
 import earth.terrarium.heracles.api.client.theme.EditorTheme;
 import earth.terrarium.heracles.api.client.theme.ModalsTheme;
@@ -48,8 +49,8 @@ public class EditObjectModal extends BaseModal {
 
     @Override
     protected void renderBackground(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
-        graphics.blitNineSliced(TEXTURE, x, y, width, height, 4, 4, 4, 4, 128, 128, 0, 0);
-        graphics.blitNineSliced(TEXTURE, x + 7, y + 18, width - 14, height - 40, 1, 1, 1, 1, 128, 128, 128, 0);
+        graphics.blitSprite(ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "modal/modal_background_0"), x, y, width, height);
+        graphics.blitSprite(ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "modal/modal_background_1"), x + 7, y + 18, width - 14, height - 40);
     }
 
     @Override

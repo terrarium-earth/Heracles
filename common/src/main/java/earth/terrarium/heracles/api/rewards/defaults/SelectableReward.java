@@ -73,7 +73,7 @@ public record SelectableReward(String id, String title, QuestIcon<?> icon, int a
             return RecordCodecBuilder.mapCodec(instance -> instance.group(
                 RecordCodecBuilder.point(id),
                 Codec.STRING.optionalFieldOf("title", "").forGetter(SelectableReward::title),
-                QuestIcons.CODEC.optionalFieldOf("icon", ItemQuestIcon.AIR).forGetter(SelectableReward::icon),
+                QuestIcons.CODEC.lenientOptionalFieldOf("icon", ItemQuestIcon.AIR).forGetter(SelectableReward::icon),
                 ExtraCodecs.POSITIVE_INT.fieldOf("amount").orElse(1).forGetter(SelectableReward::amount),
                 QuestRewards.CODEC.fieldOf("rewards").forGetter(SelectableReward::rewards)
             ).apply(instance, SelectableReward::new));

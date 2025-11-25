@@ -16,7 +16,7 @@ public class QuestTutorialToast implements Toast {
     @Override
     @NotNull
     public Toast.Visibility render(GuiGraphics graphics, ToastComponent toastComponent, long timeSinceLastVisible) {
-        graphics.blit(TEXTURE, 0, 0, 0, 96, this.width(), this.height());
+        toastComponent.render(graphics);
         graphics.drawString(
             toastComponent.getMinecraft().font,
             TITLE_TEXT, 32, 7, ToastsTheme.getTutorialTitle(),

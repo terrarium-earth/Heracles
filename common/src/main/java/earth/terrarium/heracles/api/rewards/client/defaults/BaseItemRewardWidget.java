@@ -8,6 +8,7 @@ import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.api.client.ItemDisplayWidget;
 import earth.terrarium.heracles.api.client.WidgetUtils;
 import earth.terrarium.heracles.api.quests.QuestIcon;
+import earth.terrarium.heracles.client.widgets.buttons.ThemedButton;
 import earth.terrarium.heracles.common.constants.ConstantComponents;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -49,8 +50,11 @@ public interface BaseItemRewardWidget extends ItemDisplayWidget {
         if (isInteractive()) {
             int buttonY = y + 11;
             boolean buttonHovered = mouseX > x + width - 30 && mouseX < x + width - 10 && mouseY > buttonY && mouseY < buttonY + 20;
-            int v = canClaim() ? (buttonHovered ? 40 : 20) : 0;
-            graphics.blitNineSliced(BUTTON_TEXTURE, x + width - 30, buttonY, 20, 20, 3, 200, 20, 0, v);
+            if(canClaim()) {
+                graphics.blitSprite(buttonHovered ?  ThemedButton.SPRITE_COMPLETABLE_HOVERED : ThemedButton.SPRITE_COMPLETABLE, x + width - 30, buttonY, 20, 20);
+            } else {
+                graphics.blitSprite(ThemedButton.SPRITE_DISABLED, x + width - 30, buttonY, 20, 20);
+            }
             graphics.blit(LOOTBAG_TEXTURE, x + width - 30 + 2, buttonY + 2, 0, 0, 16, 16, 16, 16);
             if (buttonHovered) {
                 CursorUtils.setCursor(true, canClaim() ? CursorScreen.Cursor.POINTER : CursorScreen.Cursor.DISABLED);

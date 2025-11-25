@@ -10,6 +10,7 @@ import earth.terrarium.heracles.api.client.WidgetUtils;
 import earth.terrarium.heracles.api.client.theme.QuestScreenTheme;
 import earth.terrarium.heracles.api.tasks.client.display.TaskTitleFormatter;
 import earth.terrarium.heracles.api.tasks.defaults.CheckTask;
+import earth.terrarium.heracles.client.widgets.buttons.ThemedButton;
 import earth.terrarium.heracles.common.constants.ConstantComponents;
 import earth.terrarium.heracles.common.handlers.progress.TaskProgress;
 import earth.terrarium.heracles.common.network.NetworkHandler;
@@ -54,8 +55,11 @@ public record CheckTaskWidget(
 
         int buttonY = y + 11;
         boolean buttonHovered = mouseX > x + width - 30 && mouseX < x + width - 10 && mouseY > buttonY && mouseY < buttonY + 20;
-        int v = isCompletable() ? (buttonHovered ? 40 : 20) : 0;
-        graphics.blitNineSliced(BUTTON_TEXTURE, x + width - 30, buttonY, 20, 20, 3, 200, 20, 0, v);
+        if (isCompletable()) {
+            graphics.blitSprite(hovered ? ThemedButton.SPRITE_COMPLETABLE_HOVERED : ThemedButton.SPRITE_COMPLETABLE, x + width - 30, buttonY, 20, 20);
+        } else {
+            graphics.blitSprite(ThemedButton.SPRITE_DISABLED, x + width - 30, buttonY, 20, 20);
+        }
 
         graphics.blit(CHECK_TEXTURE, x + width - 30 + 2, buttonY + 2, 0, 0, 16, 16, 16, 16);
 

@@ -2,7 +2,6 @@ package earth.terrarium.heracles.common.utils;
 
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
-import com.teamresourceful.resourcefullib.common.codecs.recipes.ItemStackCodec;
 import earth.terrarium.heracles.Heracles;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.Holder;
@@ -21,7 +20,7 @@ import java.util.List;
 
 public final class ItemValue extends RegistryValue<Item> {
     public static Codec<ItemValue> CODEC = Codec.either(
-        ItemStackCodec.CODEC,
+        ItemStackCodec.STACK_CODEC,
         TagKey.hashedCodec(Registries.ITEM)
     ).xmap(ItemValue::new, ItemValue::item);
 

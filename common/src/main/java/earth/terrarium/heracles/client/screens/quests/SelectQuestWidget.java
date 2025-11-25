@@ -63,7 +63,7 @@ public class SelectQuestWidget extends BaseWidget {
         this.titleBox.setResponder(s -> ClientQuests.updateQuest(
             this.entry,
             quest -> {
-                quest.display().setTitle(s.isEmpty() ? null : Component.translatable(s));
+                quest.display().setTitle(s.isEmpty() ? null : Component.literal(s));
                 return NetworkQuestData.builder().title(quest.display().title());
             },
             false
@@ -181,7 +181,7 @@ public class SelectQuestWidget extends BaseWidget {
         if (this.entry == null) return;
         updateWidgets();
 
-        graphics.blitRepeating(AbstractQuestScreen.HEADING, this.x - 2, this.y, 2, this.height, 128, 0, 2, 256);
+        graphics.blit(AbstractQuestScreen.HEADING, this.x - 2, this.y, 2, this.height, 128, 0, 2, 256);
 
         //Title
         graphics.drawString(

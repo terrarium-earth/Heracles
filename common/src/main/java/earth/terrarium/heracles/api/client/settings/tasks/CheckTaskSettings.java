@@ -5,6 +5,7 @@ import earth.terrarium.heracles.api.client.settings.CustomizableQuestElementSett
 import earth.terrarium.heracles.api.client.settings.SettingInitializer;
 import earth.terrarium.heracles.api.tasks.defaults.CheckTask;
 import net.minecraft.Optionull;
+import net.minecraft.nbt.CompoundTag;
 import org.jetbrains.annotations.Nullable;
 
 public class CheckTaskSettings implements SettingInitializer<CheckTask>, CustomizableQuestElementSettings<CheckTask> {
@@ -22,7 +23,7 @@ public class CheckTaskSettings implements SettingInitializer<CheckTask>, Customi
             id,
             title,
             icon,
-            Optionull.mapOrDefault(object, CheckTask::nbt, NbtPredicate.ANY)
+            Optionull.mapOrDefault(object, CheckTask::nbt, new NbtPredicate(new CompoundTag()))
         ));
     }
 }

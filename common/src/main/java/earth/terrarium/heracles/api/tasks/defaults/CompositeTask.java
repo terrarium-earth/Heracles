@@ -1,6 +1,6 @@
 package earth.terrarium.heracles.api.tasks.defaults;
 
-import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.api.tasks.QuestTask;
@@ -100,8 +100,8 @@ public final class CompositeTask implements QuestTask<Object, CollectionTag<Tag>
         }
 
         @Override
-        public Codec<CompositeTask> codec(String id) {
-            return RecordCodecBuilder.create(instance -> instance.group(
+        public MapCodec<CompositeTask> codec(String id) {
+            return RecordCodecBuilder.mapCodec(instance -> instance.group(
                 RecordCodecBuilder.point(id),
                 ExtraCodecs.POSITIVE_INT.fieldOf("amount").forGetter(CompositeTask::amount),
                 QuestTasks.CODEC.fieldOf("tasks").forGetter(CompositeTask::tasks)

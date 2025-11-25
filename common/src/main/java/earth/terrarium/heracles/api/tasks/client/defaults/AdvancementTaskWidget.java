@@ -135,7 +135,7 @@ public final class AdvancementTaskWidget implements DisplayWidget {
             titles.add(
                 Optionull.mapOrDefault(
                     ClientAdvancementDisplays.get(id),
-                    display -> Optionull.mapOrDefault(display, DisplayInfo::getTitle, getTranslation(id)),
+                    display -> Optionull.mapOrDefault(display.get(), DisplayInfo::getTitle, getTranslation(id)),
                     getTranslation(id)
                 )
             );
@@ -157,7 +157,7 @@ public final class AdvancementTaskWidget implements DisplayWidget {
             icons.add(
                 Optionull.map(
                     ClientAdvancementDisplays.get(id),
-                    display -> Optionull.map(display, DisplayInfo::getIcon)
+                    display -> Optionull.map(display.get(), DisplayInfo::getIcon)
                 )
             );
         }

@@ -288,7 +288,7 @@ public class QuestsWidget extends BaseWidget {
                 int canvasWidth = this.maxX - this.minX;
                 int width = (this.width - 10) * (this.width - 10) / (canvasWidth + this.width - 10);
                 int barX = this.x + 5 + (this.width - 10 - width) / 2 + (this.width - 10 - width) * xFromCentre / canvasWidth;
-                graphics.blitNineSliced(AbstractQuestScreen.HEADING, barX, this.y + this.height - 4, width, 2, 2, 32, 2, 224, 126);
+                graphics.blitSprite(ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "heading/horizontal_bar"), barX, this.y + this.height - 4, width, 2);
             }
 
             int yFromCentre = centreOffset.y - offset.y;
@@ -296,7 +296,7 @@ public class QuestsWidget extends BaseWidget {
                 int canvasHeight = this.maxY - this.minY;
                 int height = (this.height - 10) * (this.height - 10) / (canvasHeight + this.height - 10);
                 int barY = this.y + 5 + (this.height - 10 - height) / 2 + (this.height - 10 - height) * yFromCentre / canvasHeight;
-                graphics.blitNineSliced(AbstractQuestScreen.HEADING, this.x + this.width - 4, barY, 2, height, 2, 2, 32, 222, 96);
+                graphics.blitSprite(ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "heading/vertical_bar"), this.x + this.width - 4, barY, 2, height);
             }
         }
     }

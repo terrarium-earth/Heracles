@@ -3,13 +3,13 @@ package earth.terrarium.heracles.client.widgets.editor;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Lists;
 import com.mojang.blaze3d.platform.InputConstants;
-import net.minecraft.SharedConstants;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.components.Whence;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Style;
 import net.minecraft.util.Mth;
+import net.minecraft.util.StringUtil;
 
 import java.util.List;
 
@@ -57,7 +57,7 @@ public class MultilineTextField {
 	public void insertText(String text) {
 		if (!text.isEmpty() || this.hasSelection()) {
 			text = text.replace("§", "&&");
-			String string = SharedConstants.filterText(text, true);
+			String string = StringUtil.filterText(text, true);
 			MultilineTextField.StringView stringView = this.getSelected();
 			this.value = new StringBuilder(this.value).replace(stringView.beginIndex, stringView.endIndex, string).toString();
 			this.cursor = stringView.beginIndex + string.length();

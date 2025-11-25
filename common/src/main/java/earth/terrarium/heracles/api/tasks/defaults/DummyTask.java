@@ -1,6 +1,7 @@
 package earth.terrarium.heracles.api.tasks.defaults;
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.teamresourceful.resourcefullib.common.codecs.CodecExtras;
 import earth.terrarium.heracles.Heracles;
@@ -52,13 +53,13 @@ public record DummyTask(
         }
 
         @Override
-        public Codec<DummyTask> codec(String id) {
-            return RecordCodecBuilder.create(instance -> instance.group(
+        public MapCodec<DummyTask> codec(String id) {
+            return RecordCodecBuilder.mapCodec(instance -> instance.group(
                 RecordCodecBuilder.point(id),
-                Codec.STRING.optionalFieldOf("title", "").forGetter(DummyTask::title),
+                Codec.STRING.lenientOptionalFieldOf("title", "").forGetter(DummyTask::title),
                 DUMMY_TASK_ICON_CODEC.fieldOf("icon").orElse(new ItemQuestIcon(Items.AIR)).forGetter(DummyTask::icon),
                 Codec.STRING.fieldOf("value").forGetter(DummyTask::dummyId),
-                Codec.STRING.fieldOf("description").orElse("").forGetter(DummyTask::title)
+                Codec.STRING.lenientOptionalFieldOf("description", "").forGetter(DummyTask::title)
             ).apply(instance, DummyTask::new));
         }
     }

@@ -10,6 +10,7 @@ import earth.terrarium.heracles.api.tasks.QuestTask;
 import earth.terrarium.heracles.api.tasks.QuestTaskType;
 import earth.terrarium.heracles.api.tasks.QuestTasks;
 import earth.terrarium.heracles.client.handlers.ClientQuests;
+import earth.terrarium.heracles.client.screens.AbstractQuestScreen;
 import earth.terrarium.heracles.client.screens.quest.editing.QuestMultiLineEditBox;
 import earth.terrarium.heracles.client.screens.quest.rewards.RewardListWidget;
 import earth.terrarium.heracles.client.screens.quest.tasks.TaskListWidget;
@@ -153,7 +154,7 @@ public class QuestEditScreen extends BaseQuestScreen {
         );
 
         if (Minecraft.getInstance().player != null && Minecraft.getInstance().player.hasPermissions(2)) {
-            addRenderableWidget(new ImageButton(this.width - 24, 1, 11, 11, 33, 15, 11, HEADING, 256, 256, (button) ->
+            addRenderableWidget(new ImageButton(this.width - 24, 1, 11, 11, AbstractQuestScreen.getWidgetSprites("heading/edit"), (button) ->
                 NetworkHandler.CHANNEL.sendToServer(new OpenQuestPacket(this.content.fromGroup(), this.content.id(), false))
             )).setTooltip(Tooltip.create(ConstantComponents.TOGGLE_EDIT));
         }
@@ -162,7 +163,7 @@ public class QuestEditScreen extends BaseQuestScreen {
         this.descriptionBox.setValue(String.join("\n", this.quest().display().description()).replace("§", "&&"));
 
         if (Minecraft.getInstance().isLocalServer()) {
-            addRenderableWidget(new ImageButton(this.width - 36, 1, 11, 11, 33, 59, 11, HEADING, 256, 256, (button) -> {
+            addRenderableWidget(new ImageButton(this.width - 36, 1, 11, 11, AbstractQuestScreen.getWidgetSprites("heading/open_quest_file"), (button) -> {
                 Path path = QuestHandler.getQuestPath(this.quest(), this.getQuestId());
                 if (path.toFile().isFile() && path.toFile().exists()) {
                     Util.getPlatform().openFile(path.toFile());

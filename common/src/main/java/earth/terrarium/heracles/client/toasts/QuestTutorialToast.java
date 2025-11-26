@@ -8,6 +8,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.toasts.Toast;
 import net.minecraft.client.gui.components.toasts.ToastComponent;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 
 public class QuestTutorialToast implements Toast {
@@ -16,7 +17,7 @@ public class QuestTutorialToast implements Toast {
     @Override
     @NotNull
     public Toast.Visibility render(GuiGraphics graphics, ToastComponent toastComponent, long timeSinceLastVisible) {
-        toastComponent.render(graphics);
+        graphics.blitSprite(ResourceLocation.fromNamespaceAndPath("minecraft", "toast/advancement"), 0, 0, width(), height());
         graphics.drawString(
             toastComponent.getMinecraft().font,
             TITLE_TEXT, 32, 7, ToastsTheme.getTutorialTitle(),

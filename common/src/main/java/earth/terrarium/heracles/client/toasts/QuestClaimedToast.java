@@ -9,6 +9,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.toasts.Toast;
 import net.minecraft.client.gui.components.toasts.ToastComponent;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -60,7 +61,7 @@ public class QuestClaimedToast implements Toast {
         } else {
             Pair<Quest, ItemStack> entry = renderItems.get((int) (timeSinceLastVisible / Math.max(1L, (DISPLAY_TIME * questItems.size()) / renderItems.size()) % renderItems.size()));
 
-            toastComponent.render(graphics);
+            graphics.blitSprite(ResourceLocation.fromNamespaceAndPath("minecraft", "toast/advancement"), 0, 0, width(), height());
             graphics.drawString(
                 toastComponent.getMinecraft().font,
                 TITLE_TEXT, 30, 7, ToastsTheme.getClaimedTitle(),

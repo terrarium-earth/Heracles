@@ -25,7 +25,7 @@ public record OpenGroupPacket(String group, boolean edit) implements Packet<Open
 
         @Override
         public ResourceLocation id() {
-            return ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "open_group");
+            return Heracles.id("open_group");
         }
 
         @Override

@@ -29,12 +29,14 @@ import java.util.List;
 import java.util.function.Supplier;
 
 public final class WidgetUtils {
-    public static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "textures/gui/widgets.png");
+    public static final ResourceLocation TEXTURE = Heracles.id("textures/gui/widgets.png");
+    public static final ResourceLocation BACKGROUND = Heracles.id("widgets/background");
+    public static final ResourceLocation BACKGROUND2 = Heracles.id("widgets/background2");
 
     public static void drawBackground(GuiGraphics graphics, int x, int y, int width, int height) {
         RenderSystem.enableBlend();
-        graphics.blitSprite(ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "widgets/background"), x, y, 42, height);
-        graphics.blitSprite(ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "widgets/background2"), x + 42, y, width - 42, height);
+        graphics.blitSprite(BACKGROUND, x, y, 42, height);
+        graphics.blitSprite(BACKGROUND2, x + 42, y, width - 42, height);
         RenderSystem.disableBlend();
     }
 
@@ -44,19 +46,11 @@ public final class WidgetUtils {
 
     public static void drawStatusSummaryBackground(GuiGraphics graphics, int x, int y, int width, int height, ModUtils.QuestStatus status) {
         RenderSystem.enableBlend();
-        switch (status.ordinal()) {
-            case 0:
-                graphics.blitSprite(ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "widgets/summary_background_0"), x, y, width, height);
-                break;
-            case 1:
-                graphics.blitSprite(ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "widgets/summary_background_1"), x, y, width, height);
-                break;
-            case 2:
-                graphics.blitSprite(ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "widgets/summary_background_2"), x, y, width, height);
-                break;
-            case 3:
-                graphics.blitSprite(ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "widgets/summary_background_3"), x, y, width, height);
-                break;
+        switch (status) {
+            case LOCKED -> graphics.blitSprite(Heracles.id("widgets/summary_background_0"), x, y, width, height);
+            case IN_PROGRESS -> graphics.blitSprite(Heracles.id("widgets/summary_background_1"), x, y, width, height);
+            case COMPLETED -> graphics.blitSprite(Heracles.id("widgets/summary_background_2"), x, y, width, height);
+            case COMPLETED_CLAIMED -> graphics.blitSprite(Heracles.id("widgets/summary_background_3"), x, y, width, height);
         }
         RenderSystem.disableBlend();
     }
@@ -64,14 +58,14 @@ public final class WidgetUtils {
     public static <T extends Tag> void drawProgressBar(GuiGraphics graphics, int minX, int minY, int maxX, int maxY, QuestTask<?, T, ?> task, TaskProgress<T> progress) {
         RenderSystem.enableBlend();
         if(progress.isComplete()) {
-            graphics.blitSprite(ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "widgets/progress_bar_1"), minX, minY, maxX - minX, maxY - minY);
+            graphics.blitSprite(Heracles.id("widgets/progress_bar_1"), minX, minY, maxX - minX, maxY - minY);
         } else {
-            graphics.blitSprite(ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "widgets/progress_bar_0"), minX, minY, maxX - minX, maxY - minY);
+            graphics.blitSprite(Heracles.id("widgets/progress_bar_0"), minX, minY, maxX - minX, maxY - minY);
         }
         float fill = Math.min(1f, task.getProgress(progress.progress()));
         if (fill != 0.0 && !progress.isComplete()) {
             int progressWidth = (int) ((maxX - minX) * fill);
-            graphics.blitSprite(ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "widgets/progress_bar_2"), minX, minY, progressWidth, maxY - minY);
+            graphics.blitSprite(Heracles.id("widgets/progress_bar_2"), minX, minY, progressWidth, maxY - minY);
         }
         RenderSystem.disableBlend();
     }

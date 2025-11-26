@@ -32,6 +32,8 @@ import java.util.function.Function;
 
 public class SelectQuestWidget extends BaseWidget {
 
+    private static final ResourceLocation SEPARATOR = Heracles.id("heading/separator");
+
     private ClientQuests.QuestEntry entry;
 
     private final int width;
@@ -63,7 +65,7 @@ public class SelectQuestWidget extends BaseWidget {
         this.titleBox.setResponder(s -> ClientQuests.updateQuest(
             this.entry,
             quest -> {
-                quest.display().setTitle(s.isEmpty() ? null : Component.literal(s));
+                quest.display().setTitle(s.isEmpty() ? null : Component.translatable(s));
                 return NetworkQuestData.builder().title(quest.display().title());
             },
             false
@@ -151,7 +153,7 @@ public class SelectQuestWidget extends BaseWidget {
         addChild(ThemedButton.builder(Component.literal("\uD83D\uDD89"), b -> {
                 if (Minecraft.getInstance().screen instanceof QuestsEditScreen screen && this.entry != null) {
                     EditObjectModal edit = screen.findOrCreateEditWidget();
-                    ResourceLocation id = ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "quest");
+                    ResourceLocation id = Heracles.id("quest");
                     QuestSettings settings = this.entry.value().settings();
                     edit.init(
                         id,
@@ -181,7 +183,7 @@ public class SelectQuestWidget extends BaseWidget {
         if (this.entry == null) return;
         updateWidgets();
 
-        graphics.blit(AbstractQuestScreen.HEADING, this.x - 2, this.y, 2, this.height, 128, 0, 2, 256);
+        graphics.blitSprite(SEPARATOR, this.x - 2, this.y, 2, this.height);
 
         //Title
         graphics.drawString(

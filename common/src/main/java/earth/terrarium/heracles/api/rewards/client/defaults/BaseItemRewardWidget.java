@@ -22,8 +22,8 @@ import net.minecraft.world.item.ItemStack;
 import java.util.List;
 
 public interface BaseItemRewardWidget extends ItemDisplayWidget {
-    ResourceLocation BUTTON_TEXTURE = ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "textures/gui/buttons.png");
-    ResourceLocation LOOTBAG_TEXTURE = ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "textures/item/lootbag.png");
+
+    ResourceLocation LOOTBAG_TEXTURE = Heracles.id("textures/item/lootbag.png");
 
     QuestIcon<?> getIconOverride();
 

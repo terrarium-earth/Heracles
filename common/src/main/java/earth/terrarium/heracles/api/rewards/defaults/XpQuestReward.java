@@ -47,7 +47,7 @@ public record XpQuestReward(String id, String title, QuestIcon<?> icon, XpType x
 
         @Override
         public ResourceLocation id() {
-            return ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "xp");
+            return Heracles.id("xp");
         }
 
         @Override
@@ -55,7 +55,7 @@ public record XpQuestReward(String id, String title, QuestIcon<?> icon, XpType x
             return RecordCodecBuilder.mapCodec(instance -> instance.group(
                 RecordCodecBuilder.point(id),
                 Codec.STRING.lenientOptionalFieldOf("title", "").forGetter(XpQuestReward::title),
-                QuestIcons.CODEC.lenientOptionalFieldOf("icon", ItemQuestIcon.AIR).forGetter(XpQuestReward::icon),
+                QuestIcons.CODEC.optionalFieldOf("icon", ItemQuestIcon.AIR).forGetter(XpQuestReward::icon),
                 EnumCodec.of(XpType.class).fieldOf("xptype").orElse(XpType.LEVEL).forGetter(XpQuestReward::xpType),
                 Codec.INT.fieldOf("amount").orElse(1).forGetter(XpQuestReward::amount)
             ).apply(instance, XpQuestReward::new));

@@ -22,7 +22,7 @@ public record OpenQuestsScreenPacket(boolean editing, QuestsContent content) imp
     private static class Type implements ClientboundPacketType<OpenQuestsScreenPacket> {
         @Override
         public ResourceLocation id() {
-            return ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "open_quests_screen");
+            return Heracles.id("open_quests_screen");
         }
 
         @Override

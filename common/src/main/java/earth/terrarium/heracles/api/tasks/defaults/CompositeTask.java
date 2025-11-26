@@ -96,7 +96,7 @@ public final class CompositeTask implements QuestTask<Object, CollectionTag<Tag>
 
         @Override
         public ResourceLocation id() {
-            return ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "composite");
+            return Heracles.id("composite");
         }
 
         @Override

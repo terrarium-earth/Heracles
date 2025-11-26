@@ -49,8 +49,8 @@ public class EditObjectModal extends BaseModal {
 
     @Override
     protected void renderBackground(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
-        graphics.blitSprite(ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "modal/modal_background_0"), x, y, width, height);
-        graphics.blitSprite(ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "modal/modal_background_1"), x + 7, y + 18, width - 14, height - 40);
+        graphics.blitSprite(MODAL_BACKGROUND, x, y, width, height);
+        graphics.blitSprite(MODAL_BACKGROUND_HOVERED, x + 7, y + 18, width - 14, height - 40);
     }
 
     @Override

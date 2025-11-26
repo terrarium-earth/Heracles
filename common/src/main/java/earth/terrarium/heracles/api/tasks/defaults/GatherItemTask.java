@@ -127,7 +127,7 @@ public record GatherItemTask(
 
         @Override
         public ResourceLocation id() {
-            return ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "item");
+            return Heracles.id("item");
         }
 
         @Override

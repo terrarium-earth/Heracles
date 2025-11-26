@@ -29,6 +29,8 @@ import java.util.function.Function;
 
 public class Dropdown<T> extends AbstractWidget implements Renderable {
 
+    private static final ResourceLocation DROPDOWN_BACKGROUND = Heracles.id("modal/dropdown_background");
+
     private static final int MAX_OPTIONS_SHOWN = 10;
 
     private final List<T> options = new ArrayList<>();
@@ -73,7 +75,7 @@ public class Dropdown<T> extends AbstractWidget implements Renderable {
         RenderSystem.disableDepthTest();
         RenderSystem.disableBlend();
         if (isFocused()) {
-            graphics.blitSprite(ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "modal/dropdown_background"), x - 1, y + height + 1, width + 2, (10 * Math.min(MAX_OPTIONS_SHOWN, options.size())) + 2);
+            graphics.blitSprite(DROPDOWN_BACKGROUND, x - 1, y + height + 1, width + 2, (10 * Math.min(MAX_OPTIONS_SHOWN, options.size())) + 2);
 
             try (var pose = new CloseablePoseStack(graphics)) {
                 pose.translate(0, 0, 10); // This is because minecraft has a weird bug with shadowed text rendered behind other text

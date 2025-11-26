@@ -10,7 +10,9 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.resources.ResourceLocation;
 
 public record AddDisplayWidget(Runnable onClicked) implements DisplayWidget {
-    public static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "textures/gui/widgets.png");
+    public static final ResourceLocation TEXTURE = Heracles.id("textures/gui/widgets.png");
+    public static final ResourceLocation ADD_DISPLAY_HOVERED = Heracles.id("widgets/add_display_widget_hovered");
+    public static final ResourceLocation ADD_DISPLAY = Heracles.id("widgets/add_display_widget");
 
     @Override
     public void render(GuiGraphics graphics, ScissorBoxStack scissor, int x, int y, int width, int mouseX, int mouseY, boolean hovered, float partialTicks) {
@@ -18,11 +20,7 @@ public record AddDisplayWidget(Runnable onClicked) implements DisplayWidget {
         hovered = mouseX >= x && mouseX <= x + width && mouseY >= y && mouseY <= y + 30;
 
         RenderSystem.enableBlend();
-        if(hovered) {
-            graphics.blitSprite(ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "widgets/add_display_widget_hovered"), x, y, width, 30);
-        } else {
-            graphics.blitSprite(ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "widgets/add_display_widget"), x, y, width, 30);
-        }
+        graphics.blitSprite(hovered ? ADD_DISPLAY_HOVERED : ADD_DISPLAY, x, y, width, 30);
         graphics.blit(TEXTURE, x + (width / 2) - 16, y, 96, hovered ? 196 : 226, 30, 30);
         RenderSystem.disableBlend();
         CursorUtils.setCursor(hovered, CursorScreen.Cursor.POINTER);

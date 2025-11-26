@@ -14,13 +14,13 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Objects;
 
 public interface ThemedButton {
-    ResourceLocation SPRITE_UNPRESSED = ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "buttons/unpressed");
-    ResourceLocation SPRITE_PRESSED = ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "buttons/pressed");
-    ResourceLocation SPRITE_UNPRESSED_HOVERED = ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "buttons/unpressed_hovered");
-    ResourceLocation SPRITE_PRESSED_HOVERED = ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "buttons/pressed_hovered");
-    ResourceLocation SPRITE_DISABLED = ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "buttons/disabled");
-    ResourceLocation SPRITE_COMPLETABLE = ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "buttons/completable");
-    ResourceLocation SPRITE_COMPLETABLE_HOVERED = ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "buttons/completable_hovered");
+    ResourceLocation SPRITE_UNPRESSED = Heracles.id("buttons/unpressed");
+    ResourceLocation SPRITE_PRESSED = Heracles.id("buttons/pressed");
+    ResourceLocation SPRITE_UNPRESSED_HOVERED = Heracles.id("buttons/unpressed_hovered");
+    ResourceLocation SPRITE_PRESSED_HOVERED = Heracles.id("buttons/pressed_hovered");
+    ResourceLocation SPRITE_DISABLED = Heracles.id("buttons/disabled");
+    ResourceLocation SPRITE_COMPLETABLE = Heracles.id("buttons/completable");
+    ResourceLocation SPRITE_COMPLETABLE_HOVERED = Heracles.id("buttons/completable_hovered");
 
 
     default ResourceLocation getSprite(boolean active, boolean hovered) {

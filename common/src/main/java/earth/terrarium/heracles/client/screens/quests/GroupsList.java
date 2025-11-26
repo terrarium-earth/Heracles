@@ -27,6 +27,10 @@ import java.util.function.Consumer;
 
 public class GroupsList extends SelectionList<GroupsList.Entry> {
 
+    private static final ResourceLocation BACKGROUND = Heracles.id("heading/group_list_entry_background");
+    private static final ResourceLocation BACKGROUND_SELECTED = Heracles.id("heading/group_list_entry_background_selected");
+    private static final ResourceLocation BACKGROUND_HOVERED = Heracles.id("heading/group_list_entry_background_hovered");
+
     private final int width;
 
     public GroupsList(int x, int y, int width, int height, Consumer<@Nullable Entry> onSelection) {
@@ -78,9 +82,9 @@ public class GroupsList extends SelectionList<GroupsList.Entry> {
         @Override
         protected void render(@NotNull GuiGraphics graphics, @NotNull ScissorBoxStack scissorStack, int id, int left, int top, int width, int height, int mouseX, int mouseY, boolean hovered, float partialTick, boolean selected) {
             RenderSystem.enableBlend();
-            graphics.blitSprite(selected ? ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "heading/group_list_entry_background_selected") : ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "heading/group_list_entry_background"), left, top, width, height);
+            graphics.blitSprite(selected ? BACKGROUND_SELECTED : BACKGROUND, left, top, width, height);
             if (hovered) {
-                graphics.blitSprite(ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "heading/group_list_entry_background_hovered"), left, top, width, height);
+                graphics.blitSprite(BACKGROUND_HOVERED, left, top, width, height);
             }
             RenderSystem.disableBlend();
             graphics.drawCenteredString(Minecraft.getInstance().font, name, left + width / 2, top + height / 2 - 4, QuestsScreenTheme.getGroupName());

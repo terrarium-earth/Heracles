@@ -36,7 +36,7 @@ public record SyncQuestsPacket(Map<String, Quest> quests, List<String> groups) i
 
         @Override
         public ResourceLocation id() {
-            return ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "sync_quests");
+            return Heracles.id("sync_quests");
         }
 
         @Override

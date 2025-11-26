@@ -77,7 +77,7 @@ public record XpTask(
 
         @Override
         public ResourceLocation id() {
-            return ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "xp");
+            return Heracles.id("xp");
         }
 
         @Override

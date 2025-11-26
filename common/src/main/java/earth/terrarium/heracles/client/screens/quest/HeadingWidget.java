@@ -9,7 +9,6 @@ import earth.terrarium.heracles.common.utils.ModUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 
 public record HeadingWidget(Component title, ModUtils.QuestStatus status) implements DisplayWidget {
 
@@ -19,34 +18,23 @@ public record HeadingWidget(Component title, ModUtils.QuestStatus status) implem
         int titleWidth = Minecraft.getInstance().font.width(title);
 
         RenderSystem.enableBlend();
-        switch (status.ordinal()) {
-            case 0:
-                graphics.blitSprite(ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "widgets/heading_status_locked"),  x, y, titleWidth + 6, Minecraft.getInstance().font.lineHeight + 4);
-                break;
-            case 1:
-                graphics.blitSprite(ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "widgets/heading_status_in_progress"),  x, y, titleWidth + 6, Minecraft.getInstance().font.lineHeight + 4);
-                break;
-            case 2:
-                graphics.blitSprite(ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "widgets/heading_status_completed"),  x, y, titleWidth + 6, Minecraft.getInstance().font.lineHeight + 4);
-                break;
-            case 3:
-                graphics.blitSprite(ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "widgets/heading_status_completed_claimed"),  x, y, titleWidth + 6, Minecraft.getInstance().font.lineHeight + 4);
-                break;
-        }
-
-        switch (status.ordinal()) {
-            case 0:
-                graphics.blitSprite(ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "widgets/heading_status_locked_other"), x + titleWidth + 6, y, width - titleWidth - 6, Minecraft.getInstance().font.lineHeight + 4);
-                break;
-            case 1:
-                graphics.blitSprite(ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "widgets/heading_status_in_progress_other"), x + titleWidth + 6, y, width - titleWidth - 6, Minecraft.getInstance().font.lineHeight + 4);
-                break;
-            case 2:
-                graphics.blitSprite(ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "widgets/heading_status_completed_other"), x + titleWidth + 6, y, width - titleWidth - 6, Minecraft.getInstance().font.lineHeight + 4);
-                break;
-            case 3:
-                graphics.blitSprite(ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "widgets/heading_status_completed_claimed_other"), x + titleWidth + 6, y, width - titleWidth - 6, Minecraft.getInstance().font.lineHeight + 4);
-                break;
+        switch (status) {
+            case LOCKED -> {
+                graphics.blitSprite(Heracles.id("widgets/heading_status_locked"), x, y, titleWidth + 6, Minecraft.getInstance().font.lineHeight + 4);
+                graphics.blitSprite(Heracles.id("widgets/heading_status_locked_other"), x + titleWidth + 6, y, width - titleWidth - 6, Minecraft.getInstance().font.lineHeight + 4);
+            }
+            case IN_PROGRESS -> {
+                graphics.blitSprite(Heracles.id("widgets/heading_status_in_progress"), x, y, titleWidth + 6, Minecraft.getInstance().font.lineHeight + 4);
+                graphics.blitSprite(Heracles.id("widgets/heading_status_in_progress_other"), x + titleWidth + 6, y, width - titleWidth - 6, Minecraft.getInstance().font.lineHeight + 4);
+            }
+            case COMPLETED -> {
+                graphics.blitSprite(Heracles.id("widgets/heading_status_completed"), x, y, titleWidth + 6, Minecraft.getInstance().font.lineHeight + 4);
+                graphics.blitSprite(Heracles.id("widgets/heading_status_completed_other"), x + titleWidth + 6, y, width - titleWidth - 6, Minecraft.getInstance().font.lineHeight + 4);
+            }
+            case COMPLETED_CLAIMED -> {
+                graphics.blitSprite(Heracles.id("widgets/heading_status_completed_claimed"), x, y, titleWidth + 6, Minecraft.getInstance().font.lineHeight + 4);
+                graphics.blitSprite(Heracles.id("widgets/heading_status_completed_claimed_other"), x + titleWidth + 6, y, width - titleWidth - 6, Minecraft.getInstance().font.lineHeight + 4);
+            }
         }
         RenderSystem.disableBlend();
 

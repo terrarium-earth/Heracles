@@ -48,7 +48,7 @@ public record EntityInteractTask(
     private static class Type implements QuestTaskType<EntityInteractTask> {
         @Override
         public ResourceLocation id() {
-            return ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "entity_interaction");
+            return Heracles.id("entity_interaction");
         }
 
         @Override
@@ -58,7 +58,7 @@ public record EntityInteractTask(
                 Codec.STRING.lenientOptionalFieldOf("title", "").forGetter(EntityInteractTask::title),
                 QuestIcons.CODEC.lenientOptionalFieldOf("icon", ItemQuestIcon.AIR).forGetter(EntityInteractTask::icon),
                 RegistryValue.codec(Registries.ENTITY_TYPE).fieldOf("entity").forGetter(EntityInteractTask::entity),
-                NbtPredicate.CODEC.fieldOf("components").orElse(new NbtPredicate(new CompoundTag())).forGetter(EntityInteractTask::nbt)
+                NbtPredicate.CODEC.fieldOf("components").orElse(CustomizableQuestElement.nbtPredicate()).forGetter(EntityInteractTask::nbt)
             ).apply(instance, EntityInteractTask::new));
         }
     }

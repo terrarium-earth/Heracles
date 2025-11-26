@@ -20,10 +20,10 @@ import java.util.List;
 
 public class PinnedQuestDisplay {
 
-    private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "textures/gui/pinned.png");
-    private static final ResourceLocation PINNED_FAKE_POPUP_BACKGROUND = ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "pinned/pinned_fake_popup_background");
-    private static final ResourceLocation PINNED_FAKE_POPUP_BACKGROUND_HOVERED = ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "pinned/pinned_fake_popup_background_hovered");
-    private static final ResourceLocation PINNED_FAKE_POPUP_BORDER = ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "pinned/pinned_fake_popup_border");
+    private static final ResourceLocation TEXTURE = Heracles.id("textures/gui/pinned.png");
+    private static final ResourceLocation PINNED_FAKE_POPUP_BACKGROUND = Heracles.id("pinned/pinned_fake_popup_background");
+    private static final ResourceLocation PINNED_FAKE_POPUP_BACKGROUND_HOVERED = Heracles.id("pinned/pinned_fake_popup_background_hovered");
+    private static final ResourceLocation PINNED_FAKE_POPUP_BORDER = Heracles.id("pinned/pinned_fake_popup_border");
 
     public static void render(GuiGraphics graphics) {
         Minecraft mc = Minecraft.getInstance();

@@ -23,7 +23,7 @@ public record DeleteGroupPacket(String group) implements Packet<DeleteGroupPacke
 
         @Override
         public ResourceLocation id() {
-            return ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "delete_group");
+            return Heracles.id("delete_group");
         }
 
         @Override

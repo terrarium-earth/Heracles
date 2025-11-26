@@ -16,7 +16,7 @@ import org.joml.Matrix4f;
 
 public record BackgroundModalItem(ResourceLocation texture) {
 
-    private static final ResourceLocation BACKGROUND_SPRITE = ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "upload/background_modal_item_background");
+    private static final ResourceLocation BACKGROUND_SPRITE = Heracles.id("upload/background_modal_item_background");
 
     public static final int WIDTH = 152;
 

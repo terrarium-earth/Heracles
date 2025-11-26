@@ -18,7 +18,9 @@ import net.minecraft.resources.ResourceLocation;
 
 public abstract class BaseModal extends BaseWidget implements TemporaryWidget {
 
-    public static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "textures/gui/modal.png");
+    public static final ResourceLocation TEXTURE = Heracles.id("textures/gui/modal.png");
+    public static final ResourceLocation MODAL_BACKGROUND = Heracles.id("modal/modal_background_0");
+    public static final ResourceLocation MODAL_BACKGROUND_HOVERED = Heracles.id("modal/modal_background_1");
 
     protected final int screenWidth;
     protected final int screenHeight;

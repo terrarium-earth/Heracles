@@ -1,6 +1,5 @@
 package earth.terrarium.heracles.client.widgets.modals;
 
-import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.api.client.theme.ModalsTheme;
 import earth.terrarium.heracles.client.widgets.base.BaseModal;
 import earth.terrarium.heracles.client.widgets.buttons.ThemedButton;
@@ -8,7 +7,6 @@ import earth.terrarium.heracles.common.constants.ConstantComponents;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.network.chat.CommonComponents;
-import net.minecraft.resources.ResourceLocation;
 
 public class ConfirmModal extends BaseModal {
 
@@ -38,7 +36,7 @@ public class ConfirmModal extends BaseModal {
 
     @Override
     protected void renderBackground(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
-        graphics.blitSprite(ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "modal/modal_background_0"), x, y, width, height);
+        graphics.blitSprite(MODAL_BACKGROUND, x, y, width, height);
         renderChildren(graphics, mouseX, mouseY, partialTick);
     }
 

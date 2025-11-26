@@ -29,7 +29,7 @@ public record ServerboundRemoveQuestPacket(String id) implements Packet<Serverbo
         private static final ByteCodec<ServerboundRemoveQuestPacket> CODEC = ByteCodec.STRING.map(ServerboundRemoveQuestPacket::new, ServerboundRemoveQuestPacket::id);
 
         public Type() {
-            super(ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "remove_server_quest"), CODEC);
+            super(Heracles.id("remove_server_quest"), CODEC);
         }
 
         @Override

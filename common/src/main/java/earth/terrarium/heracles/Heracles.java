@@ -10,6 +10,7 @@ import earth.terrarium.heracles.common.regisitries.ModLootConditions;
 import earth.terrarium.heracles.common.utils.PlatformLogger;
 import earth.terrarium.heracles.common.utils.PlatformSettings;
 import net.minecraft.core.RegistryAccess;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -53,5 +54,9 @@ public class Heracles {
     private static void playQuestCompleteSound(QuestEventTarget event) {
         ServerPlayer player = event.player();
         player.level().playSound(null, player.blockPosition(), SoundEvents.UI_TOAST_CHALLENGE_COMPLETE, SoundSource.MASTER, 0.1f, 2f);
+    }
+
+    public static ResourceLocation id(String path) {
+        return ResourceLocation.fromNamespaceAndPath(MOD_ID, path);
     }
 }

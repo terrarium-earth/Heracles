@@ -5,11 +5,11 @@ import net.minecraft.client.gui.components.WidgetSprites;
 
 public class MouseModeButton extends SelectableImageButton {
 
-    private static String currentType = "move";
+    private static MouseButtonType currentType = MouseButtonType.MOVE;
 
-    private final String type;
+    private final MouseButtonType type;
 
-    public MouseModeButton(int x, int y, String type, WidgetSprites sprites, Runnable onSelected) {
+    public MouseModeButton(int x, int y, MouseButtonType type, WidgetSprites sprites, Runnable onSelected) {
         super(x, y, 11, 11, sprites, b -> onSelected.run());
         this.type = type;
     }
@@ -22,5 +22,12 @@ public class MouseModeButton extends SelectableImageButton {
     @Override
     public boolean isSelected() {
         return currentType.equals(type);
+    }
+
+    public enum MouseButtonType {
+        MOVE,
+        DRAG,
+        ADD,
+        LINK;
     }
 }

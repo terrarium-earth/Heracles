@@ -64,7 +64,7 @@ public record StatTask(
 
         @Override
         public ResourceLocation id() {
-            return ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "stat");
+            return Heracles.id("stat");
         }
 
         @Override

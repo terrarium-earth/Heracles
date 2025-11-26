@@ -80,7 +80,7 @@ public record LootTableReward(
 
         @Override
         public ResourceLocation id() {
-            return ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "loottable");
+            return Heracles.id("loottable");
         }
 
         @Override

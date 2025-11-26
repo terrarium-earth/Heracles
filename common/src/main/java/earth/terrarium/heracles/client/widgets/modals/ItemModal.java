@@ -34,7 +34,7 @@ import java.util.function.Consumer;
 
 public class ItemModal extends BaseModal {
 
-    public static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "textures/gui/icons.png");
+    public static final ResourceLocation TEXTURE = Heracles.id("textures/gui/icons.png");
     public static final Component TITLE = Component.translatable("gui.heracles.choose_item");
     public static final Component MODE_TOOLTIP = Component.translatable("gui.heracles.switch_mode");
     private static final int WIDTH = 168;

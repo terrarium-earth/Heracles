@@ -26,7 +26,7 @@ import java.util.List;
 
 public abstract class AbstractQuestScreen<T> extends BaseCursorScreen {
 
-    public static final ResourceLocation HEADING = ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "textures/gui/heading.png");
+    public static final ResourceLocation HEADING = Heracles.id("textures/gui/heading.png");
 
     protected final List<TemporaryWidget> temporaryWidgets = new ArrayList<>();
     protected boolean hasBackButton = true;
@@ -213,8 +213,8 @@ public abstract class AbstractQuestScreen<T> extends BaseCursorScreen {
     }
 
     public static WidgetSprites getWidgetSprites(String name) {
-        ResourceLocation normal = ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, name);
-        ResourceLocation hovered = ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, name + "_selected");
+        ResourceLocation normal = Heracles.id(name);
+        ResourceLocation hovered = Heracles.id(name + "_selected");
         return new WidgetSprites(normal, normal, hovered);
     }
 

@@ -75,7 +75,7 @@ public class QuestsEditScreen extends QuestsScreen {
             this.questsWidget
         );
 
-        this.moveTool = addRenderableWidget(new MouseModeButton(sideBarWidth + 3, 1, "move", getWidgetSprites("heading/move"), () -> {
+        this.moveTool = addRenderableWidget(new MouseModeButton(sideBarWidth + 3, 1, MouseModeButton.MouseButtonType.MOVE, getWidgetSprites("heading/move"), () -> {
             if (questsWidget.selectHandler().selectedQuest() != null) {
                 if (!actualChildren().contains(selectQuestWidget)) {
                     addRenderableWidget(selectQuestWidget);
@@ -85,13 +85,13 @@ public class QuestsEditScreen extends QuestsScreen {
         }));
         this.moveTool.setTooltip(Tooltip.create(ConstantComponents.Tools.MOVE));
 
-        this.dragTool = addRenderableWidget(new MouseModeButton(sideBarWidth + 15, 1, "drag", getWidgetSprites("heading/drag"), this::clearWidget));
+        this.dragTool = addRenderableWidget(new MouseModeButton(sideBarWidth + 15, 1, MouseModeButton.MouseButtonType.DRAG, getWidgetSprites("heading/drag"), this::clearWidget));
         this.dragTool.setTooltip(Tooltip.create(ConstantComponents.Tools.DRAG));
 
-        this.addTool = addRenderableWidget(new MouseModeButton(sideBarWidth + 27, 1, "add", getWidgetSprites("heading/add"), this::clearWidget));
+        this.addTool = addRenderableWidget(new MouseModeButton(sideBarWidth + 27, 1, MouseModeButton.MouseButtonType.ADD, getWidgetSprites("heading/add"), this::clearWidget));
         this.addTool.setTooltip(Tooltip.create(ConstantComponents.Tools.ADD_QUEST));
 
-        this.linkTool = addRenderableWidget(new MouseModeButton(sideBarWidth + 39, 1, "link", getWidgetSprites("heading/link"), this::clearWidget));
+        this.linkTool = addRenderableWidget(new MouseModeButton(sideBarWidth + 39, 1, MouseModeButton.MouseButtonType.LINK, getWidgetSprites("heading/link"), this::clearWidget));
         this.linkTool.setTooltip(Tooltip.create(ConstantComponents.Tools.LINK));
 
         addRenderableWidget(new ImageButton(this.width - 36, 1, 11, 11, AbstractQuestScreen.getWidgetSprites("heading/add_folder"), (button) -> {

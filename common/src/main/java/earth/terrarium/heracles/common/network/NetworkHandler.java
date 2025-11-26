@@ -16,12 +16,11 @@ import earth.terrarium.heracles.common.network.packets.screens.OpenQuestsScreenP
 import earth.terrarium.heracles.common.network.packets.tasks.CheckTaskPacket;
 import earth.terrarium.heracles.common.network.packets.tasks.ManualItemTaskPacket;
 import earth.terrarium.heracles.common.network.packets.tasks.ManualXpTaskPacket;
-import net.minecraft.resources.ResourceLocation;
 
 @SuppressWarnings("UnstableApiUsage")
 public class NetworkHandler {
 
-    public static final Network CHANNEL = new Network(ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "main"), 1);
+    public static final Network CHANNEL = new Network(Heracles.id("main"), 1);
 
     public static void init() {
         CHANNEL.register(QuestRewardClaimedPacket.TYPE);

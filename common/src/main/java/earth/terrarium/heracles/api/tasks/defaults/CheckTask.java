@@ -12,7 +12,7 @@ import earth.terrarium.heracles.api.quests.defaults.ItemQuestIcon;
 import earth.terrarium.heracles.api.tasks.QuestTask;
 import earth.terrarium.heracles.api.tasks.QuestTaskType;
 import earth.terrarium.heracles.api.tasks.storage.defaults.BooleanTaskStorage;
-import net.minecraft.nbt.CompoundTag;
+
 import net.minecraft.nbt.NumericTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
@@ -50,7 +50,7 @@ public record CheckTask(
 
         @Override
         public ResourceLocation id() {
-            return ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "check");
+            return Heracles.id("check");
         }
 
         @Override
@@ -59,7 +59,7 @@ public record CheckTask(
                 RecordCodecBuilder.point(id),
                 Codec.STRING.lenientOptionalFieldOf("title", "").forGetter(CheckTask::title),
                 QuestIcons.CODEC.lenientOptionalFieldOf("icon", ItemQuestIcon.AIR).forGetter(CheckTask::icon),
-                NbtPredicate.CODEC.fieldOf("components").orElse(new NbtPredicate(new CompoundTag())).forGetter(CheckTask::nbt)
+                NbtPredicate.CODEC.fieldOf("components").orElse(CustomizableQuestElement.nbtPredicate()).forGetter(CheckTask::nbt)
             ).apply(instance, CheckTask::new));
         }
     }

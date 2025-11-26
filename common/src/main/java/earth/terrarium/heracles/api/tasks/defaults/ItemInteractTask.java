@@ -47,7 +47,7 @@ public record ItemInteractTask(
     private static class Type implements QuestTaskType<ItemInteractTask> {
         @Override
         public ResourceLocation id() {
-            return ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "item_interaction");
+            return Heracles.id("item_interaction");
         }
 
         @Override

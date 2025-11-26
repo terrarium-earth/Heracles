@@ -22,8 +22,8 @@ import java.util.Locale;
 
 public class AddDependencyModal extends BaseModal {
 
-    private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "textures/gui/dependencies.png");
-    private static final ResourceLocation BUTTON_BACKGROUND = ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "dependencies/button_background");
+    private static final ResourceLocation TEXTURE = Heracles.id("textures/gui/dependencies.png");
+    private static final ResourceLocation BUTTON_BACKGROUND = Heracles.id("dependencies/button_background");
     private static final int WIDTH = 168;
     private static final int HEIGHT = 179;
 

@@ -6,7 +6,6 @@ import com.teamresourceful.resourcefullib.common.network.base.ServerboundPacketT
 import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.common.utils.ModUtils;
 import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
@@ -26,7 +25,7 @@ public record OpenQuestPacket(String group, String quest, boolean edit) implemen
 
         @Override
         public ResourceLocation id() {
-            return ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "open_quest");
+            return Heracles.id("open_quest");
         }
 
         @Override

@@ -57,7 +57,7 @@ public record ChangedDimensionTask(
 
         @Override
         public ResourceLocation id() {
-            return ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "changed_dimension");
+            return Heracles.id("changed_dimension");
         }
 
         @Override

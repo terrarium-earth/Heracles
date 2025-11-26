@@ -39,7 +39,7 @@ public record CommandReward(String id, String title, QuestIcon<?> icon, String c
 
         @Override
         public ResourceLocation id() {
-            return ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "command");
+            return Heracles.id("command");
         }
 
         @Override

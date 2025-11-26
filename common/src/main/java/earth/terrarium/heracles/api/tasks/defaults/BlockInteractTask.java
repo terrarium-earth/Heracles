@@ -17,7 +17,7 @@ import earth.terrarium.heracles.common.blocks.BlockSource;
 import earth.terrarium.heracles.common.utils.RegistryValue;
 import net.minecraft.Optionull;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.nbt.CompoundTag;
+
 import net.minecraft.nbt.NumericTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
@@ -59,7 +59,7 @@ public record BlockInteractTask(
     private static class Type implements QuestTaskType<BlockInteractTask> {
         @Override
         public ResourceLocation id() {
-            return ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "block_interaction");
+            return Heracles.id("block_interaction");
         }
 
         @Override
@@ -70,7 +70,7 @@ public record BlockInteractTask(
                 QuestIcons.CODEC.lenientOptionalFieldOf("icon", ItemQuestIcon.AIR).forGetter(BlockInteractTask::icon),
                 RegistryValue.codec(Registries.BLOCK).fieldOf("block").forGetter(BlockInteractTask::block),
                 BlockStatePredicate.CODEC.fieldOf("state").orElse(BlockStatePredicate.ANY).forGetter(BlockInteractTask::state),
-                NbtPredicate.CODEC.fieldOf("components").orElse(new NbtPredicate(new CompoundTag())).forGetter(BlockInteractTask::nbt)
+                NbtPredicate.CODEC.fieldOf("components").orElse(CustomizableQuestElement.nbtPredicate()).forGetter(BlockInteractTask::nbt)
             ).apply(instance, BlockInteractTask::new));
         }
     }

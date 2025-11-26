@@ -53,7 +53,7 @@ public record LocationTask(
 
         @Override
         public ResourceLocation id() {
-            return ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "location");
+            return Heracles.id("location");
         }
 
         @Override

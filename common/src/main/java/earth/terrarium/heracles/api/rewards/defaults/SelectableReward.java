@@ -65,7 +65,7 @@ public record SelectableReward(String id, String title, QuestIcon<?> icon, int a
 
         @Override
         public ResourceLocation id() {
-            return ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "selectable");
+            return Heracles.id("selectable");
         }
 
         @Override

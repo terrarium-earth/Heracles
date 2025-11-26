@@ -27,7 +27,7 @@ public record ManualItemTaskPacket(String quest, String task) implements Packet<
 
         @Override
         public ResourceLocation id() {
-            return ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "check_item");
+            return Heracles.id("check_item");
         }
 
         @Override

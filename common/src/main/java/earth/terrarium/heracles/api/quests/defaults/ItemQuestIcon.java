@@ -35,7 +35,7 @@ public record ItemQuestIcon(ItemValue item) implements QuestIcon<ItemQuestIcon> 
 
         @Override
         public ResourceLocation id() {
-            return ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "item");
+            return Heracles.id("item");
         }
 
         @Override

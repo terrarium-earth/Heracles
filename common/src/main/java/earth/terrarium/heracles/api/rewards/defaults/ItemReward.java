@@ -38,7 +38,7 @@ public record ItemReward(String id, String title, QuestIcon<?> icon, ItemStack s
 
         @Override
         public ResourceLocation id() {
-            return ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "item");
+            return Heracles.id("item");
         }
 
         @Override

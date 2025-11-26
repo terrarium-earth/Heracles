@@ -82,7 +82,7 @@ public class HeraclesClient {
     }
 
     public static void initReloadListeners(BiConsumer<ResourceLocation, PreparableReloadListener> init) {
-        init.accept(ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "theme"), ThemeHandler.INSTANCE);
+        init.accept(Heracles.id("theme"), ThemeHandler.INSTANCE);
     }
 
     private static HermesStyle getDefaultStyle() {

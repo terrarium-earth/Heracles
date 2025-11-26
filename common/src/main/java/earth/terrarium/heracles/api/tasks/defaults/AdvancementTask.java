@@ -70,7 +70,7 @@ public record AdvancementTask(
 
         @Override
         public ResourceLocation id() {
-            return ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "advancement");
+            return Heracles.id("advancement");
         }
 
         @Override

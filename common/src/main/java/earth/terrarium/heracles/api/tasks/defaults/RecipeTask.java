@@ -65,7 +65,7 @@ public record RecipeTask(
 
         @Override
         public ResourceLocation id() {
-            return ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "recipe");
+            return Heracles.id("recipe");
         }
 
         @Override

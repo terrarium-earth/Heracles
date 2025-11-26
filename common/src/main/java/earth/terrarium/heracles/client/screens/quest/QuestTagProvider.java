@@ -11,6 +11,7 @@ import earth.terrarium.hermes.libs.minemark.MineMarkCoreBuilder;
 @AutoService(ElementExtension.class)
 public class QuestTagProvider implements ElementExtension {
 
+    @Override
     public void addDefaultElements(MineMarkCoreBuilder<HtmlStyle, HtmlRenderer> builder) {
         builder.addElement("subtitle", SubtitleElement::new);
         builder.addElement("task", WidgetTagElement::ofTask);

@@ -53,8 +53,8 @@ public class SelectRewardsModal extends BaseModal {
 
     @Override
     protected void renderBackground(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
-        graphics.blitSprite(ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "modal/modal_background_0"), x, y, width, height);
-        graphics.blitSprite(ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "modal/modal_background_1"), x + 7, y + 18, width - 14, height - 40);
+        graphics.blitSprite(MODAL_BACKGROUND, x, y, width, height);
+        graphics.blitSprite(MODAL_BACKGROUND_HOVERED, x + 7, y + 18, width - 14, height - 40);
 
         renderChildren(graphics, mouseX, mouseY, partialTick);
     }
@@ -89,7 +89,7 @@ public class SelectRewardsModal extends BaseModal {
                 }
                 if (this.selected.contains(id)) {
                     RenderSystem.enableBlend();
-                    graphics.blitSprite(ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "widgets/selected_reward"), x - 1, y + 1 - (int) this.scrollAmount, width + 2, itemheight - 2);
+                    graphics.blitSprite(Heracles.id("widgets/selected_reward"), x - 1, y + 1 - (int) this.scrollAmount, width + 2, itemheight - 2);
                     RenderSystem.disableBlend();
                 }
                 widget.render(graphics, scissor.stack(), x, y + 2 - (int) this.scrollAmount, width, mouseX, mouseY, this.isMouseOver(mouseX, mouseY), partialTick);

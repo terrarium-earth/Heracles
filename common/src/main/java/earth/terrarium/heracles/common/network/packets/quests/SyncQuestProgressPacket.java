@@ -29,7 +29,7 @@ public record SyncQuestProgressPacket(Map<String, QuestProgress> quests) impleme
 
         @Override
         public ResourceLocation id() {
-            return ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "sync_quest_progress");
+            return Heracles.id("sync_quest_progress");
         }
 
         @Override

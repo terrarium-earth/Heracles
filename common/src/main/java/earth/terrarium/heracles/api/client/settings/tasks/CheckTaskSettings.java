@@ -1,11 +1,11 @@
 package earth.terrarium.heracles.api.client.settings.tasks;
 
-import com.teamresourceful.resourcefullib.common.codecs.predicates.NbtPredicate;
+
+import earth.terrarium.heracles.api.CustomizableQuestElement;
 import earth.terrarium.heracles.api.client.settings.CustomizableQuestElementSettings;
 import earth.terrarium.heracles.api.client.settings.SettingInitializer;
 import earth.terrarium.heracles.api.tasks.defaults.CheckTask;
 import net.minecraft.Optionull;
-import net.minecraft.nbt.CompoundTag;
 import org.jetbrains.annotations.Nullable;
 
 public class CheckTaskSettings implements SettingInitializer<CheckTask>, CustomizableQuestElementSettings<CheckTask> {
@@ -23,7 +23,7 @@ public class CheckTaskSettings implements SettingInitializer<CheckTask>, Customi
             id,
             title,
             icon,
-            Optionull.mapOrDefault(object, CheckTask::nbt, new NbtPredicate(new CompoundTag()))
+            Optionull.mapOrDefault(object, CheckTask::nbt, CustomizableQuestElement.nbtPredicate())
         ));
     }
 }

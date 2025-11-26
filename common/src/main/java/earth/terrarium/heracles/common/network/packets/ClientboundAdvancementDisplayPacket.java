@@ -39,7 +39,7 @@ public record ClientboundAdvancementDisplayPacket(
     private static class Type implements ClientboundPacketType<ClientboundAdvancementDisplayPacket> {
         @Override
         public ResourceLocation id() {
-            return ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "advancement_display");
+            return Heracles.id("advancement_display");
         }
 
         @Override

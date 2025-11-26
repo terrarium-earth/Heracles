@@ -17,11 +17,11 @@ import java.util.List;
 
 public class PinnedDisplayScreen extends Screen {
 
-    private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "textures/gui/pinned.png");
-    private static final ResourceLocation PINNED = ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "pinned/pinned");
-    private static final ResourceLocation PINNED_HOVERED = ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "pinned/pinned_hovered");
-    private static final ResourceLocation PINNED_FAKE_POPUP_BACKGROUND = ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "pinned/pinned_fake_popup_background");
-    private static final ResourceLocation PINNED_FAKE_POPUP_BORDER = ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "pinned/pinned_fake_popup_border");
+    private static final ResourceLocation TEXTURE = Heracles.id("textures/gui/pinned.png");
+    private static final ResourceLocation PINNED = Heracles.id("pinned/pinned");
+    private static final ResourceLocation PINNED_HOVERED = Heracles.id("pinned/pinned_hovered");
+    private static final ResourceLocation PINNED_FAKE_POPUP_BACKGROUND = Heracles.id("pinned/pinned_fake_popup_background");
+    private static final ResourceLocation PINNED_FAKE_POPUP_BORDER = Heracles.id("pinned/pinned_fake_popup_border");
 
     private int sectionWidth = 0;
     private int sectionHeight = 0;

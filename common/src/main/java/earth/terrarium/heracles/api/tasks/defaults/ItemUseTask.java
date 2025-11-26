@@ -43,7 +43,7 @@ public record ItemUseTask(
     private static class Type implements QuestTaskType<ItemUseTask> {
         @Override
         public ResourceLocation id() {
-            return ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "item_use");
+            return Heracles.id("item_use");
         }
 
         @Override

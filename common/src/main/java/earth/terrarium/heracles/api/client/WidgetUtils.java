@@ -47,10 +47,10 @@ public final class WidgetUtils {
     public static void drawStatusSummaryBackground(GuiGraphics graphics, int x, int y, int width, int height, ModUtils.QuestStatus status) {
         RenderSystem.enableBlend();
         switch (status) {
-            case LOCKED -> graphics.blitSprite(Heracles.id("widgets/summary_background_0"), x, y, width, height);
-            case IN_PROGRESS -> graphics.blitSprite(Heracles.id("widgets/summary_background_1"), x, y, width, height);
-            case COMPLETED -> graphics.blitSprite(Heracles.id("widgets/summary_background_2"), x, y, width, height);
-            case COMPLETED_CLAIMED -> graphics.blitSprite(Heracles.id("widgets/summary_background_3"), x, y, width, height);
+            case LOCKED -> graphics.blitSprite(Heracles.id("widgets/summary_background_locked"), x, y, width, height);
+            case IN_PROGRESS -> graphics.blitSprite(Heracles.id("widgets/summary_background_in_progress"), x, y, width, height);
+            case COMPLETED -> graphics.blitSprite(Heracles.id("widgets/summary_background_completed"), x, y, width, height);
+            case COMPLETED_CLAIMED -> graphics.blitSprite(Heracles.id("widgets/summary_background_completed_claimed"), x, y, width, height);
         }
         RenderSystem.disableBlend();
     }

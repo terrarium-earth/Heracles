@@ -71,7 +71,7 @@ public record StatTask(
         public MapCodec<StatTask> codec(String id) {
             return RecordCodecBuilder.mapCodec(instance -> instance.group(
                 RecordCodecBuilder.point(id),
-                Codec.STRING.optionalFieldOf("title", "").forGetter(StatTask::title),
+                Codec.STRING.lenientOptionalFieldOf("title", "").forGetter(StatTask::title),
                 QuestIcons.CODEC.lenientOptionalFieldOf("icon", ItemQuestIcon.AIR).forGetter(StatTask::icon),
                 ResourceLocation.CODEC.fieldOf("stat").forGetter(StatTask::stat),
                 Codec.INT.fieldOf("target").forGetter(StatTask::target)

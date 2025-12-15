@@ -66,7 +66,7 @@ public record BlockInteractTask(
         public MapCodec<BlockInteractTask> codec(String id) {
             return RecordCodecBuilder.mapCodec(instance -> instance.group(
                 RecordCodecBuilder.point(id),
-                Codec.STRING.optionalFieldOf("title", "").forGetter(BlockInteractTask::title),
+                Codec.STRING.lenientOptionalFieldOf("title", "").forGetter(BlockInteractTask::title),
                 QuestIcons.CODEC.lenientOptionalFieldOf("icon", ItemQuestIcon.AIR).forGetter(BlockInteractTask::icon),
                 RegistryValue.codec(Registries.BLOCK).fieldOf("block").forGetter(BlockInteractTask::block),
                 BlockStatePredicate.CODEC.fieldOf("state").orElse(BlockStatePredicate.ANY).forGetter(BlockInteractTask::state),

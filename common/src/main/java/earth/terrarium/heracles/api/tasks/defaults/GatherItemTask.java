@@ -134,7 +134,7 @@ public record GatherItemTask(
         public MapCodec<GatherItemTask> codec(String id) {
             MapCodec<GatherItemTask> newCodec = RecordCodecBuilder.mapCodec(instance -> instance.group(
                 RecordCodecBuilder.point(id),
-                Codec.STRING.optionalFieldOf("title", "").forGetter(GatherItemTask::title),
+                Codec.STRING.lenientOptionalFieldOf("title", "").forGetter(GatherItemTask::title),
                 QuestIcons.CODEC.lenientOptionalFieldOf("icon", ItemQuestIcon.AIR).forGetter(GatherItemTask::icon),
                 RegistryValue.codec(Registries.ITEM).fieldOf("item").forGetter(GatherItemTask::item),
                 DataComponentPredicate.CODEC.fieldOf("components").orElse(DataComponentPredicate.EMPTY).forGetter(GatherItemTask::components),

@@ -84,7 +84,7 @@ public record XpTask(
         public MapCodec<XpTask> codec(String id) {
             return RecordCodecBuilder.mapCodec(instance -> instance.group(
                 RecordCodecBuilder.point(id),
-                Codec.STRING.optionalFieldOf("title", "").forGetter(XpTask::title),
+                Codec.STRING.lenientOptionalFieldOf("title", "").forGetter(XpTask::title),
                 QuestIcons.CODEC.lenientOptionalFieldOf("icon", ItemQuestIcon.AIR).forGetter(XpTask::icon),
                 Codec.INT.fieldOf("amount").orElse(1).forGetter(XpTask::target),
                 EnumCodec.of(XpType.class).fieldOf("xpType").orElse(XpType.LEVEL).forGetter(XpTask::xpType),

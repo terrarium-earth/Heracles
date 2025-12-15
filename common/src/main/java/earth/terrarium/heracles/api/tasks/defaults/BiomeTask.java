@@ -55,7 +55,7 @@ public record BiomeTask(
         public MapCodec<BiomeTask> codec(String id) {
             return RecordCodecBuilder.mapCodec(instance -> instance.group(
                 RecordCodecBuilder.point(id),
-                Codec.STRING.optionalFieldOf("title", "").forGetter(BiomeTask::title),
+                Codec.STRING.lenientOptionalFieldOf("title", "").forGetter(BiomeTask::title),
                 QuestIcons.CODEC.lenientOptionalFieldOf("icon", ItemQuestIcon.AIR).forGetter(BiomeTask::icon),
                 RegistryValue.codec(Registries.BIOME).fieldOf("biomes").forGetter(BiomeTask::biomes)
             ).apply(instance, BiomeTask::new));

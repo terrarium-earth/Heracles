@@ -72,7 +72,7 @@ public record RecipeTask(
         public MapCodec<RecipeTask> codec(String id) {
             return RecordCodecBuilder.mapCodec(instance -> instance.group(
                 RecordCodecBuilder.point(id),
-                Codec.STRING.optionalFieldOf("title", "").forGetter(RecipeTask::title),
+                Codec.STRING.lenientOptionalFieldOf("title", "").forGetter(RecipeTask::title),
                 QuestIcons.CODEC.lenientOptionalFieldOf("icon", ItemQuestIcon.AIR).forGetter(RecipeTask::icon),
                 CodecExtras.set(ResourceLocation.CODEC).fieldOf("recipes").forGetter(RecipeTask::recipes)
             ).apply(instance, RecipeTask::new));

@@ -54,7 +54,7 @@ public record ItemInteractTask(
         public MapCodec<ItemInteractTask> codec(String id) {
             return RecordCodecBuilder.mapCodec(instance -> instance.group(
                 RecordCodecBuilder.point(id),
-                Codec.STRING.optionalFieldOf("title", "").forGetter(ItemInteractTask::title),
+                Codec.STRING.lenientOptionalFieldOf("title", "").forGetter(ItemInteractTask::title),
                 QuestIcons.CODEC.lenientOptionalFieldOf("icon", ItemQuestIcon.AIR).forGetter(ItemInteractTask::icon),
                 RegistryValue.codec(Registries.ITEM).fieldOf("item").forGetter(ItemInteractTask::item),
                 DataComponentPredicate.CODEC.fieldOf("components").orElse(DataComponentPredicate.EMPTY).forGetter(ItemInteractTask::components)

@@ -8,81 +8,45 @@ import earth.terrarium.heracles.api.tasks.client.QuestTaskWidgets;
 import earth.terrarium.heracles.client.handlers.ClientQuests;
 import earth.terrarium.heracles.common.handlers.progress.QuestProgress;
 import earth.terrarium.heracles.common.utils.ModUtils;
-import earth.terrarium.hermes.api.rendering.HtmlRenderer;
-import earth.terrarium.hermes.api.rendering.HtmlStyle;
-import earth.terrarium.hermes.elements.base.BasicBasicElement;
-import earth.terrarium.hermes.libs.minemark.LayoutData;
-import earth.terrarium.hermes.libs.minemark.LayoutStyle;
-import earth.terrarium.hermes.libs.minemark.elements.Element;
-import net.minecraft.client.Minecraft;
-import org.jetbrains.annotations.Nullable;
-import org.xml.sax.Attributes;
+import earth.terrarium.hermes.api.TagElement;
+import earth.terrarium.hermes.api.themes.Theme;
+import net.minecraft.client.gui.GuiGraphics;
 
-public class WidgetTagElement extends BasicBasicElement<HtmlStyle, HtmlRenderer> {
+import java.util.Map;
 
-    private final DisplayWidget widget;
+public record WidgetTagElement(DisplayWidget widget) implements TagElement {
 
-    public static @Nullable DisplayWidget taskWidget(@Nullable Attributes attributes) {
-        if (attributes == null) return null;
-
-        String questId = attributes.getValue("quest");
-
-        Quest quest = ClientQuests.get(questId).map(ClientQuests.QuestEntry::value).orElse(null);
-        if (quest == null) return null;
-
-        var task = quest.tasks().get(attributes.getValue("task"));
-        if (task == null) return null;
-
+    public static WidgetTagElement ofTask(Quest quest, String questId, Map<String, String> parameters) {
+        if (quest == null) return new WidgetTagElement(null);
+        var task = quest.tasks().get(parameters.get("task"));
+        if (task == null) return new WidgetTagElement(null);
         QuestProgress progress = ClientQuests.getProgress(questId);
         ModUtils.QuestStatus status = ClientQuests.getStatus(questId).orElse(ModUtils.QuestStatus.LOCKED);
-
-        return QuestTaskWidgets.create(questId, ModUtils.cast(task), progress.getTask(task), status);
+        return new WidgetTagElement(QuestTaskWidgets.create(questId, ModUtils.cast(task), progress.getTask(task), status));
     }
 
-    public static WidgetTagElement ofTask(HtmlStyle style, LayoutStyle layoutStyle, @Nullable Element<HtmlStyle, HtmlRenderer> parent, String qName, @Nullable Attributes attributes) {
-        return new WidgetTagElement(taskWidget(attributes), style, layoutStyle, parent, qName, attributes);
-    }
-
-    public static @Nullable DisplayWidget rewardWidget(@Nullable Attributes attributes) {
-        if (attributes == null) return null;
-
-        String questId = attributes.getValue("quest");
-        Quest quest = ClientQuests.get(questId).map(ClientQuests.QuestEntry::value).orElse(null);
-        if (quest == null) return null;
-
-        var reward = quest.rewards().get(attributes.getValue("reward"));
-        if (reward == null) return null;
-
-        return QuestRewardWidgets.create(reward);
-    }
-
-    public static WidgetTagElement ofReward(HtmlStyle style, LayoutStyle layoutStyle, @Nullable Element<HtmlStyle, HtmlRenderer> parent, String qName, @Nullable Attributes attributes) {
-        return new WidgetTagElement(rewardWidget(attributes), style, layoutStyle, parent, qName, attributes);
-    }
-
-    private WidgetTagElement(@Nullable DisplayWidget widget, HtmlStyle style, LayoutStyle layoutStyle, @Nullable Element<HtmlStyle, HtmlRenderer> parent, String qName, @Nullable Attributes attributes) {
-        super(style, layoutStyle, parent, qName, attributes);
-
-        this.widget = widget;
+    public static WidgetTagElement ofReward(Quest quest, Map<String, String> parameters) {
+        if (quest == null) return new WidgetTagElement(null);
+        var reward = quest.rewards().get(parameters.get("reward"));
+        if (reward == null) return new WidgetTagElement(null);
+        return new WidgetTagElement(QuestRewardWidgets.create(reward));
     }
 
     @Override
-    protected void drawElement(float x, float y, float width, float height, float mouseX, float mouseY, HtmlRenderer htmlRenderer) {
+    public void render(Theme theme, GuiGraphics graphics, int x, int y, int width, int mouseX, int mouseY, boolean hovered, float partialTicks) {
         if (widget == null) return;
-        boolean hovered = mouseX >= x && mouseX <= x + width && mouseY >= y && mouseY <= y + height;
-        float partialTicks = Minecraft.getInstance().getFrameTimeNs();
-        widget.render(htmlRenderer.getGraphics(), new ScissorBoxStack(), (int) x, (int) y, (int) width, (int) mouseX, (int) mouseY, hovered, partialTicks);
+        widget.render(graphics, new ScissorBoxStack(), x, y, width, mouseX, mouseY, hovered, partialTicks);
     }
 
     @Override
-    protected float getWidth(LayoutData layoutData, HtmlRenderer htmlRenderer) {
-        return 0;
-    }
-
-    @Override
-    protected float getHeight(LayoutData layoutData, HtmlRenderer htmlRenderer) {
+    public int getHeight(int width) {
         if (widget == null) return 0;
-        return widget.getHeight((int) layoutData.getX());
+        return widget.getHeight(width);
     }
 
+    @Override
+    public boolean mouseClicked(double mouseX, double mouseY, int button, int width) {
+        if (widget == null) return false;
+        return widget.mouseClicked(mouseX, mouseY, button, width);
+    }
 }

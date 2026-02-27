@@ -29,14 +29,13 @@ import java.util.List;
 import java.util.function.Supplier;
 
 public final class WidgetUtils {
-    public static final ResourceLocation TEXTURE = Heracles.id("textures/gui/widgets.png");
-    public static final ResourceLocation BACKGROUND = Heracles.id("widgets/background");
-    public static final ResourceLocation BACKGROUND2 = Heracles.id("widgets/background2");
+    public static final ResourceLocation TEXTURE = new ResourceLocation(Heracles.MOD_ID, "textures/gui/widgets.png");
+    public static final ResourceLocation BACKGROUND = new ResourceLocation(Heracles.MOD_ID, "textures/gui/sprites/screen/widgets.png");
 
     public static void drawBackground(GuiGraphics graphics, int x, int y, int width, int height) {
         RenderSystem.enableBlend();
-        graphics.blitSprite(BACKGROUND, x, y, 42, height);
-        graphics.blitSprite(BACKGROUND2, x + 42, y, width - 42, height);
+        graphics.blitNineSliced(BACKGROUND, x, y, 42, height, 3, 42, 42, 0, 0);
+        graphics.blitNineSliced(BACKGROUND, x + 42, y, width - 42, height, 3, 86, 42, 42, 0);
         RenderSystem.disableBlend();
     }
 
@@ -46,26 +45,17 @@ public final class WidgetUtils {
 
     public static void drawStatusSummaryBackground(GuiGraphics graphics, int x, int y, int width, int height, ModUtils.QuestStatus status) {
         RenderSystem.enableBlend();
-        switch (status) {
-            case LOCKED -> graphics.blitSprite(Heracles.id("widgets/summary_background_locked"), x, y, width, height);
-            case IN_PROGRESS -> graphics.blitSprite(Heracles.id("widgets/summary_background_in_progress"), x, y, width, height);
-            case COMPLETED -> graphics.blitSprite(Heracles.id("widgets/summary_background_completed"), x, y, width, height);
-            case COMPLETED_CLAIMED -> graphics.blitSprite(Heracles.id("widgets/summary_background_completed_claimed"), x, y, width, height);
-        }
+        graphics.blitNineSliced(TEXTURE, x, y, width, height, 3, 128, 42, 128, 42 * status.ordinal());
         RenderSystem.disableBlend();
     }
 
     public static <T extends Tag> void drawProgressBar(GuiGraphics graphics, int minX, int minY, int maxX, int maxY, QuestTask<?, T, ?> task, TaskProgress<T> progress) {
         RenderSystem.enableBlend();
-        if(progress.isComplete()) {
-            graphics.blitSprite(Heracles.id("widgets/progress_bar_1"), minX, minY, maxX - minX, maxY - minY);
-        } else {
-            graphics.blitSprite(Heracles.id("widgets/progress_bar_0"), minX, minY, maxX - minX, maxY - minY);
-        }
+        graphics.blitNineSliced(TEXTURE, minX, minY, maxX - minX, maxY - minY, 3, 128, 8, 0, 168 + (progress.isComplete() ? 8 : 0));
         float fill = Math.min(1f, task.getProgress(progress.progress()));
         if (fill != 0.0 && !progress.isComplete()) {
             int progressWidth = (int) ((maxX - minX) * fill);
-            graphics.blitSprite(Heracles.id("widgets/progress_bar_2"), minX, minY, progressWidth, maxY - minY);
+            graphics.blitNineSliced(TEXTURE, minX, minY, progressWidth, maxY - minY, 3, 128, 8, 0, 168 + 8 + 8);
         }
         RenderSystem.disableBlend();
     }
@@ -112,7 +102,7 @@ public final class WidgetUtils {
             pose.mulPose(Axis.YP.rotationDegrees(rot));
             EntityRenderDispatcher entityRenderer = mc.getEntityRenderDispatcher();
             MultiBufferSource.BufferSource buffer = mc.renderBuffers().bufferSource();
-            entityRenderer.render(entity, 0, 0, 0.0D, mc.getTimer().getGameTimeDeltaPartialTick(true), 1, pose, buffer, LightTexture.FULL_BRIGHT);
+            entityRenderer.render(entity, 0, 0, 0.0D, mc.getFrameTime(), 1, pose, buffer, LightTexture.FULL_BRIGHT);
             buffer.endBatch();
         }
     }
@@ -120,8 +110,9 @@ public final class WidgetUtils {
     public static boolean drawItemIcon(GuiGraphics graphics, ItemStack stack, int x, int y, int size) {
         if (stack != null && !stack.is(Items.AIR)) {
             int scale = size / 16;
+            int offset = (size - scale * 16) / 2;
             try (var pose = new CloseablePoseStack(graphics)) {
-                pose.translate(x, y, 0);
+                pose.translate(x + offset, y + offset, 0);
                 pose.scale(scale, scale, 1);
                 graphics.renderFakeItem(stack, 0, 0);
             }

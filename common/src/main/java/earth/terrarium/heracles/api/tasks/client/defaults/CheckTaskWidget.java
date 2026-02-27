@@ -6,7 +6,6 @@ import com.teamresourceful.resourcefullib.client.utils.CursorUtils;
 import com.teamresourceful.resourcefullib.client.utils.ScreenUtils;
 import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.api.client.DisplayWidget;
-import earth.terrarium.heracles.api.client.WidgetUtils;
 import earth.terrarium.heracles.api.client.theme.QuestScreenTheme;
 import earth.terrarium.heracles.api.tasks.client.display.TaskTitleFormatter;
 import earth.terrarium.heracles.api.tasks.defaults.CheckTask;
@@ -36,9 +35,8 @@ public record CheckTaskWidget(
     @Override
     public void render(GuiGraphics graphics, ScissorBoxStack scissor, int x, int y, int width, int mouseX, int mouseY, boolean hovered, float partialTicks) {
         Font font = Minecraft.getInstance().font;
-        WidgetUtils.drawBackground(graphics, x, y, width, getHeight(width));
         int iconSize = 32;
-        if (!task.icon().render(graphics, scissor, x + 5, y + 5, iconSize, iconSize)) {
+        if (!task.icon().render(graphics, x + 5, y + 5, iconSize, iconSize)) {
             graphics.blit(CHECK_TEXTURE, x + 5, y + 5, 0, 0, 32, 32, 32, 32);
         }
         graphics.drawString(

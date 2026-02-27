@@ -61,10 +61,9 @@ public final class AdvancementTaskWidget implements DisplayWidget {
         int actualY = y;
 
         Font font = Minecraft.getInstance().font;
-        WidgetUtils.drawBackground(graphics, x, y, width, height);
 
         int iconSize = 32;
-        this.task.icon().renderOrStack(this.getCurrentItem(), graphics, scissor, x + 5, y + 5, iconSize);
+        this.task.icon().renderOrStack(this.getCurrentItem(), graphics, x + 5, y + 5, iconSize);
         String desc = this.task.advancements().size() == 1 ? DESC_SINGULAR : DESC_PLURAL;
         Object text = this.task.advancements().size() == 1 ? this.titles.isEmpty() ? "" : this.titles.get(0) : isOpened ? ConstantComponents.ARROW_DOWN : ConstantComponents.ARROW_RIGHT;
         graphics.drawString(

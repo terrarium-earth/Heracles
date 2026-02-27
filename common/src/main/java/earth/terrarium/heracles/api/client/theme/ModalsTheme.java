@@ -10,7 +10,7 @@ public record ModalsTheme(
 ) {
 
     public static final ModalsTheme DEFAULT = new ModalsTheme(
-        new Color(0x404040),
+        new Color(0xFEFEFE),
         new Color(0x404040)
     );
 

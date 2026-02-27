@@ -1,9 +1,9 @@
 package earth.terrarium.heracles.api.client.settings.base;
 
 import earth.terrarium.heracles.api.client.settings.Setting;
+import earth.terrarium.heracles.client.components.widgets.textbox.autocomplete.AutocompleteTextBox;
 import earth.terrarium.heracles.client.handlers.ClientAdvancementDisplays;
 import earth.terrarium.heracles.client.handlers.ClientlootTableDisplays;
-import earth.terrarium.heracles.client.widgets.boxes.AutocompleteEditBox;
 import net.minecraft.Optionull;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
@@ -16,7 +16,7 @@ import java.util.function.Supplier;
 
 public record AutocompleteTextSetting<T>(
     Supplier<List<T>> suggestions, BiPredicate<String, T> filter, Function<T, String> mapper
-) implements Setting<T, AutocompleteEditBox<T>> {
+) implements Setting<T, AutocompleteTextBox<T>> {
 
     public static final AutocompleteTextSetting<ResourceLocation> ALL_RECIPES = new AutocompleteTextSetting<>(
         () -> {
@@ -43,16 +43,16 @@ public record AutocompleteTextSetting<T>(
     );
 
     @Override
-    public AutocompleteEditBox<T> createWidget(int width, T value) {
-        AutocompleteEditBox<T> box = new AutocompleteEditBox<>(Minecraft.getInstance().font, 0, 0, width, 11, filter, mapper, s -> {});
-        box.setSuggestions(this.suggestions.get());
-        box.setValue(mapper.apply(value));
-        box.setMaxLength(Short.MAX_VALUE);
-        return box;
+    public AutocompleteTextBox<T> createWidget(AutocompleteTextBox<T> old, int width, T value) {
+        return new AutocompleteTextBox<>(
+            old, mapper.apply(value),
+            width, 24,
+            this.suggestions.get(), filter, mapper
+        );
     }
 
     @Override
-    public T getValue(AutocompleteEditBox<T> widget) {
+    public T getValue(AutocompleteTextBox<T> widget) {
         return widget.value();
     }
 }

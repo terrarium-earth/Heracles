@@ -5,14 +5,14 @@ import com.teamresourceful.resourcefullib.common.network.base.PacketType;
 import com.teamresourceful.resourcefullib.common.network.base.ServerboundPacketType;
 import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.common.utils.ModUtils;
-import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 
 import java.util.function.Consumer;
 
-public record OpenQuestPacket(String group, String quest, boolean edit) implements Packet<OpenQuestPacket> {
+public record OpenQuestPacket(String group, String quest) implements Packet<OpenQuestPacket> {
 
     public static final ServerboundPacketType<OpenQuestPacket> TYPE = new Type();
 
@@ -24,31 +24,31 @@ public record OpenQuestPacket(String group, String quest, boolean edit) implemen
     private static class Type implements ServerboundPacketType<OpenQuestPacket> {
 
         @Override
-        public ResourceLocation id() {
-            return Heracles.id("open_quest");
+        public Class<OpenQuestPacket> type() {
+            return OpenQuestPacket.class;
         }
 
         @Override
-        public void encode(OpenQuestPacket message, RegistryFriendlyByteBuf buffer) {
+        public ResourceLocation id() {
+            return new ResourceLocation(Heracles.MOD_ID, "open_quest");
+        }
+
+        @Override
+        public void encode(OpenQuestPacket message, FriendlyByteBuf buffer) {
             buffer.writeUtf(message.group);
             buffer.writeUtf(message.quest);
-            buffer.writeBoolean(message.edit);
         }
 
         @Override
-        public OpenQuestPacket decode(RegistryFriendlyByteBuf buffer) {
-            return new OpenQuestPacket(buffer.readUtf(), buffer.readUtf(), buffer.readBoolean());
+        public OpenQuestPacket decode(FriendlyByteBuf buffer) {
+            return new OpenQuestPacket(buffer.readUtf(), buffer.readUtf());
         }
 
         @Override
         public Consumer<Player> handle(OpenQuestPacket message) {
             return (player) -> {
                 if (player instanceof ServerPlayer serverPlayer) {
-                    if (message.edit() && player.hasPermissions(2)) {
-                        ModUtils.openEditQuest(serverPlayer, message.group(), message.quest());
-                    } else {
-                        ModUtils.openQuest(serverPlayer, message.group(), message.quest());
-                    }
+                    ModUtils.openQuest(serverPlayer, message.group(), message.quest());
                 }
             };
         }

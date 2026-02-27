@@ -34,9 +34,8 @@ public record XpTaskWidget(
     @Override
     public void render(GuiGraphics graphics, ScissorBoxStack scissor, int x, int y, int width, int mouseX, int mouseY, boolean hovered, float partialTicks) {
         Font font = Minecraft.getInstance().font;
-        WidgetUtils.drawBackground(graphics, x, y, width, getHeight(width));
         int iconSize = 32;
-        this.task.icon().renderOrStack(Items.EXPERIENCE_BOTTLE.getDefaultInstance(), graphics, scissor, x + 5, y + 5, iconSize);
+        this.task.icon().renderOrStack(Items.EXPERIENCE_BOTTLE.getDefaultInstance(), graphics, x + 5, y + 5, iconSize);
 
         String desc = task.collectionType() == CollectionType.AUTOMATIC ? (this.task.target() == 1 ? DESC_SINGULAR : DESC_PLURAL) : (this.task.target() == 1 ? DESC_SUBMIT_SINGULAR : DESC_SUBMIT_PLURAL);
 

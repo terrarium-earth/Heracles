@@ -1,10 +1,7 @@
 package earth.terrarium.heracles.client.components.quests;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.BufferBuilder;
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
-import com.mojang.blaze3d.vertex.Tesselator;
-import com.mojang.blaze3d.vertex.VertexFormat;
+import com.mojang.blaze3d.vertex.*;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.math.Axis;
 import com.teamresourceful.resourcefullib.client.CloseablePoseStack;
@@ -12,11 +9,11 @@ import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.api.quests.Quest;
 import earth.terrarium.heracles.api.quests.QuestDisplayStatus;
 import earth.terrarium.heracles.client.HeraclesClient;
-import earth.terrarium.heracles.client.components.base.BaseParentWidget;
 import earth.terrarium.heracles.client.handlers.ClientQuests;
 import earth.terrarium.heracles.client.ui.QuestTab;
 import earth.terrarium.heracles.common.menus.quests.QuestsContent;
 import earth.terrarium.heracles.common.utils.ModUtils;
+import earth.terrarium.olympus.client.components.base.BaseParentWidget;
 import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
 import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
 import net.minecraft.Util;
@@ -35,7 +32,7 @@ public class QuestsWidget extends BaseParentWidget {
 
     private static final OffsetBounds BOUNDS = new OffsetBounds();
 
-    private static final ResourceLocation ARROW = new ResourceLocation(Heracles.MOD_ID, "textures/gui/arrow.png");
+    private static final ResourceLocation ARROW = Heracles.id("textures/gui/arrow.png");
 
     private final String group;
     private final QuestsContent content;
@@ -97,7 +94,7 @@ public class QuestsWidget extends BaseParentWidget {
             if (center) {
                 BOUNDS.center(minX, minY, maxX, maxY);
             }
-            BOUNDS.setBounds(minX, minY, maxX, maxY);
+            BOUNDS.setBounds();
         }
 
         HeraclesClient.lastGroup = content.group();
@@ -163,56 +160,58 @@ public class QuestsWidget extends BaseParentWidget {
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.enableBlend();
 
-        Tesselator tesselator = Tesselator.getInstance();
-        BufferBuilder buffer = tesselator.getBuilder();
+        if (!widgets.isEmpty()) {
+            Tesselator tesselator = Tesselator.getInstance();
+            BufferBuilder buffer = tesselator.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
 
-        final Set<Pair<Vector2i, Vector2i>> lines = new HashSet<>();
+            final Set<Pair<Vector2i, Vector2i>> lines = new HashSet<>();
 
-        for (QuestWidget widget : widgets) {
-            ClientQuests.QuestEntry entry = widget.entry;
-            var position = entry.value().display().position(this.group);
+            for (QuestWidget widget : widgets) {
+                ClientQuests.QuestEntry entry = widget.entry;
+                var position = entry.value().display().position(this.group);
 
-            RenderSystem.setShaderColor(0.9F, 0.9F, 0.9F, widget.isHovered() ? 0.8f : 0.4F);
+                RenderSystem.setShaderColor(0.9F, 0.9F, 0.9F, widget.isHovered() ? 0.8f : 0.4F);
 
-            for (ClientQuests.QuestEntry child : entry.dependents()) {
-                if (!child.value().display().groups().containsKey(this.group)) continue;
-                if (!this.quests.containsKey(child.key())) continue;
-                if (!child.value().settings().showDependencyArrow()) continue;
-                var childPosition = child.value().display().position(this.group);
+                for (ClientQuests.QuestEntry child : entry.dependents()) {
+                    if (!child.value().display().groups().containsKey(this.group)) continue;
+                    if (!this.quests.containsKey(child.key())) continue;
+                    if (!child.value().settings().showDependencyArrow()) continue;
+                    var childPosition = child.value().display().position(this.group);
 
-                if (lines.contains(new Pair<>(position, childPosition))) continue;
-                lines.add(new Pair<>(position, childPosition));
+                    if (lines.contains(new Pair<>(position, childPosition))) continue;
+                    lines.add(new Pair<>(position, childPosition));
 
-                float xDiff = childPosition.x() - position.x();
-                float yDiff = childPosition.y() - position.y();
+                    float xDiff = childPosition.x() - position.x();
+                    float yDiff = childPosition.y() - position.y();
 
-                float length = Mth.sqrt(Mth.square(xDiff) + Mth.square(yDiff));
+                    float length = Mth.sqrt(Mth.square(xDiff) + Mth.square(yDiff));
 
-                try (var pose = new CloseablePoseStack(graphics)) {
-                    pose.translate(12, 12, 0);
-                    pose.translate(widget.getX(), widget.getY(), 0);
-                    pose.mulPose(Axis.ZP.rotation((float) Mth.atan2(yDiff, xDiff)));
+                    try (var pose = new CloseablePoseStack(graphics)) {
+                        pose.translate(12, 12, 0);
+                        pose.translate(widget.getX(), widget.getY(), 0);
+                        pose.mulPose(Axis.ZP.rotation((float) Mth.atan2(yDiff, xDiff)));
 
-                    buffer.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
-                    buffer.vertex(pose.last().pose(), 0, -2, 0).uv(0, 0).endVertex();
-                    buffer.vertex(pose.last().pose(), 0, 2, 0).uv(0, 1).endVertex();
-                    buffer.vertex(pose.last().pose(), length, 2, 0).uv(length / 3f, 1).endVertex();
-                    buffer.vertex(pose.last().pose(), length, -2, 0).uv(length / 3f, 0).endVertex();
-                    tesselator.end();
+                        buffer.addVertex(pose.last().pose(), 0, -2, 0).setUv(0, 0);
+                        buffer.addVertex(pose.last().pose(), 0, 2, 0).setUv(0, 1);
+                        buffer.addVertex(pose.last().pose(), length, 2, 0).setUv(length / 3f, 1);
+                        buffer.addVertex(pose.last().pose(), length, -2, 0).setUv(length / 3f, 0);
+                    }
                 }
             }
-        }
 
+            BufferUploader.drawWithShader(buffer.buildOrThrow());
+
+        }
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         RenderSystem.disableBlend();
     }
 
     @Override
-    public boolean mouseScrolled(double mouseX, double mouseY, double scrollAmount) {
+    public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
         if (Screen.hasShiftDown()) {
-            BOUNDS.add((int) -scrollAmount * 10, 0);
+            BOUNDS.add((int) scrollY * 10, 0);
         } else {
-            BOUNDS.add(0, (int) -scrollAmount * 10);
+            BOUNDS.add(0, (int) scrollY * 10);
         }
         return true;
     }

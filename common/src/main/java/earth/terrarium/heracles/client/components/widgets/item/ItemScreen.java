@@ -1,14 +1,14 @@
 package earth.terrarium.heracles.client.components.widgets.item;
 
 import earth.terrarium.heracles.Heracles;
-import earth.terrarium.heracles.client.components.ClearableGridLayout;
+import earth.terrarium.olympus.client.ui.ClearableGridLayout;
 import earth.terrarium.heracles.client.components.widgets.buttons.SpriteButton;
 import earth.terrarium.heracles.client.components.widgets.textbox.TextBox;
-import earth.terrarium.heracles.client.ui.Overlay;
 import earth.terrarium.heracles.client.ui.UIConstants;
 import earth.terrarium.heracles.client.utils.UIUtils;
 import earth.terrarium.heracles.common.utils.ItemValue;
 import earth.terrarium.heracles.common.utils.ModUtils;
+import earth.terrarium.olympus.client.ui.Overlay;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.layouts.GridLayout;
@@ -109,7 +109,8 @@ public class ItemScreen extends Overlay {
     }
 
     @Override
-    public void renderBackground(GuiGraphics graphics) {
+    public void renderBackground(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+        this.background.render(graphics, mouseX, mouseY, partialTick);
         UIUtils.blitWithEdge(graphics, UIConstants.MODAL_HEADER, this.x(), this.y(), this.width(), this.height(), 3);
     }
 
@@ -135,8 +136,8 @@ public class ItemScreen extends Overlay {
     }
 
     @Override
-    public boolean mouseScrolled(double mouseX, double mouseY, double delta) {
-        if (super.mouseScrolled(mouseX, mouseY, delta)) return true;
+    public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
+        if (super.mouseScrolled(mouseX, mouseY, scrollX, scrollY)) return true;
         float itemMaxForSearch = 0;
         for (ItemValue item : this.items) {
             if (matches(item, this.search.getValue())) {
@@ -145,7 +146,7 @@ public class ItemScreen extends Overlay {
         }
         int maxRows = Mth.ceil(itemMaxForSearch / ENTRY_COLUMNS);
         int oldScroll = this.scroll;
-        this.scroll = Mth.clamp(this.scroll - (int) delta * ENTRY_COLUMNS, 0, (maxRows - ENTRY_ROWS) * ENTRY_COLUMNS);
+        this.scroll = Mth.clamp(this.scroll - (int) scrollY * ENTRY_COLUMNS, 0, (maxRows - ENTRY_ROWS) * ENTRY_COLUMNS);
         if (oldScroll != this.scroll) {
             update(this.search.getValue());
         }

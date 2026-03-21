@@ -9,7 +9,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
-public record HeadingListEntry<T>(Component title, ResourceLocation texture) implements ListEntry<T> {
+public record HeadingListEntry<T>(Component title, ResourceLocation textureLeft, ResourceLocation textureRight) implements ListEntry<T> {
 
     private static final int OFFSET = 5;
     private static final int TEXT_PADDING = 3;
@@ -25,17 +25,19 @@ public record HeadingListEntry<T>(Component title, ResourceLocation texture) imp
         int titleWidth = font.width(title);
 
         RenderSystem.enableBlend();
-        graphics.blitNineSliced(texture(),
-            x, y + OFFSET,
-            titleWidth + TEXT_X_PADDING, HEADING_HEIGHT,
-            3, TEXT_BANNER_WIDTH, HEADING_HEIGHT,
-            0, 0
+        graphics.blitSprite(
+            textureLeft(),
+            x,
+            y + OFFSET,
+            titleWidth + TEXT_X_PADDING,
+            HEADING_HEIGHT
         );
-        graphics.blitNineSliced(texture(),
-            x + titleWidth + TEXT_X_PADDING, y + OFFSET,
-            width - titleWidth - TEXT_X_PADDING, HEADING_HEIGHT,
-            4, TEXT_BANNER_WIDTH, HEADING_HEIGHT,
-            TEXT_BANNER_WIDTH, 0
+        graphics.blitSprite(
+            textureRight(),
+            x + titleWidth + TEXT_X_PADDING,
+            y + OFFSET,
+            width - titleWidth - TEXT_X_PADDING,
+            HEADING_HEIGHT
         );
         RenderSystem.disableBlend();
 

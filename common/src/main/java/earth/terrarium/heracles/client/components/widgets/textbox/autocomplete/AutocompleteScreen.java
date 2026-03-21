@@ -3,8 +3,8 @@ package earth.terrarium.heracles.client.components.widgets.textbox.autocomplete;
 import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.client.components.base.ListWidget;
 import earth.terrarium.heracles.client.components.widgets.textbox.TextBox;
-import earth.terrarium.heracles.client.ui.Overlay;
 import earth.terrarium.heracles.client.utils.UIUtils;
+import earth.terrarium.olympus.client.ui.Overlay;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.resources.ResourceLocation;
@@ -16,7 +16,7 @@ import java.util.function.Function;
 
 public class AutocompleteScreen<T> extends Overlay {
 
-    private static final ResourceLocation LIST = new ResourceLocation(Heracles.MOD_ID, "textures/gui/sprites/textbox/list.png");
+    private static final ResourceLocation LIST =  Heracles.id("textbox/list");
     private static final int ENTRY_HEIGHT = 12;
 
     private final List<T> suggestions = new ArrayList<>();
@@ -85,8 +85,8 @@ public class AutocompleteScreen<T> extends Overlay {
     }
 
     @Override
-    public void renderBackground(GuiGraphics graphics) {
-        if (this.filteredSuggestions.isEmpty()) return;
+    public void renderBackground(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+        this.background.render(graphics, mouseX, mouseY, partialTick);
         UIUtils.blitWithEdge(graphics, LIST, this.x(), this.y(), this.width(), this.height(), 3);
     }
 

@@ -2,13 +2,13 @@ package earth.terrarium.heracles.client.components.widgets.buttons;
 
 import com.teamresourceful.resourcefullib.client.components.CursorWidget;
 import com.teamresourceful.resourcefullib.client.screens.CursorScreen;
-import earth.terrarium.heracles.client.components.widgets.WidgetSprites;
-import earth.terrarium.heracles.client.ui.UIConstants;
+import earth.terrarium.olympus.client.ui.UIConstants;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.Tooltip;
+import net.minecraft.client.gui.components.WidgetSprites;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
@@ -38,8 +38,8 @@ public class TextButton extends Button implements CursorWidget {
 
     @Override
     public void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
-        ResourceLocation sprite = this.sprites.get(this.isHoveredOrFocused(), !this.isActive());
-        UIConstants.blitWithEdge(graphics, sprite, getX(), getY(), this.width, this.height, 5);
+        ResourceLocation sprite = this.sprites.get(this.isActive(), this.isHoveredOrFocused());
+        graphics.blitSprite(sprite, getX(), getY(), this.width, this.height);
 
         Font font = Minecraft.getInstance().font;
 

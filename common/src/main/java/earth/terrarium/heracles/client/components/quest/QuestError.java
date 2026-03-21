@@ -1,7 +1,7 @@
 package earth.terrarium.heracles.client.components.quest;
 
 import com.teamresourceful.resourcefullib.client.screens.CursorScreen;
-import earth.terrarium.heracles.client.components.base.BaseWidget;
+import earth.terrarium.olympus.client.components.base.BaseWidget;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;

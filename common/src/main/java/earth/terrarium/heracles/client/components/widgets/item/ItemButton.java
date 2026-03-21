@@ -1,21 +1,19 @@
 package earth.terrarium.heracles.client.components.widgets.item;
 
 import com.teamresourceful.resourcefullib.client.screens.CursorScreen;
-import earth.terrarium.heracles.client.components.base.BaseWidget;
-import earth.terrarium.heracles.client.ui.UIConstants;
 import earth.terrarium.heracles.client.utils.UIUtils;
 import earth.terrarium.heracles.common.utils.ItemValue;
+import earth.terrarium.olympus.client.components.base.BaseWidget;
+import earth.terrarium.olympus.client.ui.UIConstants;
 import net.minecraft.Optionull;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.concurrent.atomic.AtomicReference;
@@ -42,7 +40,7 @@ public class ItemButton extends BaseWidget {
 
     @Override
     protected void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
-        ResourceLocation sprite = UIConstants.BUTTON.get(this.isHovered(), !this.active);
+        ResourceLocation sprite = UIConstants.BUTTON.get(this.active, this.isHoveredOrFocused());
         UIUtils.blitWithEdge(graphics, sprite, this.getX(), this.getY(), this.getWidth(), this.getHeight(), 3);
 
         ItemValue value = this.reference.get();

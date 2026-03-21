@@ -9,7 +9,7 @@ import earth.terrarium.heracles.api.quests.QuestIcon;
 import earth.terrarium.heracles.api.quests.defaults.ItemQuestIcon;
 import earth.terrarium.heracles.common.network.packets.quests.data.NetworkQuestData;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.contents.LiteralContents;
+import net.minecraft.network.chat.contents.PlainTextContents;
 import net.minecraft.network.chat.contents.TranslatableContents;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Items;
@@ -59,8 +59,8 @@ public class QuestDetailsInitializer implements SettingInitializer<QuestDetailsI
         }
 
         public static String asString(Component component) {
-            if (component.getContents() instanceof LiteralContents contents) {
-                return contents.text().replace("\n", " ");
+            if (component.getContents() instanceof PlainTextContents.LiteralContents(String text)) {
+                return text.replace("\n", " ");
             } else if (component.getContents() instanceof TranslatableContents contents) {
                 return contents.getKey().replace("\n", " ");
             }

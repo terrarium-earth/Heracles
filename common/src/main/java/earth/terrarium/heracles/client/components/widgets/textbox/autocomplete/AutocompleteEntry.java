@@ -1,10 +1,10 @@
 package earth.terrarium.heracles.client.components.widgets.textbox.autocomplete;
 
 import earth.terrarium.heracles.Heracles;
-import earth.terrarium.heracles.client.components.base.BaseWidget;
 import earth.terrarium.heracles.client.components.base.ListWidget;
 import earth.terrarium.heracles.client.components.widgets.dropdown.Dropdown;
 import earth.terrarium.heracles.client.utils.UIUtils;
+import earth.terrarium.olympus.client.components.base.BaseWidget;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
@@ -12,8 +12,8 @@ import net.minecraft.resources.ResourceLocation;
 
 public class AutocompleteEntry<T> extends BaseWidget implements ListWidget.Item {
 
-    private static final ResourceLocation ENTRY = new ResourceLocation(Heracles.MOD_ID, "textures/gui/sprites/textbox/entry.png");
-    private static final ResourceLocation ENTRY_HOVERED = new ResourceLocation(Heracles.MOD_ID, "textures/gui/sprites/textbox/entry_hovered.png");
+    private static final ResourceLocation ENTRY =  Heracles.id("textures/gui/sprites/textbox/entry.png");
+    private static final ResourceLocation ENTRY_HOVERED =  Heracles.id("textures/gui/sprites/textbox/entry_hovered.png");
 
     private final String value;
     private final Runnable action;

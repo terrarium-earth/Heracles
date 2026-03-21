@@ -1,4 +1,4 @@
-package earth.terrarium.heracles.api.client;
+/*package earth.terrarium.heracles.api.client;
 
 import earth.terrarium.heracles.api.quests.Quest;
 import earth.terrarium.hermes.api.TagElementSerializer;
@@ -35,3 +35,4 @@ public class DescriptionTags {
         TagElementSerializer create(Quest quest, String id);
     }
 }
+*/

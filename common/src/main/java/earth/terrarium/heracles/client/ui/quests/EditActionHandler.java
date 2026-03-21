@@ -8,7 +8,6 @@ import earth.terrarium.heracles.api.quests.QuestSettings;
 import earth.terrarium.heracles.client.components.quests.QuestActionHandler;
 import earth.terrarium.heracles.client.components.quests.QuestWidget;
 import earth.terrarium.heracles.client.components.quests.QuestsWidget;
-import earth.terrarium.heracles.client.components.widgets.context.ContextMenu;
 import earth.terrarium.heracles.client.handlers.ClientQuestNetworking;
 import earth.terrarium.heracles.client.handlers.ClientQuests;
 import earth.terrarium.heracles.client.handlers.DisplayConfig;
@@ -20,7 +19,7 @@ import earth.terrarium.heracles.common.network.NetworkHandler;
 import earth.terrarium.heracles.common.network.packets.quests.OpenQuestPacket;
 import earth.terrarium.heracles.common.network.packets.quests.data.NetworkQuestData;
 import earth.terrarium.heracles.common.utils.ModUtils;
-import net.minecraft.client.gui.screens.Screen;
+import earth.terrarium.olympus.client.ui.context.ContextMenu;import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
@@ -32,7 +31,7 @@ import java.util.function.Supplier;
 
 class EditActionHandler implements QuestActionHandler {
 
-    private static final ResourceLocation QUEST = new ResourceLocation(Heracles.MOD_ID, "quest");
+    private static final ResourceLocation QUEST = Heracles.id("quest");
 
     private final Supplier<QuestsWidget> quests;
     private final QuestsContent content;
@@ -75,6 +74,7 @@ class EditActionHandler implements QuestActionHandler {
     @Override
     public boolean onRightClick(double mouseX, double mouseY, @Nullable QuestWidget widget) {
         ContextMenu.open(mouseX, mouseY, menu -> {
+            menu.withAutoCloseOff();
             if (widget != null) {
                 Quest quest = widget.entry().value();
                 menu.button(UIComponents.EDIT_DETAILS, () -> EditObjectModal.open(

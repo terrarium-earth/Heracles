@@ -8,10 +8,10 @@ public class OffsetBounds {
     private static final Vector2i MAX = new Vector2i(5000, 5000);
     private static final Vector2i MIN = new Vector2i(-5000, -5000);
 
-    private static final Vector2i offset = new Vector2i();
+    private  final Vector2i offset = new Vector2i();
 
-    private static final Vector2i start = new Vector2i();
-    private static final Vector2i startOffset = new Vector2i();
+    private  final Vector2i start = new Vector2i();
+    private  final Vector2i startOffset = new Vector2i();
 
     protected int minX;
     protected int minY;

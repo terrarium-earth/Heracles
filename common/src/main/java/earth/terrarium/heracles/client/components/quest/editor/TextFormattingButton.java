@@ -31,8 +31,8 @@ public class TextFormattingButton extends Button implements CursorWidget {
         this.setTooltip(Tooltip.create(this.getMessage()));
 
         this.sprites = new WidgetSprites(
-            new ResourceLocation(Heracles.MOD_ID, "textures/gui/sprites/editor/" + id + "/normal.png"),
-            new ResourceLocation(Heracles.MOD_ID, "textures/gui/sprites/editor/" + id + "/hovered.png")
+            Heracles.id("textures/gui/sprites/editor/" + id + "/normal.png"),
+            Heracles.id("textures/gui/sprites/editor/" + id + "/hovered.png")
         );
     }
 

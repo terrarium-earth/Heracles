@@ -14,9 +14,9 @@ import net.minecraft.resources.ResourceLocation;
 
 public class SelectedButton extends Button implements CursorWidget {
 
-    private static final ResourceLocation NORMAL = new ResourceLocation(Heracles.MOD_ID, "textures/gui/sprites/tab/normal.png");
-    private static final ResourceLocation SELECTED = new ResourceLocation(Heracles.MOD_ID, "textures/gui/sprites/tab/selected.png");
-    private static final ResourceLocation HOVERED = new ResourceLocation(Heracles.MOD_ID, "textures/gui/sprites/tab/hovered.png");
+    private static final ResourceLocation NORMAL = Heracles.id("tab/normal");
+    private static final ResourceLocation SELECTED = Heracles.id("tab/selected");
+    private static final ResourceLocation HOVERED = Heracles.id("tab/hovered");
 
     protected boolean isSelected;
 

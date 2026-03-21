@@ -29,13 +29,12 @@ import java.util.List;
 import java.util.function.Supplier;
 
 public final class WidgetUtils {
-    public static final ResourceLocation TEXTURE = new ResourceLocation(Heracles.MOD_ID, "textures/gui/widgets.png");
-    public static final ResourceLocation BACKGROUND = new ResourceLocation(Heracles.MOD_ID, "textures/gui/sprites/screen/widgets.png");
+    public static final ResourceLocation TEXTURE = Heracles.id("widgets");
+    public static final ResourceLocation BACKGROUND = Heracles.id("screen/widgets");
 
     public static void drawBackground(GuiGraphics graphics, int x, int y, int width, int height) {
         RenderSystem.enableBlend();
-        graphics.blitNineSliced(BACKGROUND, x, y, 42, height, 3, 42, 42, 0, 0);
-        graphics.blitNineSliced(BACKGROUND, x + 42, y, width - 42, height, 3, 86, 42, 42, 0);
+        graphics.blitSprite(BACKGROUND, x, y, width, height);
         RenderSystem.disableBlend();
     }
 
@@ -45,17 +44,24 @@ public final class WidgetUtils {
 
     public static void drawStatusSummaryBackground(GuiGraphics graphics, int x, int y, int width, int height, ModUtils.QuestStatus status) {
         RenderSystem.enableBlend();
-        graphics.blitNineSliced(TEXTURE, x, y, width, height, 3, 128, 42, 128, 42 * status.ordinal());
+        ResourceLocation sprite = switch (status) {
+            case LOCKED -> Heracles.id("widgets/summary_background_locked");
+            case IN_PROGRESS -> Heracles.id("widgets/summary_background_in_progress");
+            case COMPLETED -> Heracles.id("widgets/summary_background_completed");
+            case COMPLETED_CLAIMED -> Heracles.id("widgets/summary_background_completed_claimed");
+        };
+        graphics.blitSprite(sprite, x, y, width, height);
         RenderSystem.disableBlend();
     }
 
     public static <T extends Tag> void drawProgressBar(GuiGraphics graphics, int minX, int minY, int maxX, int maxY, QuestTask<?, T, ?> task, TaskProgress<T> progress) {
         RenderSystem.enableBlend();
-        graphics.blitNineSliced(TEXTURE, minX, minY, maxX - minX, maxY - minY, 3, 128, 8, 0, 168 + (progress.isComplete() ? 8 : 0));
+        ResourceLocation bg = progress.isComplete() ? Heracles.id("widgets/progress_bar_1") : Heracles.id("widgets/progress_bar_0");
+        graphics.blitSprite(bg, minX, minY, maxX - minX, maxY - minY);
         float fill = Math.min(1f, task.getProgress(progress.progress()));
         if (fill != 0.0 && !progress.isComplete()) {
             int progressWidth = (int) ((maxX - minX) * fill);
-            graphics.blitNineSliced(TEXTURE, minX, minY, progressWidth, maxY - minY, 3, 128, 8, 0, 168 + 8 + 8);
+            graphics.blitSprite(Heracles.id("widgets/progress_bar_2"), minX, minY, progressWidth, maxY - minY);
         }
         RenderSystem.disableBlend();
     }
@@ -102,7 +108,7 @@ public final class WidgetUtils {
             pose.mulPose(Axis.YP.rotationDegrees(rot));
             EntityRenderDispatcher entityRenderer = mc.getEntityRenderDispatcher();
             MultiBufferSource.BufferSource buffer = mc.renderBuffers().bufferSource();
-            entityRenderer.render(entity, 0, 0, 0.0D, mc.getFrameTime(), 1, pose, buffer, LightTexture.FULL_BRIGHT);
+            entityRenderer.render(entity, 0, 0, 0.0D, mc.getFrameTimeNs(), 1, pose, buffer, LightTexture.FULL_BRIGHT);
             buffer.endBatch();
         }
     }

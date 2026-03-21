@@ -21,9 +21,9 @@ import java.util.List;
 
 public class TasksList extends QuestList<QuestTask<?, ?, ?>> {
 
-    private static final ListEntry<QuestTask<?, ?, ?>> IN_PROGRESS = new HeadingListEntry<>(Component.translatable("quest.heracles.in_progress"), UIConstants.IN_PROGRESS_HEADING);
-    private static final ListEntry<QuestTask<?, ?, ?>> COMPLETED = new HeadingListEntry<>(Component.translatable("quest.heracles.completed"), UIConstants.CLAIMED_HEADING);
-    private static final ListEntry<QuestTask<?, ?, ?>> DEPENDENCIES = new HeadingListEntry<>(Component.translatable("quest.heracles.dependencies"), UIConstants.DEPENDENTS_HEADING);
+    private static final ListEntry<QuestTask<?, ?, ?>> IN_PROGRESS = new HeadingListEntry<>(Component.translatable("quest.heracles.in_progress"), UIConstants.IN_PROGRESS_HEADING_LEFT, UIConstants.IN_PROGRESS_HEADING_RIGHT);
+    private static final ListEntry<QuestTask<?, ?, ?>> COMPLETED = new HeadingListEntry<>(Component.translatable("quest.heracles.completed"), UIConstants.CLAIMED_HEADING_LEFT, UIConstants.CLAIMED_HEADING_RIGHT);
+    private static final ListEntry<QuestTask<?, ?, ?>> DEPENDENCIES = new HeadingListEntry<>(Component.translatable("quest.heracles.dependencies"), UIConstants.DEPENDENTS_HEADING_LEFT, UIConstants.DEPENDENTS_HEADING_RIGHT);
 
     public TasksList(@Nullable QuestList<QuestTask<?, ?, ?>> list, int width, int height, QuestContent content) {
         super(list, width, height, content);

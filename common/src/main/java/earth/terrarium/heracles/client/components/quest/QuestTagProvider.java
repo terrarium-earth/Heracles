@@ -1,18 +1,20 @@
 package earth.terrarium.heracles.client.components.quest;
 
-import earth.terrarium.heracles.api.client.DescriptionTags;
-import earth.terrarium.heracles.api.quests.Quest;
-import earth.terrarium.heracles.client.tags.SubtitleTagElement;
+import com.google.auto.service.AutoService;
+import earth.terrarium.heracles.client.tags.SubtitleElement;
 import earth.terrarium.heracles.client.tags.WidgetTagElement;
-import earth.terrarium.hermes.api.DefaultTagProvider;
+import earth.terrarium.hermes.api.ElementExtension;
+import earth.terrarium.hermes.api.rendering.HtmlRenderer;
+import earth.terrarium.hermes.api.rendering.HtmlStyle;
+import earth.terrarium.hermes.libs.minemark.MineMarkCoreBuilder;
 
-public class QuestTagProvider extends DefaultTagProvider {
+@AutoService(ElementExtension.class)
+public class QuestTagProvider implements ElementExtension {
 
-    public QuestTagProvider(Quest quest, String id) {
-        super();
-        addSerializer("subtitle", SubtitleTagElement::new);
-        addSerializer("task", parameters -> WidgetTagElement.ofTask(quest, id, parameters));
-        addSerializer("reward", parameters -> WidgetTagElement.ofReward(quest, parameters));
-        DescriptionTags.tags().forEach((tag, serializer) -> addSerializer(tag, serializer.create(quest, id)));
+    @Override
+    public void addDefaultElements(MineMarkCoreBuilder<HtmlStyle, HtmlRenderer> builder) {
+        builder.addElement("subtitle", SubtitleElement::new);
+        builder.addElement("task", WidgetTagElement::ofTask);
+        builder.addElement("reward", WidgetTagElement::ofReward);
     }
 }

@@ -2,8 +2,8 @@ package earth.terrarium.heracles.client.components.lists;
 
 import com.teamresourceful.resourcefullib.client.utils.RenderUtils;
 import earth.terrarium.heracles.api.client.DisplayWidget;
-import earth.terrarium.heracles.client.components.base.BaseWidget;
 import earth.terrarium.heracles.common.menus.quest.QuestContent;
+import earth.terrarium.olympus.client.components.base.BaseWidget;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.util.Mth;
@@ -91,8 +91,8 @@ public abstract class QuestList<T> extends BaseWidget {
     }
 
     @Override
-    public boolean mouseScrolled(double mouseX, double mouseY, double delta) {
-        updateScroll(delta);
+    public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
+        updateScroll(scrollY);
         return true;
     }
 

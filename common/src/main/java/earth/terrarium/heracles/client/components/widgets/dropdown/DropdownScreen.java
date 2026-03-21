@@ -8,9 +8,14 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.resources.ResourceLocation;
 
+/**
+ * @deprecated Heracles dropdown now uses Olympus {@code DropdownBuilder}/{@code DropdownState} (ContextMenu-based).
+ * This overlay-based implementation is kept temporarily for binary compatibility.
+ */
+@Deprecated(forRemoval = true)
 public class DropdownScreen<T> extends Overlay {
 
-    private static final ResourceLocation LIST = new ResourceLocation(Heracles.MOD_ID, "textures/gui/sprites/dropdown/list.png");
+    private static final ResourceLocation LIST = Heracles.id("textures/gui/sprites/dropdown/list.png");
 
     private final Dropdown<T> dropdown;
 
@@ -67,7 +72,7 @@ public class DropdownScreen<T> extends Overlay {
     }
 
     @Override
-    public void renderBackground(GuiGraphics graphics) {
+    public void renderBackground(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
         UIUtils.blitWithEdge(graphics, LIST, this.x(), this.y(), this.width(), this.height(), 3);
     }
 

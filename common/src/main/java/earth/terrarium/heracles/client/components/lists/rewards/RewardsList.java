@@ -19,10 +19,10 @@ import java.util.List;
 
 public class RewardsList extends QuestList<QuestReward<?>> {
 
-    private static final ListEntry<QuestReward<?>> LOCKED = new HeadingListEntry<>(Component.translatable("quest.heracles.locked"), UIConstants.LOCKED_HEADING);
-    private static final ListEntry<QuestReward<?>> AVAILABLE = new HeadingListEntry<>(Component.translatable("quest.heracles.available"), UIConstants.CLAIMABLE_HEADING);
-    private static final ListEntry<QuestReward<?>> CLAIMED = new HeadingListEntry<>(Component.translatable("quest.heracles.claimed"), UIConstants.CLAIMED_HEADING);
-    private static final ListEntry<QuestReward<?>> DEPENDENTS = new HeadingListEntry<>(Component.literal("Dependents"), UIConstants.DEPENDENTS_HEADING);
+    private static final ListEntry<QuestReward<?>> LOCKED = new HeadingListEntry<>(Component.translatable("quest.heracles.locked"), UIConstants.LOCKED_HEADING_LEFT, UIConstants.LOCKED_HEADING_RIGHT);
+    private static final ListEntry<QuestReward<?>> AVAILABLE = new HeadingListEntry<>(Component.translatable("quest.heracles.available"), UIConstants.CLAIMABLE_HEADING_LEFT, UIConstants.CLAIMABLE_HEADING_RIGHT);
+    private static final ListEntry<QuestReward<?>> CLAIMED = new HeadingListEntry<>(Component.translatable("quest.heracles.claimed"), UIConstants.CLAIMED_HEADING_LEFT, UIConstants.CLAIMED_HEADING_RIGHT);
+    private static final ListEntry<QuestReward<?>> DEPENDENTS = new HeadingListEntry<>(Component.literal("Dependents"), UIConstants.DEPENDENTS_HEADING_LEFT, UIConstants.DEPENDENTS_HEADING_RIGHT);
 
     public RewardsList(@Nullable QuestList<QuestReward<?>> list, int width, int height, QuestContent content) {
         super(list, width, height, content);

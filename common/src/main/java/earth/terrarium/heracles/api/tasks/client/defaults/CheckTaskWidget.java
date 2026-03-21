@@ -53,7 +53,7 @@ public record CheckTaskWidget(
         int buttonY = y + 11;
         boolean buttonHovered = mouseX > x + width - 30 && mouseX < x + width - 10 && mouseY > buttonY && mouseY < buttonY + 20;
         if (isCompletable()) {
-            graphics.blitSprite(hovered ? ThemedButton.SPRITE_COMPLETABLE_HOVERED : ThemedButton.SPRITE_COMPLETABLE, x + width - 30, buttonY, 20, 20);
+            graphics.blitSprite(buttonHovered ? ThemedButton.SPRITE_COMPLETABLE_HOVERED : ThemedButton.SPRITE_COMPLETABLE, x + width - 30, buttonY, 20, 20);
         } else {
             graphics.blitSprite(ThemedButton.SPRITE_DISABLED, x + width - 30, buttonY, 20, 20);
         }

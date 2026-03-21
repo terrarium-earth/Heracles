@@ -26,7 +26,7 @@ public class UIUtils {
     }
 
     public static void blitWithEdge(GuiGraphics graphics, ResourceLocation texture, int x, int y, int width, int height, int size) {
-        graphics.blitNineSliced(texture, x, y, width, height, size, 256, 256, 0, 0);
+        graphics.blitSprite(texture, x, y, width, height);
     }
 
     public static void drawText(GuiGraphics graphics, Font font, List<FormattedCharSequence> lines, int x, int y, int color, boolean shadowed) {

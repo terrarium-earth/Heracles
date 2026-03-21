@@ -2,8 +2,8 @@ package earth.terrarium.heracles.client.components.widgets.context;
 
 import com.teamresourceful.resourcefullib.client.screens.CursorScreen;
 import earth.terrarium.heracles.Heracles;
-import earth.terrarium.heracles.client.components.base.BaseWidget;
 import earth.terrarium.heracles.client.utils.UIUtils;
+import earth.terrarium.olympus.client.components.base.BaseWidget;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
@@ -12,8 +12,8 @@ import net.minecraft.resources.ResourceLocation;
 
 public class ContextButtonWidget extends BaseWidget {
 
-    private static final ResourceLocation TEXTURE = new ResourceLocation(Heracles.MOD_ID, "textures/gui/sprites/context/button.png");
-    private static final ResourceLocation DANGER_TEXTURE = new ResourceLocation(Heracles.MOD_ID, "textures/gui/sprites/context/danger_button.png");
+    private static final ResourceLocation TEXTURE =  Heracles.id("textures/gui/sprites/context/button.png");
+    private static final ResourceLocation DANGER_TEXTURE =  Heracles.id("textures/gui/sprites/context/danger_button.png");
 
     private static final int PADDING = 5;
     private static final int COLOR = 0xAAAAAA;

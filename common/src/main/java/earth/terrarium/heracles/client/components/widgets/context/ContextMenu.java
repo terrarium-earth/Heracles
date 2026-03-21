@@ -2,7 +2,7 @@ package earth.terrarium.heracles.client.components.widgets.context;
 
 import com.mojang.blaze3d.platform.Window;
 import earth.terrarium.heracles.Heracles;
-import earth.terrarium.heracles.client.components.ClearableGridLayout;
+import earth.terrarium.olympus.client.ui.ClearableGridLayout;
 import earth.terrarium.heracles.client.ui.Overlay;
 import earth.terrarium.heracles.client.utils.UIUtils;
 import net.minecraft.client.Minecraft;
@@ -20,7 +20,7 @@ import java.util.function.Supplier;
 
 public class ContextMenu extends Overlay {
 
-    private static final ResourceLocation TEXTURE = new ResourceLocation(Heracles.MOD_ID, "textures/gui/sprites/context/background.png");
+    private static final ResourceLocation TEXTURE = Heracles.id("textures/gui/sprites/context/background.png");
     private static final int PADDING = 5;
 
     private final List<Supplier<AbstractWidget>> actions = new ArrayList<>();
@@ -86,7 +86,7 @@ public class ContextMenu extends Overlay {
     }
 
     @Override
-    public void renderBackground(GuiGraphics graphics) {
+    public void renderBackground(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
         UIUtils.blitWithEdge(graphics, TEXTURE, this.x, this.y, this.contextWidth, this.contextHeight, 4);
     }
 

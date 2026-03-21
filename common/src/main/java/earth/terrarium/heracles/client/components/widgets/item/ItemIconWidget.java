@@ -1,11 +1,11 @@
 package earth.terrarium.heracles.client.components.widgets.item;
 
 import com.teamresourceful.resourcefullib.client.screens.CursorScreen;
-import earth.terrarium.heracles.client.components.base.BaseWidget;
 import earth.terrarium.heracles.client.ui.UIConstants;
 import earth.terrarium.heracles.client.utils.UIUtils;
 import earth.terrarium.heracles.common.utils.ItemValue;
-import net.minecraft.client.Minecraft;
+import earth.terrarium.olympus.client.components.Widgets;import earth.terrarium.olympus.client.components.base.BaseWidget;
+import earth.terrarium.olympus.client.components.renderers.IconWidgetRenderer;import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.navigation.CommonInputs;
 
@@ -28,6 +28,7 @@ public class ItemIconWidget extends BaseWidget {
         if (this.isHoveredOrFocused()) {
             UIUtils.blitWithEdge(graphics, UIConstants.ITEM_BACKGROUND, this.getX() - 1, this.getY() - 1, this.getWidth() + 2, this.getHeight() + 2, 3);
         }
+
         graphics.renderFakeItem(this.value.getDefaultInstance(), this.getX(), this.getY());
     }
 

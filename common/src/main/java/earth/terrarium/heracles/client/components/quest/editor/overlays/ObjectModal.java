@@ -5,8 +5,8 @@ import earth.terrarium.heracles.client.components.quest.editor.TextFormattingBut
 import earth.terrarium.heracles.client.components.widgets.buttons.TextButton;
 import earth.terrarium.heracles.client.components.widgets.dropdown.Dropdown;
 import earth.terrarium.heracles.client.handlers.ClientQuests;
-import earth.terrarium.heracles.client.ui.UIConstants;
-import earth.terrarium.heracles.client.ui.modals.BaseModal;
+import earth.terrarium.olympus.client.ui.UIConstants;
+import earth.terrarium.olympus.client.ui.modals.BaseModal;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.layouts.GridLayout;
 import net.minecraft.client.gui.screens.Screen;

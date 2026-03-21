@@ -2,21 +2,20 @@ package earth.terrarium.heracles.client.ui.quest;
 
 import com.teamresourceful.resourcefullib.client.components.CursorWidget;
 import earth.terrarium.heracles.Heracles;
+import earth.terrarium.heracles.client.HeraclesClient;
 import earth.terrarium.heracles.api.quests.Quest;
 import earth.terrarium.heracles.client.components.quest.QuestError;
-import earth.terrarium.heracles.client.components.quest.editor.parser.MarkdownBodyParser;
-import earth.terrarium.heracles.client.components.quest.QuestTagProvider;
-import earth.terrarium.heracles.client.ui.QuestTab;
+import earth.terrarium.heracles.client.components.quest.editor.parser.MarkdownBodyParser;import earth.terrarium.heracles.client.ui.QuestTab;
 import earth.terrarium.heracles.common.menus.quest.QuestContent;
-import earth.terrarium.hermes.api.TagElement;
-import earth.terrarium.hermes.api.TagProvider;
-import earth.terrarium.hermes.api.themes.DefaultTheme;
-import earth.terrarium.hermes.client.DocumentWidget;
+import earth.terrarium.hermes.HermesWidget;
+import earth.terrarium.hermes.api.rendering.HtmlRenderer;
+import earth.terrarium.hermes.api.rendering.HtmlStyle;
+import earth.terrarium.hermes.elements.Parser;
+import earth.terrarium.hermes.libs.minemark.elements.MineMarkElement;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.layouts.GridLayout;
 import net.minecraft.client.gui.screens.Screen;
 
-import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class DescriptionQuestScreen extends AbstractQuestScreen {
@@ -38,10 +37,9 @@ public class DescriptionQuestScreen extends AbstractQuestScreen {
             widget = new QuestError(this.contentWidth, this.contentHeight, "Quest not found");
         } else {
             try {
-                TagProvider provider = new QuestTagProvider(quest, this.content.id());
-                List<String> description = MarkdownBodyParser.parse(quest.display().description());
-                List<TagElement> tags = provider.parse(String.join("", description));
-                widget = new QuestDocument(this.contentWidth, this.contentHeight, OVERSCROLL, tags);
+                String desc = String.join("", MarkdownBodyParser.parse(this.quest().display().description()));
+                MineMarkElement<HtmlStyle, HtmlRenderer> parsed = new Parser(HeraclesClient.getCurrentStyle()).parse(desc);
+                widget = new QuestDocument(this.contentWidth, this.contentHeight, parsed);
             } catch (Throwable e) {
                 Heracles.LOGGER.error("Error parsing quest description: ", e);
                 widget = new QuestError(this.contentWidth, this.contentHeight, e);
@@ -51,10 +49,10 @@ public class DescriptionQuestScreen extends AbstractQuestScreen {
         return layout;
     }
 
-    private static class QuestDocument extends DocumentWidget implements CursorWidget {
+    private static class QuestDocument extends HermesWidget implements CursorWidget {
 
-        public QuestDocument(int width, int height, double overscroll, List<TagElement> elements) {
-            super(0, 0, width, height, overscroll, overscroll, new DefaultTheme(), elements);
+        public QuestDocument(int width, int height, MineMarkElement<HtmlStyle, HtmlRenderer> parsed) {
+            super(0, 0, width, height, parsed);
         }
 
         @Override

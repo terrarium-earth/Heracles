@@ -9,16 +9,16 @@ import org.jetbrains.annotations.MustBeInvokedByOverriders;
 
 public interface BaseListEntry<T> extends ListEntry<T> {
 
-    ResourceLocation BACKGROUND = new ResourceLocation(Heracles.MOD_ID, "textures/gui/sprites/lists/entry.png");
-    ResourceLocation BACKGROUND_HOVERED = new ResourceLocation(Heracles.MOD_ID, "textures/gui/sprites/lists/entry.png");
+    ResourceLocation BACKGROUND_LEFT = Heracles.id("lists/entry_left");
+    ResourceLocation BACKGROUND_RIGHT = Heracles.id("lists/entry_right");
 
     @Override
     @MustBeInvokedByOverriders
     default void render(GuiGraphics graphics, ScissorBoxStack scissor, int x, int y, int width, int mouseX, int mouseY, boolean hovered, float partialTicks) {
         int height = getHeight(width);
         RenderSystem.enableBlend();
-        graphics.blitNineSliced(BACKGROUND, x, y, 42, height, 3, 42, 42, 0, 0);
-        graphics.blitNineSliced(BACKGROUND, x + 42, y, width - 42, height, 3, 86, 42, 42, 0);
+        graphics.blitSprite(BACKGROUND_LEFT, x, y, width, height);
+        graphics.blitSprite(BACKGROUND_RIGHT, x, y, width, height);
         RenderSystem.disableBlend();
     }
 }

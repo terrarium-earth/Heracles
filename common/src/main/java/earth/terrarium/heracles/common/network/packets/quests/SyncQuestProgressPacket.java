@@ -5,10 +5,18 @@ import com.teamresourceful.resourcefullib.common.network.base.ClientboundPacketT
 import com.teamresourceful.resourcefullib.common.network.base.PacketType;
 import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.client.handlers.ClientQuests;
+import earth.terrarium.heracles.client.ui.quest.AbstractQuestScreen;
+import earth.terrarium.heracles.client.ui.quest.TasksQuestScreen;
+import earth.terrarium.heracles.client.ui.quests.AbstractQuestsScreen;
+import earth.terrarium.heracles.client.ui.quests.QuestsScreen;
 import earth.terrarium.heracles.common.handlers.progress.QuestProgress;
+import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.MinecraftServer;
 
+import java.rmi.registry.Registry;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -30,11 +38,11 @@ public record SyncQuestProgressPacket(Map<String, QuestProgress> quests) impleme
 
         @Override
         public ResourceLocation id() {
-            return new ResourceLocation(Heracles.MOD_ID, "sync_quest_progress");
+            return Heracles.id("sync_quest_progress");
         }
 
         @Override
-        public void encode(SyncQuestProgressPacket message, FriendlyByteBuf buffer) {
+        public void encode(SyncQuestProgressPacket message, RegistryFriendlyByteBuf buffer) {
             buffer.writeVarInt(message.quests.size());
             for (var entry : message.quests.entrySet()) {
                 buffer.writeUtf(entry.getKey());
@@ -43,7 +51,7 @@ public record SyncQuestProgressPacket(Map<String, QuestProgress> quests) impleme
         }
 
         @Override
-        public SyncQuestProgressPacket decode(FriendlyByteBuf buffer) {
+        public SyncQuestProgressPacket decode(RegistryFriendlyByteBuf buffer) {
             Map<String, QuestProgress> quests = new LinkedHashMap<>();
             int size = buffer.readVarInt();
             for (int i = 0; i < size; i++) {
@@ -58,7 +66,12 @@ public record SyncQuestProgressPacket(Map<String, QuestProgress> quests) impleme
 
         @Override
         public Runnable handle(SyncQuestProgressPacket message) {
-            return () -> ClientQuests.mergeProgress(message.quests);
+            return () -> {
+                ClientQuests.mergeProgress(message.quests);
+                if(Minecraft.getInstance().screen instanceof AbstractQuestScreen screen) {
+                    screen.updateProgress();
+                }
+            };
         }
     }
 }

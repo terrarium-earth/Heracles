@@ -4,6 +4,8 @@ import java.util.function.Predicate;
 
 public class ValidatingTextBox extends TextBox {
 
+    protected static final int ERROR_COLOR = 0xFF5555;
+
     protected final Predicate<String> validator;
 
     public ValidatingTextBox(TextBox box, String value, int width, int height, Predicate<String> validator) {
@@ -15,12 +17,11 @@ public class ValidatingTextBox extends TextBox {
         this.validator = validator;
     }
 
-    @Override
     public int getTextColor() {
         return isValid() ? super.getTextColor() : ERROR_COLOR;
     }
 
     public boolean isValid() {
-        return this.validator.test(this.value);
+        return this.validator.test(this.getValue());
     }
 }

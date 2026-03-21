@@ -1,7 +1,6 @@
 package earth.terrarium.heracles.client.ui.quests;
 
 import earth.terrarium.heracles.api.quests.Quest;
-import earth.terrarium.heracles.client.components.AlignedLayout;
 import earth.terrarium.heracles.client.components.quests.QuestActionHandler;
 import earth.terrarium.heracles.client.components.widgets.buttons.SpriteButton;
 import earth.terrarium.heracles.client.handlers.ClientQuests;
@@ -12,6 +11,7 @@ import earth.terrarium.heracles.common.constants.ConstantComponents;
 import earth.terrarium.heracles.common.menus.quests.QuestsContent;
 import net.minecraft.Optionull;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.layouts.FrameLayout;
 import net.minecraft.client.gui.layouts.GridLayout;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
@@ -61,13 +61,23 @@ public class EditQuestsScreen extends AbstractQuestsScreen {
 
         int half = this.contentWidth / 2;
 
+        FrameLayout leftAligned = new FrameLayout();
+        leftAligned.setMinWidth(half);
+        leftAligned.setMinHeight(HEADER_HEIGHT);
+        leftAligned.addChild(leftButtons, settings -> settings.alignHorizontallyLeft().alignVerticallyMiddle());
+
+        FrameLayout rightAligned = new FrameLayout();
+        rightAligned.setMinWidth(this.contentWidth - half);
+        rightAligned.setMinHeight(HEADER_HEIGHT);
+        rightAligned.addChild(rightButtons, settings -> settings.alignHorizontallyRight().alignVerticallyMiddle());
+
         header.addChild(
-            AlignedLayout.leftAlign(half, HEADER_HEIGHT, leftButtons),
+            leftAligned,
             0, column.getAndIncrement()
         );
 
         header.addChild(
-            AlignedLayout.rightAlign(this.contentWidth - half, HEADER_HEIGHT, rightButtons),
+            rightAligned,
             0, column.getAndIncrement()
         );
         return header;

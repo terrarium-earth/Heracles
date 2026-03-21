@@ -3,9 +3,9 @@ package earth.terrarium.heracles.client.components.quest.editor.overlays.color;
 import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.client.components.widgets.WidgetSprites;
 import earth.terrarium.heracles.client.handlers.DisplayConfig;
-import earth.terrarium.heracles.client.ui.Overlay;
 import earth.terrarium.heracles.client.ui.UIConstants;
 import earth.terrarium.heracles.client.utils.UIUtils;
+import earth.terrarium.olympus.client.ui.Overlay;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -13,7 +13,6 @@ import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.layouts.GridLayout;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 import org.apache.commons.lang3.text.WordUtils;
 
 import java.util.Locale;
@@ -21,8 +20,8 @@ import java.util.Locale;
 public class ColorPickerOverlay extends Overlay {
 
     public static final WidgetSprites SPRITES = new WidgetSprites(
-        new ResourceLocation(Heracles.MOD_ID, "textures/gui/sprites/editor/color/normal.png"),
-        new ResourceLocation(Heracles.MOD_ID, "textures/gui/sprites/editor/color/hovered.png")
+        Heracles.id("textures/gui/sprites/editor/color/normal.png"),
+        Heracles.id("textures/gui/sprites/editor/color/hovered.png")
     );
     private static final int WIDGET_SIZE = 16;
     private static final int SPACING = 2;
@@ -89,7 +88,8 @@ public class ColorPickerOverlay extends Overlay {
     }
 
     @Override
-    public void renderBackground(GuiGraphics graphics) {
+    public void renderBackground(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+        this.background.render(graphics, mouseX, mouseY, partialTick);
         UIUtils.blitWithEdge(graphics, UIConstants.MODAL_HEADER, this.x(), this.y(), this.width(), this.height(), 3);
     }
 

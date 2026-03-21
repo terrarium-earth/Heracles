@@ -1,4 +1,4 @@
-package earth.terrarium.heracles.client.components.base;
+/*package earth.terrarium.heracles.client.components.base;
 
 import com.teamresourceful.resourcefullib.client.components.CursorWidget;
 import com.teamresourceful.resourcefullib.client.screens.CursorScreen;
@@ -49,3 +49,4 @@ public abstract class BaseWidget extends AbstractWidget implements CursorWidget 
 
     }
 }
+*/

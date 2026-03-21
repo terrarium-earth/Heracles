@@ -29,4 +29,11 @@ public class TasksQuestScreen extends AbstractQuestScreen {
         );
         return layout;
     }
+
+    @Override
+    public void updateProgress() {
+        super.updateProgress();
+        if (this.list instanceof TasksList tasks) tasks.update();
+        this.init();
+    }
 }

@@ -32,18 +32,17 @@ public class AutocompleteEditBox<T> extends TextBox {
         this.filter = filter;
         this.mapper = mapper;
         this.onEnter = onEnter;
+
+        this.state().registerListener(text -> {
+            if (this.responder != null) {
+                this.responder.accept(text);
+            }
+            filter();
+        });
     }
 
     public void setResponder(@Nullable Consumer<String> responder) {
         this.responder = responder;
-    }
-
-    @Override
-    protected void onValueChange() {
-        if (this.responder != null) {
-            this.responder.accept(this.getValue());
-        }
-        filter();
     }
 
     @Override

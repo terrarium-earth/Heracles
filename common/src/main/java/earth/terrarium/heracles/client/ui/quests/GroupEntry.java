@@ -3,19 +3,19 @@ package earth.terrarium.heracles.client.ui.quests;
 import com.teamresourceful.resourcefullib.client.screens.CursorScreen;
 import com.teamresourceful.resourcefullib.client.utils.CursorUtils;
 import earth.terrarium.heracles.Heracles;
-import earth.terrarium.heracles.client.components.base.BaseWidget;
 import earth.terrarium.heracles.client.components.base.ListWidget;
 import earth.terrarium.heracles.client.utils.UIUtils;
 import earth.terrarium.heracles.common.network.NetworkHandler;
 import earth.terrarium.heracles.common.network.packets.groups.OpenGroupPacket;
+import earth.terrarium.olympus.client.components.base.BaseWidget;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.resources.ResourceLocation;
 
 public class GroupEntry extends BaseWidget implements ListWidget.Item {
 
-    private static final ResourceLocation NORMAL = new ResourceLocation(Heracles.MOD_ID, "textures/gui/sprites/groups/normal.png");
-    private static final ResourceLocation SELECTED = new ResourceLocation(Heracles.MOD_ID, "textures/gui/sprites/groups/selected.png");
+    private static final ResourceLocation NORMAL =  Heracles.id("groups/normal");
+    private static final ResourceLocation SELECTED =  Heracles.id("groups/selected");
     private static final int PADDING = 4;
 
     private final String id;

@@ -16,12 +16,18 @@ public record TextSetting<O>(
 
     public static final TextSetting<String> INSTANCE = new TextSetting<>(s -> true, Function.identity(), Function.identity());
     public static final TextSetting<ResourceLocation> RESOURCELOCATION = new TextSetting<>(
-        ResourceLocation::isValidResourceLocation,
+        s -> {
+            try {
+                return ResourceLocation.tryParse(s) != null;
+            } catch (Exception e) {
+                return false;
+            }
+        },
         ResourceLocation::tryParse,
         id -> id == null ? "" : id.toString()
     );
     public static final TextSetting<ResourceKey<Level>> DIMENSION = new TextSetting<>(
-        ResourceLocation::isValidResourceLocation,
+        s -> ResourceLocation.tryParse(s) != null,
         s -> ResourceKey.create(Registries.DIMENSION, ResourceLocation.tryParse(s)),
         key -> key == null ? "" : key.location().toString()
     );

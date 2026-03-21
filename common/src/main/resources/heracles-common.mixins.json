@@ -13,7 +13,6 @@
         "common.SlotMixin"
     ],
     "client": [
-        "client.AbstractButtonMixin",
         "client.ClientLevelMixin",
         "client.ScreenMixin"
     ],

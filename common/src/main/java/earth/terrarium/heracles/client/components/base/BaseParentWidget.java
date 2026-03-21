@@ -1,4 +1,4 @@
-package earth.terrarium.heracles.client.components.base;
+/*package earth.terrarium.heracles.client.components.base;
 
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Renderable;
@@ -113,3 +113,4 @@ public abstract class BaseParentWidget extends BaseWidget implements ContainerEv
         }
     }
 }
+*/

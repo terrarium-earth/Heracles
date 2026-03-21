@@ -2,6 +2,7 @@ package earth.terrarium.heracles.client.components.base;
 
 import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.client.utils.UIUtils;
+import earth.terrarium.olympus.client.components.base.BaseParentWidget;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.gui.components.events.GuiEventListener;
@@ -19,8 +20,8 @@ public class ListWidget extends BaseParentWidget {
 
     private static final int SCROLLBAR_WIDTH = 6;
     private static final int SCROLLBAR_PADDING = 2;
-    private static final ResourceLocation SCROLLBAR = new ResourceLocation(Heracles.MOD_ID, "textures/gui/sprites/lists/scroll/bar.png");
-    private static final ResourceLocation SCROLLBAR_THUMB = new ResourceLocation(Heracles.MOD_ID, "textures/gui/sprites/lists/scroll/thumb.png");
+    private static final ResourceLocation SCROLLBAR = Heracles.id("lists/scroll/bar");
+    private static final ResourceLocation SCROLLBAR_THUMB = Heracles.id("lists/scroll/thumb");
 
     private final List<Item> items = new ArrayList<>();
 
@@ -69,6 +70,9 @@ public class ListWidget extends BaseParentWidget {
         int y = this.getY() - (int) scroll;
         this.lastHeight = 0;
 
+        graphics.pose().pushPose();
+        graphics.pose().translate(0, 0, 300);
+
         for (Item item : items) {
             item.setWidth(actualWidth);
             item.setX(getX());
@@ -79,6 +83,7 @@ public class ListWidget extends BaseParentWidget {
             this.lastHeight += item.getHeight();
         }
 
+        graphics.pose().popPose();
         graphics.disableScissor();
 
         if (this.lastHeight > this.height) {
@@ -123,12 +128,13 @@ public class ListWidget extends BaseParentWidget {
         return super.mouseDragged(mouseX, mouseY, button, dragX, dragY);
     }
 
+
     @Override
-    public boolean mouseScrolled(double mouseX, double mouseY, double scrollY) {
+    public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
         this.scroll = Mth.clamp(this.scroll - scrollY * 10, 0, Math.max(0, this.lastHeight - this.height));
         return true;
     }
-
+    
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         if (isMouseOver(mouseX, mouseY)) {

@@ -3,6 +3,7 @@ package earth.terrarium.heracles.client.ui.quests;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.datafixers.util.Pair;
 import com.teamresourceful.resourcefullib.client.screens.BaseCursorScreen;
+import earth.terrarium.heracles.client.ModScreens;
 import earth.terrarium.heracles.client.components.base.ListWidget;
 import earth.terrarium.heracles.client.components.quests.QuestActionHandler;
 import earth.terrarium.heracles.client.components.quests.QuestWidget;
@@ -12,21 +13,21 @@ import earth.terrarium.heracles.client.components.widgets.buttons.SpriteButton;
 import earth.terrarium.heracles.client.handlers.ClientQuests;
 import earth.terrarium.heracles.client.ui.QuestTab;
 import earth.terrarium.heracles.client.ui.UIConstants;
+import earth.terrarium.heracles.common.handlers.progress.QuestProgress;
 import earth.terrarium.heracles.common.menus.quests.QuestsContent;
 import earth.terrarium.heracles.common.utils.ModUtils;
+import earth.terrarium.olympus.client.ui.ClearableGridLayout;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.layouts.GridLayout;
+import net.minecraft.client.gui.layouts.Layout;
 import net.minecraft.client.gui.layouts.SpacerElement;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public abstract class AbstractQuestsScreen extends BaseCursorScreen {
@@ -50,14 +51,25 @@ public abstract class AbstractQuestsScreen extends BaseCursorScreen {
         this.content = content;
     }
 
+    public void updateProgress() {
+        List<Pair<ClientQuests.QuestEntry, ModUtils.QuestStatus>> quests = new ArrayList<>();
+        content.quests().forEach((id, status) ->
+            ClientQuests.get(id)
+                .filter(quest -> quest.value().display().groups().containsKey(content.group()))
+                .ifPresent(quest -> quests.add(Pair.of(quest, status)))
+        );
+        this.quests.update(quests);
+        this.init();
+    }
+
     @Override
     protected void init() {
         this.sideBarWidth = Math.max((int) (width * 0.25f), 125);
         this.contentWidth = this.width - this.sideBarWidth;
         this.contentHeight = this.height - HEADER_HEIGHT - SPACER;
 
-        GridLayout sidebar = initSidebar(new AtomicInteger());
-        GridLayout content = initContent(new AtomicInteger());
+        Layout sidebar = initSidebar(new AtomicInteger());
+        Layout content = initContent(new AtomicInteger());
 
         sidebar.arrangeElements();
         content.arrangeElements();
@@ -65,19 +77,19 @@ public abstract class AbstractQuestsScreen extends BaseCursorScreen {
         content.visitWidgets(this::addRenderableWidget);
     }
 
-    protected GridLayout initSidebar(AtomicInteger row) {
-        GridLayout layout = new GridLayout(0, 0);
-        GridLayout header = new GridLayout(0, 0);
+    protected Layout initSidebar(AtomicInteger row) {
+        ClearableGridLayout layout = new ClearableGridLayout();
+        ClearableGridLayout header = new ClearableGridLayout();
         header.addChild(
             SpriteButton.create(11, 11, UIConstants.BACK, this::back).withTooltip(CommonComponents.GUI_BACK),
             0, 0,
-            header.newCellSettings().padding(1)
+            s -> s.padding(1)
         );
         header.addChild(new TextWidget(this.sideBarWidth - 26 - SPACER, 11, Component.literal("Groups"), Minecraft.getInstance().font), 0, 1);
         header.addChild(
             SpriteButton.create(11, 11, UIConstants.BACK, this::back).withTooltip(CommonComponents.GUI_BACK),
             0, 2,
-            header.newCellSettings().padding(1)
+            s -> s.padding(1)
         );
         header.addChild(SpacerElement.height(HEADER_HEIGHT + SPACER), 0, 3);
         layout.addChild(header, row.getAndIncrement(), 0);
@@ -88,20 +100,22 @@ public abstract class AbstractQuestsScreen extends BaseCursorScreen {
         }
         layout.addChild(
             groups, row.getAndIncrement(), 0,
-            layout.newCellSettings().padding(1).paddingVertical(9)
+            s -> s.padding(1).paddingVertical(9)
         );
 
         return layout;
     }
 
     protected GridLayout initHeader(AtomicInteger column) {
-        GridLayout header = new GridLayout(this.sideBarWidth, 0);
+        GridLayout header = new GridLayout();
+        header.setPosition(this.sideBarWidth, 0);
         header.addChild(SpacerElement.height(HEADER_HEIGHT), 0, column.getAndIncrement());
         return header;
     }
 
-    protected GridLayout initContent(AtomicInteger row) {
-        GridLayout layout = new GridLayout(this.sideBarWidth, 0);
+    protected Layout initContent(AtomicInteger row) {
+        ClearableGridLayout layout = new ClearableGridLayout();
+        layout.setPosition(this.sideBarWidth, 0);
         layout.addChild(initHeader(new AtomicInteger()), row.getAndIncrement(), 0);
 
         List<Pair<ClientQuests.QuestEntry, ModUtils.QuestStatus>> quests = new ArrayList<>();
@@ -125,7 +139,7 @@ public abstract class AbstractQuestsScreen extends BaseCursorScreen {
             this.content, handler()
         ), row.getAndIncrement(), 0);
         this.quests.update(quests);
-        this.quests.select(widget -> selectedKeys.contains(widget.entry().key()));
+        this.quests.select((QuestWidget widget) -> selectedKeys.contains(widget.entry().key()));
 
         return layout;
     }
@@ -149,7 +163,7 @@ public abstract class AbstractQuestsScreen extends BaseCursorScreen {
     protected abstract QuestActionHandler handler();
 
     @Override
-    public void renderBackground(GuiGraphics graphics) {
+    public void renderBackground(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
         RenderSystem.enableBlend();
         UIConstants.blitWithEdge(graphics, UIConstants.SIDEBAR_HEADER, 0, 0, this.sideBarWidth, HEADER_HEIGHT + SPACER, 2);
         UIConstants.blitWithEdge(graphics, UIConstants.CONTENT_HEADER, this.sideBarWidth, 0, this.contentWidth, HEADER_HEIGHT + SPACER, 2);
@@ -160,7 +174,7 @@ public abstract class AbstractQuestsScreen extends BaseCursorScreen {
 
     @Override
     public void actuallyRender(@NotNull GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
-        this.renderBackground(graphics);
+        this.renderBackground(graphics, mouseX, mouseY, partialTicks);
         super.actuallyRender(graphics, mouseX, mouseY, partialTicks);
     }
 
@@ -171,5 +185,14 @@ public abstract class AbstractQuestsScreen extends BaseCursorScreen {
 
     public Screen parent() {
         return this.parent;
+    }
+
+    // In AbstractQuestsScreen.java
+    @Override
+    public boolean mouseDragged(double mouseX, double mouseY, int button, double dragX, double dragY) {
+        if (this.quests != null && this.quests.isMouseOver(mouseX, mouseY)) {
+            return this.quests.mouseDragged(mouseX, mouseY, button, dragX, dragY);
+        }
+        return super.mouseDragged(mouseX, mouseY, button, dragX, dragY);
     }
 }

@@ -1,9 +1,7 @@
 package earth.terrarium.heracles.client;
 
 import earth.terrarium.heracles.Heracles;
-import earth.terrarium.heracles.client.screens.quests.QuestsEditScreen;
 import earth.terrarium.heracles.client.ui.QuestTab;
-import earth.terrarium.heracles.client.ui.quests.AbstractQuestsScreen;
 import earth.terrarium.heracles.client.ui.quests.EditQuestsScreen;
 import earth.terrarium.heracles.client.ui.quests.QuestsScreen;
 import earth.terrarium.heracles.common.menus.quest.QuestContent;

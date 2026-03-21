@@ -7,6 +7,7 @@ import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.client.ModScreens;
 import earth.terrarium.heracles.common.menus.quest.QuestContent;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 
 public record OpenQuestScreenPacket(QuestContent content) implements Packet<OpenQuestScreenPacket> {
@@ -26,16 +27,16 @@ public record OpenQuestScreenPacket(QuestContent content) implements Packet<Open
 
         @Override
         public ResourceLocation id() {
-            return new ResourceLocation(Heracles.MOD_ID, "open_quest_screen");
+            return Heracles.id("open_quest_screen");
         }
 
         @Override
-        public void encode(OpenQuestScreenPacket message, FriendlyByteBuf buffer) {
+        public void encode(OpenQuestScreenPacket message, RegistryFriendlyByteBuf buffer) {
             message.content.to(buffer);
         }
 
         @Override
-        public OpenQuestScreenPacket decode(FriendlyByteBuf buffer) {
+        public OpenQuestScreenPacket decode(RegistryFriendlyByteBuf buffer) {
             return new OpenQuestScreenPacket(
                 QuestContent.from(buffer)
             );

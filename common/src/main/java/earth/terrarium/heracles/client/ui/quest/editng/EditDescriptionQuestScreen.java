@@ -40,8 +40,8 @@ public class EditDescriptionQuestScreen extends AbstractQuestScreen {
     }
 
     @Override
-    public void renderBackground(GuiGraphics graphics) {
-        super.renderBackground(graphics);
+    public void renderBackground(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+        super.renderBackground(graphics, mouseX, mouseY, partialTick);
 
         int halfPadding = QuestTextEditor.PADDING / 2;
 

@@ -13,7 +13,7 @@ import java.util.function.Supplier;
 
 public class ColorButton extends Button {
 
-    private static final ResourceLocation TEXTURE = new ResourceLocation(Heracles.MOD_ID, "textures/gui/sprites/editor/color/color.png");
+    private static final ResourceLocation TEXTURE = Heracles.id( "textures/gui/sprites/editor/color/color.png");
 
     private final Supplier<ChatFormatting> color;
 

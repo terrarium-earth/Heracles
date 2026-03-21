@@ -5,10 +5,10 @@
       "width": 256,
       "height": 256,
       "border": {
-        "left": 4,
-        "right": 4,
-        "top": 4,
-        "bottom": 4
+        "left": 2,
+        "right": 2,
+        "top": 2,
+        "bottom": 2
       }
     }
   }

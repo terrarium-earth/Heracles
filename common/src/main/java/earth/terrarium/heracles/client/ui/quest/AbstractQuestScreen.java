@@ -5,7 +5,7 @@ import com.teamresourceful.resourcefullib.client.screens.BaseCursorScreen;
 import earth.terrarium.heracles.api.client.theme.QuestsScreenTheme;
 import earth.terrarium.heracles.api.quests.Quest;
 import earth.terrarium.heracles.api.quests.QuestDisplay;
-import earth.terrarium.heracles.client.components.AlignedLayout;
+import earth.terrarium.heracles.client.HeraclesClient;
 import earth.terrarium.heracles.client.components.quest.QuestInfo;
 import earth.terrarium.heracles.client.components.quest.QuestOverview;
 import earth.terrarium.heracles.client.components.string.TextWidget;
@@ -16,12 +16,13 @@ import earth.terrarium.heracles.client.ui.QuestTab;
 import earth.terrarium.heracles.client.ui.UIConstants;
 import earth.terrarium.heracles.client.utils.ClientUtils;
 import earth.terrarium.heracles.common.constants.ConstantComponents;
+import earth.terrarium.heracles.common.handlers.progress.QuestProgress;
 import earth.terrarium.heracles.common.handlers.quests.QuestHandler;
 import earth.terrarium.heracles.common.menus.quest.QuestContent;
 import net.minecraft.Optionull;
 import net.minecraft.Util;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.layouts.FrameLayout;
 import net.minecraft.client.gui.layouts.GridLayout;
 import net.minecraft.client.gui.layouts.LayoutSettings;
 import net.minecraft.client.gui.layouts.SpacerElement;
@@ -78,8 +79,15 @@ public abstract class AbstractQuestScreen extends BaseCursorScreen {
             .orElse(null);
     }
 
+    public void updateProgress() {
+        QuestProgress progress = ClientQuests.getProgress(this.content.id());
+        if (progress != null) {
+            this.content.progress().copyFrom(progress);
+        }
+    }
+
     @Override
-    protected void init() {
+    public void init() {
         this.sideBarWidth = Math.max((int) (width * 0.25f), 125);
         this.contentWidth = this.width - this.sideBarWidth;
         this.contentHeight = this.height - HEADER_HEIGHT - SPACER;
@@ -162,8 +170,13 @@ public abstract class AbstractQuestScreen extends BaseCursorScreen {
             0, 1,
             header.newCellSettings().padding(1)
         );
+
+        FrameLayout rightAligned = new FrameLayout();
+        rightAligned.setMinWidth(quarter - 2);
+        rightAligned.setMinHeight(HEADER_HEIGHT);
+        rightAligned.addChild(buttons, settings -> settings.alignHorizontallyRight().alignVerticallyMiddle());
         header.addChild(
-            AlignedLayout.rightAlign(quarter - 2, HEADER_HEIGHT, buttons),
+            rightAligned,
             0, 2,
             header.newCellSettings()
         );
@@ -174,7 +187,7 @@ public abstract class AbstractQuestScreen extends BaseCursorScreen {
     }
 
     protected void back() {
-        Minecraft.getInstance().setScreen(this.parent);
+        HeraclesClient.openQuestScreen();
     }
 
     protected void openFile() {
@@ -190,7 +203,7 @@ public abstract class AbstractQuestScreen extends BaseCursorScreen {
     }
 
     @Override
-    public void renderBackground(GuiGraphics graphics) {
+    public void renderBackground(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
         RenderSystem.enableBlend();
         UIConstants.blitWithEdge(graphics, UIConstants.SIDEBAR_HEADER, 0, 0, this.sideBarWidth, HEADER_HEIGHT + SPACER, 2);
         UIConstants.blitWithEdge(graphics, UIConstants.CONTENT_HEADER, this.sideBarWidth, 0, this.contentWidth, HEADER_HEIGHT + SPACER, 2);
@@ -200,7 +213,7 @@ public abstract class AbstractQuestScreen extends BaseCursorScreen {
 
     @Override
     public void actuallyRender(@NotNull GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
-        this.renderBackground(graphics);
+        this.renderBackground(graphics, mouseX, mouseY, partialTicks);
         super.actuallyRender(graphics, mouseX, mouseY, partialTicks);
     }
 

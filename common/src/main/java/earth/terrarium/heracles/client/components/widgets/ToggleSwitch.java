@@ -2,16 +2,16 @@ package earth.terrarium.heracles.client.components.widgets;
 
 import com.teamresourceful.resourcefullib.client.screens.CursorScreen;
 import earth.terrarium.heracles.Heracles;
-import earth.terrarium.heracles.client.components.base.BaseWidget;
+import earth.terrarium.olympus.client.components.base.BaseWidget;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.resources.ResourceLocation;
 
 public class ToggleSwitch extends BaseWidget {
 
-    private static final ResourceLocation ON = new ResourceLocation(Heracles.MOD_ID, "textures/gui/sprites/buttons/toggle/on.png");
-    private static final ResourceLocation OFF = new ResourceLocation(Heracles.MOD_ID, "textures/gui/sprites/buttons/toggle/off.png");
-    private static final ResourceLocation ON_HOVERED = new ResourceLocation(Heracles.MOD_ID, "textures/gui/sprites/buttons/toggle/on_hovered.png");
-    private static final ResourceLocation OFF_HOVERED = new ResourceLocation(Heracles.MOD_ID, "textures/gui/sprites/buttons/toggle/off_hovered.png");
+    private static final ResourceLocation ON =  Heracles.id("textures/gui/sprites/buttons/toggle/on.png");
+    private static final ResourceLocation OFF =  Heracles.id( "textures/gui/sprites/buttons/toggle/off.png");
+    private static final ResourceLocation ON_HOVERED =  Heracles.id("textures/gui/sprites/buttons/toggle/on_hovered.png");
+    private static final ResourceLocation OFF_HOVERED =  Heracles.id("textures/gui/sprites/buttons/toggle/off_hovered.png");
 
     private boolean toggled;
 

@@ -1,0 +1,15 @@
+{
+    "required": true,
+    "minVersion": "0.8",
+    "package": "earth.terrarium.olympus.mixins",
+    "compatibilityLevel": "JAVA_21",
+    "client": [
+        "GuiRendererMixin",
+        "RenderSystemMixin"
+    ],
+    "injectors": {
+        "defaultRequire": 1
+    },
+    "mixins": [
+    ]
+}

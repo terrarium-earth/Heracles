@@ -1,0 +1,58 @@
+{
+  "slug": "olympus",
+  "repo": "terrarium",
+  "group": "earth.terrarium.olympus",
+  "curseforge": null,
+  "modrinth": null,
+  "info": {
+    "client_side": "required",
+    "server_side": "unsupported",
+    "title": "Olympus",
+    "description": "A library for creating common UI elements with ease.",
+    "body": "# Olympus\\n\\nOlympus is a simple, flexible, cross platform UI library for Minecraft Java that allows you to create GUIs with complex layouts and UI elements with ease. By default, all UI elements are styled to look like Bedrock Edition, but you can easily customize the appearance of your UIs to match your mod's theme.\\n\\n## Features\\n\\nOlympus currently provides the following UI elements:\\n- Buttons\\n- Labels\\n- Text fields\\n- Integer fields\\n- Lists\\n- Grids\\n- Multiline Strings\\n- Minimap\\n- Dropdowns\\n- Radio buttons\\n\\n## Usage\\n\\nTo use Olympus in your mod, add the following to your `build.gradle`:\\n\\nAdd the maven repository to your `repositories` block:\\n\\nGroovy\\n```groovy\\nrepositories {\\n    maven {\\n        url \"https://maven.teamresourceful.com/repository/maven-public/\"\\n    }\\n}\\n```\\n\\nKotlin Script\\n```kts\\nrepositories {\\n    maven(url = \"https://maven.teamresourceful.com/repository/maven-public/\")\\n}\\n```\\n\\nThen add the Olympus dependency to your `dependencies` block:\\n\\n> Note: Replace `version` with the version of Olympus you want to use. or use \"latest.release\" to get the latest version.\\n\\n### Common \\n\\n```kts\\ndependencies {\\n    modImplementation(group = \"earth.terrarium.olympus\", name = \"olympus-common-1.21\", version = version)\\n}\\n```\\n\\n> We don't plan to release an official jar of Olympus on Modrinth or CurseForge, so you'll need to include the platform specific\\n> modules in your mod jar.\\n\\n### Fabric Loom\\n    \\n```kts\\ndependencies {\\n    include(modImplementation(group = \"earth.terrarium.olympus\", name = \"olympus-fabric-1.21\", version = version))\\n}\\n```\\n\\n### NeoForge (Architectury Loom)\\n\\n```kts\\ndependencies {\\n    include(modImplementation(group = \"earth.terrarium.olympus\", name = \"olympus-forge-1.21\", version = version))\\n}\\n```\\n\\n### Neoforge (Neogradle)\\n\\n```kts\\ndependencies {\\n    implementation(group = \"earth.terrarium.olympus\", name = \"olympus-forge-1.21\", version = version)\\n    jarJar(group = \"earth.terrarium.olympus\", name = \"olympus-forge-1.21\", version = \"[version,range)\")\\n}\\n```\\n\\n> Note: Olympus does not support Legacy Forge. Please use NeoForge.\\n\\n",
+    "license": {
+      "id": "MIT",
+      "name": "",
+      "url": null
+    },
+    "icon": "http://images.teamresourceful.com/u/WPEFJI.svg",
+    "links": [
+      {
+        "url": "https://github.com/terrarium-earth/Tempad/issues",
+        "icon": "issues",
+        "text": "Report Issues"
+      },
+      {
+        "url": "https://github.com/terrarium-earth/Tempad/wiki",
+        "icon": "wiki",
+        "text": "Visit Wiki"
+      },
+      {
+        "url": "https://discord.gg/terrarium",
+        "icon": "discord",
+        "text": "Join Discord server"
+      },
+      {
+        "url": "https://ko-fi.com/terrariumearth",
+        "icon": "ko-fi",
+        "text": "Donate on Ko-fi"
+      }
+    ],
+    "gallery": [],
+    "color": 4989956,
+    "team": [
+      {
+        "name": "CodexAdrian",
+        "role": "Developer",
+        "icon": "https://avatars.githubusercontent.com/u/83074853?v=4",
+        "link": "https://codexadrian.tech"
+      },
+      {
+        "name": "ThatGravyBoat",
+        "role": "Developer",
+        "icon": "https://avatars.githubusercontent.com/u/26934102?v=4",
+        "link": "https://thatgravyboat.tech"
+      }
+    ]
+  }
+}

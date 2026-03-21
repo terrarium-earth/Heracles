@@ -80,15 +80,15 @@ public record LootTableReward(
 
         @Override
         public ResourceLocation id() {
-            return ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "loottable");
+            return Heracles.id("loottable");
         }
 
         @Override
         public MapCodec<LootTableReward> codec(String id) {
             return RecordCodecBuilder.mapCodec(instance -> instance.group(
                 RecordCodecBuilder.point(id),
-                Codec.STRING.optionalFieldOf("title", "").forGetter(LootTableReward::title),
-                QuestIcons.CODEC.optionalFieldOf("icon", ItemQuestIcon.AIR).forGetter(LootTableReward::icon),
+                Codec.STRING.lenientOptionalFieldOf("title", "").forGetter(LootTableReward::title),
+                QuestIcons.CODEC.lenientOptionalFieldOf("icon", ItemQuestIcon.AIR).forGetter(LootTableReward::icon),
                 ResourceLocation.CODEC.fieldOf("loot_table").forGetter(LootTableReward::lootTable)
             ).apply(instance, LootTableReward::new));
         }

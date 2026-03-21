@@ -24,6 +24,10 @@ public class ClientQuests {
         return Optional.ofNullable(ENTRIES.get(key));
     }
 
+    public static Optional<Quest> getQuest(String key) {
+        return get(key).map(QuestEntry::value);
+    }
+
     public static List<String> groups() {
         return GROUPS;
     }
@@ -55,11 +59,6 @@ public class ClientQuests {
                 .map(Quest::display)
                 .ifPresent(display -> display.setDescription(List.of(entry.getValue().split("\n"))));
         }
-    }
-
-    public static void updateProgress(Map<String, QuestProgress> progress) {
-        PROGRESS.clear();
-        PROGRESS.putAll(progress);
     }
 
     public static void mergeProgress(Map<String, QuestProgress> progress) {

@@ -1,9 +1,6 @@
 package earth.terrarium.heracles.client.tags;
 
 import com.teamresourceful.resourcefullib.client.scissor.ScissorBoxStack;
-import dev.dediamondpro.minemark.LayoutData;
-import dev.dediamondpro.minemark.LayoutStyle;
-import dev.dediamondpro.minemark.elements.Element;
 import earth.terrarium.heracles.api.client.DisplayWidget;
 import earth.terrarium.heracles.api.quests.Quest;
 import earth.terrarium.heracles.api.rewards.client.QuestRewardWidgets;
@@ -14,6 +11,10 @@ import earth.terrarium.heracles.common.utils.ModUtils;
 import earth.terrarium.hermes.api.rendering.HtmlRenderer;
 import earth.terrarium.hermes.api.rendering.HtmlStyle;
 import earth.terrarium.hermes.elements.base.BasicBasicElement;
+import earth.terrarium.hermes.libs.minemark.LayoutData;
+import earth.terrarium.hermes.libs.minemark.LayoutStyle;
+import earth.terrarium.hermes.libs.minemark.elements.Element;
+import net.minecraft.client.Minecraft;
 import org.jetbrains.annotations.Nullable;
 import org.xml.sax.Attributes;
 
@@ -68,7 +69,9 @@ public class WidgetTagElement extends BasicBasicElement<HtmlStyle, HtmlRenderer>
     @Override
     protected void drawElement(float x, float y, float width, float height, float mouseX, float mouseY, HtmlRenderer htmlRenderer) {
         if (widget == null) return;
-        widget.render(htmlRenderer.getGraphics(), new ScissorBoxStack(), x, y, width, mouseX, mouseY, hovered, partialTicks);
+        boolean hovered = mouseX >= x && mouseX <= x + width && mouseY >= y && mouseY <= y + height;
+        float partialTicks = Minecraft.getInstance().getFrameTimeNs();
+        widget.render(htmlRenderer.getGraphics(), new ScissorBoxStack(), (int) x, (int) y, (int) width, (int) mouseX, (int) mouseY, hovered, partialTicks);
     }
 
     @Override
@@ -79,12 +82,7 @@ public class WidgetTagElement extends BasicBasicElement<HtmlStyle, HtmlRenderer>
     @Override
     protected float getHeight(LayoutData layoutData, HtmlRenderer htmlRenderer) {
         if (widget == null) return 0;
-        return widget.getHeight(width);
+        return widget.getHeight((int) layoutData.getX());
     }
 
-    @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button, int width) {
-        if (widget == null) return false;
-        return widget.mouseClicked(mouseX, mouseY, button, width);
-    }
 }

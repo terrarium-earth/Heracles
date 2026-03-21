@@ -1,0 +1,16 @@
+{
+    "schemaVersion": 1,
+    "id": "olympus-example",
+    "version": "1.0.0",
+    "name": "Olympus Example",
+    "description": "Example mod for Olympus",
+    "authors": [ "ThatGravyBoat" ],
+    "contributors": [ "" ],
+    "license": "MIT",
+    "environment": "*",
+    "entrypoints": {
+        "client": [
+            "earth.terrarium.example.ExampleMod"
+        ]
+    }
+}

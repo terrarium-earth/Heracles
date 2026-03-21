@@ -111,5 +111,30 @@
     "commands.heracles.complete.failed": "[Heracles] Quest %s could not be completed.",
     "commands.heracles.pin.success.pinned": "[Heracles] Quest %s pinned.",
     "commands.heracles.pin.success.unpinned": "[Heracles] Quest %s unpinned.",
-    "commands.heracles.pin.dummy.completed": "[Heracles] Quest %s completed."
+    "commands.heracles.pin.dummy.completed": "[Heracles] Quest %s completed.",
+
+
+
+
+
+
+
+
+
+
+
+
+
+    "__comment__.heracles": "The below are keys for new ui elements, when adding new keys, please add them to the bottom of the file.",
+    "ui.heracles.open": "Open",
+    "ui.heracles.edit.details": "Edit Details",
+    "ui.heracles.edit.settings": "Edit Settings",
+    "ui.heracles.snap_to_grid": "Snap to Grid",
+    "ui.heracles.x": "x: %s",
+    "ui.heracles.y": "y: %s",
+    "ui.heracles.add_quest": "Add Quest",
+    "ui.heracles.name": "Name",
+    "ui.heracles.id": "ID",
+    "ui.heracles.dependency_add": "Add as Dependency",
+    "ui.heracles.dependency_remove": "Remove as Dependency"
 }

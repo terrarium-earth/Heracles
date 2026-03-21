@@ -1,0 +1,55 @@
+{
+    "components": [
+        {
+            "type": 1,
+            "components": [
+                {
+                    "type": 2,
+                    "label": "Fabric",
+                    "style": 5,
+                    "url": "https://beehive.sh/mod/olympus/versions?l=fabric&g=1.21"
+                },
+                {
+                    "type": 2,
+                    "label": "NeoForge",
+                    "style": 5,
+                    "url": "https://beehive.sh/mod/olympus/versions?l=neoforge&g=1.21"
+                },
+                {
+                    "type": 2,
+                    "label": "Common",
+                    "style": 5,
+                    "url": "https://beehive.sh/mod/olympus/versions?l=common&g=1.21"
+                }
+            ]
+        }
+    ],
+    "embeds": [
+        {
+            "title": "Olympus",
+            "description": "**Changelog:**\\n${changelog}",
+            "color": 3935276,
+            "fields": [
+                {
+                    "name": "Minecraft Version",
+                    "value": "${minecraft}",
+                    "inline": true
+                },
+                {
+                    "name": "Mod Version",
+                    "value": "${version}",
+                    "inline": true
+                }
+            ],
+            "footer": {
+                "text": "Follow the project on Beehive at beehive.sh/mod/olympus",
+                "icon_url": "https://images.teamresourceful.com/u/IDWLGs.png"
+            },
+            "thumbnail": {
+                "url": "http://images.teamresourceful.com/u/3CF1JE.png"
+            }
+        }
+    ],
+    "username": "Terrarium Releases",
+    "avatar_url": "https://cdn.modrinth.com/user/6ZoP9xY8/845ab3625ed09a90b58b4ec6089c92d8e459ca09.png"
+}

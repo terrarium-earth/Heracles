@@ -5,7 +5,7 @@ import earth.terrarium.heracles.api.client.theme.QuestScreenTheme;
 import earth.terrarium.heracles.api.quests.QuestIcon;
 import earth.terrarium.heracles.api.rewards.defaults.LootTableReward;
 import earth.terrarium.heracles.client.handlers.ClientQuests;
-import earth.terrarium.heracles.client.screens.quest.BaseQuestScreen;
+import earth.terrarium.heracles.client.ui.quest.AbstractQuestScreen;
 import earth.terrarium.heracles.common.handlers.progress.QuestProgress;
 import earth.terrarium.heracles.common.network.NetworkHandler;
 import earth.terrarium.heracles.common.network.packets.rewards.ClaimRewardsPacket;
@@ -26,8 +26,9 @@ public record LootTableRewardWidget(LootTableReward reward, String quest, QuestP
     private static final String TOOLTIP_SINGULAR = "reward.heracles.loottable.tooltip.singular";
 
     public static LootTableRewardWidget of(LootTableReward reward, boolean interactive) {
-        if (Minecraft.getInstance().screen instanceof BaseQuestScreen screen) {
-            return new LootTableRewardWidget(reward, screen.getQuestId(), ClientQuests.getProgress(screen.getQuestId()), interactive);
+        if (Minecraft.getInstance().screen instanceof AbstractQuestScreen screen) {
+            String id = screen.content().id();
+            return new LootTableRewardWidget(reward, id, ClientQuests.getProgress(id), interactive);
         }
         return new LootTableRewardWidget(reward, "", null, interactive);
     }

@@ -36,7 +36,7 @@ public class ConfirmModal extends BaseModal {
 
     @Override
     protected void renderBackground(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
-        graphics.blitNineSliced(TEXTURE, x, y, width, height, 4, 4, 4, 4, 128, 128, 0, 0);
+        graphics.blitSprite(MODAL_BACKGROUND, x, y, width, height);
         renderChildren(graphics, mouseX, mouseY, partialTick);
     }
 

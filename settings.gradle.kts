@@ -14,3 +14,4 @@ pluginManagement {
 include("common")
 include("fabric")
 include("neoforge")
+includeBuild("external/olympus")

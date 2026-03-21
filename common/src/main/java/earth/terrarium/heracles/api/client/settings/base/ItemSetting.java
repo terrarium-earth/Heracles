@@ -2,7 +2,8 @@ package earth.terrarium.heracles.api.client.settings.base;
 
 import com.mojang.datafixers.util.Either;
 import earth.terrarium.heracles.api.client.settings.Setting;
-import earth.terrarium.heracles.client.widgets.buttons.ItemButton;
+import earth.terrarium.heracles.client.components.widgets.item.ItemButton;
+import earth.terrarium.heracles.common.utils.ItemValue;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -12,12 +13,12 @@ public record ItemSetting(boolean tagsAllowed) implements Setting<Either<ItemSta
     public static final ItemSetting NO_TAGS = new ItemSetting(false);
 
     @Override
-    public ItemButton createWidget(int width, Either<ItemStack, TagKey<Item>> value) {
-        return new ItemButton(0, 0, width, 11, tagsAllowed, value);
+    public ItemButton createWidget(ItemButton old, int width, Either<ItemStack, TagKey<Item>> value) {
+        return new ItemButton(old, new ItemValue(value), width, 24, tagsAllowed);
     }
 
     @Override
     public Either<ItemStack, TagKey<Item>> getValue(ItemButton widget) {
-        return widget.value();
+        return widget.reference().get().item();
     }
 }

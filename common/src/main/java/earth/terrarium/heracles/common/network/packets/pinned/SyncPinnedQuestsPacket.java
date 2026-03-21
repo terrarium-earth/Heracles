@@ -26,7 +26,7 @@ public record SyncPinnedQuestsPacket(Map<String, QuestProgress> quests) implemen
 
         @Override
         public ResourceLocation id() {
-            return ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "sync_pinned_quests");
+            return Heracles.id("sync_pinned_quests");
         }
 
         @Override

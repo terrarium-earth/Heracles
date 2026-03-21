@@ -1,8 +1,8 @@
 package earth.terrarium.heracles.api.tasks.defaults;
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import com.teamresourceful.resourcefullib.common.codecs.predicates.NbtPredicate;
 import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.api.CustomizableQuestElement;
 import earth.terrarium.heracles.api.quests.QuestIcon;
@@ -47,15 +47,15 @@ public record ItemInteractTask(
     private static class Type implements QuestTaskType<ItemInteractTask> {
         @Override
         public ResourceLocation id() {
-            return ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "item_interaction");
+            return Heracles.id("item_interaction");
         }
 
         @Override
-        public Codec<ItemInteractTask> codec(String id) {
-            return RecordCodecBuilder.create(instance -> instance.group(
+        public MapCodec<ItemInteractTask> codec(String id) {
+            return RecordCodecBuilder.mapCodec(instance -> instance.group(
                 RecordCodecBuilder.point(id),
-                Codec.STRING.optionalFieldOf("title", "").forGetter(ItemInteractTask::title),
-                QuestIcons.CODEC.optionalFieldOf("icon", ItemQuestIcon.AIR).forGetter(ItemInteractTask::icon),
+                Codec.STRING.lenientOptionalFieldOf("title", "").forGetter(ItemInteractTask::title),
+                QuestIcons.CODEC.lenientOptionalFieldOf("icon", ItemQuestIcon.AIR).forGetter(ItemInteractTask::icon),
                 RegistryValue.codec(Registries.ITEM).fieldOf("item").forGetter(ItemInteractTask::item),
                 DataComponentPredicate.CODEC.fieldOf("components").orElse(DataComponentPredicate.EMPTY).forGetter(ItemInteractTask::components)
             ).apply(instance, ItemInteractTask::new));

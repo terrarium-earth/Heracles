@@ -6,8 +6,8 @@ import com.teamresourceful.resourcefullib.client.scissor.ScissorBoxStack;
 import com.teamresourceful.resourcefullib.client.screens.CursorScreen;
 import com.teamresourceful.resourcefullib.client.utils.CursorUtils;
 import com.teamresourceful.resourcefullib.client.utils.ScreenUtils;
+import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.client.utils.TexturePlacements;
-import earth.terrarium.heracles.client.widgets.modals.upload.UploadModal;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
@@ -15,6 +15,8 @@ import net.minecraft.resources.ResourceLocation;
 import org.joml.Matrix4f;
 
 public record BackgroundModalItem(ResourceLocation texture) {
+
+    private static final ResourceLocation BACKGROUND_SPRITE = Heracles.id("upload/background_modal_item_background");
 
     public static final int WIDTH = 152;
 
@@ -25,7 +27,7 @@ public record BackgroundModalItem(ResourceLocation texture) {
     public void render(GuiGraphics graphics, ScissorBoxStack ignored, int x, int y, int mouseX, int mouseY, boolean hovering) {
         TexturePlacements.Info info = TexturePlacements.getOrDefault(texture, TexturePlacements.NO_OFFSET_24X);
 
-        graphics.blitNineSliced(UploadModal.TEXTURE, x, y, WIDTH, info.height() + 4, 3, 152, 28, 0, 173);
+        graphics.blitSprite(BACKGROUND_SPRITE, x, y, WIDTH, info.height() + 4, 3);
 
         RenderSystem.setShaderTexture(0, texture);
         Matrix4f matrix = graphics.pose().last().pose();

@@ -1,34 +1,38 @@
 package earth.terrarium.heracles.client.widgets.buttons;
 
+import dev.emi.emi.api.widget.Widget;
 import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.api.client.theme.GenericTheme;
 import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.WidgetSprites;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Objects;
+
 public interface ThemedButton {
-    ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "textures/gui/buttons.png");
+    ResourceLocation SPRITE_UNPRESSED = Heracles.id("buttons/unpressed");
+    ResourceLocation SPRITE_PRESSED = Heracles.id("buttons/pressed");
+    ResourceLocation SPRITE_UNPRESSED_HOVERED = Heracles.id("buttons/unpressed_hovered");
+    ResourceLocation SPRITE_PRESSED_HOVERED = Heracles.id("buttons/pressed_hovered");
+    ResourceLocation SPRITE_DISABLED = Heracles.id("buttons/disabled");
+    ResourceLocation SPRITE_COMPLETABLE = Heracles.id("buttons/completable");
+    ResourceLocation SPRITE_COMPLETABLE_HOVERED = Heracles.id("buttons/completable_hovered");
 
-    default ResourceLocation getTexture() {
-        return TEXTURE;
-    }
 
-    default TextureBounds getTextureBounds(boolean active, boolean hovered) {
-        return new TextureBounds(0, getTextureY(active, hovered), 20, 4, 200, 20);
-    }
-
-    default int getTextureY(boolean active, boolean hovered) {
-      return active ? (hovered ? 40 : 20) : 0;
+    default ResourceLocation getSprite(boolean active, boolean hovered) {
+        if (active) {
+            return hovered ? SPRITE_COMPLETABLE_HOVERED : SPRITE_COMPLETABLE;
+        } else {
+            return hovered ? SPRITE_DISABLED : SPRITE_DISABLED;
+        }
     }
 
     default int getTextColor(boolean active, float alpha) {
         return GenericTheme.getButton(active) | Mth.ceil(alpha * 255.0F) << 24;
-    }
-
-    record TextureBounds(int sourceX, int sourceY, int sliceWidth, int sliceHeight, int sourceWidth, int sourceHeight) {
     }
 
     static SimpleThemedButton.Builder builder(Component component, Button.OnPress onPress) {
@@ -36,30 +40,28 @@ public interface ThemedButton {
     }
 
     class SimpleThemedButton extends Button implements ThemedButton {
-        private final @Nullable ResourceLocation texture;
-        private final int yOffset;
+        private final WidgetSprites sprites;
 
-        protected SimpleThemedButton(@Nullable ResourceLocation texture, int yOffset, int x, int y, int w, int h, Component component, OnPress onPress, CreateNarration createNarration) {
+        public static WidgetSprites woodStyleButtons = new WidgetSprites(
+            SPRITE_PRESSED ,
+            SPRITE_UNPRESSED,
+            SPRITE_PRESSED_HOVERED,
+            SPRITE_UNPRESSED_HOVERED);
+
+        protected SimpleThemedButton(@Nullable WidgetSprites sprites, int x, int y, int w, int h, Component component, OnPress onPress, CreateNarration createNarration) {
             super(x, y, w, h, component, onPress, createNarration);
-            this.texture = texture;
-            this.yOffset = yOffset;
+            this.sprites = sprites;
         }
 
         @Override
-        public ResourceLocation getTexture() {
-            return texture != null ? texture : ThemedButton.super.getTexture();
-        }
-
-        @Override
-        public int getTextureY(boolean active, boolean hovered) {
-            return yOffset + ThemedButton.super.getTextureY(active, hovered);
+        public ResourceLocation getSprite(boolean active, boolean hovered) {
+            return Objects.requireNonNullElseGet(sprites, () -> new WidgetSprites(SPRITE_COMPLETABLE, SPRITE_DISABLED, SPRITE_COMPLETABLE_HOVERED, SPRITE_DISABLED)).get(active, hovered);
         }
 
         public static class Builder extends Button.Builder implements ThemedButton {
             private final Button.OnPress onPress;
             private Button.CreateNarration createNarration = Button.DEFAULT_NARRATION;
-            private @Nullable ResourceLocation texture = null;
-            private int yOffset = 0;
+            private @Nullable WidgetSprites sprites;
 
             public Builder(Component component, Button.OnPress onPress) {
                 super(component, onPress);
@@ -72,20 +74,16 @@ public interface ThemedButton {
                 return this;
             }
 
-            public @NotNull Builder textureYOffset(int yOffset) {
-                this.yOffset = yOffset;
+            public @NotNull Builder sprites(@Nullable WidgetSprites sprites) {
+                this.sprites = sprites;
                 return this;
             }
 
-            public @NotNull Builder texture(ResourceLocation texture) {
-                this.texture = texture;
-                return this;
-            }
 
             @Override
             public @NotNull Button build() {
                 Button button = super.build();
-                SimpleThemedButton themedButton = new SimpleThemedButton(texture, yOffset,
+                SimpleThemedButton themedButton = new SimpleThemedButton(sprites,
                     button.getX(), button.getY(),
                     button.getWidth(), button.getHeight(),
                     button.getMessage(), onPress, createNarration

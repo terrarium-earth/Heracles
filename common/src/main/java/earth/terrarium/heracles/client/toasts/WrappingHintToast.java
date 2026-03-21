@@ -6,6 +6,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.toasts.Toast;
 import net.minecraft.client.gui.components.toasts.ToastComponent;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FormattedCharSequence;
 import org.jetbrains.annotations.NotNull;
 
@@ -29,7 +30,7 @@ public class WrappingHintToast implements Toast {
 
     @Override
     public @NotNull Visibility render(GuiGraphics graphics, ToastComponent toastComponent, long timeSinceLastVisible) {
-        graphics.blitNineSliced(TEXTURE, 0, 0, width(), height(), 4, 160, 32, 0, 0);
+        graphics.blitSprite(ResourceLocation.fromNamespaceAndPath("minecraft", "toast/advancement"), 0, 0, width(), height());
 
         graphics.drawString(
             toastComponent.getMinecraft().font,

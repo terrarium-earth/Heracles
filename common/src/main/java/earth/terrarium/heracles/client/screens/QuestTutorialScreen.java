@@ -1,8 +1,6 @@
 package earth.terrarium.heracles.client.screens;
 
 import com.teamresourceful.resourcefullib.client.screens.BaseCursorScreen;
-import dev.dediamondpro.minemark.LayoutStyle;
-import dev.dediamondpro.minemark.elements.MineMarkElement;
 import earth.terrarium.heracles.client.HeraclesClient;
 import earth.terrarium.heracles.client.handlers.DisplayConfig;
 import earth.terrarium.heracles.client.handlers.QuestTutorial;
@@ -16,6 +14,8 @@ import earth.terrarium.hermes.api.rendering.HtmlStyle;
 import earth.terrarium.hermes.elements.Parser;
 import earth.terrarium.hermes.elements.html.HtmlParagraph;
 import earth.terrarium.hermes.impl.HermesStyle;
+import earth.terrarium.hermes.libs.minemark.LayoutStyle;
+import earth.terrarium.hermes.libs.minemark.elements.MineMarkElement;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.network.chat.CommonComponents;
@@ -23,7 +23,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 public class QuestTutorialScreen extends BaseCursorScreen {
@@ -47,7 +46,7 @@ public class QuestTutorialScreen extends BaseCursorScreen {
         try {
             parsedElement = new Parser(style).parse(QuestTutorial.tutorialText());
         } catch (Exception e) {
-            var layout = new LayoutStyle(LayoutStyle.Alignment.CENTER, style.getTextStyle().getDefaultFontSize(), style.getTextStyle().getDefaultTextColor(), false, false, false, false, false, false, false, new HashMap<>());
+            var layout = new LayoutStyle(style);
 
             String errorBuilder = "Error parsing tutorial text\n" + e.getMessage();
 
@@ -61,7 +60,7 @@ public class QuestTutorialScreen extends BaseCursorScreen {
         addRenderableWidget(ThemedButton.builder(ConstantComponents.Quests.VIEW, button -> {
             DisplayConfig.save();
             saved = true;
-            NetworkHandler.CHANNEL.sendToServer(new OpenGroupPacket("", false));
+            NetworkHandler.CHANNEL.sendToServer(new OpenGroupPacket(""));
         }).bounds(buttonX, this.height - 30, 150, 20).build());
     }
 

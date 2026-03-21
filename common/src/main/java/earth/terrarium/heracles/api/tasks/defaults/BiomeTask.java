@@ -1,6 +1,7 @@
 package earth.terrarium.heracles.api.tasks.defaults;
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.api.CustomizableQuestElement;
@@ -47,15 +48,15 @@ public record BiomeTask(
 
         @Override
         public ResourceLocation id() {
-            return ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "biome");
+            return Heracles.id("biome");
         }
 
         @Override
-        public Codec<BiomeTask> codec(String id) {
-            return RecordCodecBuilder.create(instance -> instance.group(
+        public MapCodec<BiomeTask> codec(String id) {
+            return RecordCodecBuilder.mapCodec(instance -> instance.group(
                 RecordCodecBuilder.point(id),
-                Codec.STRING.optionalFieldOf("title", "").forGetter(BiomeTask::title),
-                QuestIcons.CODEC.optionalFieldOf("icon", ItemQuestIcon.AIR).forGetter(BiomeTask::icon),
+                Codec.STRING.lenientOptionalFieldOf("title", "").forGetter(BiomeTask::title),
+                QuestIcons.CODEC.lenientOptionalFieldOf("icon", ItemQuestIcon.AIR).forGetter(BiomeTask::icon),
                 RegistryValue.codec(Registries.BIOME).fieldOf("biomes").forGetter(BiomeTask::biomes)
             ).apply(instance, BiomeTask::new));
         }

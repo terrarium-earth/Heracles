@@ -22,7 +22,8 @@ import java.util.Locale;
 
 public class AddDependencyModal extends BaseModal {
 
-    private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "textures/gui/dependencies.png");
+    private static final ResourceLocation TEXTURE = Heracles.id("textures/gui/dependencies.png");
+    private static final ResourceLocation BUTTON_BACKGROUND = Heracles.id("dependencies/button_background");
     private static final int WIDTH = 168;
     private static final int HEIGHT = 179;
 
@@ -37,13 +38,14 @@ public class AddDependencyModal extends BaseModal {
         super(screenWidth, screenHeight, WIDTH, HEIGHT);
 
         // dependencies
-        this.dependencyBox = addChild(new AutocompleteEditBox<>(Minecraft.getInstance().font, x + 8, y + 19, 130, 16, (text, item) -> {
+        this.dependencyBox = addChild(new AutocompleteEditBox<>(null, "", 130, 16, (text, item) -> {
             text = text.toLowerCase(Locale.ROOT).trim();
             Quest quest = item.value();
             String title = quest.display().title().getString().toLowerCase(Locale.ROOT).trim();
             String id = item.key().toLowerCase(Locale.ROOT).trim();
             return (title.contains(text) || id.contains(text)) && !id.equals(text);
         }, ClientQuests.QuestEntry::key, value -> addDependency()));
+        this.dependencyBox.setPosition(x + 8, y + 19);
 
         this.addButton = addChild(
             new Button.Builder(ConstantComponents.PLUS, b -> addDependency())
@@ -76,11 +78,11 @@ public class AddDependencyModal extends BaseModal {
         if (dependencies != null) {
             try (var scissor = RenderUtils.createScissor(Minecraft.getInstance(), graphics, x + 8, y + 43, 152, 120)) {
                 for (Quest dependency : dependencies) {
-                    graphics.blitNineSliced(TEXTURE, x + 8, tempY, 152, 24, 1, 1, 1, 1, 19, 19, 168, 0);
+                    graphics.blitSprite(BUTTON_BACKGROUND, x + 8, tempY, 152, 24);
                     boolean removeHovered = mouseX >= x + 149 && mouseX <= x + 158 && mouseY >= tempY + 2 && mouseY <= tempY + 11;
                     graphics.blit(TEXTURE, x + 149, tempY + 2, 187, removeHovered ? 9 : 0, 9, 9);
                     CursorUtils.setCursor(removeHovered, CursorScreen.Cursor.POINTER);
-                    dependency.display().icon().render(graphics, scissor.stack(), x + 9, tempY + 1, 22, 22);
+                    dependency.display().icon().render(graphics, x + 9, tempY + 1, 22, 22);
                     graphics.drawString(
                         Minecraft.getInstance().font,
                         dependency.display().title(), x + 36, tempY + 6, EditorTheme.getModalDependenciesDependencyTitle(),

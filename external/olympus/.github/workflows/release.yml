@@ -1,0 +1,40 @@
+name: Publish Release
+on:
+  workflow_dispatch:
+jobs:
+  publish-release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Setup Java
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: 21
+
+      - name: Setup Gradle Caches
+        uses: actions/cache@v3
+        with:
+          path: ~/.gradle/caches
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*') }}
+          restore-keys: ${{ runner.os }}-gradle
+
+      - name: Setup Gradle Wrapper
+        run: chmod +x gradlew
+
+      - name: Publish Release
+        run: ./gradlew publish
+        env:
+          MAVEN_USER: ${{ secrets.MAVEN_USERNAME }}
+          MAVEN_PASS: ${{ secrets.MAVEN_PASSWORD }}
+
+      - name: Generate Discord Embed
+        run: ./gradlew injectDiscord
+
+      - name: Upload Discord Embed
+        uses: tsickert/discord-webhook@v5.3.0
+        with:
+          webhook-url: ${{ secrets.WEBHOOK_URL }}
+          raw-data: ./build/embed.json

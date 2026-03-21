@@ -70,7 +70,7 @@ public class QuestHandler {
     private static void load(RegistryAccess access, Reader reader, String id, Map<String, Quest> quests) {
         try {
             JsonObject element = Constants.PRETTY_GSON.fromJson(reader, JsonObject.class);
-            Quest quest = Quest.CODEC.parse(RegistryOps.create(JsonOps.INSTANCE, access), element).getOrThrow(false, Heracles.LOGGER::error);
+            Quest quest = Quest.CODEC.parse(RegistryOps.create(JsonOps.INSTANCE, access), element).ifError(e -> Heracles.LOGGER.error(e.message())).getOrThrow();
             quest.dependencies().remove(id); // Remove self from dependencies
             quests.put(id, quest);
         } catch (Exception e) {
@@ -106,8 +106,7 @@ public class QuestHandler {
             updateTaskCache();
             Path questsPath = lastPath.resolve("quests");
             File file = new File(questsPath.toFile(), pickQuestPath(quest) + "/" + id + ".json");
-            JsonElement json = Quest.CODEC.encodeStart(RegistryOps.create(JsonOps.INSTANCE, Heracles.getRegistryAccess()), quest)
-                .getOrThrow(false, Heracles.LOGGER::error);
+            JsonElement json = Quest.CODEC.encodeStart(RegistryOps.create(JsonOps.INSTANCE, Heracles.getRegistryAccess()), quest).ifError(e -> Heracles.LOGGER.error(e.message())).getOrThrow();
             if (SAVING_FUTURES.containsKey(id)) {
                 SAVING_FUTURES.get(id).cancel(true);
             }

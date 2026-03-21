@@ -1,10 +1,8 @@
 package earth.terrarium.heracles.api.tasks.defaults;
 
-import com.mojang.serialization.Codec;
+import com.mojang.serialization.*;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import com.teamresourceful.resourcefullib.common.codecs.CodecExtras;
 import com.teamresourceful.resourcefullib.common.codecs.EnumCodec;
-import com.teamresourceful.resourcefullib.common.codecs.predicates.NbtPredicate;
 import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.api.CustomizableQuestElement;
 import earth.terrarium.heracles.api.quests.QuestIcon;
@@ -28,6 +26,7 @@ import net.minecraft.world.item.Items;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 public record GatherItemTask(
     String id, String title, QuestIcon<?> icon, RegistryValue<Item> item, DataComponentPredicate components, int target, CollectionType collectionType
@@ -128,26 +127,47 @@ public record GatherItemTask(
 
         @Override
         public ResourceLocation id() {
-            return ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "item");
+            return Heracles.id("item");
         }
 
         @Override
-        public Codec<GatherItemTask> codec(String id) {
-            Codec<GatherItemTask> newCodec = RecordCodecBuilder.create(instance -> instance.group(
+        public MapCodec<GatherItemTask> codec(String id) {
+            MapCodec<GatherItemTask> newCodec = RecordCodecBuilder.mapCodec(instance -> instance.group(
                 RecordCodecBuilder.point(id),
-                Codec.STRING.optionalFieldOf("title", "").forGetter(GatherItemTask::title),
-                QuestIcons.CODEC.optionalFieldOf("icon", ItemQuestIcon.AIR).forGetter(GatherItemTask::icon),
+                Codec.STRING.lenientOptionalFieldOf("title", "").forGetter(GatherItemTask::title),
+                QuestIcons.CODEC.lenientOptionalFieldOf("icon", ItemQuestIcon.AIR).forGetter(GatherItemTask::icon),
                 RegistryValue.codec(Registries.ITEM).fieldOf("item").forGetter(GatherItemTask::item),
                 DataComponentPredicate.CODEC.fieldOf("components").orElse(DataComponentPredicate.EMPTY).forGetter(GatherItemTask::components),
                 Codec.INT.fieldOf("amount").orElse(1).forGetter(GatherItemTask::target),
                 EnumCodec.of(CollectionType.class).fieldOf("collection").orElse(CollectionType.AUTOMATIC).forGetter(GatherItemTask::collectionType)
             ).apply(instance, GatherItemTask::new));
 
-            return CodecExtras.eitherLeft(Codec.either(newCodec, legacyCodec(id)));
+            MapCodec<GatherItemTask> legacy = legacyCodec(id);
+
+            return new MapCodec<>() {
+                @Override
+                public <T> DataResult<GatherItemTask> decode(DynamicOps<T> ops, MapLike<T> input) {
+                    DataResult<GatherItemTask> result = newCodec.decode(ops, input);
+                    if (result.result().isPresent()) {
+                        return result;
+                    }
+                    return legacy.decode(ops, input);
+                }
+
+                @Override
+                public <T> RecordBuilder<T> encode(GatherItemTask value, DynamicOps<T> ops, RecordBuilder<T> prefix) {
+                    return newCodec.encode(value, ops, prefix);
+                }
+
+                @Override
+                public <T> Stream<T> keys(DynamicOps<T> ops) {
+                    return Stream.concat(newCodec.keys(ops), legacy.keys(ops)).distinct();
+                }
+            };
         }
 
-        private Codec<GatherItemTask> legacyCodec(String id) {
-            return RecordCodecBuilder.create(instance -> instance.group(
+        private MapCodec<GatherItemTask> legacyCodec(String id) {
+            return RecordCodecBuilder.mapCodec(instance -> instance.group(
                 RecordCodecBuilder.point(id),
                 RegistryValue.codec(Registries.ITEM).fieldOf("item").forGetter(GatherItemTask::item),
                 DataComponentPredicate.CODEC.fieldOf("components").orElse(DataComponentPredicate.EMPTY).forGetter(GatherItemTask::components),

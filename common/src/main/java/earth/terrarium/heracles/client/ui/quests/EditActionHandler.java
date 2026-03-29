@@ -19,7 +19,9 @@ import earth.terrarium.heracles.common.network.NetworkHandler;
 import earth.terrarium.heracles.common.network.packets.quests.OpenQuestPacket;
 import earth.terrarium.heracles.common.network.packets.quests.data.NetworkQuestData;
 import earth.terrarium.heracles.common.utils.ModUtils;
-import earth.terrarium.olympus.client.ui.context.ContextMenu;import net.minecraft.client.gui.screens.Screen;
+import earth.terrarium.olympus.client.ui.context.ContextMenu;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
@@ -71,20 +73,25 @@ class EditActionHandler implements QuestActionHandler {
         return true;
     }
 
+    public void deferContextMenuOpening(Runnable runnable) {
+        Minecraft.getInstance().tell(runnable);
+    }
+
     @Override
     public boolean onRightClick(double mouseX, double mouseY, @Nullable QuestWidget widget) {
         ContextMenu.open(mouseX, mouseY, menu -> {
-            menu.withAutoCloseOff();
             if (widget != null) {
                 Quest quest = widget.entry().value();
-                menu.button(UIComponents.EDIT_DETAILS, () -> EditObjectModal.open(
+                menu.button(UIComponents.EDIT_DETAILS, () -> deferContextMenuOpening(() -> EditObjectModal.open(
                     QuestDetailsInitializer.INSTANCE, QUEST, UIComponents.EDIT_DETAILS, null,
                     new QuestDetailsInitializer.Details(quest), data -> setDetails(widget.entry(), data)
-                ));
-                menu.button(UIComponents.EDIT_SETTINGS, () -> EditObjectModal.open(
-                    QuestSettingsInitializer.INSTANCE, QUEST, UIComponents.EDIT_SETTINGS, null,
-                    quest.settings(), data -> setSettings(widget.entry(), data)
-                ));
+                )));
+                menu.button(UIComponents.EDIT_SETTINGS, () -> deferContextMenuOpening(() -> {
+                    EditObjectModal.open(
+                        QuestSettingsInitializer.INSTANCE, QUEST, UIComponents.EDIT_SETTINGS, null,
+                        quest.settings(), data -> setSettings(widget.entry(), data)
+                    );
+                }));
                 menu.divider();
                 menu.button(UIComponents.SNAP_TO_GRID, () ->
                     setNewPosition(widget.entry(), widget.position(), true)

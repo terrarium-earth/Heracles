@@ -1,7 +1,7 @@
 package earth.terrarium.heracles.client.ui.quests;
 
 import earth.terrarium.heracles.api.client.settings.SettingInitializer;
-import earth.terrarium.heracles.api.client.settings.base.QuestIconSetting;
+import earth.terrarium.heracles.api.client.settings.base.QuestIconBackgroundSetting;import earth.terrarium.heracles.api.client.settings.base.QuestIconSetting;
 import earth.terrarium.heracles.api.client.settings.base.TextSetting;
 import earth.terrarium.heracles.api.quests.Quest;
 import earth.terrarium.heracles.api.quests.QuestDisplay;
@@ -28,6 +28,7 @@ public class QuestDetailsInitializer implements SettingInitializer<QuestDetailsI
         object = Objects.requireNonNullElse(object, Details.DEFAULT);
         CreationData settings = new CreationData();
         settings.put("icon", QuestIconSetting.INSTANCE, object.icon instanceof ItemQuestIcon icon ? icon : new ItemQuestIcon(Items.MAP));
+        settings.put("icon_background", QuestIconBackgroundSetting.INSTANCE, object.iconBackground);
         settings.put("title", TextSetting.INSTANCE, Details.asString(object.title));
         settings.put("subtitle", TextSetting.INSTANCE, Details.asString(object.subtitle));
         return settings;
@@ -39,7 +40,7 @@ public class QuestDetailsInitializer implements SettingInitializer<QuestDetailsI
         Optional<QuestIcon<?>> icon = data.get("icon", QuestIconSetting.INSTANCE).map(Function.identity());
         return new Details(
             icon.orElse(details.icon),
-            object.iconBackground,
+            data.get("icon_background", QuestIconBackgroundSetting.INSTANCE).orElse(details.iconBackground),
             data.get("title", TextSetting.INSTANCE).map(Component::translatable).orElse(details.title.copy()),
             data.get("subtitle", TextSetting.INSTANCE).map(Component::translatable).orElse(details.subtitle.copy())
         );

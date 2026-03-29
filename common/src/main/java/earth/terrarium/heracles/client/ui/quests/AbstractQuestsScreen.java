@@ -13,8 +13,11 @@ import earth.terrarium.heracles.client.components.widgets.buttons.SpriteButton;
 import earth.terrarium.heracles.client.handlers.ClientQuests;
 import earth.terrarium.heracles.client.ui.QuestTab;
 import earth.terrarium.heracles.client.ui.UIConstants;
-import earth.terrarium.heracles.common.handlers.progress.QuestProgress;
+import earth.terrarium.heracles.client.ui.modals.CreateGroupModal;
+import earth.terrarium.heracles.common.constants.ConstantComponents;
 import earth.terrarium.heracles.common.menus.quests.QuestsContent;
+import earth.terrarium.heracles.common.network.NetworkHandler;
+import earth.terrarium.heracles.common.network.packets.groups.CreateGroupPacket;
 import earth.terrarium.heracles.common.utils.ModUtils;
 import earth.terrarium.olympus.client.ui.ClearableGridLayout;
 import net.minecraft.client.Minecraft;
@@ -86,11 +89,16 @@ public abstract class AbstractQuestsScreen extends BaseCursorScreen {
             s -> s.padding(1)
         );
         header.addChild(new TextWidget(this.sideBarWidth - 26 - SPACER, 11, Component.literal("Groups"), Minecraft.getInstance().font), 0, 1);
-        header.addChild(
-            SpriteButton.create(11, 11, UIConstants.BACK, this::back).withTooltip(CommonComponents.GUI_BACK),
-            0, 2,
-            s -> s.padding(1)
-        );
+
+        //add button
+        if(QuestTab.isEditing()) {
+            header.addChild(
+                SpriteButton.create(11, 11, UIConstants.ADD, this::addGroup).withTooltip(ConstantComponents.Groups.CREATE),
+                0, 2,
+                s -> s.padding(1)
+            );
+        }
+
         header.addChild(SpacerElement.height(HEADER_HEIGHT + SPACER), 0, 3);
         layout.addChild(header, row.getAndIncrement(), 0);
 
@@ -146,6 +154,14 @@ public abstract class AbstractQuestsScreen extends BaseCursorScreen {
 
     protected void back() {
         Minecraft.getInstance().setScreen(this.parent);
+    }
+
+    protected void addGroup() {
+        CreateGroupModal.open(group -> {
+            NetworkHandler.CHANNEL.sendToServer(new CreateGroupPacket(group));
+            ClientQuests.groups().add(group);
+            this.init();
+        });
     }
 
     protected void edit() {

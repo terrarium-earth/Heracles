@@ -31,6 +31,8 @@ public class UIConstants {
 
     public static final ResourceLocation ITEM_BACKGROUND = Heracles.id("buttons/item_background");
 
+
+
     public static final WidgetSprites BUTTON = new WidgetSprites(
         Heracles.id("textures/gui/sprites/buttons/normal.png"),
         Heracles.id("textures/gui/sprites/buttons/hovered.png"),
@@ -101,6 +103,11 @@ public class UIConstants {
     public static final WidgetSprites SEARCH_ALL = new WidgetSprites(
         Heracles.id("textures/gui/sprites/buttons/registry/normal.png"),
         Heracles.id("textures/gui/sprites/buttons/registry/hovered.png")
+    );
+
+    public static final WidgetSprites ADD = new WidgetSprites(
+        Heracles.id("textures/gui/sprites/heading/add.png"),
+        Heracles.id("textures/gui/sprites/heading/add_selected.png")
     );
 
     public static void blitWithEdge(GuiGraphics graphics, ResourceLocation texture, int x, int y, int width, int height, int size) {

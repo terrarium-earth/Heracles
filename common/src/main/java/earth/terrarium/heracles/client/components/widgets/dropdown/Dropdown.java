@@ -51,8 +51,7 @@ public class Dropdown<T> extends Button {
             .withOptions(new ArrayList<>(this.options.keySet()))
             .withEntryHeight(24)
             .withSize(width, listHeight)
-            .withEntryRenderer(value -> WidgetRenderers.text(this.getText(value)).withColor(Color.tryParse(String.format("#%06X", COLOR))))
-            .withCallback(this::select)
+            .withEntryRenderer(value -> WidgetRenderers.text(this.getText(value)).withLeftAlignment().withColor(new Color(COLOR)).withPaddingLeft(6))            .withCallback(this::select)
             .build();
     }
 

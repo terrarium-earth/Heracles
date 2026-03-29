@@ -165,8 +165,9 @@ public class QuestsWidget extends BaseParentWidget {
             BufferBuilder buffer = tesselator.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
 
             final Set<Pair<Vector2i, Vector2i>> lines = new HashSet<>();
-
+            boolean empty = true;
             for (QuestWidget widget : widgets) {
+
                 ClientQuests.QuestEntry entry = widget.entry;
                 var position = entry.value().display().position(this.group);
 
@@ -185,7 +186,7 @@ public class QuestsWidget extends BaseParentWidget {
                     float yDiff = childPosition.y() - position.y();
 
                     float length = Mth.sqrt(Mth.square(xDiff) + Mth.square(yDiff));
-
+                    empty = false;
                     try (var pose = new CloseablePoseStack(graphics)) {
                         pose.translate(12, 12, 0);
                         pose.translate(widget.getX(), widget.getY(), 0);
@@ -199,8 +200,9 @@ public class QuestsWidget extends BaseParentWidget {
                 }
             }
 
-            BufferUploader.drawWithShader(buffer.buildOrThrow());
-
+            if(!empty) {
+                BufferUploader.drawWithShader(buffer.buildOrThrow());
+            }
         }
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         RenderSystem.disableBlend();

@@ -19,8 +19,8 @@ public interface ThemedButton {
     ResourceLocation SPRITE_UNPRESSED_HOVERED = Heracles.id("buttons/unpressed_hovered");
     ResourceLocation SPRITE_PRESSED_HOVERED = Heracles.id("buttons/pressed_hovered");
     ResourceLocation SPRITE_DISABLED = Heracles.id("buttons/disabled");
-    ResourceLocation SPRITE_COMPLETABLE = Heracles.id("buttons/completable");
-    ResourceLocation SPRITE_COMPLETABLE_HOVERED = Heracles.id("buttons/completable_hovered");
+    ResourceLocation SPRITE_COMPLETABLE = Heracles.id("buttons/normal");
+    ResourceLocation SPRITE_COMPLETABLE_HOVERED = Heracles.id("buttons/hovered");
 
 
     default ResourceLocation getSprite(boolean active, boolean hovered) {

@@ -4,6 +4,7 @@ import com.google.common.collect.HashBiMap;
 import com.google.common.collect.Sets;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.mojang.serialization.JsonOps;
 import com.teamresourceful.resourcefullib.common.lib.Constants;
 import com.teamresourceful.resourcefullib.common.utils.FileUtils;
@@ -33,6 +34,8 @@ public class QuestHandler {
     private static final Map<String, Quest> QUESTS = HashBiMap.create();
     private static final Set<String> QUEST_KEYS = Sets.newConcurrentHashSet();
     private static final List<String> GROUPS = new ArrayList<>();
+    private static final List<String> GROUPS_ORDERS = new ArrayList<>();
+    private static final Map<String, GroupSettings> GROUP_SETTINGS = new HashMap<>();
     private static final Map<ResourceLocation, Object> TASK_CACHES = new HashMap<>();
     private static Path lastPath;
 
@@ -64,6 +67,7 @@ public class QuestHandler {
             value.dependencies().removeIf(Predicate.not(QUESTS::containsKey));
         }
         loadGroups(heraclesPath.resolve("groups.txt").toFile());
+        loadGroupSettings(heraclesPath.resolve("group_settings.json").toFile());
         updateTaskCache();
     }
 
@@ -80,9 +84,11 @@ public class QuestHandler {
 
     private static void loadGroups(File file) {
         GROUPS.clear();
+        GROUPS_ORDERS.clear();
         if (file.exists()) {
             try {
                 GROUPS.addAll(org.apache.commons.io.FileUtils.readLines(file, StandardCharsets.UTF_8));
+                GROUPS_ORDERS.addAll(GROUPS);
             } catch (Exception e) {
                 Heracles.LOGGER.error("Failed to load quest groups", e);
             }
@@ -91,7 +97,28 @@ public class QuestHandler {
             for (String s : value.display().groups().keySet()) {
                 if (!GROUPS.contains(s)) {
                     GROUPS.add(s);
+                    if (!GROUPS_ORDERS.contains(s)) {
+                        GROUPS_ORDERS.add(s);
+                    }
                 }
+            }
+        }
+    }
+
+    private static void loadGroupSettings(File file) {
+        GROUP_SETTINGS.clear();
+        if (file.exists()) {
+            try {
+                String content = org.apache.commons.io.FileUtils.readFileToString(file, StandardCharsets.UTF_8);
+                JsonObject json = JsonParser.parseString(content).getAsJsonObject();
+                for (Map.Entry<String, JsonElement> entry : json.entrySet()) {
+                    JsonObject obj = entry.getValue().getAsJsonObject();
+                    String iconId = obj.has("icon") ? obj.get("icon").getAsString() : "";
+                    boolean iconEnabled = obj.has("iconEnabled") && obj.get("iconEnabled").getAsBoolean();
+                    GROUP_SETTINGS.put(entry.getKey(), new GroupSettings(GroupSettings.deserializeIcon(iconId), iconEnabled));
+                }
+            } catch (Exception e) {
+                Heracles.LOGGER.error("Failed to load group settings", e);
             }
         }
     }
@@ -148,6 +175,25 @@ public class QuestHandler {
             org.apache.commons.io.FileUtils.writeLines(file, GROUPS);
         } catch (Exception e) {
             Heracles.LOGGER.error("Failed to save quest groups", e);
+        }
+    }
+
+    public static void saveGroupSettings() {
+        if (lastPath == null) {
+            return;
+        }
+        try {
+            JsonObject json = new JsonObject();
+            for (Map.Entry<String, GroupSettings> entry : GROUP_SETTINGS.entrySet()) {
+                JsonObject obj = new JsonObject();
+                obj.addProperty("icon", entry.getValue().serializeIcon());
+                obj.addProperty("iconEnabled", entry.getValue().iconEnabled());
+                json.add(entry.getKey(), obj);
+            }
+            File file = new File(lastPath.toFile(), "group_settings.json");
+            org.apache.commons.io.FileUtils.writeStringToFile(file, Constants.PRETTY_GSON.toJson(json), StandardCharsets.UTF_8);
+        } catch (Exception e) {
+            Heracles.LOGGER.error("Failed to save group settings", e);
         }
     }
 
@@ -208,9 +254,22 @@ public class QuestHandler {
     public static List<String> groups() {
         if (GROUPS.isEmpty()) {
             GROUPS.add("Main");
+            GROUPS_ORDERS.add("Main");
             saveGroups();
         }
         return GROUPS;
+    }
+
+    public static List<String> groupsOrder() {
+        return GROUPS_ORDERS;
+    }
+
+    public static Map<String, GroupSettings> groupSettings() {
+        return GROUP_SETTINGS;
+    }
+
+    public static GroupSettings getGroupSettings(String group) {
+        return GROUP_SETTINGS.computeIfAbsent(group, k -> new GroupSettings());
     }
 
     private static void updateTaskCache() {

@@ -50,6 +50,10 @@ public class ListWidget extends BaseParentWidget {
         updateLastHeight();
     }
 
+    public List<Item> items() {
+        return this.items;
+    }
+
     public void add(Item item) {
         items.add(item);
         updateLastHeight();

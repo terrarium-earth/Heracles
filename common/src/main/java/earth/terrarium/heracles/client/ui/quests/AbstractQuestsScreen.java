@@ -15,7 +15,7 @@ import earth.terrarium.heracles.client.ui.QuestTab;
 import earth.terrarium.heracles.client.ui.UIConstants;
 import earth.terrarium.heracles.client.ui.modals.CreateGroupModal;
 import earth.terrarium.heracles.common.constants.ConstantComponents;
-import earth.terrarium.heracles.common.menus.quests.QuestsContent;
+import earth.terrarium.heracles.common.handlers.progress.QuestProgress;import earth.terrarium.heracles.common.menus.quests.QuestsContent;
 import earth.terrarium.heracles.common.network.NetworkHandler;
 import earth.terrarium.heracles.common.network.packets.groups.CreateGroupPacket;
 import earth.terrarium.heracles.common.utils.ModUtils;
@@ -55,6 +55,15 @@ public abstract class AbstractQuestsScreen extends BaseCursorScreen {
     }
 
     public void updateProgress() {
+        for (var entry : this.content.quests().entrySet()) {
+            ClientQuests.get(entry.getKey()).ifPresent(quest -> {
+                QuestProgress progress = ClientQuests.getProgress(entry.getKey());
+                if (progress != null && progress.isClaimed(quest.value())) {
+                    entry.setValue(ModUtils.QuestStatus.COMPLETED_CLAIMED);
+                }
+            });
+        }
+
         List<Pair<ClientQuests.QuestEntry, ModUtils.QuestStatus>> quests = new ArrayList<>();
         content.quests().forEach((id, status) ->
             ClientQuests.get(id)
@@ -67,6 +76,7 @@ public abstract class AbstractQuestsScreen extends BaseCursorScreen {
 
     @Override
     protected void init() {
+        this.clearWidgets();
         this.sideBarWidth = Math.max((int) (width * 0.25f), 125);
         this.contentWidth = this.width - this.sideBarWidth;
         this.contentHeight = this.height - HEADER_HEIGHT - SPACER;
@@ -104,7 +114,7 @@ public abstract class AbstractQuestsScreen extends BaseCursorScreen {
 
         ListWidget groups = new ListWidget(this.sideBarWidth - 2 - SPACER, this.contentHeight);
         for (String group : ClientQuests.groups()) {
-            groups.add(new GroupEntry(this.sideBarWidth, 20, group, group.equals(this.content.group())));
+            groups.add(new GroupEntry(this.sideBarWidth, 20, group, group.equals(this.content.group()), this::init, groups));
         }
         layout.addChild(
             groups, row.getAndIncrement(), 0,

@@ -68,7 +68,9 @@ public record SyncQuestProgressPacket(Map<String, QuestProgress> quests) impleme
         public Runnable handle(SyncQuestProgressPacket message) {
             return () -> {
                 ClientQuests.mergeProgress(message.quests);
-                if(Minecraft.getInstance().screen instanceof AbstractQuestScreen screen) {
+                if (Minecraft.getInstance().screen instanceof AbstractQuestScreen screen) {
+                    screen.updateProgress();
+                } else if (Minecraft.getInstance().screen instanceof AbstractQuestsScreen screen) {
                     screen.updateProgress();
                 }
             };

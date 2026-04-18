@@ -29,4 +29,13 @@ public class RewardsQuestScreen extends AbstractQuestScreen {
         );
         return layout;
     }
+
+    @Override
+    public void updateProgress() {
+        super.updateProgress();
+        if (this.list instanceof RewardsList rewards) {
+            rewards.update();
+        }
+        this.init();
+    }
 }

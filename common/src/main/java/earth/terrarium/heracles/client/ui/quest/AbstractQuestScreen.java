@@ -88,6 +88,7 @@ public abstract class AbstractQuestScreen extends BaseCursorScreen {
 
     @Override
     public void init() {
+        this.clearWidgets();
         this.sideBarWidth = Math.max((int) (width * 0.25f), 125);
         this.contentWidth = this.width - this.sideBarWidth;
         this.contentHeight = this.height - HEADER_HEIGHT - SPACER;

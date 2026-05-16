@@ -103,6 +103,30 @@ public final class ConstantComponents {
         @Translate("Add Dependency")
         public static final Component ADD_DEPENDENCY = Component.translatable("gui.heracles.quests.add_dependency");
 
+        @Translate("Show Grid")
+        public static final Component SHOW_GRID = Component.translatable("gui.heracles.quests.show_grid");
+
+        @Translate("Snap to Grid")
+        public static final Component SNAP_TO_GRID = Component.translatable("gui.heracles.quests.snap_to_grid");
+
+        @Translate("Toggle Minimap")
+        public static final Component TOGGLE_MINIMAP = Component.translatable("gui.heracles.quests.toggle_minimap");
+
+        @Translate("Reposition Minimap")
+        public static final Component REPOSITION_MINIMAP = Component.translatable("gui.heracles.quests.reposition_minimap");
+
+        @Translate("Confirm Position")
+        public static final Component CONFIRM_POSITION = Component.translatable("gui.heracles.quests.confirm_position");
+
+        @Translate("Hide Minimap")
+        public static final Component HIDE_MINIMAP = Component.translatable("gui.heracles.quests.hide_minimap");
+
+        @Translate("Dock Minimap")
+        public static final Component DOCK_MINIMAP = Component.translatable("gui.heracles.quests.dock_minimap");
+
+        @Translate("Undock Minimap")
+        public static final Component UNDOCK_MINIMAP = Component.translatable("gui.heracles.quests.undock_minimap");
+
         public static final Component EDIT_SETTINGS = Component.translatable("gui.heracles.quests.edit_quest_settings");
     }
 

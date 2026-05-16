@@ -110,6 +110,26 @@ public class UIConstants {
         Heracles.id("textures/gui/sprites/heading/add_selected.png")
     );
 
+    public static final WidgetSprites SNAP_TO_GRID = new WidgetSprites(
+        Heracles.id("textures/gui/sprites/heading/snap_to_grid.png"),
+        Heracles.id("textures/gui/sprites/heading/snap_to_grid_selected.png")
+    );
+
+    public static final WidgetSprites SHOW_GRID = new WidgetSprites(
+        Heracles.id("textures/gui/sprites/heading/show_grid.png"),
+        Heracles.id("textures/gui/sprites/heading/show_grid_selected.png")
+    );
+
+    public static final WidgetSprites TOGGLE_MINIMAP = new WidgetSprites(
+        Heracles.id("textures/gui/sprites/heading/toggle_minimap.png"),
+        Heracles.id("textures/gui/sprites/heading/toggle_minimap_selected.png")
+    );
+
+    public static final WidgetSprites TOGGLE_MINIMAP_DOCKED = new WidgetSprites(
+        Heracles.id("textures/gui/sprites/heading/dock_minimap.png"),
+        Heracles.id("textures/gui/sprites/heading/dock_minimap_selected.png")
+    );
+
     public static void blitWithEdge(GuiGraphics graphics, ResourceLocation texture, int x, int y, int width, int height, int size) {
         graphics.blitSprite(texture, x, y, width, height);
     }

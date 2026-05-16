@@ -15,8 +15,8 @@ import net.minecraft.resources.ResourceLocation;
 @Deprecated(forRemoval = true)
 public class DropdownEntry<T> extends BaseWidget implements ListWidget.Item {
 
-    private static final ResourceLocation ENTRY =  Heracles.id("textures/gui/sprites/dropdown/entry.png");
-    private static final ResourceLocation ENTRY_HOVERED =  Heracles.id("textures/gui/sprites/dropdown/entry_hovered.png");
+    private static final ResourceLocation ENTRY =  Heracles.id("dropdown/entry");
+    private static final ResourceLocation ENTRY_HOVERED =  Heracles.id("dropdown/entry_hovered");
 
     private final Dropdown<T> dropdown;
     private final T value;

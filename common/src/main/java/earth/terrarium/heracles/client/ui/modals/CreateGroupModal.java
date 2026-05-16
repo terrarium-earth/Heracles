@@ -3,7 +3,6 @@ package earth.terrarium.heracles.client.ui.modals;
 import earth.terrarium.heracles.client.components.widgets.buttons.TextButton;
 import earth.terrarium.heracles.client.components.widgets.textbox.TextBox;
 import earth.terrarium.heracles.client.handlers.ClientQuests;
-import earth.terrarium.heracles.client.ui.UIComponents;
 import earth.terrarium.heracles.common.constants.ConstantComponents;
 import earth.terrarium.heracles.common.utils.ModUtils;
 import earth.terrarium.olympus.client.ui.UIConstants;
@@ -61,7 +60,7 @@ public class CreateGroupModal extends BaseModal {
             ),
             0, 0
         );
-        this.nameBox.setPlaceholder(UIComponents.NAME);
+        this.nameBox.setPlaceholder(Component.translatable("gui.heracles.name"));
 
         layout.arrangeElements();
         layout.setPosition(this.modalContentLeft, this.modalContentTop);

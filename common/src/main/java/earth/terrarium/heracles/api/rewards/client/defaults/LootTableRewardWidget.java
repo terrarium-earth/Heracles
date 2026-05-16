@@ -65,7 +65,7 @@ public record LootTableRewardWidget(LootTableReward reward, String quest, QuestP
         );
         graphics.drawString(
             font,
-            Component.translatable(DESC_SINGULAR, this.reward.lootTable()), x + 48, y + 8 + font.lineHeight, QuestScreenTheme.getRewardDescription(),
+            Component.translatable(DESC_SINGULAR, this.reward.lootTable().toString()), x + 48, y + 8 + font.lineHeight, QuestScreenTheme.getRewardDescription(),
             false
         );
     }
@@ -73,6 +73,6 @@ public record LootTableRewardWidget(LootTableReward reward, String quest, QuestP
     @Override
     public List<Component> getTooltip() {
         return List.of(
-            Component.translatable(TOOLTIP_SINGULAR, this.reward.lootTable()).withStyle(ChatFormatting.GREEN));
+            Component.translatable(TOOLTIP_SINGULAR, this.reward.lootTable().toString()).withStyle(ChatFormatting.GREEN));
     }
 }

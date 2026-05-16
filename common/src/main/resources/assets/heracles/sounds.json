@@ -1,0 +1,11 @@
+{
+    "quest_complete": {
+        "subtitle": "Quest Complete",
+        "sounds": [
+            {
+                "name": "heracles:quest_complete",
+                "volume": 1.0
+            }
+        ]
+    }
+}

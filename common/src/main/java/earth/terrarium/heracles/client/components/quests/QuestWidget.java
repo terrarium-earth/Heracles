@@ -121,6 +121,10 @@ public class QuestWidget extends BaseWidget {
         return this.entry;
     }
 
+    public ModUtils.QuestStatus status() {
+        return this.status;
+    }
+
     public Vector2i position() {
         return this.quest.display().position(this.group);
     }

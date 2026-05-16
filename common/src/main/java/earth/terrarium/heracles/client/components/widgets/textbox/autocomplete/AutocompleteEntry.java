@@ -12,8 +12,8 @@ import net.minecraft.resources.ResourceLocation;
 
 public class AutocompleteEntry<T> extends BaseWidget implements ListWidget.Item {
 
-    private static final ResourceLocation ENTRY =  Heracles.id("textures/gui/sprites/textbox/entry.png");
-    private static final ResourceLocation ENTRY_HOVERED =  Heracles.id("textures/gui/sprites/textbox/entry_hovered.png");
+    private static final ResourceLocation ENTRY =  Heracles.id("textbox/entry");
+    private static final ResourceLocation ENTRY_HOVERED =  Heracles.id("textbox/entry_hovered");
 
     private final String value;
     private final Runnable action;

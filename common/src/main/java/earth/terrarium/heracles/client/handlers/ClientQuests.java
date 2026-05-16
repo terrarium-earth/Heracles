@@ -1,6 +1,7 @@
 package earth.terrarium.heracles.client.handlers;
 
 import earth.terrarium.heracles.Heracles;
+import earth.terrarium.heracles.api.quests.GroupDisplay;
 import earth.terrarium.heracles.api.quests.Quest;
 import earth.terrarium.heracles.common.handlers.progress.QuestProgress;
 import earth.terrarium.heracles.common.menus.quests.QuestsContent;
@@ -53,10 +54,36 @@ public class ClientQuests {
         GROUP_SETTINGS.putAll(settings);
     }
 
-    public static void updateGroupSettings(String group, ItemStack icon, boolean iconEnabled) {
+    public static void updateGroupSettings(String group, ItemStack icon, boolean iconEnabled, String background, int backgroundOpacity) {
         GroupSettings settings = getGroupSettings(group);
         settings.setIcon(icon);
         settings.setIconEnabled(iconEnabled);
+        settings.setBackground(background);
+        settings.setBackgroundOpacity(backgroundOpacity);
+    }
+
+    public static void renameGroup(String oldName, String newName) {
+        if (oldName.equals(newName)) return;
+        if (GROUPS.contains(oldName)) {
+            int index = GROUPS.indexOf(oldName);
+            GROUPS.set(index, newName);
+        }
+        if (GROUP_ORDERS.contains(oldName)) {
+            int index = GROUP_ORDERS.indexOf(oldName);
+            GROUP_ORDERS.set(index, newName);
+        }
+        if (GROUP_SETTINGS.containsKey(oldName)) {
+            GROUP_SETTINGS.put(newName, GROUP_SETTINGS.remove(oldName));
+        }
+        if (BY_GROUPS.containsKey(oldName)) {
+            BY_GROUPS.put(newName, BY_GROUPS.remove(oldName));
+        }
+        for (QuestEntry entry : ENTRIES.values()) {
+            if (entry.value().display().groups().containsKey(oldName)) {
+                GroupDisplay display = entry.value().display().groups().remove(oldName);
+                entry.value().display().groups().put(newName, new GroupDisplay(newName, display.position()));
+            }
+        }
     }
 
     public static void syncGroupOrders(List<String> groupOrders) {

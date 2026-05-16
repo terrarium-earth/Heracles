@@ -23,6 +23,9 @@ public class DisplayConfig {
     public static boolean showTutorial = true;
     public static ChatFormatting editorColor = ChatFormatting.WHITE;
     public static boolean snapToGrid = false;
+    public static boolean showGrid = false;
+    public static boolean showMinimap = true;
+    public static boolean dockMinimap = false;
 
     public static void load(Path path) {
         DisplayConfig.lastPath = path;
@@ -36,6 +39,9 @@ public class DisplayConfig {
                 maxEditorHistory = GsonHelper.getAsInt(displayObject, "maxEditorHistory", 100);
                 editorColor = getEnum(displayObject, "editorColor", ChatFormatting.class, ChatFormatting.WHITE);
                 snapToGrid = GsonHelper.getAsBoolean(displayObject, "snapToGrid", false);
+                showGrid = GsonHelper.getAsBoolean(displayObject, "showGrid", false);
+                showMinimap = GsonHelper.getAsBoolean(displayObject, "showMinimap", true);
+                dockMinimap = GsonHelper.getAsBoolean(displayObject, "dockMinimap", false);
             } else {
                 save();
             }
@@ -53,6 +59,9 @@ public class DisplayConfig {
         displayObject.addProperty("maxEditorHistory", maxEditorHistory);
         displayObject.addProperty("editorColor", editorColor.getName());
         displayObject.addProperty("snapToGrid", snapToGrid);
+        displayObject.addProperty("showGrid", showGrid);
+        displayObject.addProperty("showMinimap", showMinimap);
+        displayObject.addProperty("dockMinimap", dockMinimap);
         try {
             FileUtils.write(displayFile, Constants.PRETTY_GSON.toJson(displayObject), StandardCharsets.UTF_8);
         } catch (Exception e) {

@@ -57,5 +57,7 @@ public class NetworkHandler {
         CHANNEL.register(ManualXpTaskPacket.TYPE);
         CHANNEL.register(ServerboundUpdateGroupOrderPacket.TYPE);
         CHANNEL.register(ServerboundUpdateGroupSettingsPacket.TYPE);
+        CHANNEL.register(ServerboundResetProgressPacket.TYPE);
+        CHANNEL.register(ServerboundResetQuestProgressPacket.TYPE);
     }
 }

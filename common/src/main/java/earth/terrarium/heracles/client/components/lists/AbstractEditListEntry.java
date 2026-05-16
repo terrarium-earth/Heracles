@@ -115,6 +115,8 @@ public abstract class AbstractEditListEntry<T> implements BaseListEntry<T> {
                 menu.dangerButton(Component.literal("Delete"), this::tryDelete);
                 menu.divider();
                 menu.button(Component.literal("Copy ID"), () -> UIUtils.copyToClipboard(this.id()));
+                menu.divider();
+                menu.button(Component.literal("Reset Progress"), () -> this.list.resetProgress(this.value()));
             });
         }
 

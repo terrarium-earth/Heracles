@@ -3,7 +3,6 @@ package earth.terrarium.heracles.client.ui.modals;
 import earth.terrarium.heracles.client.components.widgets.buttons.TextButton;
 import earth.terrarium.heracles.client.components.widgets.textbox.TextBox;
 import earth.terrarium.heracles.client.handlers.ClientQuests;
-import earth.terrarium.heracles.client.ui.UIComponents;
 import earth.terrarium.heracles.common.utils.ModUtils;
 import earth.terrarium.olympus.client.ui.UIConstants;
 import earth.terrarium.olympus.client.ui.modals.BaseModal;
@@ -32,7 +31,7 @@ public class CreateQuestModal extends BaseModal {
     private TextBox nameBox;
 
     protected CreateQuestModal(Screen background, BiConsumer<String, String> callback, BiPredicate<String, String> validator) {
-        super(UIComponents.ADD_QUEST, background);
+        super(Component.translatable("gui.heracles.add_quest"), background);
         this.callback = callback;
         this.validator = validator;
 
@@ -67,7 +66,7 @@ public class CreateQuestModal extends BaseModal {
             ),
             0, 0
         );
-        this.nameBox.setPlaceholder(UIComponents.NAME);
+        this.nameBox.setPlaceholder(Component.translatable("gui.heracles.name"));
 
         this.idBox = layout.addChild(
             new TextBox(
@@ -78,7 +77,7 @@ public class CreateQuestModal extends BaseModal {
             ),
             1, 0
         );
-        this.idBox.setPlaceholder(UIComponents.ID);
+        this.idBox.setPlaceholder(Component.translatable("gui.heracles.id"));
 
         layout.arrangeElements();
         layout.setPosition(this.modalContentLeft, this.modalContentTop);

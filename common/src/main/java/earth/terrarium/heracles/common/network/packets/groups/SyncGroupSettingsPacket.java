@@ -9,7 +9,7 @@ import earth.terrarium.heracles.common.handlers.quests.GroupSettings;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 
-public record SyncGroupSettingsPacket(String group, String iconId, boolean iconEnabled) implements Packet<SyncGroupSettingsPacket> {
+public record SyncGroupSettingsPacket(String group, String newName, String iconId, boolean iconEnabled, String background, int backgroundOpacity) implements Packet<SyncGroupSettingsPacket> {
 
     public static final ClientboundPacketType<SyncGroupSettingsPacket> TYPE = new Type();
 
@@ -28,8 +28,11 @@ public record SyncGroupSettingsPacket(String group, String iconId, boolean iconE
         @Override
         public void encode(SyncGroupSettingsPacket message, RegistryFriendlyByteBuf buffer) {
             buffer.writeUtf(message.group());
+            buffer.writeUtf(message.newName());
             buffer.writeUtf(message.iconId());
             buffer.writeBoolean(message.iconEnabled());
+            buffer.writeUtf(message.background());
+            buffer.writeInt(message.backgroundOpacity());
         }
 
         @Override
@@ -37,17 +40,25 @@ public record SyncGroupSettingsPacket(String group, String iconId, boolean iconE
             return new SyncGroupSettingsPacket(
                 buffer.readUtf(),
                 buffer.readUtf(),
-                buffer.readBoolean()
+                buffer.readUtf(),
+                buffer.readBoolean(),
+                buffer.readUtf(),
+                buffer.readInt()
             );
         }
 
         @Override
         public Runnable handle(SyncGroupSettingsPacket message) {
-            return () -> ClientQuests.updateGroupSettings(
-                message.group(),
-                GroupSettings.deserializeIcon(message.iconId()),
-                message.iconEnabled()
-            );
+            return () -> {
+                ClientQuests.renameGroup(message.group(), message.newName());
+                ClientQuests.updateGroupSettings(
+                    message.newName(),
+                    GroupSettings.deserializeIcon(message.iconId()),
+                    message.iconEnabled(),
+                    message.background(),
+                    message.backgroundOpacity()
+                );
+            };
         }
     }
 }

@@ -7,7 +7,7 @@ import earth.terrarium.heracles.common.network.NetworkHandler;
 import earth.terrarium.heracles.common.regisitries.ModBlocks;
 import earth.terrarium.heracles.common.regisitries.ModItems;
 import earth.terrarium.heracles.common.regisitries.ModLootConditions;
-import earth.terrarium.heracles.common.utils.PlatformLogger;
+import earth.terrarium.heracles.common.regisitries.ModSounds;import earth.terrarium.heracles.common.utils.PlatformLogger;
 import earth.terrarium.heracles.common.utils.PlatformSettings;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceLocation;
@@ -31,6 +31,7 @@ public class Heracles {
         ModBlocks.BLOCK_ENTITIES.init();
         ModItems.ITEMS.init();
         ModLootConditions.TYPES.init();
+        ModSounds.SOUNDS.init();
         NetworkHandler.init();
         HeraclesEvents.QuestCompleteListener.register(Heracles::playQuestCompleteSound);
     }
@@ -53,7 +54,7 @@ public class Heracles {
 
     private static void playQuestCompleteSound(QuestEventTarget event) {
         ServerPlayer player = event.player();
-        player.level().playSound(null, player.blockPosition(), SoundEvents.UI_TOAST_CHALLENGE_COMPLETE, SoundSource.MASTER, 0.1f, 2f);
+        player.level().playSound(null, player.blockPosition(), ModSounds.QUEST_COMPLETE.get(), SoundSource.MASTER, 0.3f, 1f);
     }
 
     public static ResourceLocation id(String path) {

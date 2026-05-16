@@ -111,6 +111,8 @@ public abstract class QuestList<T> extends BaseWidget {
         return false;
     }
 
+    public void resetProgress(T value) {}
+
     public QuestContent content() {
         return this.content;
     }

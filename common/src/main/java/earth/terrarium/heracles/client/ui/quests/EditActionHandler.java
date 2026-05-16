@@ -11,12 +11,12 @@ import earth.terrarium.heracles.client.components.quests.QuestsWidget;
 import earth.terrarium.heracles.client.handlers.ClientQuestNetworking;
 import earth.terrarium.heracles.client.handlers.ClientQuests;
 import earth.terrarium.heracles.client.handlers.DisplayConfig;
-import earth.terrarium.heracles.client.ui.UIComponents;
 import earth.terrarium.heracles.client.ui.modals.CreateQuestModal;
 import earth.terrarium.heracles.client.ui.modals.EditObjectModal;
 import earth.terrarium.heracles.common.menus.quests.QuestsContent;
 import earth.terrarium.heracles.common.network.NetworkHandler;
 import earth.terrarium.heracles.common.network.packets.quests.OpenQuestPacket;
+import earth.terrarium.heracles.common.network.packets.quests.ServerboundResetQuestProgressPacket;
 import earth.terrarium.heracles.common.network.packets.quests.data.NetworkQuestData;
 import earth.terrarium.heracles.common.utils.ModUtils;
 import earth.terrarium.olympus.client.ui.context.ContextMenu;
@@ -24,19 +24,18 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.Mth;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector2i;
 
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
 
-class EditActionHandler implements QuestActionHandler {
+public class EditActionHandler implements QuestActionHandler {
 
     private static final ResourceLocation QUEST = Heracles.id("quest");
 
     private final Supplier<QuestsWidget> quests;
-    private final QuestsContent content;
+    private QuestsContent content;
 
     private ClientQuests.QuestEntry selected;
     private long lastClick;
@@ -82,24 +81,24 @@ class EditActionHandler implements QuestActionHandler {
         ContextMenu.open(mouseX, mouseY, menu -> {
             if (widget != null) {
                 Quest quest = widget.entry().value();
-                menu.button(UIComponents.EDIT_DETAILS, () -> deferContextMenuOpening(() -> EditObjectModal.open(
-                    QuestDetailsInitializer.INSTANCE, QUEST, UIComponents.EDIT_DETAILS, null,
+                menu.button(Component.translatable("gui.heracles.edit.details"), () -> deferContextMenuOpening(() -> EditObjectModal.open(
+                    QuestDetailsInitializer.INSTANCE, QUEST, Component.translatable("gui.heracles.edit.details"), null,
                     new QuestDetailsInitializer.Details(quest), data -> setDetails(widget.entry(), data)
                 )));
-                menu.button(UIComponents.EDIT_SETTINGS, () -> deferContextMenuOpening(() -> {
+                menu.button(Component.translatable("gui.heracles.edit.settings"), () -> deferContextMenuOpening(() -> {
                     EditObjectModal.open(
-                        QuestSettingsInitializer.INSTANCE, QUEST, UIComponents.EDIT_SETTINGS, null,
+                        QuestSettingsInitializer.INSTANCE, QUEST, Component.translatable("gui.heracles.edit.settings"), null,
                         quest.settings(), data -> setSettings(widget.entry(), data)
                     );
                 }));
                 menu.divider();
-                menu.button(UIComponents.SNAP_TO_GRID, () ->
+                menu.button(Component.translatable("gui.heracles.quests.snap_to_grid"), () ->
                     setNewPosition(widget.entry(), widget.position(), true)
                 );
                 if (this.selected != null && this.selected != widget.entry()) {
                     ClientQuests.QuestEntry dependency = widget.entry();
                     boolean disconnect = this.selected.value().dependencies().contains(dependency.key());
-                    Component title = disconnect ? UIComponents.REMOVE_DEPENDENCY : UIComponents.ADD_DEPENDENCY;
+                    Component title = disconnect ? Component.translatable("gui.heracles.dependency_remove") : Component.translatable("gui.heracles.dependency_add");
                     menu.button(title, () -> ClientQuests.updateQuest(this.selected, selected -> {
                         if (disconnect) {
                             selected.dependencies().remove(dependency.key());
@@ -113,18 +112,21 @@ class EditActionHandler implements QuestActionHandler {
                         return NetworkQuestData.builder().dependencies(selected.dependencies());
                     }));
                 }
+                menu.button(Component.literal("Reset Progress"), () -> {
+                    NetworkHandler.CHANNEL.sendToServer(new ServerboundResetQuestProgressPacket(widget.entry().key()));
+                });
                 menu.divider();
-                menu.dangerButton(UIComponents.DELETE, () ->
+                menu.dangerButton(Component.translatable("gui.heracles.delete"), () ->
                     widget.delete(quests.get())
                 );
             } else {
-                menu.button(UIComponents.ADD_QUEST, () -> CreateQuestModal.open((id, name) -> {
+                menu.button(Component.translatable("gui.heracles.add_quest"), () -> deferContextMenuOpening(() ->  CreateQuestModal.open((id, name) -> {
                     QuestsWidget quests = this.quests.get();
                     Vector2i local = quests.toLocal(mouseX, mouseY);
                     Quest quest = Quest.of(this.content.group(), name, local.sub(12, 12));
                     ClientQuestNetworking.add(id, quest);
                     NetworkHandler.CHANNEL.sendToServer(new OpenQuestPacket(content.group(), id));
-                }));
+                })));
             }
         });
         return true;
@@ -147,7 +149,7 @@ class EditActionHandler implements QuestActionHandler {
             Vector2i position = new Vector2i((int) mouseX, (int) mouseY)
                 .sub(this.start)
                 .add(this.startOffset);
-            setNewPosition(this.dragging, position, false);
+            setNewPosition(this.dragging, position, DisplayConfig.snapToGrid);
             return TriState.TRUE;
         }
         return TriState.UNDEFINED;
@@ -178,8 +180,8 @@ class EditActionHandler implements QuestActionHandler {
     private void setNewPosition(ClientQuests.QuestEntry entry, Vector2i position, boolean snapToGrid) {
         ClientQuests.updateQuest(entry, quest -> NetworkQuestData.builder().group(quest, this.content.group(), pos -> {
             if (snapToGrid) {
-                pos.x = (position.x() + (Mth.sign(position.x()) * 16)) / 32 * 32;
-                pos.y = (position.y() + (Mth.sign(position.y()) * 16)) / 32 * 32;
+                pos.x = (int) (Math.floor((position.x() - 2f) / 27) * 27 + 2 + 17);
+                pos.y = (int) (Math.floor((position.y() - 2f) / 27) * 27 + 2 + 13);
             } else {
                 pos.x = position.x();
                 pos.y = position.y();
@@ -221,5 +223,9 @@ class EditActionHandler implements QuestActionHandler {
 
     public ClientQuests.QuestEntry getSelected() {
         return selected;
+    }
+
+    public void setContent(QuestsContent content) {
+        this.content = content;
     }
 }

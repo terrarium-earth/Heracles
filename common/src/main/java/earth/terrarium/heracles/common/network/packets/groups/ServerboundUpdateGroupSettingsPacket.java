@@ -7,17 +7,13 @@ import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.common.handlers.quests.GroupSettings;
 import earth.terrarium.heracles.common.handlers.quests.QuestHandler;
 import earth.terrarium.heracles.common.network.NetworkHandler;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
 
 import java.util.function.Consumer;
 
-public record ServerboundUpdateGroupSettingsPacket(String group, String iconId, boolean iconEnabled) implements Packet<ServerboundUpdateGroupSettingsPacket> {
+public record ServerboundUpdateGroupSettingsPacket(String group, String newName, String iconId, boolean iconEnabled, String background, int backgroundOpacity) implements Packet<ServerboundUpdateGroupSettingsPacket> {
 
     public static final ServerboundPacketType<ServerboundUpdateGroupSettingsPacket> TYPE = new Type();
 
@@ -36,8 +32,11 @@ public record ServerboundUpdateGroupSettingsPacket(String group, String iconId, 
         @Override
         public void encode(ServerboundUpdateGroupSettingsPacket message, RegistryFriendlyByteBuf buffer) {
             buffer.writeUtf(message.group());
+            buffer.writeUtf(message.newName());
             buffer.writeUtf(message.iconId());
             buffer.writeBoolean(message.iconEnabled());
+            buffer.writeUtf(message.background());
+            buffer.writeInt(message.backgroundOpacity());
         }
 
         @Override
@@ -45,7 +44,10 @@ public record ServerboundUpdateGroupSettingsPacket(String group, String iconId, 
             return new ServerboundUpdateGroupSettingsPacket(
                 buffer.readUtf(),
                 buffer.readUtf(),
-                buffer.readBoolean()
+                buffer.readUtf(),
+                buffer.readBoolean(),
+                buffer.readUtf(),
+                buffer.readInt()
             );
         }
 
@@ -53,13 +55,16 @@ public record ServerboundUpdateGroupSettingsPacket(String group, String iconId, 
         public Consumer<Player> handle(ServerboundUpdateGroupSettingsPacket message) {
             return (player) -> {
                 if (player.hasPermissions(2)) {
-                    GroupSettings settings = QuestHandler.getGroupSettings(message.group());
+                    QuestHandler.renameGroup(message.group(), message.newName());
+                    GroupSettings settings = QuestHandler.getGroupSettings(message.newName());
                     settings.setIcon(GroupSettings.deserializeIcon(message.iconId()));
                     settings.setIconEnabled(message.iconEnabled());
+                    settings.setBackground(message.background());
+                    settings.setBackgroundOpacity(message.backgroundOpacity());
                     QuestHandler.saveGroupSettings();
                     if (player.getServer() != null) {
                         NetworkHandler.CHANNEL.sendToPlayers(
-                            new SyncGroupSettingsPacket(message.group(), message.iconId(), message.iconEnabled()),
+                            new SyncGroupSettingsPacket(message.group(), message.newName(), message.iconId(), message.iconEnabled(), message.background(), message.backgroundOpacity()),
                             player.getServer().getPlayerList().getPlayers()
                         );
                     }

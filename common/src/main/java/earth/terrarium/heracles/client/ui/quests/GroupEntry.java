@@ -2,7 +2,7 @@ package earth.terrarium.heracles.client.ui.quests;
 
 import com.teamresourceful.resourcefullib.client.screens.CursorScreen;
 import com.teamresourceful.resourcefullib.client.utils.CursorUtils;
-import earth.terrarium.heracles.Heracles;
+import com.teamresourceful.resourcefullib.common.color.Color;import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.client.components.base.ListWidget;
 import earth.terrarium.heracles.client.handlers.ClientQuests;
 import earth.terrarium.heracles.client.ui.QuestTab;
@@ -12,9 +12,9 @@ import earth.terrarium.heracles.common.handlers.quests.GroupSettings;
 import earth.terrarium.heracles.common.network.NetworkHandler;
 import earth.terrarium.heracles.common.network.packets.groups.OpenGroupPacket;
 import earth.terrarium.heracles.common.network.packets.quests.ServerboundUpdateGroupOrderPacket;
-import earth.terrarium.olympus.client.components.base.BaseWidget;
-import earth.terrarium.olympus.client.ui.context.ContextMenu;
-import net.minecraft.client.Minecraft;
+import earth.terrarium.olympus.client.components.Widgets;import earth.terrarium.olympus.client.components.base.BaseWidget;
+import earth.terrarium.olympus.client.components.string.TextWidget;import earth.terrarium.olympus.client.ui.context.ContextMenu;
+import net.minecraft.Util;import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -27,7 +27,10 @@ public class GroupEntry extends BaseWidget implements ListWidget.Item {
 
     private static final ResourceLocation NORMAL =  Heracles.id("groups/normal");
     private static final ResourceLocation SELECTED =  Heracles.id("groups/selected");
+    private static final ResourceLocation DRAG_HANDLE = Heracles.id("groups/drag_handle");
     private static final int PADDING = 4;
+    private static final int DRAG_HANDLE_WIDTH = 8;
+    private static final int DRAG_HANDLE_HEIGHT = 12;
     private static final int DRAG_THRESHOLD = 3;
     private final String id;
     private final boolean selected;
@@ -60,12 +63,65 @@ public class GroupEntry extends BaseWidget implements ListWidget.Item {
             textX += 18;
         }
 
-        graphics.drawString(
-            Minecraft.getInstance().font,
-            this.id,
-            textX + PADDING , this.getY() + ((this.getHeight() - 10) / 2) + 1,
-            0xFFFFFF
-        );
+        int availableWidth = this.getWidth() - (textX - this.getX()) - (2 * PADDING);
+        if(QuestTab.isEditing()) {
+            availableWidth -= DRAG_HANDLE_WIDTH + PADDING;
+        }
+
+        int textWidth = Minecraft.getInstance().font.width(this.id);
+        int finalTextX = textX;
+        if(textWidth > availableWidth) {
+
+            long time = Util.getMillis();
+            double speed = 0.02; // 0.02 pixels per ms = 20 pixels per second
+            double pauseMs = 1500.0; // 1.5 second pause
+            double scrollDistance = textWidth - availableWidth;
+            double scrollDuration = scrollDistance / speed;
+
+            // Total loop duration: Start Pause + Scrolling + End Pause
+            double totalLoopTime = pauseMs + scrollDuration + pauseMs;
+            double currentTimeInLoop = time % totalLoopTime;
+
+            int offset;
+            if (currentTimeInLoop < pauseMs) {
+                // Phase 1: Initial Pause (2 seconds)
+                offset = 0;
+            } else if (currentTimeInLoop < pauseMs + scrollDuration) {
+                // Phase 2: Scrolling
+                offset = (int) Math.round((currentTimeInLoop - pauseMs) * speed);
+            } else {
+                // Phase 3: End Pause (2 seconds)
+                offset = (int) Math.round(scrollDistance);
+            }
+
+            graphics.enableScissor(textX + PADDING, getY(), textX + PADDING + availableWidth, getY() + getHeight());
+
+            Widgets.text(Component.literal(this.id), textWidget -> {
+                textWidget.setPosition(finalTextX + PADDING - offset, this.getY() + ((this.getHeight() - 10) / 2) + 1);
+                textWidget.withColor(Color.parse("WHITE"));
+                textWidget.withShadow();
+                textWidget.withFont(Minecraft.getInstance().font);
+                textWidget.withLeftAlignment();
+                textWidget.render(graphics, mouseX, mouseY, partialTick);
+            });
+
+            graphics.disableScissor();
+        } else {
+            Widgets.text(Component.literal(this.id), textWidget -> {
+                textWidget.setPosition(finalTextX + PADDING , this.getY() + ((this.getHeight() - 10) / 2) + 1);
+                textWidget.withColor(Color.parse("WHITE"));
+                textWidget.withShadow();
+                textWidget.withFont(Minecraft.getInstance().font);
+                textWidget.withLeftAlignment();
+                textWidget.render(graphics, mouseX, mouseY, partialTick);
+            });
+        }
+
+        if (QuestTab.isEditing()) {
+            int handleX = this.getX() + this.getWidth() - DRAG_HANDLE_WIDTH - PADDING;
+            int handleY = this.getY() + (this.getHeight() - DRAG_HANDLE_HEIGHT) / 2;
+            graphics.blitSprite(DRAG_HANDLE, handleX, handleY, DRAG_HANDLE_WIDTH, DRAG_HANDLE_HEIGHT);
+        }
     }
 
     @Override
@@ -74,14 +130,6 @@ public class GroupEntry extends BaseWidget implements ListWidget.Item {
 
         if (button == 1 && QuestTab.isEditing()) {
             ContextMenu.open(mouseX, mouseY, menu -> {
-                menu.button(Component.literal("\u2B06 Move Up"), () -> {
-                    moveUp();
-                    this.onReorder.run();
-                });
-                menu.button(Component.literal("\u2B07 Move Down"), () -> {
-                    moveDown();
-                    this.onReorder.run();
-                });
                 menu.button(Component.literal("\u2699 Settings"), () -> {
                     Minecraft.getInstance().tell(() -> GroupSettingsModal.open(this.id, this.onReorder));
                 });
@@ -144,33 +192,6 @@ public class GroupEntry extends BaseWidget implements ListWidget.Item {
         return super.mouseReleased(mouseX, mouseY, button);
     }
 
-    private boolean moveUp() {
-        List<String> orders = new ArrayList<>(ClientQuests.groupOrders());
-        int currentIndex = orders.indexOf(this.id);
-        if (currentIndex > 0) {
-            String previous = orders.get(currentIndex - 1);
-            orders.set(currentIndex - 1, this.id);
-            orders.set(currentIndex, previous);
-            ClientQuests.syncGroupOrders(orders);
-            NetworkHandler.CHANNEL.sendToServer(new ServerboundUpdateGroupOrderPacket(orders));
-            return true;
-        }
-        return false;
-    }
-
-    private boolean moveDown() {
-        List<String> orders = new ArrayList<>(ClientQuests.groupOrders());
-        int currentIndex = orders.indexOf(this.id);
-        if (currentIndex >= 0 && currentIndex < orders.size() - 1) {
-            String next = orders.get(currentIndex + 1);
-            orders.set(currentIndex + 1, this.id);
-            orders.set(currentIndex, next);
-            ClientQuests.syncGroupOrders(orders);
-            NetworkHandler.CHANNEL.sendToServer(new ServerboundUpdateGroupOrderPacket(orders));
-            return true;
-        }
-        return false;
-    }
 
     @Override
     public void onClick(double mouseX, double mouseY) {

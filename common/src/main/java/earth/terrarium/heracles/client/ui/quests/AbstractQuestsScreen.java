@@ -3,7 +3,6 @@ package earth.terrarium.heracles.client.ui.quests;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.datafixers.util.Pair;
 import com.teamresourceful.resourcefullib.client.screens.BaseCursorScreen;
-import earth.terrarium.heracles.client.ModScreens;
 import earth.terrarium.heracles.client.components.base.ListWidget;
 import earth.terrarium.heracles.client.components.quests.QuestActionHandler;
 import earth.terrarium.heracles.client.components.quests.QuestWidget;
@@ -11,11 +10,13 @@ import earth.terrarium.heracles.client.components.quests.QuestsWidget;
 import earth.terrarium.heracles.client.components.string.TextWidget;
 import earth.terrarium.heracles.client.components.widgets.buttons.SpriteButton;
 import earth.terrarium.heracles.client.handlers.ClientQuests;
+import earth.terrarium.heracles.client.handlers.DisplayConfig;
 import earth.terrarium.heracles.client.ui.QuestTab;
 import earth.terrarium.heracles.client.ui.UIConstants;
 import earth.terrarium.heracles.client.ui.modals.CreateGroupModal;
 import earth.terrarium.heracles.common.constants.ConstantComponents;
-import earth.terrarium.heracles.common.handlers.progress.QuestProgress;import earth.terrarium.heracles.common.menus.quests.QuestsContent;
+import earth.terrarium.heracles.common.handlers.progress.QuestProgress;
+import earth.terrarium.heracles.common.menus.quests.QuestsContent;
 import earth.terrarium.heracles.common.network.NetworkHandler;
 import earth.terrarium.heracles.common.network.packets.groups.CreateGroupPacket;
 import earth.terrarium.heracles.common.utils.ModUtils;
@@ -38,13 +39,14 @@ public abstract class AbstractQuestsScreen extends BaseCursorScreen {
     public static final int HEADER_HEIGHT = 13;
     public static final int SPACER = 2;
     public static final int PADDING = 5;
+    public static final int DOCKED_MINIMAP_HEIGHT = 66;
 
     protected int sideBarWidth;
     protected int contentWidth;
     protected int contentHeight;
 
     protected final Screen parent;
-    protected final QuestsContent content;
+    public QuestsContent content;
 
     protected QuestsWidget quests;
 
@@ -79,7 +81,9 @@ public abstract class AbstractQuestsScreen extends BaseCursorScreen {
         this.clearWidgets();
         this.sideBarWidth = Math.max((int) (width * 0.25f), 125);
         this.contentWidth = this.width - this.sideBarWidth;
-        this.contentHeight = this.height - HEADER_HEIGHT - SPACER;
+
+        // formerly this.contentHeight = this.height - HEADER_HEIGHT - SPACER; removing - SPACER allows the background image to take up the entire content pane height.
+        this.contentHeight = this.height - HEADER_HEIGHT;
 
         Layout sidebar = initSidebar(new AtomicInteger());
         Layout content = initContent(new AtomicInteger());
@@ -112,7 +116,11 @@ public abstract class AbstractQuestsScreen extends BaseCursorScreen {
         header.addChild(SpacerElement.height(HEADER_HEIGHT + SPACER), 0, 3);
         layout.addChild(header, row.getAndIncrement(), 0);
 
-        ListWidget groups = new ListWidget(this.sideBarWidth - 2 - SPACER, this.contentHeight);
+        int groupsHeight = this.contentHeight - HEADER_HEIGHT - SPACER;
+        if (DisplayConfig.dockMinimap && DisplayConfig.showMinimap) {
+            groupsHeight -= DOCKED_MINIMAP_HEIGHT + SPACER;
+        }
+        ListWidget groups = new ListWidget(this.sideBarWidth - 2 - SPACER, groupsHeight);
         for (String group : ClientQuests.groups()) {
             groups.add(new GroupEntry(this.sideBarWidth, 20, group, group.equals(this.content.group()), this::init, groups));
         }
@@ -158,6 +166,15 @@ public abstract class AbstractQuestsScreen extends BaseCursorScreen {
         ), row.getAndIncrement(), 0);
         this.quests.update(quests);
         this.quests.select((QuestWidget widget) -> selectedKeys.contains(widget.entry().key()));
+
+        if (DisplayConfig.dockMinimap && DisplayConfig.showMinimap) {
+            this.quests.setDockedMinimapBounds(
+                getDockedMinimapX(), getDockedMinimapY(),
+                getDockedMinimapWidth(), getDockedMinimapHeight()
+            );
+        } else {
+            this.quests.setDockedMinimapBounds(0, 0, 0, 0);
+        }
 
         return layout;
     }
@@ -213,10 +230,32 @@ public abstract class AbstractQuestsScreen extends BaseCursorScreen {
         return this.parent;
     }
 
-    // In AbstractQuestsScreen.java
+    public int getDockedMinimapX() {
+        return 1;
+    }
+
+    public int getDockedMinimapY() {
+        return this.height - DOCKED_MINIMAP_HEIGHT;
+    }
+
+    public int getDockedMinimapWidth() {
+        return this.sideBarWidth - SPACER - 2;
+    }
+
+    public int getDockedMinimapHeight() {
+        return DOCKED_MINIMAP_HEIGHT;
+    }
+
+    public void setContent(QuestsContent content) {
+        this.content = content;
+        if (this.quests != null) {
+            this.quests.setContent(content);
+        }
+    }
+
     @Override
     public boolean mouseDragged(double mouseX, double mouseY, int button, double dragX, double dragY) {
-        if (this.quests != null && this.quests.isMouseOver(mouseX, mouseY)) {
+        if (this.quests != null && this.quests.isMouseOver(mouseX, mouseY) && this.quests.isDragging()) {
             return this.quests.mouseDragged(mouseX, mouseY, button, dragX, dragY);
         }
         return super.mouseDragged(mouseX, mouseY, button, dragX, dragY);

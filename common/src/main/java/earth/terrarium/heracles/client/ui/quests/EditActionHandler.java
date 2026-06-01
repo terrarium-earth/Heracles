@@ -37,8 +37,7 @@ public class EditActionHandler implements QuestActionHandler {
     private final Supplier<QuestsWidget> quests;
     private QuestsContent content;
 
-    // A bit messy storing both of these, but eh
-    private QuestWidget topSelectedWidget;
+    private QuestWidget topSelected;
 
     private ArrayList<QuestWidget> allSelected = new ArrayList<>();
 
@@ -58,28 +57,28 @@ public class EditActionHandler implements QuestActionHandler {
         if (widget == null) {
             this.dragging = null;
             this.quests.get().select(ModUtils.predicateFalse());
-            this.topSelectedWidget = null;
+            this.topSelected = null;
             this.allSelected = new ArrayList<>();
             return false;
         }
         ClientQuests.QuestEntry entry = widget.entry();
-        if (entry.equals(getSelected()) && System.currentTimeMillis() - this.lastClick < 500) {
+        if (entry.equals(getSelectedEntry()) && System.currentTimeMillis() - this.lastClick < 500) {
             this.open();
         } else {
 
             // If we select a quest without holding control, clear our selection entirely
             if (!Screen.hasControlDown()) {
                 allSelected = new ArrayList<>();
-                topSelectedWidget = null;
+                topSelected = null;
             }
 
             // If we are holding control, and have already selected a previous quest,
             // Add the previous quest to the selection and set the top selection to the new one
-            if (Screen.hasControlDown() && topSelectedWidget != null) {
-                allSelected.add(topSelectedWidget);
+            if (Screen.hasControlDown() && topSelected != null) {
+                allSelected.add(topSelected);
             }
 
-            this.topSelectedWidget = widget;
+            this.topSelected = widget;
 
             // Make sure our top selected quest isn't grouped in with the rest of the selected quests
             // Otherwise it'll move when it shouldn't. This can happen if the user selects quest A,
@@ -119,19 +118,19 @@ public class EditActionHandler implements QuestActionHandler {
                 menu.button(Component.translatable("gui.heracles.quests.snap_to_grid"), () ->
                     setNewPosition(widget.entry(), widget.position(), true)
                 );
-                if (getSelected() != null && getSelected() != widget.entry()) {
+                if (getSelectedEntry() != null && getSelectedEntry() != widget.entry()) {
                     ClientQuests.QuestEntry dependency = widget.entry();
-                    boolean disconnect = getSelected().value().dependencies().contains(dependency.key());
+                    boolean disconnect = getSelectedEntry().value().dependencies().contains(dependency.key());
                     Component title = disconnect ? Component.translatable("gui.heracles.dependency_remove") : Component.translatable("gui.heracles.dependency_add");
-                    menu.button(title, () -> ClientQuests.updateQuest(getSelected(), selected -> {
+                    menu.button(title, () -> ClientQuests.updateQuest(getSelectedEntry(), selected -> {
                         if (disconnect) {
                             selected.dependencies().remove(dependency.key());
-                            getSelected().dependencies().remove(dependency);
-                            dependency.dependents().remove(getSelected());
+                            getSelectedEntry().dependencies().remove(dependency);
+                            dependency.dependents().remove(getSelectedEntry());
                         } else {
                             selected.dependencies().add(dependency.key());
-                            getSelected().dependencies().add(dependency);
-                            dependency.dependents().add(getSelected());
+                            getSelectedEntry().dependencies().add(dependency);
+                            dependency.dependents().add(getSelectedEntry());
                         }
                         return NetworkQuestData.builder().dependencies(selected.dependencies());
                     }));
@@ -181,17 +180,17 @@ public class EditActionHandler implements QuestActionHandler {
 
     @Override
     public boolean onKeyPressed(int keyCode, int scanCode, int modifiers) {
-        if (getSelected() != null) {
-            Vector2i position = new Vector2i(topSelectedWidget.position());
+        if (getSelectedEntry() != null) {
+            Vector2i position = new Vector2i(topSelected.position());
             boolean handled = true;
             int offset = Screen.hasShiftDown() ? 10 : Screen.hasControlDown() ? 5 : 1;
             switch (keyCode) {
-                case InputConstants.KEY_RIGHT -> setNewPosition(getSelected(), position.add(offset, 0), false);
-                case InputConstants.KEY_LEFT -> setNewPosition(getSelected(), position.add(offset * -1, 0), false);
-                case InputConstants.KEY_DOWN -> setNewPosition(getSelected(), position.add(0, offset), false);
-                case InputConstants.KEY_UP -> setNewPosition(getSelected(), position.add(0, offset * -1), false);
+                case InputConstants.KEY_RIGHT -> setNewPosition(getSelectedEntry(), position.add(offset, 0), false);
+                case InputConstants.KEY_LEFT -> setNewPosition(getSelectedEntry(), position.add(offset * -1, 0), false);
+                case InputConstants.KEY_DOWN -> setNewPosition(getSelectedEntry(), position.add(0, offset), false);
+                case InputConstants.KEY_UP -> setNewPosition(getSelectedEntry(), position.add(0, offset * -1), false);
                 case InputConstants.KEY_DELETE -> {
-                    QuestWidget widget = this.getSelectedWidget();
+                    QuestWidget widget = this.getSelected();
                     if (widget != null) widget.delete(this.quests.get());
                 }
                 default -> handled = false;
@@ -216,7 +215,7 @@ public class EditActionHandler implements QuestActionHandler {
 
         // Move the selected quests which aren't the top selected quest first, so that the anchor point doesn't move
         allSelected.forEach((w) -> {
-            Vector2i o = new Vector2i(w.position()).sub(topSelectedWidget.position());
+            Vector2i o = new Vector2i(w.position()).sub(topSelected.position());
             ClientQuests.updateQuest(w.entry(), quest ->
                     NetworkQuestData.builder().group(quest, this.content.group(), pos -> {
                         pos.x = newX + o.x;
@@ -249,19 +248,19 @@ public class EditActionHandler implements QuestActionHandler {
     }
 
     private void open() {
-        if (getSelected() == null) return;
-        NetworkHandler.CHANNEL.sendToServer(new OpenQuestPacket(content.group(), getSelected().key()));
-        this.topSelectedWidget = null;
+        if (getSelectedEntry() == null) return;
+        NetworkHandler.CHANNEL.sendToServer(new OpenQuestPacket(content.group(), getSelectedEntry().key()));
+        this.topSelected = null;
         this.allSelected = new ArrayList<>();
         this.lastClick = 0;
     }
 
-    private QuestWidget getSelectedWidget() {
-        return topSelectedWidget;
+    private QuestWidget getSelected() {
+        return topSelected;
     }
 
-    public ClientQuests.QuestEntry getSelected() {
-        return (topSelectedWidget != null) ? topSelectedWidget.entry() : null;
+    public ClientQuests.QuestEntry getSelectedEntry() {
+        return (topSelected != null) ? topSelected.entry() : null;
     }
 
     public void setContent(QuestsContent content) {

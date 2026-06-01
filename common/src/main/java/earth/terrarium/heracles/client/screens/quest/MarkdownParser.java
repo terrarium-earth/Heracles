@@ -1,7 +1,9 @@
 package earth.terrarium.heracles.client.screens.quest;
 
 import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.HoverEvent;
 import net.minecraft.network.chat.MutableComponent;
 
 import java.util.ArrayList;
@@ -15,6 +17,8 @@ public class MarkdownParser {
 
     private static final Pattern COLOR_PATTERN = Pattern.compile("([^\\\\]|^)&&([0-9a-fA-Fk-oK-OrR])");
     private static final Pattern AMPERSANDS_NOT_ENTITY_PATTERN = Pattern.compile("&(?!([a-z0-9]+|#[0-9]{1,6}|#x[0-9a-fA-F]{1,6});)");
+    private static final Pattern MARKDOWN_LINK_PATTERN = Pattern.compile("\\[([^]]+)]\\(([^)]+)\\)");
+
     private static final Map<String, String> CHAR_TO_ENTITY = Map.of(
         "<", "&#60;",
         ">", "&#62;",
@@ -98,25 +102,57 @@ public class MarkdownParser {
         }
 
         if (indexes.values().stream().mapToInt(i -> i).max().orElse(-1) == -1) {
-            return Component.literal(builder.toString());
+            return withLinks(builder.toString());
         }
 
         //smallest non 0 value
         int smallest = indexes.values().stream().filter(i -> i != -1).mapToInt(i -> i).min().orElse(-1);
         Formatting formatting = indexes.entrySet().stream().filter(e -> e.getValue() == smallest).map(Map.Entry::getKey).findFirst().orElse(null);
         if (formatting == null) {
-            return Component.literal(builder.toString());
+            return withLinks(builder.toString());
         }
-        component.append(Component.literal(builder.substring(0, smallest)));
+        component.append(withLinks(builder.substring(0, smallest)));
         builder.delete(0, smallest + formatting.symbol.length());
         int end = builder.indexOf(formatting.symbol);
         if (end == -1) {
-            return Component.literal(text);
+            return withLinks(text);
         }
         component.append(parseTextToComponent(builder.substring(0, end)).withStyle(formatting.formatting));
         builder.delete(0, end + formatting.symbol.length());
         component.append(parseTextToComponent(builder.toString()));
         return component;
+    }
+
+    /**
+     * Takes in a string and converts it to a Component, basically {@link Component#literal}, but also parses any Markdown
+     * links in the form [link](url) into valid click events.
+     */
+    private static MutableComponent withLinks(String text) {
+        Matcher matcher = MARKDOWN_LINK_PATTERN.matcher(text);
+
+        MutableComponent result = Component.empty();
+
+        int lastEnd = 0;
+        while (matcher.find()) {
+            // Add text before this link
+            result.append(Component.literal(text.substring(lastEnd, matcher.start())));
+
+            String label = matcher.group(1);
+            String link = matcher.group(2);
+
+            ClickEvent event = new ClickEvent(ClickEvent.Action.OPEN_URL, link);
+            HoverEvent hover = new HoverEvent(HoverEvent.Action.SHOW_TEXT, Component.literal(link).withStyle(ChatFormatting.GRAY));
+
+            // Add the link
+            result.append(Component.literal(label).withStyle(style -> style.withClickEvent(event).withHoverEvent(hover)));
+
+            lastEnd = matcher.end();
+        }
+
+        // Add remaining text after the last link
+        result.append(Component.literal(text.substring(lastEnd)));
+
+        return result;
     }
 
     private enum Formatting {

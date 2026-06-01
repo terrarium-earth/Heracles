@@ -1,5 +1,6 @@
 package earth.terrarium.heracles.api.tasks.defaults;
 
+import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.*;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.teamresourceful.resourcefullib.common.codecs.EnumCodec;
@@ -13,6 +14,7 @@ import earth.terrarium.heracles.api.tasks.PairQuestTask;
 import earth.terrarium.heracles.api.tasks.QuestTaskType;
 import earth.terrarium.heracles.api.tasks.storage.defaults.IntegerTaskStorage;
 import earth.terrarium.heracles.common.utils.RegistryValue;
+import earth.terrarium.heracles.common.utils.XorMapCodec;
 import net.minecraft.core.component.DataComponentPredicate;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.NumericTag;
@@ -144,26 +146,10 @@ public record GatherItemTask(
 
             MapCodec<GatherItemTask> legacy = legacyCodec(id);
 
-            return new MapCodec<>() {
-                @Override
-                public <T> DataResult<GatherItemTask> decode(DynamicOps<T> ops, MapLike<T> input) {
-                    DataResult<GatherItemTask> result = newCodec.decode(ops, input);
-                    if (result.result().isPresent()) {
-                        return result;
-                    }
-                    return legacy.decode(ops, input);
-                }
-
-                @Override
-                public <T> RecordBuilder<T> encode(GatherItemTask value, DynamicOps<T> ops, RecordBuilder<T> prefix) {
-                    return newCodec.encode(value, ops, prefix);
-                }
-
-                @Override
-                public <T> Stream<T> keys(DynamicOps<T> ops) {
-                    return Stream.concat(newCodec.keys(ops), legacy.keys(ops)).distinct();
-                }
-            };
+            return XorMapCodec.create(newCodec, legacy).xmap(
+                either -> either.map(t -> t, t -> t),
+                Either::left
+            );
         }
 
         private MapCodec<GatherItemTask> legacyCodec(String id) {

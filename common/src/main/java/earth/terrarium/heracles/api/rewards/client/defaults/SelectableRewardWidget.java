@@ -5,8 +5,11 @@ import earth.terrarium.heracles.api.client.theme.QuestScreenTheme;
 import earth.terrarium.heracles.api.quests.QuestIcon;
 import earth.terrarium.heracles.api.rewards.defaults.SelectableReward;
 import earth.terrarium.heracles.client.handlers.ClientQuests;
+import earth.terrarium.heracles.client.ui.modals.SelectRewardsModal;
 import earth.terrarium.heracles.client.ui.quest.AbstractQuestScreen;
 import earth.terrarium.heracles.common.handlers.progress.QuestProgress;
+import earth.terrarium.heracles.common.network.NetworkHandler;
+import earth.terrarium.heracles.common.network.packets.rewards.ClaimSelectableRewardsPacket;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
@@ -14,7 +17,8 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 
-public record SelectableRewardWidget(SelectableReward reward, String quest, QuestProgress progress, boolean isInteractive) implements BaseItemRewardWidget {
+public record SelectableRewardWidget(SelectableReward reward, String quest, QuestProgress progress,
+                                     boolean isInteractive) implements BaseItemRewardWidget {
 
     private static final String TITLE_SINGULAR = "reward.heracles.select.title.singular";
     private static final String TITLE_PLURAL = "reward.heracles.select.title.plural";
@@ -46,28 +50,10 @@ public record SelectableRewardWidget(SelectableReward reward, String quest, Ques
 
     @Override
     public void claimReward() {
-//        if (Minecraft.getInstance().screen instanceof BaseQuestScreen screen) {
-//            boolean found = false;
-//            SelectRewardsModal widget = new SelectRewardsModal(screen.width, screen.height);
-//            for (TemporaryWidget temporaryWidget : screen.temporaryWidgets()) {
-//                if (temporaryWidget instanceof SelectRewardsModal modal) {
-//                    found = true;
-//                    widget = modal;
-//                    break;
-//                }
-//            }
-//            widget.setVisible(true);
-//            widget.updateRewards(this.reward.rewards().values(), this.reward.amount(), stuff -> {
-//                this.progress.claimReward(this.reward.id());
-//                NetworkHandler.CHANNEL.sendToServer(new ClaimSelectableRewardsPacket(this.quest, this.reward.id(), stuff));
-//            });
-//            if (!found) {
-//                screen.addTemporary(widget);
-//            }
-//        }
-
-        //TODO - Implement the above code
-        throw new UnsupportedOperationException("Selectable rewards are not supported in this version of the mod.");
+        SelectRewardsModal.open(this.reward.rewards().values(), this.reward.amount(), callbackInfo -> {
+            this.progress.claimReward(this.reward.id());
+            NetworkHandler.CHANNEL.sendToServer(new ClaimSelectableRewardsPacket(this.quest, this.reward.id(), callbackInfo));
+        });
     }
 
     @Override

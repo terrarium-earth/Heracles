@@ -1,20 +1,9 @@
 package earth.terrarium.heracles.api.client.settings;
 
-import earth.terrarium.heracles.api.client.settings.rewards.CommandRewardSettings;
-import earth.terrarium.heracles.api.client.settings.rewards.ItemRewardSettings;
-import earth.terrarium.heracles.api.client.settings.rewards.LootRewardSettings;
-import earth.terrarium.heracles.api.client.settings.rewards.XpRewardSettings;
+import earth.terrarium.heracles.api.client.settings.rewards.*;
 import earth.terrarium.heracles.api.client.settings.tasks.*;
-import earth.terrarium.heracles.api.rewards.QuestReward;
-import earth.terrarium.heracles.api.rewards.QuestRewardType;
-import earth.terrarium.heracles.api.rewards.defaults.CommandReward;
-import earth.terrarium.heracles.api.rewards.defaults.ItemReward;
-import earth.terrarium.heracles.api.rewards.defaults.LootTableReward;
-import earth.terrarium.heracles.api.rewards.defaults.XpQuestReward;
-import earth.terrarium.heracles.api.tasks.QuestTask;
-import earth.terrarium.heracles.api.tasks.QuestTaskType;
+import earth.terrarium.heracles.api.rewards.defaults.*;
 import earth.terrarium.heracles.api.tasks.defaults.*;
-import earth.terrarium.heracles.common.utils.ModUtils;
 
 import java.util.IdentityHashMap;
 import java.util.Map;
@@ -56,5 +45,6 @@ public final class Settings {
         register(ItemReward.TYPE, ItemRewardSettings.INSTANCE);
         register(XpQuestReward.TYPE, XpRewardSettings.INSTANCE);
         register(CommandReward.TYPE, CommandRewardSettings.INSTANCE);
+        register(SelectableReward.TYPE, SelectableRewardSettings.INSTANCE);
     }
 }

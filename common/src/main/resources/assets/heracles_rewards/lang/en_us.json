@@ -37,6 +37,10 @@
     "reward.heracles.select.desc.plural": "Click the button to select %s rewards",
     "reward.heracles.select.modal.title.singular": "Select %s Reward",
     "reward.heracles.select.modal.title.plural": "Select %s Rewards",
+    "setting.heracles.selectable.title": "Title Override:",
+    "setting.heracles.selectable.icon": "Icon Override:",
+    "setting.heracles.selectable.amount": "Amount Selectable:",
+    "setting.heracles.selectable.rewards": "Selectable Rewards:",
 
     "rewards.heracles.command": "/ Command",
     "reward.heracles.command.title.singular": "Execute a Command",

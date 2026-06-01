@@ -57,7 +57,7 @@ public class MarkdownParagraphParser {
     }
 
     private static String replaceLinks(String text) {
-        return replace(LINK_PATTERN, text, "<link href=\"$2\">$1</link>");
+        return replace(LINK_PATTERN, text, "<a href=\"$2\">$1</a>");
     }
 
     private static String replaceFormatting(String text) {

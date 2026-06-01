@@ -274,7 +274,7 @@ public class QuestsWidget extends BaseWidget {
 
             for (QuestWidget widget : this.widgets) {
                 widget.render(graphics, scissor.stack(), x + offset.x(), y + offset.y(), mouseX, mouseY, isMouseOver(mouseX, mouseY), partialTick);
-                if (mouseMode.get().canSelect() && widget == this.selectHandler.selectedQuest()) {
+                if (mouseMode.get().canSelect() && this.selectHandler.shouldRenderAsSelected(widget)) {
                     TexturePlacements.Info info = widget.getTextureInfo();
                     graphics.renderOutline(
                         x + offset.x() + widget.x() + info.xOffset() - 2, y + offset.y() + widget.y() + info.yOffset() - 2,

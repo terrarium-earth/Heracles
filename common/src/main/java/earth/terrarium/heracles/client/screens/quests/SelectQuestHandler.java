@@ -170,18 +170,10 @@ public class SelectQuestHandler {
 
 
     /**
-     * Checks if the given widget is in the selected quests but NOT the top selected quest
-     */
-    // Maybe pointless as a separate function?
-    public boolean inSelectedGroup(QuestWidget widget) {
-        return selectedQuests.contains(widget);
-    }
-
-    /**
-     * Checks if the widget is {@link #inSelectedGroup(QuestWidget)} OR if the widget equals the {@link #selectedQuest()}
+     * Checks if the widget is in {@link #selectedQuests} OR if the widget equals the {@link #selectedQuest()}
      * @return true if the widget meets either condition
      */
     public boolean shouldRenderAsSelected(QuestWidget widget) {
-        return (widget == selectedQuest) || inSelectedGroup(widget);
+        return (widget == selectedQuest) || selectedQuests.contains(widget);
     }
 }

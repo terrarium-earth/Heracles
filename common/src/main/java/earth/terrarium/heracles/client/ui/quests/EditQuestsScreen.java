@@ -86,7 +86,7 @@ public class EditQuestsScreen extends AbstractQuestsScreen {
 
         leftButtons.addChild(snapToGridButton, 0, 2, leftButtons.newCellSettings().padding(1));
 
-        SpriteButton toggleMinimapButton = new SpriteButton(11, 11, UIConstants.SNAP_TO_GRID) {
+        SpriteButton toggleMinimapButton = new SpriteButton(11, 11, UIConstants.TOGGLE_MINIMAP) {
             @Override
             public void onPress() {
                 DisplayConfig.showMinimap = !DisplayConfig.showMinimap;
@@ -104,7 +104,7 @@ public class EditQuestsScreen extends AbstractQuestsScreen {
 
         leftButtons.addChild(toggleMinimapButton, 0, 3, leftButtons.newCellSettings().padding(1));
 
-        SpriteButton dockMinimapButton = new SpriteButton(11, 11, UIConstants.SNAP_TO_GRID) {
+        SpriteButton dockMinimapButton = new SpriteButton(11, 11, UIConstants.TOGGLE_MINIMAP_DOCKED) {
             @Override
             public void onPress() {
                 DisplayConfig.dockMinimap = !DisplayConfig.dockMinimap;

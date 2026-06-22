@@ -6,10 +6,10 @@ import com.teamresourceful.resourcefullib.client.utils.CursorUtils;
 import com.teamresourceful.resourcefullib.client.utils.ScreenUtils;
 import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.api.client.DisplayWidget;
-import earth.terrarium.heracles.api.client.WidgetUtils;
 import earth.terrarium.heracles.api.client.theme.QuestScreenTheme;
 import earth.terrarium.heracles.api.tasks.client.display.TaskTitleFormatter;
 import earth.terrarium.heracles.api.tasks.defaults.CheckTask;
+import earth.terrarium.heracles.client.widgets.buttons.ThemedButton;
 import earth.terrarium.heracles.common.constants.ConstantComponents;
 import earth.terrarium.heracles.common.handlers.progress.TaskProgress;
 import earth.terrarium.heracles.common.network.NetworkHandler;
@@ -28,17 +28,15 @@ public record CheckTaskWidget(
     String questId, CheckTask task, TaskProgress<NumericTag> progress, ModUtils.QuestStatus status
 ) implements DisplayWidget {
 
-    private static final ResourceLocation BUTTON_TEXTURE = ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "textures/gui/buttons.png");
-    private static final ResourceLocation CHECK_TEXTURE = ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "textures/item/check.png");
+    private static final ResourceLocation CHECK_TEXTURE = Heracles.id("textures/item/check.png");
 
     private static final String DESC_SINGULAR = "task.heracles.check.desc.singular";
 
     @Override
     public void render(GuiGraphics graphics, ScissorBoxStack scissor, int x, int y, int width, int mouseX, int mouseY, boolean hovered, float partialTicks) {
         Font font = Minecraft.getInstance().font;
-        WidgetUtils.drawBackground(graphics, x, y, width, getHeight(width));
         int iconSize = 32;
-        if (!task.icon().render(graphics, scissor, x + 5, y + 5, iconSize, iconSize)) {
+        if (!task.icon().render(graphics, x + 5, y + 5, iconSize, iconSize)) {
             graphics.blit(CHECK_TEXTURE, x + 5, y + 5, 0, 0, 32, 32, 32, 32);
         }
         graphics.drawString(
@@ -54,8 +52,11 @@ public record CheckTaskWidget(
 
         int buttonY = y + 11;
         boolean buttonHovered = mouseX > x + width - 30 && mouseX < x + width - 10 && mouseY > buttonY && mouseY < buttonY + 20;
-        int v = isCompletable() ? (buttonHovered ? 40 : 20) : 0;
-        graphics.blitNineSliced(BUTTON_TEXTURE, x + width - 30, buttonY, 20, 20, 3, 200, 20, 0, v);
+        if (isCompletable()) {
+            graphics.blitSprite(buttonHovered ? ThemedButton.SPRITE_COMPLETABLE_HOVERED : ThemedButton.SPRITE_COMPLETABLE, x + width - 30, buttonY, 20, 20);
+        } else {
+            graphics.blitSprite(ThemedButton.SPRITE_DISABLED, x + width - 30, buttonY, 20, 20);
+        }
 
         graphics.blit(CHECK_TEXTURE, x + width - 30 + 2, buttonY + 2, 0, 0, 16, 16, 16, 16);
 

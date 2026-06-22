@@ -46,8 +46,6 @@ public final class CompositeTaskWidget implements DisplayWidget {
 
     @Override
     public void render(GuiGraphics graphics, ScissorBoxStack scissor, int x, int y, int width, int mouseX, int mouseY, boolean hovered, float partialTicks) {
-        WidgetUtils.drawBackground(graphics, x, y, width, getHeight(width));
-
         Font font = Minecraft.getInstance().font;
         int start = graphics.drawString(
             font,

@@ -5,9 +5,8 @@ import earth.terrarium.heracles.api.client.theme.QuestScreenTheme;
 import earth.terrarium.heracles.api.quests.QuestIcon;
 import earth.terrarium.heracles.api.rewards.defaults.SelectableReward;
 import earth.terrarium.heracles.client.handlers.ClientQuests;
-import earth.terrarium.heracles.client.screens.quest.BaseQuestScreen;
-import earth.terrarium.heracles.client.widgets.base.TemporaryWidget;
-import earth.terrarium.heracles.client.widgets.modals.SelectRewardsModal;
+import earth.terrarium.heracles.client.ui.modals.SelectRewardsModal;
+import earth.terrarium.heracles.client.ui.quest.AbstractQuestScreen;
 import earth.terrarium.heracles.common.handlers.progress.QuestProgress;
 import earth.terrarium.heracles.common.network.NetworkHandler;
 import earth.terrarium.heracles.common.network.packets.rewards.ClaimSelectableRewardsPacket;
@@ -18,7 +17,8 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 
-public record SelectableRewardWidget(SelectableReward reward, String quest, QuestProgress progress, boolean isInteractive) implements BaseItemRewardWidget {
+public record SelectableRewardWidget(SelectableReward reward, String quest, QuestProgress progress,
+                                     boolean isInteractive) implements BaseItemRewardWidget {
 
     private static final String TITLE_SINGULAR = "reward.heracles.select.title.singular";
     private static final String TITLE_PLURAL = "reward.heracles.select.title.plural";
@@ -26,8 +26,9 @@ public record SelectableRewardWidget(SelectableReward reward, String quest, Ques
     private static final String DESC_PLURAL = "reward.heracles.select.desc.plural";
 
     public static SelectableRewardWidget of(SelectableReward reward, boolean interactive) {
-        if (Minecraft.getInstance().screen instanceof BaseQuestScreen screen) {
-            return new SelectableRewardWidget(reward, screen.getQuestId(), ClientQuests.getProgress(screen.getQuestId()), interactive);
+        if (Minecraft.getInstance().screen instanceof AbstractQuestScreen screen) {
+            String id = screen.content().id();
+            return new SelectableRewardWidget(reward, id, ClientQuests.getProgress(id), interactive);
         }
         return new SelectableRewardWidget(reward, "", null, interactive);
     }
@@ -49,25 +50,10 @@ public record SelectableRewardWidget(SelectableReward reward, String quest, Ques
 
     @Override
     public void claimReward() {
-        if (Minecraft.getInstance().screen instanceof BaseQuestScreen screen) {
-            boolean found = false;
-            SelectRewardsModal widget = new SelectRewardsModal(screen.width, screen.height);
-            for (TemporaryWidget temporaryWidget : screen.temporaryWidgets()) {
-                if (temporaryWidget instanceof SelectRewardsModal modal) {
-                    found = true;
-                    widget = modal;
-                    break;
-                }
-            }
-            widget.setVisible(true);
-            widget.updateRewards(this.reward.rewards().values(), this.reward.amount(), stuff -> {
-                this.progress.claimReward(this.reward.id());
-                NetworkHandler.CHANNEL.sendToServer(new ClaimSelectableRewardsPacket(this.quest, this.reward.id(), stuff));
-            });
-            if (!found) {
-                screen.addTemporary(widget);
-            }
-        }
+        SelectRewardsModal.open(this.reward.rewards().values(), this.reward.amount(), callbackInfo -> {
+            this.progress.claimReward(this.reward.id());
+            NetworkHandler.CHANNEL.sendToServer(new ClaimSelectableRewardsPacket(this.quest, this.reward.id(), callbackInfo));
+        });
     }
 
     @Override

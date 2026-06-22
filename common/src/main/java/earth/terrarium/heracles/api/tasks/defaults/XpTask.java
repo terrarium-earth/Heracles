@@ -1,6 +1,7 @@
 package earth.terrarium.heracles.api.tasks.defaults;
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.teamresourceful.resourcefullib.common.codecs.EnumCodec;
 import earth.terrarium.heracles.Heracles;
@@ -76,15 +77,15 @@ public record XpTask(
 
         @Override
         public ResourceLocation id() {
-            return ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "xp");
+            return Heracles.id("xp");
         }
 
         @Override
-        public Codec<XpTask> codec(String id) {
-            return RecordCodecBuilder.create(instance -> instance.group(
+        public MapCodec<XpTask> codec(String id) {
+            return RecordCodecBuilder.mapCodec(instance -> instance.group(
                 RecordCodecBuilder.point(id),
-                Codec.STRING.optionalFieldOf("title", "").forGetter(XpTask::title),
-                QuestIcons.CODEC.optionalFieldOf("icon", ItemQuestIcon.AIR).forGetter(XpTask::icon),
+                Codec.STRING.lenientOptionalFieldOf("title", "").forGetter(XpTask::title),
+                QuestIcons.CODEC.lenientOptionalFieldOf("icon", ItemQuestIcon.AIR).forGetter(XpTask::icon),
                 Codec.INT.fieldOf("amount").orElse(1).forGetter(XpTask::target),
                 EnumCodec.of(XpType.class).fieldOf("xpType").orElse(XpType.LEVEL).forGetter(XpTask::xpType),
                 EnumCodec.of(CollectionType.class).fieldOf("collectionType").orElse(CollectionType.CONSUME).forGetter(XpTask::collectionType)

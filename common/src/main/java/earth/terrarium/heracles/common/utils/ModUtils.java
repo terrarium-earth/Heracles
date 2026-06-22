@@ -35,6 +35,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
+import java.util.function.Predicate;
 
 public class ModUtils {
 
@@ -51,6 +52,14 @@ public class ModUtils {
         bytebuf.writeInt(vector.x());
         bytebuf.writeInt(vector.y());
     }, bytebuf -> new Vector2i(bytebuf.readInt(), bytebuf.readInt()));
+
+    public static <T> Predicate<T> predicateTrue() {
+        return value -> true;
+    }
+
+    public static <T> Predicate<T> predicateFalse() {
+        return value -> false;
+    }
 
     public static <T> List<T> getValue(ResourceKey<? extends Registry<T>> key, TagKey<T> tag) {
         return Heracles.getRegistryAccess().registry(key)
@@ -69,19 +78,6 @@ public class ModUtils {
 
     public static void openQuest(ServerPlayer player, String group, String id) {
         NetworkHandler.CHANNEL.sendToPlayer(new OpenQuestScreenPacket(
-            false,
-            new QuestContent(
-                id,
-                group,
-                QuestProgressHandler.getProgress(player.server, player.getUUID()).getProgress(id),
-                getQuests(player)
-            )
-        ), player);
-    }
-
-    public static void openEditQuest(ServerPlayer player, String group, String id) {
-        NetworkHandler.CHANNEL.sendToPlayer(new OpenQuestScreenPacket(
-            true,
             new QuestContent(
                 id,
                 group,
@@ -97,19 +93,6 @@ public class ModUtils {
             return;
         }
         NetworkHandler.CHANNEL.sendToPlayer(new OpenQuestsScreenPacket(
-            false,
-            new QuestsContent(group, getQuests(player), player.hasPermissions(2))
-        ), player);
-    }
-
-    public static void editGroup(ServerPlayer player, String group) {
-        if (!QuestHandler.groups().contains(group)) {
-            player.sendSystemMessage(Component.translatable("gui.heracles.error.group.not_found", group));
-            player.closeContainer();
-            return;
-        }
-        NetworkHandler.CHANNEL.sendToPlayer(new OpenQuestsScreenPacket(
-            true,
             new QuestsContent(group, getQuests(player), player.hasPermissions(2))
         ), player);
     }
@@ -133,6 +116,8 @@ public class ModUtils {
         IN_PROGRESS,
         COMPLETED,
         COMPLETED_CLAIMED;
+
+        public static final int SIZE = values().length;
 
         public boolean isComplete() {
             return this == COMPLETED || this == COMPLETED_CLAIMED;

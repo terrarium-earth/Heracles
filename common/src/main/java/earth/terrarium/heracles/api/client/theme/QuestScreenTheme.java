@@ -30,7 +30,7 @@ public record QuestScreenTheme(
         new Color(0x707070),
         new Color(0xFFFFFF),
         new Color(0x808080),
-        new Color(0xFFFFFF),
+        new Color(0x1E1E1E),
         new Color(0xFFFFFF),
         new Color(0xFFFFFF),
         new Color(0x696969),

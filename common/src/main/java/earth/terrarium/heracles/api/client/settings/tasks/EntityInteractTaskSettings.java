@@ -2,6 +2,7 @@ package earth.terrarium.heracles.api.client.settings.tasks;
 
 import com.mojang.datafixers.util.Either;
 import com.teamresourceful.resourcefullib.common.codecs.predicates.NbtPredicate;
+import earth.terrarium.heracles.api.CustomizableQuestElement;
 import earth.terrarium.heracles.api.client.settings.CustomizableQuestElementSettings;
 import earth.terrarium.heracles.api.client.settings.SettingInitializer;
 import earth.terrarium.heracles.api.client.settings.base.RegistryValueSetting;
@@ -25,7 +26,7 @@ public class EntityInteractTaskSettings implements SettingInitializer<EntityInte
     @Override
     public EntityInteractTask create(String id, EntityInteractTask object, Data data) {
         RegistryValue<EntityType<?>> entity = data.get("entity", RegistryValueSetting.ENTITY).orElse(getDefaultEntity(object));
-        NbtPredicate old = Optionull.mapOrDefault(object, EntityInteractTask::nbt, NbtPredicate.ANY);
+        NbtPredicate old = Optionull.mapOrDefault(object, EntityInteractTask::nbt, CustomizableQuestElement.nbtPredicate());
         return create(object, data, (title, icon) -> new EntityInteractTask(
             id,
             title,

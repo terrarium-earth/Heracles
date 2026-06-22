@@ -12,15 +12,18 @@ import earth.terrarium.heracles.client.toasts.QuestCompletedToast;
 import earth.terrarium.heracles.client.toasts.QuestUnlockedToast;
 import earth.terrarium.heracles.common.network.NetworkHandler;
 import earth.terrarium.heracles.common.network.packets.groups.OpenGroupPacket;
+import earth.terrarium.hermes.api.rendering.HtmlBlockquoteStyleConfig;
 import earth.terrarium.hermes.impl.HermesStyle;
+import earth.terrarium.hermes.libs.minemark.providers.DefaultImageProvider;
+import earth.terrarium.hermes.libs.minemark.style.*;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.PreparableReloadListener;
 import net.minecraft.world.item.Item;
-import org.apache.commons.lang3.NotImplementedException;
 
+import java.awt.*;
 import java.util.List;
 import java.util.function.BiConsumer;
 
@@ -59,10 +62,10 @@ public class HeraclesClient {
             } else {
                 DisplayConfig.showTutorial = false;
                 DisplayConfig.save();
-                NetworkHandler.CHANNEL.sendToServer(new OpenGroupPacket(lastGroup, false));
+                NetworkHandler.CHANNEL.sendToServer(new OpenGroupPacket(lastGroup));
             }
         } else {
-            NetworkHandler.CHANNEL.sendToServer(new OpenGroupPacket(lastGroup, false));
+            NetworkHandler.CHANNEL.sendToServer(new OpenGroupPacket(lastGroup));
         }
     }
 
@@ -79,11 +82,29 @@ public class HeraclesClient {
     }
 
     public static void initReloadListeners(BiConsumer<ResourceLocation, PreparableReloadListener> init) {
-        init.accept(ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "theme"), ThemeHandler.INSTANCE);
+        init.accept(Heracles.id("theme"), ThemeHandler.INSTANCE);
     }
 
     private static HermesStyle getDefaultStyle() {
-        throw new NotImplementedException("Not yet implemented");
+        return new HermesStyle(
+            new TextStyleConfig(1f, Color.WHITE, 1f),
+            new ParagraphStyleConfig(1f),
+            Color.BLUE,
+            new HeadingStyleConfig(
+                new HeadingLevelStyleConfig(1.6f, 4f),
+                new HeadingLevelStyleConfig(1.4f, 4f),
+                new HeadingLevelStyleConfig(1.2f, 4f),
+                new HeadingLevelStyleConfig(1.0f, 4f),
+                new HeadingLevelStyleConfig(0.8f, 4f),
+                new HeadingLevelStyleConfig(0.6f, 4f)
+            ),
+            new HorizontalRuleStyleConfig(1f, 1f, Color.WHITE),
+            new ImageStyleConfig(DefaultImageProvider.INSTANCE),
+            new ListStyleConfig(1f, 1f),
+            new HtmlBlockquoteStyleConfig(1f, 1f, 1f, 1f, Color.DARK_GRAY, Color.LIGHT_GRAY),
+            new CodeBlockStyleConfig(1f, 1f, 1f, 1f, Color.BLACK),
+            new TableStyleConfig(1f, 1f, 1f, Color.BLACK, Color.LIGHT_GRAY, Color.DARK_GRAY)
+        );
     }
 
     public static HermesStyle getCurrentStyle() {

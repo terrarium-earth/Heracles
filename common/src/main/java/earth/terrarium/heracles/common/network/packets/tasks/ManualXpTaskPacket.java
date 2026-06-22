@@ -26,7 +26,7 @@ public record ManualXpTaskPacket(String quest, String task) implements Packet<Ma
 
         @Override
         public ResourceLocation id() {
-            return ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "check_xp");
+            return Heracles.id("check_xp");
         }
 
         @Override

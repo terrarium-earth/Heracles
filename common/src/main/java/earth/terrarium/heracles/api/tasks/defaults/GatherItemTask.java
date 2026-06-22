@@ -1,10 +1,9 @@
 package earth.terrarium.heracles.api.tasks.defaults;
 
-import com.mojang.serialization.Codec;
+import com.mojang.datafixers.util.Either;
+import com.mojang.serialization.*;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import com.teamresourceful.resourcefullib.common.codecs.CodecExtras;
 import com.teamresourceful.resourcefullib.common.codecs.EnumCodec;
-import com.teamresourceful.resourcefullib.common.codecs.predicates.NbtPredicate;
 import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.api.CustomizableQuestElement;
 import earth.terrarium.heracles.api.quests.QuestIcon;
@@ -15,6 +14,7 @@ import earth.terrarium.heracles.api.tasks.PairQuestTask;
 import earth.terrarium.heracles.api.tasks.QuestTaskType;
 import earth.terrarium.heracles.api.tasks.storage.defaults.IntegerTaskStorage;
 import earth.terrarium.heracles.common.utils.RegistryValue;
+import earth.terrarium.heracles.common.utils.XorMapCodec;
 import net.minecraft.core.component.DataComponentPredicate;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.NumericTag;
@@ -28,6 +28,7 @@ import net.minecraft.world.item.Items;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 public record GatherItemTask(
     String id, String title, QuestIcon<?> icon, RegistryValue<Item> item, DataComponentPredicate components, int target, CollectionType collectionType
@@ -128,26 +129,31 @@ public record GatherItemTask(
 
         @Override
         public ResourceLocation id() {
-            return ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "item");
+            return Heracles.id("item");
         }
 
         @Override
-        public Codec<GatherItemTask> codec(String id) {
-            Codec<GatherItemTask> newCodec = RecordCodecBuilder.create(instance -> instance.group(
+        public MapCodec<GatherItemTask> codec(String id) {
+            MapCodec<GatherItemTask> newCodec = RecordCodecBuilder.mapCodec(instance -> instance.group(
                 RecordCodecBuilder.point(id),
-                Codec.STRING.optionalFieldOf("title", "").forGetter(GatherItemTask::title),
-                QuestIcons.CODEC.optionalFieldOf("icon", ItemQuestIcon.AIR).forGetter(GatherItemTask::icon),
+                Codec.STRING.lenientOptionalFieldOf("title", "").forGetter(GatherItemTask::title),
+                QuestIcons.CODEC.lenientOptionalFieldOf("icon", ItemQuestIcon.AIR).forGetter(GatherItemTask::icon),
                 RegistryValue.codec(Registries.ITEM).fieldOf("item").forGetter(GatherItemTask::item),
                 DataComponentPredicate.CODEC.fieldOf("components").orElse(DataComponentPredicate.EMPTY).forGetter(GatherItemTask::components),
                 Codec.INT.fieldOf("amount").orElse(1).forGetter(GatherItemTask::target),
                 EnumCodec.of(CollectionType.class).fieldOf("collection").orElse(CollectionType.AUTOMATIC).forGetter(GatherItemTask::collectionType)
             ).apply(instance, GatherItemTask::new));
 
-            return CodecExtras.eitherLeft(Codec.either(newCodec, legacyCodec(id)));
+            MapCodec<GatherItemTask> legacy = legacyCodec(id);
+
+            return XorMapCodec.create(newCodec, legacy).xmap(
+                either -> either.map(t -> t, t -> t),
+                Either::left
+            );
         }
 
-        private Codec<GatherItemTask> legacyCodec(String id) {
-            return RecordCodecBuilder.create(instance -> instance.group(
+        private MapCodec<GatherItemTask> legacyCodec(String id) {
+            return RecordCodecBuilder.mapCodec(instance -> instance.group(
                 RecordCodecBuilder.point(id),
                 RegistryValue.codec(Registries.ITEM).fieldOf("item").forGetter(GatherItemTask::item),
                 DataComponentPredicate.CODEC.fieldOf("components").orElse(DataComponentPredicate.EMPTY).forGetter(GatherItemTask::components),

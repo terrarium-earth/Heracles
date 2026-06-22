@@ -7,10 +7,11 @@ import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.client.ModScreens;
 import earth.terrarium.heracles.client.handlers.ClientQuests;
 import earth.terrarium.heracles.common.menus.quests.QuestsContent;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 
-public record OpenQuestsScreenPacket(boolean editing, QuestsContent content) implements Packet<OpenQuestsScreenPacket> {
+public record OpenQuestsScreenPacket(QuestsContent content) implements Packet<OpenQuestsScreenPacket> {
 
     public static final ClientboundPacketType<OpenQuestsScreenPacket> TYPE = new Type();
 
@@ -21,33 +22,30 @@ public record OpenQuestsScreenPacket(boolean editing, QuestsContent content) imp
 
     private static class Type implements ClientboundPacketType<OpenQuestsScreenPacket> {
         @Override
+        public Class<OpenQuestsScreenPacket> type() {
+            return OpenQuestsScreenPacket.class;
+        }
+
+        @Override
         public ResourceLocation id() {
-            return ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "open_quests_screen");
+            return Heracles.id("open_quests_screen");
         }
 
         @Override
         public void encode(OpenQuestsScreenPacket message, RegistryFriendlyByteBuf buffer) {
-            buffer.writeBoolean(message.editing);
             message.content.to(buffer);
         }
 
         @Override
         public OpenQuestsScreenPacket decode(RegistryFriendlyByteBuf buffer) {
-            return new OpenQuestsScreenPacket(
-                buffer.readBoolean(),
-                QuestsContent.from(buffer)
-            );
+            return new OpenQuestsScreenPacket(QuestsContent.from(buffer));
         }
 
         @Override
         public Runnable handle(OpenQuestsScreenPacket message) {
             return () -> {
-                ClientQuests.syncGroup(message.content);
-                if (message.editing) {
-                    ModScreens.openEditQuestsScreen(message.content);
-                } else {
-                    ModScreens.openQuestsScreen(message.content);
-                }
+                ClientQuests.syncGroup(message.content());
+                ModScreens.openQuests(message.content());
             };
         }
     }

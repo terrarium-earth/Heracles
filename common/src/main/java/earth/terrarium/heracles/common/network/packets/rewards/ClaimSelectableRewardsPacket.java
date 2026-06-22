@@ -38,7 +38,7 @@ public record ClaimSelectableRewardsPacket(
 
         @Override
         public ResourceLocation id() {
-            return ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "claim_selectable_rewards");
+            return Heracles.id("claim_selectable_rewards");
         }
 
         @Override

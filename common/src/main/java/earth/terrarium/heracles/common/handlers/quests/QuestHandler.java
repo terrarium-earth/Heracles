@@ -1,14 +1,17 @@
 package earth.terrarium.heracles.common.handlers.quests;
 
+import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import com.google.common.collect.Sets;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.mojang.serialization.JsonOps;
 import com.teamresourceful.resourcefullib.common.lib.Constants;
 import com.teamresourceful.resourcefullib.common.utils.FileUtils;
 import com.teamresourceful.resourcefullib.common.utils.Scheduling;
 import earth.terrarium.heracles.Heracles;
+import earth.terrarium.heracles.api.quests.GroupDisplay;
 import earth.terrarium.heracles.api.quests.Quest;
 import earth.terrarium.heracles.api.tasks.CacheableQuestTaskType;
 import earth.terrarium.heracles.api.tasks.QuestTask;
@@ -30,9 +33,11 @@ import java.util.function.Predicate;
 
 public class QuestHandler {
 
-    private static final Map<String, Quest> QUESTS = HashBiMap.create();
+    private static final BiMap<String, Quest> QUESTS = HashBiMap.create();
     private static final Set<String> QUEST_KEYS = Sets.newConcurrentHashSet();
     private static final List<String> GROUPS = new ArrayList<>();
+    private static final List<String> GROUPS_ORDERS = new ArrayList<>();
+    private static final Map<String, GroupSettings> GROUP_SETTINGS = new HashMap<>();
     private static final Map<ResourceLocation, Object> TASK_CACHES = new HashMap<>();
     private static Path lastPath;
 
@@ -64,13 +69,14 @@ public class QuestHandler {
             value.dependencies().removeIf(Predicate.not(QUESTS::containsKey));
         }
         loadGroups(heraclesPath.resolve("groups.txt").toFile());
+        loadGroupSettings(heraclesPath.resolve("group_settings.json").toFile());
         updateTaskCache();
     }
 
     private static void load(RegistryAccess access, Reader reader, String id, Map<String, Quest> quests) {
         try {
             JsonObject element = Constants.PRETTY_GSON.fromJson(reader, JsonObject.class);
-            Quest quest = Quest.CODEC.parse(RegistryOps.create(JsonOps.INSTANCE, access), element).getOrThrow(false, Heracles.LOGGER::error);
+            Quest quest = Quest.CODEC.parse(RegistryOps.create(JsonOps.INSTANCE, access), element).ifError(e -> Heracles.LOGGER.error(e.message())).getOrThrow();
             quest.dependencies().remove(id); // Remove self from dependencies
             quests.put(id, quest);
         } catch (Exception e) {
@@ -80,9 +86,11 @@ public class QuestHandler {
 
     private static void loadGroups(File file) {
         GROUPS.clear();
+        GROUPS_ORDERS.clear();
         if (file.exists()) {
             try {
                 GROUPS.addAll(org.apache.commons.io.FileUtils.readLines(file, StandardCharsets.UTF_8));
+                GROUPS_ORDERS.addAll(GROUPS);
             } catch (Exception e) {
                 Heracles.LOGGER.error("Failed to load quest groups", e);
             }
@@ -91,7 +99,30 @@ public class QuestHandler {
             for (String s : value.display().groups().keySet()) {
                 if (!GROUPS.contains(s)) {
                     GROUPS.add(s);
+                    if (!GROUPS_ORDERS.contains(s)) {
+                        GROUPS_ORDERS.add(s);
+                    }
                 }
+            }
+        }
+    }
+
+    private static void loadGroupSettings(File file) {
+        GROUP_SETTINGS.clear();
+        if (file.exists()) {
+            try {
+                String content = org.apache.commons.io.FileUtils.readFileToString(file, StandardCharsets.UTF_8);
+                JsonObject json = JsonParser.parseString(content).getAsJsonObject();
+                for (Map.Entry<String, JsonElement> entry : json.entrySet()) {
+                    JsonObject obj = entry.getValue().getAsJsonObject();
+                    String iconId = obj.has("icon") ? obj.get("icon").getAsString() : "";
+                    boolean iconEnabled = obj.has("iconEnabled") && obj.get("iconEnabled").getAsBoolean();
+                    String background = obj.has("background") ? obj.get("background").getAsString() : "";
+                    int backgroundOpacity = obj.has("backgroundOpacity") ? obj.get("backgroundOpacity").getAsInt() : 100;
+                    GROUP_SETTINGS.put(entry.getKey(), new GroupSettings(GroupSettings.deserializeIcon(iconId), iconEnabled, background, backgroundOpacity));
+                }
+            } catch (Exception e) {
+                Heracles.LOGGER.error("Failed to load group settings", e);
             }
         }
     }
@@ -106,8 +137,7 @@ public class QuestHandler {
             updateTaskCache();
             Path questsPath = lastPath.resolve("quests");
             File file = new File(questsPath.toFile(), pickQuestPath(quest) + "/" + id + ".json");
-            JsonElement json = Quest.CODEC.encodeStart(RegistryOps.create(JsonOps.INSTANCE, Heracles.getRegistryAccess()), quest)
-                .getOrThrow(false, Heracles.LOGGER::error);
+            JsonElement json = Quest.CODEC.encodeStart(RegistryOps.create(JsonOps.INSTANCE, Heracles.getRegistryAccess()), quest).ifError(e -> Heracles.LOGGER.error(e.message())).getOrThrow();
             if (SAVING_FUTURES.containsKey(id)) {
                 SAVING_FUTURES.get(id).cancel(true);
             }
@@ -149,6 +179,27 @@ public class QuestHandler {
             org.apache.commons.io.FileUtils.writeLines(file, GROUPS);
         } catch (Exception e) {
             Heracles.LOGGER.error("Failed to save quest groups", e);
+        }
+    }
+
+    public static void saveGroupSettings() {
+        if (lastPath == null) {
+            return;
+        }
+        try {
+            JsonObject json = new JsonObject();
+            for (Map.Entry<String, GroupSettings> entry : GROUP_SETTINGS.entrySet()) {
+                JsonObject obj = new JsonObject();
+                obj.addProperty("icon", entry.getValue().serializeIcon());
+                obj.addProperty("iconEnabled", entry.getValue().iconEnabled());
+                obj.addProperty("background", entry.getValue().background());
+                obj.addProperty("backgroundOpacity", entry.getValue().backgroundOpacity());
+                json.add(entry.getKey(), obj);
+            }
+            File file = new File(lastPath.toFile(), "group_settings.json");
+            org.apache.commons.io.FileUtils.writeStringToFile(file, Constants.PRETTY_GSON.toJson(json), StandardCharsets.UTF_8);
+        } catch (Exception e) {
+            Heracles.LOGGER.error("Failed to save group settings", e);
         }
     }
 
@@ -209,9 +260,86 @@ public class QuestHandler {
     public static List<String> groups() {
         if (GROUPS.isEmpty()) {
             GROUPS.add("Main");
+            GROUPS_ORDERS.add("Main");
             saveGroups();
         }
         return GROUPS;
+    }
+
+    public static List<String> groupsOrder() {
+        return GROUPS_ORDERS;
+    }
+
+    public static Map<String, GroupSettings> groupSettings() {
+        return GROUP_SETTINGS;
+    }
+
+    public static GroupSettings getGroupSettings(String group) {
+        return GROUP_SETTINGS.computeIfAbsent(group, k -> new GroupSettings());
+    }
+
+    public static void renameGroup(String oldName, String newName) {
+        if (oldName.equals(newName)) return;
+
+        // Rename the quest folder on disk before updating quest objects
+        if (lastPath != null) {
+            String oldFolderName = ModUtils.findAvailableFolderName(
+                oldName.toLowerCase(Locale.ROOT).replaceAll("[^a-z0-9]", "")
+            );
+            String newFolderName = ModUtils.findAvailableFolderName(
+                newName.toLowerCase(Locale.ROOT).replaceAll("[^a-z0-9]", "")
+            );
+            if (!oldFolderName.equals(newFolderName)) {
+                Path questsPath = lastPath.resolve("quests");
+                Path oldFolder = questsPath.resolve(oldFolderName);
+                Path newFolder = questsPath.resolve(newFolderName);
+                if (Files.exists(oldFolder) && !Files.exists(newFolder)) {
+                    try {
+                        Files.move(oldFolder, newFolder);
+                    } catch (Exception e) {
+                        Heracles.LOGGER.error("Failed to rename quest folder from '{}' to '{}'", oldFolderName, newFolderName, e);
+                    }
+                }
+            }
+        }
+
+        if (GROUPS.contains(oldName)) {
+            int index = GROUPS.indexOf(oldName);
+            GROUPS.set(index, newName);
+        }
+        if (GROUPS_ORDERS.contains(oldName)) {
+            int index = GROUPS_ORDERS.indexOf(oldName);
+            GROUPS_ORDERS.set(index, newName);
+        }
+        if (GROUP_SETTINGS.containsKey(oldName)) {
+            GROUP_SETTINGS.put(newName, GROUP_SETTINGS.remove(oldName));
+        }
+        for (Map.Entry<String, Quest> entry : QUESTS.entrySet()) {
+            Quest quest = entry.getValue();
+            if (quest.display().groups().containsKey(oldName)) {
+                String questId = entry.getKey();
+                GroupDisplay display = quest.display().groups().remove(oldName);
+                quest.display().groups().put(newName, new GroupDisplay(newName, display.position()));
+                markDirty(questId);
+            }
+        }
+        saveGroups();
+        saveGroupSettings();
+    }
+
+    public static void deleteGroup(String group) {
+        if (!GROUPS.contains(group)) return;
+        GROUPS.remove(group);
+        GROUPS_ORDERS.remove(group);
+        GROUP_SETTINGS.remove(group);
+        for (Map.Entry<String, Quest> entry : QUESTS.entrySet()) {
+            Quest quest = entry.getValue();
+            if (quest.display().groups().remove(group) != null) {
+                markDirty(entry.getKey());
+            }
+        }
+        saveGroups();
+        saveGroupSettings();
     }
 
     private static void updateTaskCache() {

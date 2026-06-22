@@ -1,24 +1,38 @@
 package earth.terrarium.heracles.api.client.settings.base;
 
 import earth.terrarium.heracles.api.client.settings.Setting;
-import earth.terrarium.heracles.client.components.widgets.dropdown.Dropdown;
+import earth.terrarium.olympus.client.components.Widgets;
+import earth.terrarium.olympus.client.components.buttons.Button;
+import earth.terrarium.olympus.client.components.dropdown.DropdownState;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.StringRepresentable;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.Arrays;
+import java.util.List;
+import java.util.WeakHashMap;
 
 public record EnumSetting<T extends Enum<T> & StringRepresentable>(
     Class<T> enumClass, T defaultValue
-) implements Setting<T, Dropdown<T>> {
+) implements Setting<T, Button> {
+
+    private static final WeakHashMap<Button, DropdownState<?>> DATA = new WeakHashMap<>();
 
     @Override
-    public Dropdown<T> createWidget(Dropdown<T> old, int width, T value) {
-        Map<T, Component> options = new LinkedHashMap<>();
-        for (T enumValue : enumClass.getEnumConstants()) {
-            options.put(enumValue, toComponent(enumValue));
-        }
-        return new Dropdown<>(old, width, 24, options, value);
+    public Button createWidget(Button old, int width, T value) {
+        @SuppressWarnings("unchecked")
+        DropdownState<T> state = old != null && DATA.containsKey(old)
+            ? (DropdownState<T>) DATA.get(old)
+            : DropdownState.of(value);
+        List<T> options = Arrays.asList(enumClass.getEnumConstants());
+        Button button = Widgets.dropdown(
+            state,
+            options,
+            this::toComponent,
+            btn -> btn.withSize(width, 24),
+            dropdown -> {}
+        );
+        DATA.put(button, state);
+        return button;
     }
 
     private Component toComponent(T value) {
@@ -26,7 +40,9 @@ public record EnumSetting<T extends Enum<T> & StringRepresentable>(
     }
 
     @Override
-    public T getValue(Dropdown<T> widget) {
-        return widget.selected();
+    @SuppressWarnings("unchecked")
+    public T getValue(Button widget) {
+        DropdownState<T> state = (DropdownState<T>) DATA.get(widget);
+        return state != null ? state.get() : defaultValue;
     }
 }

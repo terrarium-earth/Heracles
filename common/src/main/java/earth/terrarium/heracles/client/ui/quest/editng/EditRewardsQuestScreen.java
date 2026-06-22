@@ -1,12 +1,12 @@
 package earth.terrarium.heracles.client.ui.quest.editng;
 
+import com.teamresourceful.resourcefullib.common.color.Color;
 import earth.terrarium.heracles.api.client.settings.Settings;
 import earth.terrarium.heracles.api.rewards.QuestReward;
 import earth.terrarium.heracles.api.rewards.QuestRewardType;
 import earth.terrarium.heracles.api.rewards.QuestRewards;
 import earth.terrarium.heracles.client.components.lists.QuestList;
 import earth.terrarium.heracles.client.components.lists.rewards.EditingRewardsList;
-import earth.terrarium.heracles.client.components.widgets.buttons.TextButton;
 import earth.terrarium.heracles.client.handlers.ClientQuests;
 import earth.terrarium.heracles.client.ui.quest.AbstractQuestScreen;
 import earth.terrarium.heracles.client.ui.QuestTab;
@@ -15,6 +15,9 @@ import earth.terrarium.heracles.client.ui.modals.EditObjectModal;
 import earth.terrarium.heracles.common.constants.ConstantComponents;
 import earth.terrarium.heracles.common.menus.quest.QuestContent;
 import earth.terrarium.heracles.common.network.packets.quests.data.NetworkQuestData;
+import earth.terrarium.olympus.client.components.Widgets;
+import earth.terrarium.olympus.client.components.renderers.WidgetRenderers;
+import earth.terrarium.olympus.client.ui.UIConstants;
 import net.minecraft.client.gui.layouts.GridLayout;
 import net.minecraft.client.gui.layouts.LayoutSettings;
 import net.minecraft.client.gui.screens.Screen;
@@ -34,11 +37,12 @@ public class EditRewardsQuestScreen extends AbstractQuestScreen {
 
     @Override
     protected GridLayout initSidebar(AtomicInteger row) {
-        addRenderableWidget(TextButton.create(
-            this.sideBarWidth - SPACER - PADDING * 2, BUTTON_HEIGHT,
-            Component.literal("Add Reward"),
-            () -> CreateObjectModal.open("rewards", this::createReward, this::isValidCreation, getValidTypes())
-        )).setPosition(PADDING, this.height - BUTTON_HEIGHT - PADDING);
+        addRenderableWidget(Widgets.button()
+            .withSize(this.sideBarWidth - SPACER - PADDING * 2, BUTTON_HEIGHT)
+            .withCallback(() -> CreateObjectModal.open("rewards", this::createReward, this::isValidCreation, getValidTypes()))
+            .withRenderer(WidgetRenderers.text(Component.literal("Add Reward")))
+            .withTexture(UIConstants.BUTTON)
+        ).setPosition(PADDING, this.height - BUTTON_HEIGHT - PADDING);
 
         return super.initSidebar(row);
     }

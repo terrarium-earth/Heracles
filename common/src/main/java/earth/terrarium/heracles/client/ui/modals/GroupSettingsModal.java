@@ -2,8 +2,8 @@ package earth.terrarium.heracles.client.ui.modals;
 
 import com.teamresourceful.resourcefullib.common.color.Color;
 import com.teamresourceful.resourcefullib.common.utils.TriState;
-import earth.terrarium.heracles.client.components.widgets.ToggleSwitch;
-import earth.terrarium.heracles.client.components.widgets.buttons.TextButton;
+import earth.terrarium.olympus.client.components.buttons.Button;
+import earth.terrarium.olympus.client.components.renderers.WidgetRenderers;
 import earth.terrarium.heracles.client.components.widgets.item.ItemButton;
 import earth.terrarium.heracles.client.handlers.ClientQuests;
 import earth.terrarium.heracles.client.ui.quests.AbstractQuestsScreen;
@@ -22,7 +22,7 @@ import earth.terrarium.olympus.client.components.compound.LayoutWidget;
 import earth.terrarium.olympus.client.components.string.TextWidget;
 import earth.terrarium.olympus.client.components.textbox.TextBox;
 import earth.terrarium.olympus.client.ui.UIConstants;
-import earth.terrarium.olympus.client.utils.State;
+import earth.terrarium.olympus.client.utils.ListenableState;import earth.terrarium.olympus.client.utils.State;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.layouts.GridLayout;
 import net.minecraft.client.gui.screens.Screen;
@@ -42,7 +42,8 @@ public class GroupSettingsModal extends BaseModal {
     private State<String> backgroundState;
     private State<Integer> opacityState;
     private ItemButton itemButton;
-    private ToggleSwitch iconToggle;
+    private Button iconToggleButton;
+    private ListenableState<Boolean> iconToggleState;
 
     protected GroupSettingsModal(Screen background, String group, Runnable onSave) {
         super(Component.literal("Group Settings"), background);
@@ -98,17 +99,17 @@ public class GroupSettingsModal extends BaseModal {
             }),
             0, 0, iconRow.newCellSettings().alignVerticallyMiddle()
         );
+        iconToggleState = new ListenableState<>(settings.iconEnabled());
 
-        boolean iconEnabled = this.iconToggle != null ? this.iconToggle.isToggled() : settings.iconEnabled();
-        this.iconToggle = iconRow.addChild(
-            new ToggleSwitch(iconEnabled),
+        this.iconToggleButton = iconRow.addChild(
+            Widgets.toggle(iconToggleState).withSize(30,16),
             0, 1,
             iconRow.newCellSettings().alignVerticallyMiddle()
         );
 
         // Item picker
         this.itemButton = iconRow.addChild(
-            new ItemButton(this.itemButton, settings.icon(), contentWidth / 2 - iconToggle.getWidth() - INNER_PADDING, WIDGET_HEIGHT, false),
+            new ItemButton(this.itemButton, settings.icon(), contentWidth / 2 - iconToggleButton.getWidth() - INNER_PADDING, WIDGET_HEIGHT, false),
             0, 2
         );
 
@@ -153,21 +154,25 @@ public class GroupSettingsModal extends BaseModal {
         layout.addChild(opacityRow, 4, 0);
 
         //delete group button
-        TextButton deleteButton = new TextButton(contentWidth, WIDGET_HEIGHT, 0x000000, UIConstants.DANGER_BUTTON, Component.literal("Delete Group"), b -> {
-            Minecraft.getInstance().tell(() -> DeleteConfirmModal.open(Component.literal("Delete Group"), Component.literal("Are you sure you want to delete the group \"" + this.group + "\"? This cannot be undone!"), () -> {
-                NetworkHandler.CHANNEL.sendToServer(new DeleteGroupPacket(this.group));
-                ClientQuests.groups().remove(this.group);
-                if (this.background instanceof AbstractQuestsScreen screen && screen.content.group().equals(this.group)) {
-                    String firstGroup = ClientQuests.groups().isEmpty() ? "" : ClientQuests.groups().get(0);
-                    if (!firstGroup.isEmpty()) {
-                        NetworkHandler.CHANNEL.sendToServer(new OpenGroupPacket(firstGroup));
+        Button deleteButton = Widgets.button()
+            .withCallback(() -> {
+                Minecraft.getInstance().tell(() -> DeleteConfirmModal.open(Component.literal("Delete Group"), Component.literal("Are you sure you want to delete the group \"" + this.group + "\"? This cannot be undone!"), () -> {
+                    NetworkHandler.CHANNEL.sendToServer(new DeleteGroupPacket(this.group));
+                    ClientQuests.groups().remove(this.group);
+                    if (this.background instanceof AbstractQuestsScreen screen && screen.content.group().equals(this.group)) {
+                        String firstGroup = ClientQuests.groups().isEmpty() ? "" : ClientQuests.groups().get(0);
+                        if (!firstGroup.isEmpty()) {
+                            NetworkHandler.CHANNEL.sendToServer(new OpenGroupPacket(firstGroup));
+                        }
                     }
-                }
+                    this.onClose();
+                }));
                 this.onClose();
-            }));
-            this.onClose();
-            open(this.group, this.onSave);
-        });
+                open(this.group, this.onSave);
+            })
+            .withRenderer(WidgetRenderers.text(Component.literal("Delete Group")).withColor(Color.tryParse("#000000")))
+            .withSize(contentWidth, WIDGET_HEIGHT)
+            .withTexture(UIConstants.DANGER_BUTTON);
 
         layout.addChild(deleteButton, 6, 0);
 
@@ -180,26 +185,25 @@ public class GroupSettingsModal extends BaseModal {
         this.addRenderableWidget(scrollableSettings);
 
         // Save button — outside and below the scrollable area
-        TextButton saveButton = new TextButton(this.modalContentWidth, WIDGET_HEIGHT, 0xFEFEFE, UIConstants.PRIMARY_BUTTON, Component.literal("Save"), b -> {
-            this.save();
-            this.onClose();
-            this.onSave.run();
-        });
+        Button saveButton = Widgets.button()
+            .withCallback(() -> {
+                this.save();
+                this.onClose();
+                this.onSave.run();
+            })
+            .withRenderer(WidgetRenderers.text(Component.literal("Save")).withColor(Color.tryParse("#FEFEFE")))
+            .withSize(this.modalContentWidth, WIDGET_HEIGHT)
+            .withTexture(UIConstants.PRIMARY_BUTTON);
         saveButton.setPosition(this.modalContentLeft, this.modalContentTop + scrollAreaHeight + INNER_PADDING);
         this.addRenderableWidget(saveButton);
     }
 
-    @Override
-    public void onClose() {
-        super.onClose();
-        Minecraft.getInstance().setScreen(this.background);
-    }
 
     private void save() {
         if (this.nameState == null) return;
         ItemValue value = this.itemButton.reference().get();
         ItemStack icon = value.getDefaultInstance();
-        boolean iconEnabled = this.iconToggle.isToggled();
+        boolean iconEnabled = this.iconToggleState.get();
         String newName = this.nameState.get();
 
         String iconId = icon.isEmpty() ? "" : BuiltInRegistries.ITEM.getKey(icon.getItem()).toString();

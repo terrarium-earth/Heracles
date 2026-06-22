@@ -1,5 +1,5 @@
 package earth.terrarium.heracles.client.components.widgets.dropdown;
-
+/*
 import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.client.components.base.ListWidget;
 import earth.terrarium.heracles.client.utils.UIUtils;
@@ -11,7 +11,7 @@ import net.minecraft.resources.ResourceLocation;
 /**
  * @deprecated Heracles dropdown now uses Olympus {@code DropdownBuilder}/{@code DropdownState} (ContextMenu-based).
  * This list entry implementation is kept temporarily for binary compatibility.
- */
+ *//*
 @Deprecated(forRemoval = true)
 public class DropdownEntry<T> extends BaseWidget implements ListWidget.Item {
 
@@ -44,3 +44,4 @@ public class DropdownEntry<T> extends BaseWidget implements ListWidget.Item {
         this.action.run();
     }
 }
+*/

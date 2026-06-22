@@ -1,7 +1,10 @@
 package earth.terrarium.heracles.client.ui.modals;
 
+import com.teamresourceful.resourcefullib.common.color.Color;
 import earth.terrarium.heracles.client.components.string.MultilineTextWidget;
-import earth.terrarium.heracles.client.components.widgets.buttons.TextButton;
+import earth.terrarium.olympus.client.components.Widgets;
+import earth.terrarium.olympus.client.components.buttons.Button;
+import earth.terrarium.olympus.client.components.renderers.WidgetRenderers;
 import earth.terrarium.olympus.client.ui.UIConstants;
 import earth.terrarium.olympus.client.ui.modals.BaseModal;
 import net.minecraft.client.Minecraft;
@@ -49,25 +52,23 @@ public class DeleteConfirmModal extends BaseModal {
         GridLayout buttons = new GridLayout().columnSpacing(INNER_PADDING);
 
         buttons.addChild(
-            new TextButton(
-                buttonWidth, WIDGET_HEIGHT,
-                0x333333, UIConstants.BUTTON,
-                CommonComponents.GUI_CANCEL,
-                button -> this.onClose()
-            ),
+            Widgets.button()
+                .withCallback(this::onClose)
+                .withRenderer(WidgetRenderers.text(CommonComponents.GUI_CANCEL).withColor(Color.tryParse("#333333")))
+                .withSize(buttonWidth, WIDGET_HEIGHT)
+                .withTexture(UIConstants.BUTTON),
             0, 0
         );
 
         buttons.addChild(
-            new TextButton(
-                buttonWidth, WIDGET_HEIGHT,
-                0xFFFFFF, UIConstants.DANGER_BUTTON,
-                Component.literal("Delete"),
-                button -> {
+            Widgets.button()
+                .withCallback(() -> {
                     this.action.run();
                     this.onClose();
-                }
-            ),
+                })
+                .withRenderer(WidgetRenderers.text(Component.literal("Delete")).withColor(Color.tryParse("#FFFFFF")))
+                .withSize(buttonWidth, WIDGET_HEIGHT)
+                .withTexture(UIConstants.DANGER_BUTTON),
             0, 1
         );
 

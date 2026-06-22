@@ -1,5 +1,5 @@
 package earth.terrarium.heracles.client.components.widgets.buttons;
-
+/*
 import com.teamresourceful.resourcefullib.client.components.CursorWidget;
 import com.teamresourceful.resourcefullib.client.screens.CursorScreen;
 import earth.terrarium.olympus.client.ui.UIConstants;
@@ -63,3 +63,4 @@ public class TextButton extends Button implements CursorWidget {
             && mouseY < (double)(this.getY() + this.height);
     }
 }
+*/

@@ -6,11 +6,11 @@ import earth.terrarium.heracles.api.rewards.QuestReward;
 import earth.terrarium.heracles.api.rewards.QuestRewardType;
 import earth.terrarium.heracles.api.rewards.QuestRewards;
 import earth.terrarium.heracles.api.rewards.defaults.SelectableReward;
-import earth.terrarium.heracles.client.components.widgets.buttons.TextButton;
 import earth.terrarium.heracles.common.constants.ConstantComponents;
 import earth.terrarium.heracles.common.utils.ModUtils;
 import com.teamresourceful.resourcefullib.common.utils.TriState;
 import earth.terrarium.olympus.client.components.Widgets;
+import earth.terrarium.olympus.client.components.buttons.Button;
 import earth.terrarium.olympus.client.components.compound.LayoutWidget;
 import earth.terrarium.olympus.client.components.renderers.WidgetRenderers;
 import earth.terrarium.olympus.client.ui.Overlay;
@@ -114,9 +114,8 @@ public class EditRewardsMapModal extends BaseModal {
         scrollable.setPosition(this.modalContentLeft, this.modalContentTop);
         this.addRenderableWidget(scrollable);
 
-        TextButton addRewardButton = new TextButton(this.modalContentWidth, WIDGET_HEIGHT, 0xFEFEFE, UIConstants.PRIMARY_BUTTON,
-            Component.literal("Add Reward"),
-            b -> {
+        Button addRewardButton = Widgets.button()
+            .withCallback(() -> {
                 List<ResourceLocation> validTypes = QuestRewards.types().values()
                     .stream()
                     .filter(Settings::hasFactory)
@@ -141,8 +140,10 @@ public class EditRewardsMapModal extends BaseModal {
                     (type, newId) -> !rewards.containsKey(newId) && type != null,
                     validTypes
                 );
-            }
-        );
+            })
+            .withRenderer(WidgetRenderers.text(Component.literal("Add Reward")).withColor(Color.tryParse("#FEFEFE")))
+            .withSize(this.modalContentWidth, WIDGET_HEIGHT)
+            .withTexture(UIConstants.PRIMARY_BUTTON);
         addRewardButton.setPosition(this.modalContentLeft, this.modalContentTop + scrollAreaHeight + INNER_PADDING);
         this.addRenderableWidget(addRewardButton);
     }

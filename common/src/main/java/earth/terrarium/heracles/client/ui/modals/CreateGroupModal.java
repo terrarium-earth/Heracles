@@ -1,14 +1,16 @@
 package earth.terrarium.heracles.client.ui.modals;
 
-import earth.terrarium.heracles.client.components.widgets.buttons.TextButton;
-import earth.terrarium.heracles.client.components.widgets.textbox.TextBox;
+import com.teamresourceful.resourcefullib.common.color.Color;
 import earth.terrarium.heracles.client.handlers.ClientQuests;
 import earth.terrarium.heracles.common.constants.ConstantComponents;
-import earth.terrarium.heracles.common.utils.ModUtils;
+import earth.terrarium.olympus.client.components.Widgets;
+import earth.terrarium.olympus.client.components.buttons.Button;
+import earth.terrarium.olympus.client.components.renderers.WidgetRenderers;
+import earth.terrarium.olympus.client.components.textbox.TextBox;
 import earth.terrarium.olympus.client.ui.UIConstants;
 import earth.terrarium.olympus.client.ui.modals.BaseModal;
+import earth.terrarium.olympus.client.utils.ListenableState;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.layouts.GridLayout;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
@@ -24,6 +26,7 @@ public class CreateGroupModal extends BaseModal {
 
     private Button button;
     private TextBox nameBox;
+    private ListenableState<String> nameState;
 
     protected CreateGroupModal(Screen background, Consumer<String> callback) {
         super(ConstantComponents.Groups.CREATE, background);
@@ -43,24 +46,30 @@ public class CreateGroupModal extends BaseModal {
         boolean wasActive = this.button != null && this.button.active;
 
         this.button = layout.addChild(
-            new TextButton(this.modalContentWidth, WIDGET_HEIGHT, 0xFEFEFE, UIConstants.PRIMARY_BUTTON, Component.literal("Create"), b -> {
-                this.onClose();
-                this.callback.accept(this.nameBox.getValue());
-            }),
+            Widgets.button()
+                .withCallback(() -> {
+                    this.onClose();
+                    this.callback.accept(this.nameBox.getValue());
+                })
+                .withRenderer(WidgetRenderers.text(Component.literal("Create")).withColor(Color.tryParse("#FEFEFE")))
+                .withSize(this.modalContentWidth, WIDGET_HEIGHT)
+                .withTexture(UIConstants.PRIMARY_BUTTON),
             1, 0
         );
         this.button.active = wasActive;
 
+        if (this.nameState == null) this.nameState = ListenableState.of("");
+
+        this.nameState.registerListener(text -> this.button.active = !text.isBlank() && !ClientQuests.groups().contains(text.trim()));
+
         this.nameBox = layout.addChild(
-            new TextBox(
-                this.nameBox, "",
-                this.modalContentWidth, WIDGET_HEIGHT,
-                Short.MAX_VALUE, ModUtils.predicateTrue(),
-                text -> this.button.active = !text.isBlank() && !ClientQuests.groups().contains(text.trim())
-            ),
+            Widgets.textInput(this.nameState, tb -> {
+                tb.withSize(this.modalContentWidth, WIDGET_HEIGHT);
+                tb.withMaxLength(Short.MAX_VALUE);
+                tb.withPlaceholder(Component.translatable("gui.heracles.name").getString());
+            }),
             0, 0
         );
-        this.nameBox.setPlaceholder(Component.translatable("gui.heracles.name"));
 
         layout.arrangeElements();
         layout.setPosition(this.modalContentLeft, this.modalContentTop);

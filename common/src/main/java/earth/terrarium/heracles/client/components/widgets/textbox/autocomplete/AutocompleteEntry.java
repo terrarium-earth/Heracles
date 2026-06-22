@@ -1,8 +1,7 @@
 package earth.terrarium.heracles.client.components.widgets.textbox.autocomplete;
-
+/*
 import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.client.components.base.ListWidget;
-import earth.terrarium.heracles.client.components.widgets.dropdown.Dropdown;
 import earth.terrarium.heracles.client.utils.UIUtils;
 import earth.terrarium.olympus.client.components.base.BaseWidget;
 import net.minecraft.client.Minecraft;
@@ -31,7 +30,7 @@ public class AutocompleteEntry<T> extends BaseWidget implements ListWidget.Item 
         ResourceLocation texture = this.isHovered() ? ENTRY_HOVERED : ENTRY;
         UIUtils.blitWithEdge(graphics, texture, this.getX(), this.getY(), this.getWidth(), this.getHeight(), 3);
         int textOffset = (this.height - 8) / 2;
-        graphics.drawString(Minecraft.getInstance().font, this.value, this.getX() + textOffset, this.getY() + textOffset, Dropdown.COLOR);
+        graphics.drawString(Minecraft.getInstance().font, this.value, this.getX() + textOffset, this.getY() + textOffset, 0xFEFEFE);
     }
 
     @Override
@@ -39,3 +38,4 @@ public class AutocompleteEntry<T> extends BaseWidget implements ListWidget.Item 
         this.action.run();
     }
 }
+*/

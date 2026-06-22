@@ -1,12 +1,13 @@
 package earth.terrarium.heracles.client.components.quest.editor.overlays;
 
+import com.teamresourceful.resourcefullib.common.color.Color;
 import earth.terrarium.heracles.client.components.quest.editor.MarkdownTextBox;
-import earth.terrarium.heracles.client.components.widgets.buttons.TextButton;
-import earth.terrarium.heracles.client.components.widgets.textbox.TextBox;
-import earth.terrarium.heracles.client.components.widgets.textbox.ValidatingTextBox;
-import earth.terrarium.heracles.common.utils.ModUtils;
+import earth.terrarium.olympus.client.components.Widgets;
+import earth.terrarium.olympus.client.components.renderers.WidgetRenderers;
+import earth.terrarium.olympus.client.components.textbox.TextBox;
 import earth.terrarium.olympus.client.ui.UIConstants;
 import earth.terrarium.olympus.client.ui.modals.BaseModal;
+import earth.terrarium.olympus.client.utils.ListenableState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.layouts.GridLayout;
 import net.minecraft.client.gui.screens.Screen;
@@ -21,16 +22,15 @@ public class LinkModal extends BaseModal {
     private static final int WIDGET_HEIGHT = 24;
     private static final Pattern URL_PATTERN = Pattern.compile("^https?:\\/\\/(?:www\\.)?[-a-zA-Z0-9@:%._\\+~#=]{1,256}\\.[a-zA-Z0-9()]{1,6}\\b(?:[-a-zA-Z0-9()@:%_\\+.~#?&\\/=]*)$");
 
-    private final String initialLabel;
     private final BiConsumer<String, String> callback;
 
-    private TextBox label;
-    private TextBox link;
+    private ListenableState<String> label;
+    private ListenableState<String> link = ListenableState.of("");
 
     protected LinkModal(String initialLabel, BiConsumer<String, String> callback, Screen background) {
         super(Component.literal("Display Link"), background);
 
-        this.initialLabel = initialLabel;
+        this.label = ListenableState.of(initialLabel);
         this.callback = callback;
 
         this.minHeight = TITLE_BAR_HEIGHT + INNER_PADDING * 4 + WIDGET_HEIGHT * 3;
@@ -44,43 +44,37 @@ public class LinkModal extends BaseModal {
 
         GridLayout layout = new GridLayout().spacing(INNER_PADDING);
 
-        var button = layout.addChild(
-            new TextButton(
-                this.modalContentWidth, WIDGET_HEIGHT,
-                0xFEFEFE, UIConstants.PRIMARY_BUTTON, Component.literal("Create"),
-                b -> {
-                    this.callback.accept(this.label.getValue(), this.link.getValue());
+        var button = layout.addChild(Widgets.button()
+                .withCallback(() -> {
+                    this.callback.accept(this.label.get(), this.link.get());
                     this.onClose();
-                }
-            ),
+                })
+                .withRenderer(WidgetRenderers.text(Component.literal("Create")).withColor(Color.parse("#FEFEFE")))
+                .withSize(this.modalContentWidth, WIDGET_HEIGHT)
+                .withTexture(UIConstants.PRIMARY_BUTTON),
             2, 0
         );
         button.active = false;
 
-        this.label = layout.addChild(
-            new TextBox(
-                this.label, this.initialLabel,
-                this.modalContentWidth, WIDGET_HEIGHT,
-                Short.MAX_VALUE,
-                ModUtils.predicateTrue(), text -> button.active = !text.isEmpty() && isValidLink(this.link.getValue())
-            ),
-            0, 0
-        );
-        this.label.setPlaceholder(Component.literal("Label"));
+        TextBox label = Widgets.textInput(this.label).withPlaceholder("Label").withMaxLength(Short.MAX_VALUE);
 
-        this.link = layout.addChild(
-            new ValidatingTextBox(
-                this.link, "",
-                this.modalContentWidth, WIDGET_HEIGHT,
-                text -> {
-                    boolean valid = isValidLink(text);
-                    button.active = valid && !this.label.getValue().isEmpty();
-                    return valid;
-                }
-            ),
-            1, 0
-        );
-        this.link.setPlaceholder(Component.literal("Link"));
+        this.label.registerListener(s -> button.active = !s.isEmpty() && isValidLink(this.link.get()));
+
+        layout.addChild(label.withSize(this.modalContentWidth, WIDGET_HEIGHT), 0, 0);
+
+        TextBox link = Widgets.textInput(this.link).withPlaceholder("Link").withMaxLength(Short.MAX_VALUE);
+
+        this.link.registerListener(s -> {
+            boolean valid = isValidLink(s);
+            button.active = !this.label.get().isEmpty() && valid;
+            if (valid) {
+                link.withTextColor(Color.parse("#e0e0e0"));
+            } else {
+                link.withTextColor(Color.parse("#FF5555"));
+            }
+        });
+
+        layout.addChild(link.withSize(this.modalContentWidth, WIDGET_HEIGHT), 1, 0);
 
         layout.arrangeElements();
         layout.setPosition(this.modalContentLeft, this.modalContentTop);

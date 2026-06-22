@@ -3,12 +3,14 @@ package earth.terrarium.heracles.client.components.widgets.item;
 import earth.terrarium.heracles.Heracles;
 import earth.terrarium.olympus.client.ui.ClearableGridLayout;
 import earth.terrarium.heracles.client.components.widgets.buttons.SpriteButton;
-import earth.terrarium.heracles.client.components.widgets.textbox.TextBox;
 import earth.terrarium.heracles.client.ui.UIConstants;
 import earth.terrarium.heracles.client.utils.UIUtils;
 import earth.terrarium.heracles.common.utils.ItemValue;
 import earth.terrarium.heracles.common.utils.ModUtils;
+import earth.terrarium.olympus.client.components.Widgets;
+import earth.terrarium.olympus.client.components.textbox.TextBox;
 import earth.terrarium.olympus.client.ui.Overlay;
+import earth.terrarium.olympus.client.utils.ListenableState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.layouts.GridLayout;
@@ -45,6 +47,7 @@ public class ItemScreen extends Overlay {
     private final List<ItemValue> items = new ArrayList<>();
 
     private TextBox search;
+    private ListenableState<String> searchState;
     private SpriteButton inventoryToggle;
     private ClearableGridLayout grid;
     private int scroll = 0;
@@ -81,14 +84,21 @@ public class ItemScreen extends Overlay {
     protected void init() {
         GridLayout layout = new GridLayout(this.x() + PADDING, this.y() + PADDING);
 
+        if (this.searchState == null) this.searchState = ListenableState.of("");
+
+        this.searchState.registerListener(text -> {
+            this.scroll = 0;
+            update(text);
+        });
+
         this.search = layout.addChild(
-            new TextBox(this.search, "", this.width() - PADDING * 3 - SEARCH_HEIGHT, SEARCH_HEIGHT, Short.MAX_VALUE, s -> true, text -> {
-                this.scroll = 0;
-                update(text);
+            Widgets.textInput(this.searchState, tb -> {
+                tb.withSize(this.width() - PADDING * 3 - SEARCH_HEIGHT, SEARCH_HEIGHT);
+                tb.withMaxLength(Short.MAX_VALUE);
+                tb.withPlaceholder(Component.literal("Search...").getString());
             }),
             0, 0
         );
-        this.search.setPlaceholder(Component.literal("Search..."));
 
         //noinspection SuspiciousNameCombination
         this.inventoryToggle = layout.addChild(

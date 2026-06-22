@@ -30,7 +30,7 @@
     "setting.heracles.loottable.icon": "Icon Override:",
     "setting.heracles.loottable.loottable": "Loot Table:",
 
-    "rewards.heracles.select": "❓ Selection",
+    "rewards.heracles.selectable": "❓ Selection",
     "reward.heracles.select.title.singular": "Select a reward",
     "reward.heracles.select.title.plural": "Select rewards",
     "reward.heracles.select.desc.singular": "Click the button to select %s reward",

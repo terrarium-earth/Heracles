@@ -1,5 +1,5 @@
 package earth.terrarium.heracles.client.components.widgets.textbox.autocomplete;
-
+/*
 import com.teamresourceful.resourcefullib.client.screens.CursorScreen;
 import com.teamresourceful.resourcefullib.common.color.Color;import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.client.components.widgets.WidgetSprites;
@@ -87,3 +87,4 @@ public class AutocompleteTextBox<T> extends earth.terrarium.olympus.client.compo
         return null;
     }
 }
+*/

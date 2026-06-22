@@ -1,24 +1,25 @@
 package earth.terrarium.heracles.client.ui.modals;
 
-import earth.terrarium.heracles.client.components.widgets.buttons.TextButton;
-import earth.terrarium.heracles.client.components.widgets.dropdown.Dropdown;
-import earth.terrarium.heracles.client.components.widgets.textbox.TextBox;
-import earth.terrarium.heracles.common.utils.ModUtils;
+import com.teamresourceful.resourcefullib.common.color.Color;
+import earth.terrarium.olympus.client.components.Widgets;
+import earth.terrarium.olympus.client.components.buttons.Button;
+import earth.terrarium.olympus.client.components.dropdown.DropdownState;
+import earth.terrarium.olympus.client.components.renderers.WidgetRenderers;
+import earth.terrarium.olympus.client.components.textbox.TextBox;
 import earth.terrarium.olympus.client.ui.UIConstants;
 import earth.terrarium.olympus.client.ui.modals.BaseModal;
+import earth.terrarium.olympus.client.utils.ListenableState;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.layouts.GridLayout;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Map;
 import java.util.function.BiConsumer;
 import java.util.function.BiPredicate;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 public class CreateObjectModal extends BaseModal {
 
@@ -32,7 +33,8 @@ public class CreateObjectModal extends BaseModal {
 
     private Button button;
     private TextBox nameBox;
-    private Dropdown<ResourceLocation> dropdown;
+    private ListenableState<String> nameState;
+    private DropdownState<ResourceLocation> dropdownState;
 
     protected CreateObjectModal(Screen background, String type, BiConsumer<ResourceLocation, String> callback, BiPredicate<ResourceLocation, String> validator, Collection<ResourceLocation> suggestions) {
         super(Component.translatable("gui.heracles." + type + ".create"), background);
@@ -50,38 +52,50 @@ public class CreateObjectModal extends BaseModal {
     protected void init() {
         super.init();
 
-        Map<ResourceLocation, Component> suggestions = this.suggestions.stream()
-            .collect(Collectors.toMap(Function.identity(), id -> Component.translatable(id.toLanguageKey(type))));
+        if (this.dropdownState == null) {
+            this.dropdownState = DropdownState.of(null);
+        }
+
+        Function<ResourceLocation, Component> optionText = id -> Component.translatable(id.toLanguageKey(type));
 
         GridLayout layout = new GridLayout().rowSpacing(INNER_PADDING);
 
         boolean wasActive = this.button != null && this.button.active;
 
         this.button = layout.addChild(
-            new TextButton(this.modalContentWidth, WIDGET_HEIGHT, 0xFEFEFE, UIConstants.PRIMARY_BUTTON, Component.literal("Create"), b -> {
-                this.onClose(); // Close the previous modal
-                this.callback.accept(this.dropdown.selected(), this.nameBox.getValue());
-            }),
+            Widgets.button()
+                .withCallback(() -> {
+                    this.onClose();
+                    this.callback.accept(this.dropdownState.get(), this.nameBox.getValue());
+                })
+                .withRenderer(WidgetRenderers.text(Component.literal("Create")).withColor(Color.tryParse("#FEFEFE")))
+                .withSize(this.modalContentWidth, WIDGET_HEIGHT)
+                .withTexture(UIConstants.PRIMARY_BUTTON),
             2, 0
         );
         this.button.active = wasActive;
 
+        if (this.nameState == null) this.nameState = ListenableState.of("");
+
+        this.nameState.registerListener(text -> this.button.active = this.validator.test(this.dropdownState.get(), this.nameBox.getValue()));
+
         this.nameBox = layout.addChild(
-            new TextBox(
-                this.nameBox, "",
-                this.modalContentWidth, WIDGET_HEIGHT,
-                Short.MAX_VALUE, ModUtils.predicateTrue(),
-                text -> this.button.active = this.validator.test(this.dropdown.selected(), this.nameBox.getValue())
-            ),
+            Widgets.textInput(this.nameState, tb -> {
+                tb.withSize(this.modalContentWidth, WIDGET_HEIGHT);
+                tb.withMaxLength(Short.MAX_VALUE);
+            }),
             0, 0
         );
 
-        this.dropdown = layout.addChild(
-            new Dropdown<>(
-                this.dropdown,
-                this.modalContentWidth, WIDGET_HEIGHT,
-                suggestions, null,
-                value -> this.button.active = this.validator.test(this.dropdown.selected(), this.nameBox.getValue())
+        Button dropdownButton = layout.addChild(
+            Widgets.dropdown(
+                this.dropdownState,
+                new ArrayList<>(this.suggestions),
+                optionText,
+                btn -> btn.withSize(this.modalContentWidth, WIDGET_HEIGHT),
+                dropdown -> dropdown.withSize(this.modalContentWidth, WIDGET_HEIGHT * 4).withCallback(
+                    value -> this.button.active = this.validator.test(this.dropdownState.get(), this.nameBox.getValue())
+                )
             ),
             1, 0
         );

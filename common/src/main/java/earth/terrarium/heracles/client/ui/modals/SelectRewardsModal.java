@@ -1,16 +1,18 @@
 package earth.terrarium.heracles.client.ui.modals;
 
+import com.teamresourceful.resourcefullib.common.color.Color;
 import com.teamresourceful.resourcefullib.common.utils.TriState;
 import earth.terrarium.heracles.api.client.DisplayWidget;
 import earth.terrarium.heracles.api.rewards.QuestReward;
 import earth.terrarium.heracles.api.rewards.client.QuestRewardWidgets;
-import earth.terrarium.heracles.client.components.widgets.buttons.TextButton;
+import earth.terrarium.olympus.client.components.Widgets;
+import earth.terrarium.olympus.client.components.buttons.Button;
 import earth.terrarium.olympus.client.components.compound.LayoutWidget;
+import earth.terrarium.olympus.client.components.renderers.WidgetRenderers;
 import earth.terrarium.olympus.client.ui.UIConstants;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
-import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.layouts.GridLayout;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.gui.screens.Screen;
@@ -58,18 +60,15 @@ public class SelectRewardsModal extends BaseModal {
 
         GridLayout layout = new GridLayout().rowSpacing(INNER_PADDING);
 
-        this.confirmButton = layout.addChild(
-            new TextButton(
-                this.modalContentWidth, WIDGET_HEIGHT,
-                0xFEFEFE, UIConstants.PRIMARY_BUTTON,
-                getConfirmMessage(),
-                button -> {
+        this.confirmButton = layout.addChild(Widgets.button().withCallback(() -> {
                     if (selectedRewards.size() == maxSelections) {
                         this.onClose();
                         callback.accept(new ArrayList<>(selectedRewards));
                     }
-                }
-            ),
+                })
+                .withRenderer(WidgetRenderers.text(getConfirmMessage()).withColor(Color.tryParse("#FEFEFE")))
+                .withSize(this.modalContentWidth, WIDGET_HEIGHT)
+                .withTexture(UIConstants.PRIMARY_BUTTON),
             0, 0
         );
         this.confirmButton.active = selectedRewards.size() == maxSelections;

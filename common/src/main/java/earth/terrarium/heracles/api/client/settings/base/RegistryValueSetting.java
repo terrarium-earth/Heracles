@@ -3,7 +3,7 @@ package earth.terrarium.heracles.api.client.settings.base;
 import com.mojang.datafixers.util.Either;
 import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.api.client.settings.Setting;
-import earth.terrarium.heracles.client.components.widgets.textbox.autocomplete.AutocompleteTextBox;
+import earth.terrarium.olympus.client.components.textbox.autocomplete.AutocompleteTextBox;
 import earth.terrarium.heracles.common.utils.BiOptional;
 import earth.terrarium.heracles.common.utils.RegistryValue;
 import net.minecraft.Optionull;

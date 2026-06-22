@@ -2,7 +2,7 @@ package earth.terrarium.heracles.api.client.settings.base;
 
 import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.api.client.settings.Setting;
-import earth.terrarium.heracles.client.components.widgets.textbox.autocomplete.AutocompleteTextBox;
+import earth.terrarium.olympus.client.components.textbox.autocomplete.AutocompleteTextBox;
 import net.minecraft.Optionull;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;

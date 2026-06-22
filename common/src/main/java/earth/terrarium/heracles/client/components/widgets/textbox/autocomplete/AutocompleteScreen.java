@@ -1,10 +1,12 @@
 package earth.terrarium.heracles.client.components.widgets.textbox.autocomplete;
-
+/*
 import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.client.components.base.ListWidget;
-import earth.terrarium.heracles.client.components.widgets.textbox.TextBox;
 import earth.terrarium.heracles.client.utils.UIUtils;
+import earth.terrarium.olympus.client.components.Widgets;
+import earth.terrarium.olympus.client.components.textbox.TextBox;
 import earth.terrarium.olympus.client.ui.Overlay;
+import earth.terrarium.olympus.client.utils.ListenableState;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.resources.ResourceLocation;
@@ -29,6 +31,7 @@ public class AutocompleteScreen<T> extends Overlay {
 
     private ListWidget options;
     private TextBox textBox;
+    private ListenableState<String> textState;
 
     protected AutocompleteScreen(Screen background, AutocompleteTextBox<T> widget) {
         super(background);
@@ -60,11 +63,16 @@ public class AutocompleteScreen<T> extends Overlay {
 
     @Override
     protected void init() {
-        this.textBox = addRenderableWidget(new TextBox(
-            this.textBox, this.widget.value,
-            this.widget.getWidth(), this.widget.getHeight(), Short.MAX_VALUE,
-            s -> true, this::filter
-        ));
+        if (this.textState == null) this.textState = ListenableState.of(this.widget.value);
+
+        this.textState.registerListener(this::filter);
+
+        this.textBox = addRenderableWidget(
+            Widgets.textInput(this.textState, tb -> {
+                tb.withSize(this.widget.getWidth(), this.widget.getHeight());
+                tb.withMaxLength(Short.MAX_VALUE);
+            })
+        );
         this.textBox.setPosition(this.widget.getX(), this.widget.getY());
 
         ListWidget old = this.options;
@@ -127,3 +135,4 @@ public class AutocompleteScreen<T> extends Overlay {
         this.options.setPosition(this.x() + 1, this.y() + 2);
     }
 }
+*/

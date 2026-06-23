@@ -2,7 +2,6 @@ package earth.terrarium.heracles.client.ui.quests;
 
 import earth.terrarium.heracles.api.quests.Quest;
 import earth.terrarium.heracles.client.components.quests.QuestActionHandler;
-import earth.terrarium.heracles.client.components.quests.QuestsMinimap;
 import earth.terrarium.heracles.client.components.quests.QuestsWidget;
 import earth.terrarium.heracles.client.components.widgets.buttons.SpriteButton;
 import earth.terrarium.heracles.client.handlers.ClientQuestNetworking;
@@ -178,7 +177,7 @@ public class EditQuestsScreen extends AbstractQuestsScreen {
         int right = this.quests.getX() + this.quests.getWidth() - 5;
         int bottom = this.quests.getY() + this.quests.getHeight();
 
-        Quest quest = Optionull.map(this.handler.getSelected(), ClientQuests.QuestEntry::value);
+        Quest quest = Optionull.map(this.handler.getSelectedEntry(), ClientQuests.QuestEntry::value);
         if (quest == null) return;
         Vector2i position = quest.display().position(this.content.group());
 
@@ -194,12 +193,12 @@ public class EditQuestsScreen extends AbstractQuestsScreen {
         graphics.drawString(font, y, left, bottom - 10, color, false);
 
         //right
-        width = font.width(this.handler.getSelected().key()) + 10;
+        width = font.width(this.handler.getSelectedEntry().key()) + 10;
         left = right - (width - 10);
         isNear = mouseX >= left - 5 && mouseX <= left + width + 5 && mouseY >= bottom - 15 && mouseY <= bottom;
         color = isNear ? UIColors.QUESTS_COORDINATES | 0x90000000 : UIColors.QUESTS_COORDINATES;
 
-        graphics.drawString(font, this.handler.getSelected().key(), left, bottom - 10, color, false);
+        graphics.drawString(font, this.handler.getSelectedEntry().key(), left, bottom - 10, color, false);
     }
 
     private void add() {

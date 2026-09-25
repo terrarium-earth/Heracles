@@ -8,7 +8,7 @@ import earth.terrarium.heracles.api.client.theme.EditorTheme;
 import earth.terrarium.heracles.api.quests.Quest;
 import earth.terrarium.heracles.client.handlers.ClientQuests;
 import earth.terrarium.heracles.client.widgets.base.BaseModal;
-import earth.terrarium.heracles.client.widgets.boxes.AutocompleteEditBox;
+import earth.terrarium.olympus.client.components.textbox.autocomplete.AutocompleteTextBox;
 import earth.terrarium.heracles.common.constants.ConstantComponents;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -27,7 +27,7 @@ public class AddDependencyModal extends BaseModal {
     private static final int WIDTH = 168;
     private static final int HEIGHT = 179;
 
-    private final AutocompleteEditBox<ClientQuests.QuestEntry> dependencyBox;
+    private AutocompleteTextBox<ClientQuests.QuestEntry> dependencyBox;
     private final Button addButton;
 
     private ClientQuests.QuestEntry entry;
@@ -38,13 +38,7 @@ public class AddDependencyModal extends BaseModal {
         super(screenWidth, screenHeight, WIDTH, HEIGHT);
 
         // dependencies
-        this.dependencyBox = addChild(new AutocompleteEditBox<>(null, "", 130, 16, (text, item) -> {
-            text = text.toLowerCase(Locale.ROOT).trim();
-            Quest quest = item.value();
-            String title = quest.display().title().getString().toLowerCase(Locale.ROOT).trim();
-            String id = item.key().toLowerCase(Locale.ROOT).trim();
-            return (title.contains(text) || id.contains(text)) && !id.equals(text);
-        }, ClientQuests.QuestEntry::key, value -> addDependency()));
+        this.dependencyBox = addChild(createDependencyBox(List.of()));
         this.dependencyBox.setPosition(x + 8, y + 19);
 
         this.addButton = addChild(
@@ -55,8 +49,20 @@ public class AddDependencyModal extends BaseModal {
         );
     }
 
+    private AutocompleteTextBox<ClientQuests.QuestEntry> createDependencyBox(List<ClientQuests.QuestEntry> suggestions) {
+        var box = new AutocompleteTextBox<>(null, "", 130, 16, suggestions, (text, item) -> {
+            text = text.toLowerCase(Locale.ROOT).trim();
+            Quest quest = item.value();
+            String title = quest.display().title().getString().toLowerCase(Locale.ROOT).trim();
+            String id = item.key().toLowerCase(Locale.ROOT).trim();
+            return (title.contains(text) || id.contains(text)) && !id.equals(text);
+        }, ClientQuests.QuestEntry::key);
+        box.setPosition(x + 8, y + 19);
+        return box;
+    }
+
     private void addDependency() {
-        String value = this.dependencyBox.getValue();
+        String value = this.dependencyBox.getRawValue();
         if (entry != null) {
             ClientQuests.QuestEntry entry = ClientQuests.get(value).orElse(null);
             if (entry != null) {
@@ -135,7 +141,8 @@ public class AddDependencyModal extends BaseModal {
     }
 
     public void update(ClientQuests.QuestEntry entry, Runnable callback) {
-        this.dependencyBox.setSuggestions(ClientQuests.entries());
+        this.children().remove(this.dependencyBox);
+        this.dependencyBox = addChild(createDependencyBox(new ArrayList<>(ClientQuests.entries())));
         this.dependencies = new ArrayList<>();
         this.entry = entry;
         entry.dependencies().forEach(value -> this.dependencies.add(value.value()));

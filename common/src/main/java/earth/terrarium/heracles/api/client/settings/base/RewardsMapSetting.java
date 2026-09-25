@@ -37,6 +37,7 @@ public record RewardsMapSetting() implements Setting<Map<String, QuestReward<?>>
                 Minecraft.getInstance().tell(() -> {
                     EditRewardsMapModal.open(ref.get(), updated -> {
                         ref.set(new LinkedHashMap<>(updated));
+                        btn.setMessage(Component.literal("Edit (" + ref.get().size() + " rewards)"));
                     });
                 });
             });

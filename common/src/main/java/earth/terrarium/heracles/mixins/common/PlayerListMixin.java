@@ -7,6 +7,7 @@ import earth.terrarium.heracles.common.network.packets.ClientboundLootTablesDisp
 import net.minecraft.network.Connection;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.network.CommonListenerCookie;
 import net.minecraft.server.players.PlayerList;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -32,7 +33,7 @@ public class PlayerListMixin {
         method = "placeNewPlayer",
         at = @At("TAIL")
     )
-    private void heracles$afterSyncData(Connection netManager, ServerPlayer player, CallbackInfo ci) {
+    private void heracles$afterSyncData(Connection connection, ServerPlayer player, CommonListenerCookie cookie, CallbackInfo ci) {
         QuestSyncer.sync(player);
         NetworkHandler.CHANNEL.sendToPlayer(
             new ClientboundAdvancementDisplayPacket(this.server),

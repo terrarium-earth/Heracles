@@ -24,7 +24,7 @@ import java.util.List;
 
 public class UploadModal extends BaseModal implements FileWidget {
 
-    public static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "textures/gui/uploading.png");
+    public static final ResourceLocation TEXTURE = Heracles.id("textures/gui/uploading.png");
     private static final int WIDTH = 168;
     private static final int HEIGHT = 173;
 
@@ -86,8 +86,7 @@ public class UploadModal extends BaseModal implements FileWidget {
 
     private Button createButton(Component component, int x, int y, Button.OnPress onPress) {
         int width = Minecraft.getInstance().font.width(component) + 8;
-        return ThemedButton.builder(component, onPress)
-            .bounds(x - width, y, width, 15)
+        return ThemedButton.builder(component, onPress).bounds(x - width, y, width, 15)
             .build();
     }
 

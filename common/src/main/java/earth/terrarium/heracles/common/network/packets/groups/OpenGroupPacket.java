@@ -6,6 +6,7 @@ import com.teamresourceful.resourcefullib.common.network.base.ServerboundPacketT
 import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.common.handlers.quests.QuestHandler;
 import earth.terrarium.heracles.common.utils.ModUtils;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
@@ -13,7 +14,7 @@ import net.minecraft.world.entity.player.Player;
 
 import java.util.function.Consumer;
 
-public record OpenGroupPacket(String group, boolean edit) implements Packet<OpenGroupPacket> {
+public record OpenGroupPacket(String group) implements Packet<OpenGroupPacket> {
     public static final ServerboundPacketType<OpenGroupPacket> TYPE = new Type();
 
     @Override
@@ -24,19 +25,23 @@ public record OpenGroupPacket(String group, boolean edit) implements Packet<Open
     private static class Type implements ServerboundPacketType<OpenGroupPacket> {
 
         @Override
+        public Class<OpenGroupPacket> type() {
+            return OpenGroupPacket.class;
+        }
+
+        @Override
         public ResourceLocation id() {
-            return ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "open_group");
+            return Heracles.id( "open_group");
         }
 
         @Override
         public void encode(OpenGroupPacket message, RegistryFriendlyByteBuf buffer) {
             buffer.writeUtf(message.group);
-            buffer.writeBoolean(message.edit);
         }
 
         @Override
         public OpenGroupPacket decode(RegistryFriendlyByteBuf buffer) {
-            return new OpenGroupPacket(buffer.readUtf(), buffer.readBoolean());
+            return new OpenGroupPacket(buffer.readUtf());
         }
 
         @Override
@@ -47,11 +52,7 @@ public record OpenGroupPacket(String group, boolean edit) implements Packet<Open
                     if (group.isEmpty()) {
                         group = QuestHandler.groups().get(0);
                     }
-                    if (message.edit) {
-                        ModUtils.editGroup(serverPlayer, group);
-                    } else {
-                        ModUtils.openGroup(serverPlayer, group);
-                    }
+                    ModUtils.openGroup(serverPlayer, group);
                 }
             };
         }

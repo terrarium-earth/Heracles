@@ -1,6 +1,7 @@
 package earth.terrarium.heracles.api.tasks.defaults;
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.teamresourceful.resourcefullib.common.codecs.predicates.RestrictedEntityPredicate;
 import earth.terrarium.heracles.Heracles;
@@ -11,6 +12,7 @@ import earth.terrarium.heracles.api.quests.defaults.ItemQuestIcon;
 import earth.terrarium.heracles.api.tasks.QuestTask;
 import earth.terrarium.heracles.api.tasks.QuestTaskType;
 import earth.terrarium.heracles.api.tasks.storage.defaults.IntegerTaskStorage;
+
 import net.minecraft.nbt.IntTag;
 import net.minecraft.nbt.NumericTag;
 import net.minecraft.resources.ResourceLocation;
@@ -51,15 +53,15 @@ public record KillEntityQuestTask(
 
         @Override
         public ResourceLocation id() {
-            return ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "kill_entity");
+            return Heracles.id("kill_entity");
         }
 
         @Override
-        public Codec<KillEntityQuestTask> codec(String id) {
-            return RecordCodecBuilder.create(instance -> instance.group(
+        public MapCodec<KillEntityQuestTask> codec(String id) {
+            return RecordCodecBuilder.mapCodec(instance -> instance.group(
                 RecordCodecBuilder.point(id),
-                Codec.STRING.optionalFieldOf("title", "").forGetter(KillEntityQuestTask::title),
-                QuestIcons.CODEC.optionalFieldOf("icon", ItemQuestIcon.AIR).forGetter(KillEntityQuestTask::icon),
+                Codec.STRING.lenientOptionalFieldOf("title", "").forGetter(KillEntityQuestTask::title),
+                QuestIcons.CODEC.lenientOptionalFieldOf("icon", ItemQuestIcon.AIR).forGetter(KillEntityQuestTask::icon),
                 RestrictedEntityPredicate.CODEC.fieldOf("entity").forGetter(KillEntityQuestTask::entity),
                 Codec.INT.fieldOf("amount").orElse(1).forGetter(KillEntityQuestTask::target)
             ).apply(instance, KillEntityQuestTask::new));

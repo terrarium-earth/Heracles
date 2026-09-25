@@ -3,12 +3,14 @@ package earth.terrarium.heracles.client.handlers;
 import com.google.gson.JsonObject;
 import com.teamresourceful.resourcefullib.common.lib.Constants;
 import earth.terrarium.heracles.Heracles;
+import net.minecraft.ChatFormatting;
 import net.minecraft.util.GsonHelper;
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
+import java.util.Locale;
 
 public class DisplayConfig {
 
@@ -19,6 +21,11 @@ public class DisplayConfig {
     public static int pinnedIndex = 0;
     public static int maxEditorHistory = 100;
     public static boolean showTutorial = true;
+    public static ChatFormatting editorColor = ChatFormatting.WHITE;
+    public static boolean snapToGrid = false;
+    public static boolean showGrid = false;
+    public static boolean showMinimap = true;
+    public static boolean dockMinimap = false;
 
     public static void load(Path path) {
         DisplayConfig.lastPath = path;
@@ -30,6 +37,11 @@ public class DisplayConfig {
                 pinnedIndex = GsonHelper.getAsInt(displayObject, "pinnedIndex", 0);
                 showTutorial = GsonHelper.getAsBoolean(displayObject, "showTutorial", true);
                 maxEditorHistory = GsonHelper.getAsInt(displayObject, "maxEditorHistory", 100);
+                editorColor = getEnum(displayObject, "editorColor", ChatFormatting.class, ChatFormatting.WHITE);
+                snapToGrid = GsonHelper.getAsBoolean(displayObject, "snapToGrid", false);
+                showGrid = GsonHelper.getAsBoolean(displayObject, "showGrid", false);
+                showMinimap = GsonHelper.getAsBoolean(displayObject, "showMinimap", true);
+                dockMinimap = GsonHelper.getAsBoolean(displayObject, "dockMinimap", false);
             } else {
                 save();
             }
@@ -45,10 +57,22 @@ public class DisplayConfig {
         displayObject.addProperty("pinnedIndex", pinnedIndex);
         displayObject.addProperty("showTutorial", showTutorial);
         displayObject.addProperty("maxEditorHistory", maxEditorHistory);
+        displayObject.addProperty("editorColor", editorColor.getName());
+        displayObject.addProperty("snapToGrid", snapToGrid);
+        displayObject.addProperty("showGrid", showGrid);
+        displayObject.addProperty("showMinimap", showMinimap);
+        displayObject.addProperty("dockMinimap", dockMinimap);
         try {
             FileUtils.write(displayFile, Constants.PRETTY_GSON.toJson(displayObject), StandardCharsets.UTF_8);
         } catch (Exception e) {
             Heracles.LOGGER.error("Error saving {}:", DISPLAY_FILE, e);
         }
+    }
+
+    private static <T extends Enum<T>> T getEnum(JsonObject object, String key, Class<T> clazz, T defaultValue) {
+        if (object.has(key)) {
+            return Enum.valueOf(clazz, GsonHelper.getAsString(object, key).toUpperCase(Locale.ROOT));
+        }
+        return defaultValue;
     }
 }

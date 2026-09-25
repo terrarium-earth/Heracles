@@ -12,7 +12,6 @@ import earth.terrarium.heracles.api.quests.Quest;
 import earth.terrarium.heracles.api.quests.QuestDisplayStatus;
 import earth.terrarium.heracles.client.HeraclesClient;
 import earth.terrarium.heracles.client.handlers.ClientQuests;
-import earth.terrarium.heracles.client.screens.AbstractQuestScreen;
 import earth.terrarium.heracles.client.screens.mousemode.MouseMode;
 import earth.terrarium.heracles.client.utils.ClientUtils;
 import earth.terrarium.heracles.client.utils.MouseClick;
@@ -46,8 +45,9 @@ public class QuestsWidget extends BaseWidget {
     private static final Vector2i MAX = new Vector2i(5000, 5000);
     private static final Vector2i MIN = new Vector2i(-5000, -5000);
 
-    private static final ResourceLocation ARROW = ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "textures/gui/arrow.png");
-
+    private static final ResourceLocation ARROW = Heracles.id("textures/gui/arrow.png");
+    private static final ResourceLocation VERTICAL_BAR = Heracles.id("heading/vertical_bar");
+    private static final ResourceLocation HORIZONTAL_BAR = Heracles.id("heading/horizontal_bar");
 
     private final Set<String> visibleQuests = new HashSet<>();
     private final List<QuestWidget> widgets = new ArrayList<>();
@@ -288,7 +288,7 @@ public class QuestsWidget extends BaseWidget {
                 int canvasWidth = this.maxX - this.minX;
                 int width = (this.width - 10) * (this.width - 10) / (canvasWidth + this.width - 10);
                 int barX = this.x + 5 + (this.width - 10 - width) / 2 + (this.width - 10 - width) * xFromCentre / canvasWidth;
-                graphics.blitNineSliced(AbstractQuestScreen.HEADING, barX, this.y + this.height - 4, width, 2, 2, 32, 2, 224, 126);
+                graphics.blitSprite(HORIZONTAL_BAR, barX, this.y + this.height - 4, width, 2);
             }
 
             int yFromCentre = centreOffset.y - offset.y;
@@ -296,7 +296,7 @@ public class QuestsWidget extends BaseWidget {
                 int canvasHeight = this.maxY - this.minY;
                 int height = (this.height - 10) * (this.height - 10) / (canvasHeight + this.height - 10);
                 int barY = this.y + 5 + (this.height - 10 - height) / 2 + (this.height - 10 - height) * yFromCentre / canvasHeight;
-                graphics.blitNineSliced(AbstractQuestScreen.HEADING, this.x + this.width - 4, barY, 2, height, 2, 2, 32, 222, 96);
+                graphics.blitSprite(VERTICAL_BAR, this.x + this.width - 4, barY, 2, height);
             }
         }
     }
@@ -325,9 +325,7 @@ public class QuestsWidget extends BaseWidget {
                             this.selectHandler.clickQuest(mode, (int) mouseX, (int) mouseY, widget);
                         } else if (mode.canOpen()) {
                             Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1.0F));
-                            NetworkHandler.CHANNEL.sendToServer(new OpenQuestPacket(
-                                this.group, widget.id(), Minecraft.getInstance().screen instanceof QuestsEditScreen
-                            ));
+                            NetworkHandler.CHANNEL.sendToServer(new OpenQuestPacket(this.group, widget.id()));
                         }
                         return true;
                     }

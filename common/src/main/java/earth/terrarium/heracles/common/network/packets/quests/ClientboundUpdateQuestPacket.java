@@ -9,7 +9,6 @@ import com.teamresourceful.resourcefullib.common.network.defaults.CodecPacketTyp
 import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.client.handlers.ClientQuests;
 import earth.terrarium.heracles.common.network.packets.quests.data.NetworkQuestData;
-import net.minecraft.resources.ResourceLocation;
 
 public record ClientboundUpdateQuestPacket(
     String id, NetworkQuestData data
@@ -30,7 +29,7 @@ public record ClientboundUpdateQuestPacket(
         );
 
         public Type() {
-            super(ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "update_client_quest"), CODEC);
+            super(Heracles.id("update_client_quest"), CODEC);
         }
 
         @Override

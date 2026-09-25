@@ -5,7 +5,7 @@ import com.teamresourceful.resourcefullib.common.network.base.ClientboundPacketT
 import com.teamresourceful.resourcefullib.common.network.base.PacketType;
 import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.client.handlers.ClientAdvancementDisplays;
-import net.minecraft.advancements.Advancement;
+import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.advancements.DisplayInfo;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -26,8 +26,8 @@ public record ClientboundAdvancementDisplayPacket(
             server.getAdvancements()
                 .getAllAdvancements()
                 .stream()
-                .filter(advancement -> advancement.getDisplay() != null)
-                .collect(Collectors.toMap(Advancement::getId, Advancement::getDisplay))
+                .filter(advancement -> advancement.value().display().isPresent())
+                .collect(Collectors.toMap(AdvancementHolder::id, Advancement -> Advancement.value().display().get()))
         );
     }
 
@@ -39,7 +39,7 @@ public record ClientboundAdvancementDisplayPacket(
     private static class Type implements ClientboundPacketType<ClientboundAdvancementDisplayPacket> {
         @Override
         public ResourceLocation id() {
-            return ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "advancement_display");
+            return Heracles.id("advancement_display");
         }
 
         @Override
@@ -47,7 +47,7 @@ public record ClientboundAdvancementDisplayPacket(
             buffer.writeMap(
                 message.infos,
                 FriendlyByteBuf::writeResourceLocation,
-                (buf, info) -> info.serializeToNetwork(buf)
+                (buf, info) -> DisplayInfo.STREAM_CODEC.encode(new RegistryFriendlyByteBuf(buf, buffer.registryAccess()), info)
             );
         }
 
@@ -56,7 +56,7 @@ public record ClientboundAdvancementDisplayPacket(
             return new ClientboundAdvancementDisplayPacket(
                 buffer.readMap(
                     FriendlyByteBuf::readResourceLocation,
-                    DisplayInfo::fromNetwork
+                    buf -> DisplayInfo.STREAM_CODEC.decode(new RegistryFriendlyByteBuf(buf, buffer.registryAccess()))
                 )
             );
         }

@@ -34,9 +34,8 @@ public final class DimensionTaskWidget implements DisplayWidget {
     @Override
     public void render(GuiGraphics graphics, ScissorBoxStack scissor, int x, int y, int width, int mouseX, int mouseY, boolean hovered, float partialTicks) {
         Font font = Minecraft.getInstance().font;
-        WidgetUtils.drawBackground(graphics, x, y, width, getHeight(width));
         int iconSize = 32;
-        this.task.icon().renderOrStack(getIcon(), graphics, scissor, x + 5, y + 5, iconSize);
+        this.task.icon().renderOrStack(getIcon(), graphics, x + 5, y + 5, iconSize);
         graphics.drawString(
             font,
             task.titleOr(TaskTitleFormatter.create(this.task)), x + iconSize + 16, y + 6, QuestScreenTheme.getTaskTitle(),

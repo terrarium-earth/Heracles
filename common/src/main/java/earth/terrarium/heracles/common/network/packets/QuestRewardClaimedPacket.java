@@ -6,7 +6,6 @@ import com.teamresourceful.resourcefullib.common.network.base.PacketType;
 import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.client.HeraclesClient;
 import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 
@@ -23,7 +22,7 @@ public record QuestRewardClaimedPacket(String id, List<Item> items) implements P
     private static class Type implements ClientboundPacketType<QuestRewardClaimedPacket> {
         @Override
         public ResourceLocation id() {
-            return ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "quest_reward_claimed");
+            return Heracles.id("quest_reward_claimed");
         }
 
         @Override

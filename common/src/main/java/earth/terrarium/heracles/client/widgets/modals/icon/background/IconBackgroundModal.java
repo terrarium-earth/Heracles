@@ -19,7 +19,7 @@ import java.util.function.Consumer;
 
 public class IconBackgroundModal extends BaseModal {
 
-    public static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "textures/gui/uploading.png");
+    public static final ResourceLocation TEXTURE = Heracles.id("textures/gui/uploading.png");
     public static final Component TITLE = Component.translatable("gui.heracles.quests.choose_background");
     private static final int WIDTH = 168;
     private static final int HEIGHT = 173;

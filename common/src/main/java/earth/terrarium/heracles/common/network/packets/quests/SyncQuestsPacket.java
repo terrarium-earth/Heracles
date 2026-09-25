@@ -15,7 +15,6 @@ import earth.terrarium.heracles.client.handlers.ClientQuests;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.resources.RegistryOps;
 import net.minecraft.resources.ResourceLocation;
 
@@ -37,12 +36,12 @@ public record SyncQuestsPacket(Map<String, Quest> quests, List<String> groups) i
 
         @Override
         public ResourceLocation id() {
-            return ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "sync_quests");
+            return Heracles.id("sync_quests");
         }
 
         @Override
         public void encode(SyncQuestsPacket message, RegistryFriendlyByteBuf buffer) {
-            DataResult<YabnElement> result = QUEST_MAP_CODEC.encodeStart(YabnOps.COMPRESSED, message.quests());
+            DataResult<YabnElement> result = QUEST_MAP_CODEC.encodeStart(RegistryOps.create(YabnOps.COMPRESSED, Heracles.getRegistryAccess()), message.quests());
             Optional<YabnElement> optional = result.result();
             optional.ifPresent(yabnElement -> buffer.writeBytes(yabnElement.toFullData()));
             buffer.writeCollection(message.groups(), FriendlyByteBuf::writeUtf);

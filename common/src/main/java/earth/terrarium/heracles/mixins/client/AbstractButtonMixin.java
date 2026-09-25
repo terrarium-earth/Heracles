@@ -21,32 +21,17 @@ public abstract class AbstractButtonMixin extends AbstractWidget {
         method = "renderWidget",
         at = @At(
             value = "INVOKE",
-            target = "Lnet/minecraft/client/gui/GuiGraphics;blitNineSliced(Lnet/minecraft/resources/ResourceLocation;IIIIIIIIII)V"
+            target = "Lnet/minecraft/client/gui/GuiGraphics;blitSprite(Lnet/minecraft/resources/ResourceLocation;IIII)V"
         )
     )
     public boolean heracles$applyThemedTexture(
-        GuiGraphics graphics,
-        ResourceLocation atlasLocation,
-        int targetX,
-        int targetY,
-        int targetWidth,
-        int targetHeight,
-        int sliceWidth,
-        int sliceHeight,
-        int sourceWidth,
-        int sourceHeight,
-        int sourceX,
-        int sourceY
+        GuiGraphics graphics, ResourceLocation sprite, int x, int y, int width, int height
     ) {
         if (((Object) this) instanceof ThemedButton tb) {
-            ThemedButton.TextureBounds bounds = tb.getTextureBounds(this.active, this.isHoveredOrFocused());
-            graphics.blitNineSliced(
-                tb.getTexture(),
+            graphics.blitSprite(
+                tb.getSprite(this.active, this.isHoveredOrFocused()),
                 this.getX(), this.getY(),
-                this.getWidth(), this.getHeight(),
-                bounds.sliceWidth(), bounds.sliceHeight(),
-                bounds.sourceWidth(), bounds.sourceHeight(),
-                bounds.sourceX(), bounds.sourceY()
+                this.getWidth(), this.getHeight()
             );
             return false;
         }

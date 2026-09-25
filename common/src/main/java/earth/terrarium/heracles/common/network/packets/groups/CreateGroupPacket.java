@@ -6,7 +6,6 @@ import com.teamresourceful.resourcefullib.common.network.base.ServerboundPacketT
 import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.common.handlers.quests.QuestHandler;
 import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 
@@ -34,7 +33,7 @@ public record CreateGroupPacket(String group) implements Packet<CreateGroupPacke
 
         @Override
         public ResourceLocation id() {
-            return ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "create_group");
+            return Heracles.id("create_group");
         }
 
         @Override

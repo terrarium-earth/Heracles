@@ -18,7 +18,7 @@ import java.util.Optional;
 public class ThemeHandler extends SimplePreparableReloadListener<Optional<Theme>> {
     public static final ThemeHandler INSTANCE = new ThemeHandler();
 
-    private static final ResourceLocation THEME_LOCATION = ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "theme.json");
+    private static final ResourceLocation THEME_LOCATION = Heracles.id("theme.json");
     private static final Gson GSON = new Gson();
 
     @Override
@@ -34,9 +34,7 @@ public class ThemeHandler extends SimplePreparableReloadListener<Optional<Theme>
                 }
             })
             .flatMap(json -> Theme.CODEC.parse(JsonOps.INSTANCE, json)
-                .get()
-                .ifRight(result -> Heracles.LOGGER.error("Failed to parse theme: {}", result.message()))
-                .left()
+                .ifError(themeError -> Heracles.LOGGER.error("Failed to parse theme: {}", themeError.message())).result()
             );
     }
 

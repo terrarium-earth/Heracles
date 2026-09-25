@@ -65,15 +65,15 @@ public record SelectableReward(String id, String title, QuestIcon<?> icon, int a
 
         @Override
         public ResourceLocation id() {
-            return ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "selectable");
+            return Heracles.id("selectable");
         }
 
         @Override
         public MapCodec<SelectableReward> codec(String id) {
             return RecordCodecBuilder.mapCodec(instance -> instance.group(
                 RecordCodecBuilder.point(id),
-                Codec.STRING.optionalFieldOf("title", "").forGetter(SelectableReward::title),
-                QuestIcons.CODEC.optionalFieldOf("icon", ItemQuestIcon.AIR).forGetter(SelectableReward::icon),
+                Codec.STRING.lenientOptionalFieldOf("title", "").forGetter(SelectableReward::title),
+                QuestIcons.CODEC.lenientOptionalFieldOf("icon", ItemQuestIcon.AIR).forGetter(SelectableReward::icon),
                 ExtraCodecs.POSITIVE_INT.fieldOf("amount").orElse(1).forGetter(SelectableReward::amount),
                 QuestRewards.CODEC.fieldOf("rewards").forGetter(SelectableReward::rewards)
             ).apply(instance, SelectableReward::new));

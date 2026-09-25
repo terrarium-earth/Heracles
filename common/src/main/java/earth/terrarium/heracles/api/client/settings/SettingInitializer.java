@@ -2,9 +2,9 @@ package earth.terrarium.heracles.api.client.settings;
 
 import com.mojang.datafixers.util.Pair;
 import earth.terrarium.heracles.common.utils.ModUtils;
+import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.gui.components.events.GuiEventListener;
-import net.minecraft.client.gui.layouts.LayoutElement;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.LinkedHashMap;
@@ -23,12 +23,12 @@ public interface SettingInitializer<T> {
             this(new LinkedHashMap<>());
         }
 
-        public <A, B extends Renderable & LayoutElement> void put(String id, Setting<A, B> setting, A value) {
+        public <A, B extends AbstractWidget> void put(String id, Setting<A, B> setting, A value) {
             data.put(id, Pair.of(value, setting));
         }
 
-        public Renderable get(int width, String id) {
-            return data.get(id).getSecond().createWidget(width, ModUtils.cast(data.get(id).getFirst()));
+        public AbstractWidget get(@Nullable AbstractWidget old, int width, String id) {
+            return data.get(id).getSecond().createWidget(ModUtils.cast(old), width, ModUtils.cast(data.get(id).getFirst()));
         }
 
         public boolean isEmpty() {
@@ -47,7 +47,7 @@ public interface SettingInitializer<T> {
         }
 
         @SuppressWarnings("unchecked")
-        public <A, B extends Renderable & LayoutElement> Optional<A> get(String id, Setting<A, B> setting) {
+        public <A, B extends AbstractWidget> Optional<A> get(String id, Setting<A, B> setting) {
             var widget = settings.get(id);
             if (!(widget instanceof GuiEventListener)) {
                 return Optional.empty();

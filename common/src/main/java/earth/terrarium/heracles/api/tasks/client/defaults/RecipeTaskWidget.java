@@ -61,10 +61,9 @@ public final class RecipeTaskWidget implements ItemDisplayWidget {
         int actualY = y;
 
         Font font = Minecraft.getInstance().font;
-        WidgetUtils.drawBackground(graphics, x, y, width, height);
 
         int iconSize = 32;
-        this.task.icon().renderOrStack(this.getCurrentItem(), graphics, scissor, x + 5, y + 5, iconSize, mouseX, mouseY);
+        this.task.icon().renderOrStack(this.getCurrentItem(), graphics, x + 5, y + 5, iconSize, mouseX, mouseY);
         String desc = this.task.recipes().size() == 1 ? DESC_SINGULAR : DESC_PLURAL;
         Object text = this.task.recipes().size() == 1 ? this.titles.isEmpty() ? "" : this.titles.get(0) : isOpened ? ConstantComponents.ARROW_DOWN : ConstantComponents.ARROW_RIGHT;
         graphics.drawString(

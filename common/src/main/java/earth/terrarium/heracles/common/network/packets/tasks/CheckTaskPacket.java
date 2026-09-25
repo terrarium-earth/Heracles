@@ -3,6 +3,7 @@ package earth.terrarium.heracles.common.network.packets.tasks;
 import com.teamresourceful.resourcefullib.common.network.Packet;
 import com.teamresourceful.resourcefullib.common.network.base.PacketType;
 import com.teamresourceful.resourcefullib.common.network.base.ServerboundPacketType;
+import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.api.tasks.defaults.CheckTask;
 import earth.terrarium.heracles.common.handlers.progress.QuestProgressHandler;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -26,7 +27,7 @@ public record CheckTaskPacket(String quest, String task) implements Packet<Check
 
         @Override
         public ResourceLocation id() {
-            return ResourceLocation.fromNamespaceAndPath("heracles", "check_task");
+            return Heracles.id("check_task");
         }
 
         @Override

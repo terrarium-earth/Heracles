@@ -38,7 +38,7 @@ public record ServerboundAddQuestPacket(
         );
 
         public Type() {
-            super(ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "add_server_quest"), CODEC);
+            super(Heracles.id("add_server_quest"), CODEC);
         }
 
         @Override

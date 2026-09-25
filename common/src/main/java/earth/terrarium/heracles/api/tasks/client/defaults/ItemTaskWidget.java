@@ -52,7 +52,9 @@ public final class ItemTaskWidget implements ItemDisplayWidget {
         this.stacks = task.item().getValue().map(
             item -> {
                 ItemStack stack = item.getDefaultInstance();
-                if (!NbtPredicate.isEmpty(task.components().tag())) stack.getOrCreateTag().merge(task.components().tag());
+                if (task.components().asPatch() != null) {
+                    stack.applyComponents(task.components().asPatch());
+                }
                 return List.of(stack);
             },
             tag -> ModUtils.getValue(Registries.ITEM, tag).stream().map(ItemStack::new).toList()
@@ -63,9 +65,8 @@ public final class ItemTaskWidget implements ItemDisplayWidget {
     public void render(GuiGraphics graphics, ScissorBoxStack scissor, int x, int y, int width, int mouseX, int mouseY, boolean hovered, float partialTicks) {
         Minecraft minecraft = Minecraft.getInstance();
         Font font = minecraft.font;
-        WidgetUtils.drawBackground(graphics, x, y, width, getHeight(width));
         int iconSize = 32;
-        this.task.icon().renderOrStack(this.getCurrentItem(), graphics, scissor, x + 5, y + 5, iconSize, mouseX, mouseY);
+        this.task.icon().renderOrStack(this.getCurrentItem(), graphics, x + 5, y + 5, iconSize, mouseX, mouseY);
         String title = chooseGatherKey(task, TITLE_ITEM, TITLE_TAG, TITLE_SUBMIT_ITEM, TITLE_SUBMIT_TAG);
         String desc = chooseGatherKey(task, DESC_ITEM, DESC_TAG, DESC_SUBMIT_ITEM, DESC_SUBMIT_TAG);
         graphics.drawString(

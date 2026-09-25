@@ -21,7 +21,7 @@ public record QuestUnlockedPacket(String id) implements Packet<QuestUnlockedPack
 
         @Override
         public ResourceLocation id() {
-            return ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "quest_unlocked");
+            return Heracles.id("quest_unlocked");
         }
 
         @Override

@@ -38,7 +38,7 @@ public record ClaimRewardsPacket(String quest, String reward) implements Packet<
 
         @Override
         public ResourceLocation id() {
-            return ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "claim_rewards");
+            return Heracles.id("claim_rewards");
         }
 
         @Override

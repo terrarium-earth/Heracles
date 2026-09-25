@@ -6,8 +6,10 @@ import earth.terrarium.heracles.api.quests.Quest;
 import earth.terrarium.heracles.api.quests.QuestDisplay;
 import earth.terrarium.heracles.common.handlers.pinned.PinnedQuestHandler;
 import earth.terrarium.heracles.common.handlers.progress.QuestProgressHandler;
+import earth.terrarium.heracles.common.handlers.quests.GroupSettings;
 import earth.terrarium.heracles.common.handlers.quests.QuestHandler;
 import earth.terrarium.heracles.common.network.NetworkHandler;
+import earth.terrarium.heracles.common.network.packets.groups.SyncGroupSettingsPacket;
 import earth.terrarium.heracles.common.network.packets.quests.SyncDescriptionsPacket;
 import earth.terrarium.heracles.common.network.packets.quests.SyncQuestsPacket;
 import net.minecraft.server.MinecraftServer;
@@ -22,6 +24,7 @@ public final class QuestSyncer {
         Heracles.LOGGER.debug("Syncing quests to {} players with {} quests and {} groups", players.size(), packet.quests().size(), packet.groups().size());
         NetworkHandler.CHANNEL.sendToPlayers(packet, players);
         syncDescriptions(players);
+        syncGroupSettings(players);
         QuestProgressHandler.read(server).updatePossibleQuests();
     }
 
@@ -31,6 +34,7 @@ public final class QuestSyncer {
         NetworkHandler.CHANNEL.sendToPlayer(packet, player);
         PinnedQuestHandler.sync(player);
         syncDescriptions(List.of(player));
+        syncGroupSettings(List.of(player));
     }
 
     private static SyncQuestsPacket createPacket() {
@@ -40,6 +44,21 @@ public final class QuestSyncer {
             compressedQuests.put(entry.getKey(), compress(entry.getValue()));
         }
         return new SyncQuestsPacket(compressedQuests, QuestHandler.groups());
+    }
+
+    private static void syncGroupSettings(Collection<ServerPlayer> players) {
+        for (Map.Entry<String, GroupSettings> entry : QuestHandler.groupSettings().entrySet()) {
+            GroupSettings settings = entry.getValue();
+            SyncGroupSettingsPacket packet = new SyncGroupSettingsPacket(
+                entry.getKey(),
+                entry.getKey(),
+                settings.serializeIcon(),
+                settings.iconEnabled(),
+                settings.background(),
+                settings.backgroundOpacity()
+            );
+            NetworkHandler.CHANNEL.sendToPlayers(packet, players);
+        }
     }
 
     private static void syncDescriptions(Collection<ServerPlayer> player) {

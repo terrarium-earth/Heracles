@@ -66,7 +66,7 @@ public class SelectQuestWidget extends BaseWidget {
                 quest.display().setTitle(s.isEmpty() ? null : Component.translatable(s));
                 return NetworkQuestData.builder().title(quest.display().title());
             },
-            false
+            true
         ));
 
         int boxWidth = (this.width - 40) / 2;
@@ -76,11 +76,11 @@ public class SelectQuestWidget extends BaseWidget {
         this.xBox.setNumberResponder(value -> ClientQuests.updateQuest(this.entry, quest -> NetworkQuestData.builder().group(quest, this.group, pos -> {
             pos.x = value;
             return pos;
-        }), false));
+        }), true));
         this.yBox.setNumberResponder(value -> ClientQuests.updateQuest(this.entry, quest -> NetworkQuestData.builder().group(quest, this.group, pos -> {
             pos.y = value;
             return pos;
-        }), false));
+        }), true));
 
         this.subtitleBox = this.addChild(new MultiLineEditBox(this.font, this.x + 6, this.y + 76, this.width - 12, 40, CommonComponents.EMPTY, CommonComponents.EMPTY));
         this.subtitleBox.setValueListener(s -> ClientQuests.updateQuest(
@@ -89,7 +89,7 @@ public class SelectQuestWidget extends BaseWidget {
                 quest.display().setSubtitle(s.isEmpty() ? null : Component.translatable(s));
                 return NetworkQuestData.builder().subtitle(quest.display().subtitle());
             },
-            false
+            true
         ));
 
         addChild(ThemedButton.builder(Component.literal("ℹ"), b -> {

@@ -85,7 +85,7 @@ public class ObjectModal extends BaseModal {
         open(quest.value().rewards().keySet(), Component.literal("Reward Display"), (reward) ->
             TextFormattingButton.insertAtNewLine(
                 box.get().field(),
-                "<reward reward=\"%s\"/>".formatted(reward)
+                "<reward quest=\"%s\" reward=\"%s\"/>".formatted(quest.key(), reward)
             )
         );
     }
@@ -94,7 +94,7 @@ public class ObjectModal extends BaseModal {
         open(quest.value().tasks().keySet(), Component.literal("Task Display"), (task) ->
             TextFormattingButton.insertAtNewLine(
                 box.get().field(),
-                "<task task=\"%s\"/>".formatted(task)
+                "<task quest=\"%s\" task=\"%s\"/>".formatted(quest.key(), task)
             )
         );
     }

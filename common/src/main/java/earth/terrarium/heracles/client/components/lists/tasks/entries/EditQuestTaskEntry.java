@@ -36,7 +36,7 @@ public final class EditQuestTaskEntry extends AbstractEditListEntry<QuestTask<?,
 
     @Override
     protected void edit() {
-        EditObjectModal.open(ModUtils.cast(this.value.type()), ConstantComponents.Tasks.EDIT, this.id(), this.value, this::setValue);
+        EditObjectModal.open(ModUtils.cast(this.value.type()), ConstantComponents.Tasks.EDIT.copy().append(" " + id()), this.id(), this.value, this::setValue);
     }
 
     @Override

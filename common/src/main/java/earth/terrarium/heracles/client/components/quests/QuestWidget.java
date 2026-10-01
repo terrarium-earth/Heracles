@@ -11,6 +11,7 @@ import earth.terrarium.heracles.common.constants.ConstantComponents;
 import earth.terrarium.heracles.common.network.packets.quests.data.NetworkQuestData;
 import earth.terrarium.heracles.common.utils.ModUtils;
 import earth.terrarium.olympus.client.components.base.BaseWidget;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
@@ -130,20 +131,22 @@ public class QuestWidget extends BaseWidget {
     }
 
     public void delete(QuestsWidget widget) {
-        DeleteConfirmModal.open(
-            ConstantComponents.DELETE,
-            Component.literal("Are you sure you want to delete this quest?"),
-            () -> {
-                if (this.entry.value().display().groups().size() == 1) {
-                    ClientQuestNetworking.remove(entry.key());
-                } else {
-                    ClientQuests.updateQuest(this.entry, quest -> {
-                        quest.display().groups().remove(this.group);
-                        return NetworkQuestData.builder().groups(quest.display().groups());
-                    });
+        Minecraft.getInstance().tell(() -> {
+            DeleteConfirmModal.open(
+                ConstantComponents.DELETE,
+                Component.literal("Are you sure you want to delete this quest?"),
+                () -> {
+                    if (this.entry.value().display().groups().size() == 1) {
+                        ClientQuestNetworking.remove(entry.key());
+                    } else {
+                        ClientQuests.updateQuest(this.entry, quest -> {
+                            quest.display().groups().remove(this.group);
+                            return NetworkQuestData.builder().groups(quest.display().groups());
+                        });
+                    }
+                    widget.remove(this.entry);
                 }
-                widget.remove(this.entry);
-            }
-        );
+            );
+        });
     }
 }

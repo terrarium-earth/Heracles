@@ -66,7 +66,7 @@ public record ClaimSelectableRewardsPacket(
                     QuestsProgress progress = QuestProgressHandler.getProgress(serverPlayer.getServer(), player.getUUID());
                     QuestProgress questProgress = progress.getProgress(message.quest);
                     if (questProgress.canClaim(message.reward)) {
-                        questProgress.claimReward(message.reward);
+                        progress.claimReward(message.quest, message.reward, serverPlayer);
                         QuestReward<?> reward = quest.rewards().get(message.reward);
                         if (reward instanceof SelectableReward selectableReward) {
                             if (message.rewards().size() <= selectableReward.amount()) {

@@ -59,7 +59,7 @@ public class EditTasksQuestScreen extends AbstractQuestScreen {
     }
 
     private void createTask(ResourceLocation type, String id) {
-        EditObjectModal.open(QuestTasks.get(type), ConstantComponents.Tasks.EDIT, id, null, task -> {
+        EditObjectModal.open(QuestTasks.get(type), ConstantComponents.Tasks.EDIT.copy().append(" " + id), id, null, task -> {
             ClientQuests.get(this.content().id()).ifPresent(entry -> ClientQuests.updateQuest(entry, quest -> {
                 quest.tasks().put(id, task);
                 return NetworkQuestData.builder().tasks(quest.tasks());

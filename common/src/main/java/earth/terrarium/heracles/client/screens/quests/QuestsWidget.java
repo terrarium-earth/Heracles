@@ -174,7 +174,7 @@ public class QuestsWidget extends BaseWidget {
                 return false;
             }
             for (var dependency : quest.dependencies()) {
-                if (shouldHide(statuses, dependency, QuestDisplayStatus.DEPENDENCIES_VISIBLE)) {
+                if (shouldHide(statuses, dependency, dependency.value().settings().hiddenUntil())) {
                     return true;
                 }
             }

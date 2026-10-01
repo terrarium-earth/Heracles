@@ -3,13 +3,11 @@ package earth.terrarium.heracles.forge;
 import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.api.tasks.defaults.*;
 import earth.terrarium.heracles.common.commands.ModCommands;
+import earth.terrarium.heracles.common.handlers.TaskManager;
 import earth.terrarium.heracles.common.handlers.progress.QuestProgressHandler;
-import earth.terrarium.heracles.common.handlers.progress.QuestsProgress;
 import earth.terrarium.heracles.common.utils.PlatformSettings;
-import it.unimi.dsi.fastutil.longs.LongSet;
 import net.minecraft.core.BlockSourceImpl;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.level.levelgen.structure.Structure;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.TickEvent;
@@ -21,8 +19,6 @@ import net.minecraftforge.event.server.ServerAboutToStartEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.loading.FMLEnvironment;
 import net.minecraftforge.fml.loading.FMLPaths;
-
-import java.util.Map;
 
 @Mod(Heracles.MOD_ID)
 public class HeraclesForge {
@@ -68,16 +64,7 @@ public class HeraclesForge {
     private static void onTick(TickEvent.PlayerTickEvent event) {
         if (event.player.tickCount % 20 != 0) return;
         if (!(event.player instanceof ServerPlayer player)) return;
-
-        QuestsProgress progress = QuestProgressHandler.getProgress(player.server, player.getUUID());
-        Map<Structure, LongSet> structures = player.serverLevel().structureManager().getAllStructuresAt(player.getOnPos());
-
-        progress.testAndProgressTaskType(player, player.serverLevel().getBiome(player.getOnPos()), BiomeTask.TYPE);
-        progress.testAndProgressTaskType(player, player, LocationTask.TYPE);
-
-        if (!structures.isEmpty()) {
-            progress.testAndProgressTaskType(player, structures.keySet(), StructureTask.TYPE);
-        }
+        TaskManager.onPlayerTick(player);
     }
 
     private static void onItemUse(LivingEntityUseItemEvent.Finish event) {

@@ -41,11 +41,9 @@ public class MarkdownParagraphParser {
         }
     });
 
-    private static final Pattern LINK_PATTERN = Pattern.compile("\\[([^]]+)]\\(([^)]+)\\)");
     private static final Pattern COLOR_PATTERN = Pattern.compile("([^\\\\]|^)&&([0-9a-fA-Fk-oK-OrR])");
 
     public static String parse(String line) {
-        line = replaceLinks(line);
         line = replaceFormatting(line);
         return "<text>" + line + "</text>";
     }
@@ -54,10 +52,6 @@ public class MarkdownParagraphParser {
         text = replace(COLOR_PATTERN, text, "$1§$2");
         text = text.replace("\\&&", "&&");
         return text;
-    }
-
-    private static String replaceLinks(String text) {
-        return replace(LINK_PATTERN, text, "<link href=\"$2\">$1</link>");
     }
 
     private static String replaceFormatting(String text) {

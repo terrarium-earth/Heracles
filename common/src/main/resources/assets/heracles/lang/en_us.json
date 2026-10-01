@@ -145,5 +145,18 @@
     "gui.heracles.name": "Name",
     "gui.heracles.id": "ID",
     "gui.heracles.dependency_add": "Add as Dependency",
-    "gui.heracles.dependency_remove": "Remove as Dependency"
+    "gui.heracles.dependency_remove": "Remove as Dependency",
+
+    "gui.heracles.editor.button.header1": "Header 1",
+    "gui.heracles.editor.button.header2": "Header 2",
+    "gui.heracles.editor.button.bold": "Bold",
+    "gui.heracles.editor.button.italics": "Italics",
+    "gui.heracles.editor.button.underline": "Underline",
+    "gui.heracles.editor.button.strikethrough": "Strikethrough",
+    "gui.heracles.editor.button.spoiler": "Spoiler",
+    "gui.heracles.editor.button.list": "List",
+    "gui.heracles.editor.button.blockquote": "Blockquote",
+    "gui.heracles.editor.button.link": "Link",
+    "gui.heracles.editor.button.reward": "Reward",
+    "gui.heracles.editor.button.task": "Task"
 }

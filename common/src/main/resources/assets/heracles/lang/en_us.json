@@ -143,7 +143,6 @@
     "gui.heracles.y": "y: %s",
     "gui.heracles.add_quest": "Add Quest",
     "gui.heracles.name": "Name",
-    "gui.heracles.id": "ID",
     "gui.heracles.dependency_add": "Add as Dependency",
     "gui.heracles.dependency_remove": "Remove as Dependency",
 

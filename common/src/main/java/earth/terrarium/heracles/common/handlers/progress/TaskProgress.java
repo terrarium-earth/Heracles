@@ -6,6 +6,10 @@ import net.minecraft.nbt.Tag;
 
 import java.util.function.Supplier;
 
+/**
+ * Records a player’s progress toward a task within a quest.
+ * @param <S> the type of the NBT tag used to record progress
+ */
 public class TaskProgress<S extends Tag> {
 
     private S progress;

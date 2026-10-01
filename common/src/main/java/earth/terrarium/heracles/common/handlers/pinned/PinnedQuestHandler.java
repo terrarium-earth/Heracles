@@ -24,7 +24,7 @@ public class PinnedQuestHandler extends SavedData {
         return read(player.server).pinned.computeIfAbsent(player.getUUID(), u -> new LinkedHashSet<>());
     }
 
-    public static void syncIfChanged(ServerPlayer player, Collection<String> pinned) {
+    public static void syncIfChanged(ServerPlayer player, Iterable<String> pinned) {
         Set<String> pinnedSet = getPinned(player);
         for (String s : pinned) {
             if (!pinnedSet.contains(s)) {

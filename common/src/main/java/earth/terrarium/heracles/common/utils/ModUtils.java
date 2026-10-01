@@ -11,6 +11,7 @@ import com.teamresourceful.yabn.reader.ArrayByteReader;
 import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.common.handlers.progress.QuestProgressHandler;
 import earth.terrarium.heracles.common.handlers.progress.QuestsProgress;
+import earth.terrarium.heracles.common.handlers.quests.CompletableQuests;
 import earth.terrarium.heracles.common.handlers.quests.QuestHandler;
 import earth.terrarium.heracles.common.menus.quest.QuestContent;
 import earth.terrarium.heracles.common.menus.quests.QuestsContent;
@@ -117,12 +118,19 @@ public class ModUtils {
     private static Map<String, QuestStatus> getQuests(ServerPlayer player) {
         Map<String, QuestStatus> quests = new HashMap<>();
         QuestsProgress progress = QuestProgressHandler.getProgress(player.server, player.getUUID());
-        for (String quest : progress.completableQuests().getQuests(progress)) {
-            quests.put(quest, QuestStatus.IN_PROGRESS);
-        }
+        CompletableQuests completableQuests = progress.completableQuests();
         QuestHandler.quests().forEach((id, quest) -> {
             if (!quests.containsKey(id)) {
-                quests.put(id, progress.isComplete(id) ? (progress.isClaimed(id, quest) ? QuestStatus.COMPLETED_CLAIMED : QuestStatus.COMPLETED) : QuestStatus.LOCKED);
+                boolean complete = progress.isComplete(id);
+                boolean unlocked = progress.isUnlocked(id);
+                boolean claimed = progress.isClaimed(id, quest);
+                quests.put(
+                    id,
+                    unlocked ?
+                        (complete ?
+                            (claimed ? QuestStatus.COMPLETED_CLAIMED : QuestStatus.COMPLETED) :
+                            QuestStatus.IN_PROGRESS) :
+                        (complete ? QuestStatus.PROVISIONALLY_COMPLETED : QuestStatus.LOCKED));
             }
         });
         return quests;
@@ -132,7 +140,8 @@ public class ModUtils {
         LOCKED,
         IN_PROGRESS,
         COMPLETED,
-        COMPLETED_CLAIMED;
+        COMPLETED_CLAIMED,
+        PROVISIONALLY_COMPLETED;
 
         public boolean isComplete() {
             return this == COMPLETED || this == COMPLETED_CLAIMED;

@@ -9,19 +9,25 @@ import net.minecraft.nbt.Tag;
 
 import java.util.*;
 
+/**
+ * Records a player’s progress for an individual quest.
+ */
 public class QuestProgress {
 
     private final Map<String, TaskProgress<?>> tasks = new HashMap<>();
     private final Set<String> claimed = new HashSet<>();
     private boolean complete;
+    private boolean unlocked;
 
     public QuestProgress() {
         this.complete = false;
+        this.unlocked = false;
     }
 
     public QuestProgress(Quest quest, CompoundTag tag) {
         if (tag == null) return;
         this.complete = tag.getBoolean("complete");
+        this.unlocked = tag.getBoolean("unlocked");
         this.claimed.addAll(TagUtils.mapToCollection(ArrayList::new, tag.getList("rewards", 8), Tag::getAsString));
         var compound = tag.getCompound("tasks");
         for (String taskKey : compound.getAllKeys()) {
@@ -64,6 +70,14 @@ public class QuestProgress {
         this.complete = complete;
     }
 
+    public boolean isUnlocked() {
+        return unlocked;
+    }
+
+    public void setUnlocked(boolean unlocked) {
+        this.unlocked = unlocked;
+    }
+
     public void claimReward(String reward) {
         claimed.add(reward);
     }
@@ -85,7 +99,7 @@ public class QuestProgress {
     }
 
     public boolean canClaim(String reward) {
-        return !claimed.contains(reward) && complete;
+        return !claimed.contains(reward) && complete && unlocked;
     }
 
     @SuppressWarnings("unchecked")
@@ -103,12 +117,14 @@ public class QuestProgress {
         tasks.clear();
         tasks.putAll(progress.tasks);
         complete = progress.complete;
+        unlocked = progress.unlocked;
         checkComplete();
     }
 
     public CompoundTag save() {
         CompoundTag tag = new CompoundTag();
         tag.putBoolean("complete", complete);
+        tag.putBoolean("unlocked", unlocked);
         tag.put("rewards", TagUtils.mapToListTag(claimed, StringTag::valueOf));
         CompoundTag tasks = new CompoundTag();
         for (var entry : this.tasks.entrySet()) {

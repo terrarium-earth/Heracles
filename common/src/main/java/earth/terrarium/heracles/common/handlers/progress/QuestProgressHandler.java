@@ -52,7 +52,7 @@ public class QuestProgressHandler extends SavedData {
         });
     }
 
-    public static void sync(ServerPlayer player, Collection<String> quests) {
+    public static void sync(ServerPlayer player, Iterable<String> quests) {
         Map<String, QuestProgress> progress = new LinkedHashMap<>();
         quests.forEach(id -> {
             Quest quest = QuestHandler.get(id);

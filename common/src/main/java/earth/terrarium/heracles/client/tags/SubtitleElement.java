@@ -1,15 +1,16 @@
 package earth.terrarium.heracles.client.tags;
 
-import dev.dediamondpro.minemark.LayoutData;
-import dev.dediamondpro.minemark.LayoutStyle;
-import dev.dediamondpro.minemark.elements.BasicElement;
-import dev.dediamondpro.minemark.elements.Element;
+
 import earth.terrarium.heracles.api.quests.Quest;
 import earth.terrarium.heracles.api.quests.QuestDisplay;
 import earth.terrarium.heracles.client.handlers.ClientQuests;
 import earth.terrarium.hermes.api.rendering.HtmlRenderer;
 import earth.terrarium.hermes.api.rendering.HtmlStyle;
 import earth.terrarium.hermes.elements.custom.HermesText;
+import earth.terrarium.hermes.libs.minemark.LayoutData;
+import earth.terrarium.hermes.libs.minemark.LayoutStyle;
+import earth.terrarium.hermes.libs.minemark.elements.BasicElement;
+import earth.terrarium.hermes.libs.minemark.elements.Element;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.Nullable;

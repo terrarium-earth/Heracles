@@ -10,7 +10,6 @@ import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.api.quests.Quest;
 import earth.terrarium.heracles.client.handlers.ClientQuests;
 import earth.terrarium.heracles.common.utils.ModUtils;
-import net.minecraft.resources.ResourceLocation;
 
 public record ClientboundAddQuestPacket(
     String id, Quest quest
@@ -32,7 +31,7 @@ public record ClientboundAddQuestPacket(
         );
 
         public Type() {
-            super(ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "add_client_quest"), CODEC);
+            super(Heracles.id("add_client_quest"), CODEC);
         }
 
         @Override

@@ -5,7 +5,6 @@ import com.teamresourceful.resourcefullib.common.network.base.ClientboundPacketT
 import com.teamresourceful.resourcefullib.common.network.base.PacketType;
 import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.client.handlers.ClientQuests;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 
@@ -24,17 +23,17 @@ public record SyncDescriptionsPacket(Map<String, String> descriptions) implement
 
         @Override
         public ResourceLocation id() {
-            return ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "sync_descriptions");
+            return Heracles.id("sync_descriptions");
         }
 
         @Override
         public void encode(SyncDescriptionsPacket message, RegistryFriendlyByteBuf buffer) {
-            buffer.writeMap(message.descriptions(), FriendlyByteBuf::writeUtf, FriendlyByteBuf::writeUtf);
+            buffer.writeMap(message.descriptions(), (buf, key) -> buf.writeUtf(key), (buf, value) -> buf.writeUtf(value));
         }
 
         @Override
         public SyncDescriptionsPacket decode(RegistryFriendlyByteBuf buffer) {
-            return new SyncDescriptionsPacket(buffer.readMap(FriendlyByteBuf::readUtf, FriendlyByteBuf::readUtf));
+            return new SyncDescriptionsPacket(buffer.readMap(buf -> buf.readUtf(), buf -> buf.readUtf()));
         }
 
         @Override

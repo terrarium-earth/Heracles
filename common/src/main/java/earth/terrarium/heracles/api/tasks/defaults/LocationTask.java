@@ -1,6 +1,7 @@
 package earth.terrarium.heracles.api.tasks.defaults;
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.teamresourceful.resourcefullib.common.codecs.CodecExtras;
 import earth.terrarium.heracles.Heracles;
@@ -17,8 +18,8 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentSerialization;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.item.Items;
+
 
 public record LocationTask(
     String id, String title, QuestIcon<?> icon, Component desc, LocationPredicate predicate
@@ -52,12 +53,12 @@ public record LocationTask(
 
         @Override
         public ResourceLocation id() {
-            return ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "location");
+            return Heracles.id("location");
         }
 
         @Override
-        public Codec<LocationTask> codec(String id) {
-            return RecordCodecBuilder.create(instance -> instance.group(
+        public MapCodec<LocationTask> codec(String id) {
+            return RecordCodecBuilder.mapCodec(instance -> instance.group(
                 RecordCodecBuilder.point(id),
                 Codec.STRING.fieldOf("title").forGetter(LocationTask::title),
                 DUMMY_TASK_ICON_CODEC.fieldOf("icon").orElse(new ItemQuestIcon(Items.FILLED_MAP)).forGetter(LocationTask::icon),

@@ -8,11 +8,11 @@ import earth.terrarium.heracles.client.utils.ClientUtils;
 import earth.terrarium.heracles.client.widgets.base.TemporaryWidget;
 import earth.terrarium.heracles.client.widgets.modals.EditObjectModal;
 import earth.terrarium.heracles.common.constants.ConstantComponents;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.ImageButton;
 import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.gui.components.Tooltip;
+import net.minecraft.client.gui.components.WidgetSprites;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
@@ -25,7 +25,7 @@ import java.util.List;
 
 public abstract class AbstractQuestScreen<T> extends BaseCursorScreen {
 
-    public static final ResourceLocation HEADING = ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "textures/gui/heading.png");
+    public static final ResourceLocation HEADING = Heracles.id("textures/gui/heading.png");
 
     protected final List<TemporaryWidget> temporaryWidgets = new ArrayList<>();
     protected boolean hasBackButton = true;
@@ -53,11 +53,11 @@ public abstract class AbstractQuestScreen<T> extends BaseCursorScreen {
         questContentWidth = (int) (width * QUEST_CONTENT_PORTION);
 
         if (hasBackButton) {
-            addRenderableWidget(new ImageButton(1, 1, 11, 11, 0, 15, 11, HEADING, 256, 256, (button) ->
+            addRenderableWidget(new ImageButton(1, 1, 11, 11, AbstractQuestScreen.getWidgetSprites("heading/back"), (button) ->
                 goBack()
             )).setTooltip(Tooltip.create(CommonComponents.GUI_BACK));
         }
-        addRenderableWidget(new ImageButton(this.width - 12, 1, 11, 11, 11, 15, 11, HEADING, 256, 256, (button) -> {
+        addRenderableWidget(new ImageButton(this.width - 12, 1, 11, 11, AbstractQuestScreen.getWidgetSprites("heading/close"), (button) -> {
             if (this.minecraft != null && this.minecraft.player != null) {
                 this.minecraft.player.closeContainer();
             }
@@ -162,17 +162,6 @@ public abstract class AbstractQuestScreen<T> extends BaseCursorScreen {
     }
 
     @Override
-    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-        if (Minecraft.getInstance().options.keyInventory.matches(keyCode, scanCode)) {
-            return true;
-        }
-        if (this instanceof InternalKeyPressHook hook) {
-            return hook.heracles$internalKeyPressed(keyCode, scanCode, modifiers);
-        }
-        return super.keyPressed(keyCode, scanCode, modifiers);
-    }
-
-    @Override
     public void removed() {
         super.removed();
     }
@@ -209,5 +198,22 @@ public abstract class AbstractQuestScreen<T> extends BaseCursorScreen {
     @Override
     public boolean isPauseScreen() {
         return false;
+    }
+
+    public static WidgetSprites getWidgetSprites(String name) {
+        ResourceLocation normal = Heracles.id(name);
+        ResourceLocation hovered = Heracles.id(name + "_selected");
+        return new WidgetSprites(normal, normal, hovered);
+    }
+
+    @Override
+    protected void renderBlurredBackground(float partialTick) {}
+
+    @Override
+    public void renderBackground(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+    }
+
+    @Override
+    protected void renderMenuBackground(GuiGraphics partialTick) {
     }
 }

@@ -12,10 +12,12 @@ import earth.terrarium.heracles.common.handlers.progress.QuestProgressHandler;
 import earth.terrarium.heracles.common.handlers.progress.QuestsProgress;
 import earth.terrarium.heracles.common.network.NetworkHandler;
 import earth.terrarium.heracles.common.network.packets.QuestRewardClaimedPacket;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import org.joml.Vector2i;
 
 import java.util.*;
 import java.util.stream.Stream;
@@ -45,6 +47,18 @@ public record Quest(
      */
     private static Quest fromCodec(QuestDisplay display, QuestSettings settings, Set<String> dependencies, Map<String, QuestTask<?, ?, ?>> tasks, Map<String, QuestReward<?>> rewards) {
         return new Quest(display, settings, dependencies, new HashMap<>(tasks), new HashMap<>(rewards));
+    }
+
+    public static Quest of(String group, String name, Vector2i location) {
+        QuestDisplay display = QuestDisplay.createDefault(new GroupDisplay(group, location));
+        display.setTitle(Component.literal(name));
+        return new Quest(
+            display,
+            QuestSettings.createDefault(),
+            new HashSet<>(),
+            new HashMap<>(),
+            new HashMap<>()
+        );
     }
 
     public void claimAllowedRewards(ServerPlayer player, String id) {

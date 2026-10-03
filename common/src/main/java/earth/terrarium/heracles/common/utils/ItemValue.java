@@ -2,7 +2,6 @@ package earth.terrarium.heracles.common.utils;
 
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
-import com.teamresourceful.resourcefullib.common.codecs.recipes.ItemStackCodec;
 import earth.terrarium.heracles.Heracles;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.Holder;
@@ -15,13 +14,14 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.level.ItemLike;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
 public final class ItemValue extends RegistryValue<Item> {
     public static Codec<ItemValue> CODEC = Codec.either(
-        ItemStackCodec.CODEC,
+        ItemStackCodec.STACK_CODEC,
         TagKey.hashedCodec(Registries.ITEM)
     ).xmap(ItemValue::new, ItemValue::item);
 
@@ -42,8 +42,8 @@ public final class ItemValue extends RegistryValue<Item> {
         this(Either.right(key));
     }
 
-    public ItemValue(Item item) {
-        this(Either.left(item.getDefaultInstance()));
+    public ItemValue(ItemLike item) {
+        this(Either.left(item.asItem().getDefaultInstance()));
     }
 
     public ItemValue(ItemStack stack) {
@@ -78,6 +78,16 @@ public final class ItemValue extends RegistryValue<Item> {
         return item;
     }
 
+    public boolean isEmpty() {
+        return item.map(
+            stack -> stack.is(Items.AIR),
+            key -> Heracles.getRegistryAccess()
+                .registry(Registries.ITEM)
+                .map(registry -> registry.getTag(key).isEmpty())
+                .orElse(true)
+        );
+    }
+
     public List<ItemStack> values() {
         if (values == null) {
             values = item.map(
@@ -88,5 +98,9 @@ public final class ItemValue extends RegistryValue<Item> {
                 ).orElse(List.of()));
         }
         return values;
+    }
+
+    public ItemValue copy() {
+        return new ItemValue(this.item.mapLeft(ItemStack::copy));
     }
 }

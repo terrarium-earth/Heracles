@@ -8,7 +8,7 @@ import earth.terrarium.heracles.api.client.theme.EditorTheme;
 import earth.terrarium.heracles.api.quests.Quest;
 import earth.terrarium.heracles.client.handlers.ClientQuests;
 import earth.terrarium.heracles.client.widgets.base.BaseModal;
-import earth.terrarium.heracles.client.widgets.boxes.AutocompleteEditBox;
+import earth.terrarium.olympus.client.components.textbox.autocomplete.AutocompleteTextBox;
 import earth.terrarium.heracles.common.constants.ConstantComponents;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -22,11 +22,12 @@ import java.util.Locale;
 
 public class AddDependencyModal extends BaseModal {
 
-    private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "textures/gui/dependencies.png");
+    private static final ResourceLocation TEXTURE = Heracles.id("textures/gui/dependencies.png");
+    private static final ResourceLocation BUTTON_BACKGROUND = Heracles.id("dependencies/button_background");
     private static final int WIDTH = 168;
     private static final int HEIGHT = 179;
 
-    private final AutocompleteEditBox<ClientQuests.QuestEntry> dependencyBox;
+    private AutocompleteTextBox<ClientQuests.QuestEntry> dependencyBox;
     private final Button addButton;
 
     private ClientQuests.QuestEntry entry;
@@ -37,13 +38,8 @@ public class AddDependencyModal extends BaseModal {
         super(screenWidth, screenHeight, WIDTH, HEIGHT);
 
         // dependencies
-        this.dependencyBox = addChild(new AutocompleteEditBox<>(Minecraft.getInstance().font, x + 8, y + 19, 130, 16, (text, item) -> {
-            text = text.toLowerCase(Locale.ROOT).trim();
-            Quest quest = item.value();
-            String title = quest.display().title().getString().toLowerCase(Locale.ROOT).trim();
-            String id = item.key().toLowerCase(Locale.ROOT).trim();
-            return (title.contains(text) || id.contains(text)) && !id.equals(text);
-        }, ClientQuests.QuestEntry::key, value -> addDependency()));
+        this.dependencyBox = addChild(createDependencyBox(List.of()));
+        this.dependencyBox.setPosition(x + 8, y + 19);
 
         this.addButton = addChild(
             new Button.Builder(ConstantComponents.PLUS, b -> addDependency())
@@ -53,8 +49,20 @@ public class AddDependencyModal extends BaseModal {
         );
     }
 
+    private AutocompleteTextBox<ClientQuests.QuestEntry> createDependencyBox(List<ClientQuests.QuestEntry> suggestions) {
+        var box = new AutocompleteTextBox<>(null, "", 130, 16, suggestions, (text, item) -> {
+            text = text.toLowerCase(Locale.ROOT).trim();
+            Quest quest = item.value();
+            String title = quest.display().title().getString().toLowerCase(Locale.ROOT).trim();
+            String id = item.key().toLowerCase(Locale.ROOT).trim();
+            return (title.contains(text) || id.contains(text)) && !id.equals(text);
+        }, ClientQuests.QuestEntry::key);
+        box.setPosition(x + 8, y + 19);
+        return box;
+    }
+
     private void addDependency() {
-        String value = this.dependencyBox.getValue();
+        String value = this.dependencyBox.getRawValue();
         if (entry != null) {
             ClientQuests.QuestEntry entry = ClientQuests.get(value).orElse(null);
             if (entry != null) {
@@ -76,11 +84,11 @@ public class AddDependencyModal extends BaseModal {
         if (dependencies != null) {
             try (var scissor = RenderUtils.createScissor(Minecraft.getInstance(), graphics, x + 8, y + 43, 152, 120)) {
                 for (Quest dependency : dependencies) {
-                    graphics.blitNineSliced(TEXTURE, x + 8, tempY, 152, 24, 1, 1, 1, 1, 19, 19, 168, 0);
+                    graphics.blitSprite(BUTTON_BACKGROUND, x + 8, tempY, 152, 24);
                     boolean removeHovered = mouseX >= x + 149 && mouseX <= x + 158 && mouseY >= tempY + 2 && mouseY <= tempY + 11;
                     graphics.blit(TEXTURE, x + 149, tempY + 2, 187, removeHovered ? 9 : 0, 9, 9);
                     CursorUtils.setCursor(removeHovered, CursorScreen.Cursor.POINTER);
-                    dependency.display().icon().render(graphics, scissor.stack(), x + 9, tempY + 1, 22, 22);
+                    dependency.display().icon().render(graphics, x + 9, tempY + 1, 22, 22);
                     graphics.drawString(
                         Minecraft.getInstance().font,
                         dependency.display().title(), x + 36, tempY + 6, EditorTheme.getModalDependenciesDependencyTitle(),
@@ -133,7 +141,8 @@ public class AddDependencyModal extends BaseModal {
     }
 
     public void update(ClientQuests.QuestEntry entry, Runnable callback) {
-        this.dependencyBox.setSuggestions(ClientQuests.entries());
+        this.children().remove(this.dependencyBox);
+        this.dependencyBox = addChild(createDependencyBox(new ArrayList<>(ClientQuests.entries())));
         this.dependencies = new ArrayList<>();
         this.entry = entry;
         entry.dependencies().forEach(value -> this.dependencies.add(value.value()));

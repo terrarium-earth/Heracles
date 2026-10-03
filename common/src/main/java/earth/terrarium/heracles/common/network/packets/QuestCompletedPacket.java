@@ -19,7 +19,7 @@ public record QuestCompletedPacket(String id) implements Packet<QuestCompletedPa
     private static class Type implements ClientboundPacketType<QuestCompletedPacket> {
         @Override
         public ResourceLocation id() {
-            return ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "quest_complete");
+            return Heracles.id("quest_complete");
         }
 
         @Override

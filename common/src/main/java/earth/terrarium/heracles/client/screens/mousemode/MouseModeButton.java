@@ -1,7 +1,7 @@
 package earth.terrarium.heracles.client.screens.mousemode;
 
-import earth.terrarium.heracles.client.screens.AbstractQuestScreen;
 import earth.terrarium.heracles.client.widgets.SelectableImageButton;
+import net.minecraft.client.gui.components.WidgetSprites;
 
 public class MouseModeButton extends SelectableImageButton {
 
@@ -9,8 +9,8 @@ public class MouseModeButton extends SelectableImageButton {
 
     private final MouseButtonType type;
 
-    public MouseModeButton(int x, int y, MouseButtonType type, Runnable onSelected) {
-        super(x, y, 11, 11, type.u(), type.v(), 11, AbstractQuestScreen.HEADING, 256, 256, b -> onSelected.run());
+    public MouseModeButton(int x, int y, MouseButtonType type, WidgetSprites sprites, Runnable onSelected) {
+        super(x, y, 11, 11, sprites, b -> onSelected.run());
         this.type = type;
     }
 
@@ -21,6 +21,13 @@ public class MouseModeButton extends SelectableImageButton {
 
     @Override
     public boolean isSelected() {
-        return currentType == type;
+        return currentType.equals(type);
+    }
+
+    public enum MouseButtonType {
+        MOVE,
+        DRAG,
+        ADD,
+        LINK;
     }
 }

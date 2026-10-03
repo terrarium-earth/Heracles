@@ -3,6 +3,7 @@ package earth.terrarium.heracles.api.tasks;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.Encoder;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.KeyDispatchCodec;
 import com.teamresourceful.bytecodecs.base.ByteCodec;
 import com.teamresourceful.resourcefullib.common.codecs.maps.DispatchMapCodec;
@@ -27,13 +28,8 @@ public final class QuestTasks {
 
     public static final ByteCodec<Map<String, QuestTask<?, ?, ?>>> BYTE_CODEC = ModUtils.toByteCodec(CODEC, "No quest task data found", "Failed to parse quest task data");
 
-    public static KeyDispatchCodec<QuestTaskType<?>, QuestTask<?, ?, ?>> of(final String typeKey, final Codec<QuestTaskType<?>> keyCodec, final Function<? super QuestTask<?, ?, ?>, ? extends DataResult<? extends QuestTaskType<?>>> type, final Function<? super QuestTaskType<?>, ? extends DataResult<? extends Codec<? extends QuestTask<?, ?, ?>>>> codec) {
-        return KeyDispatchCodec.unsafe(typeKey, keyCodec, type, codec, v -> getCodec(type, codec, v));
-    }
-
-    @SuppressWarnings("unchecked")
-    private static <K, V> DataResult<? extends Encoder<V>> getCodec(final Function<? super V, ? extends DataResult<? extends K>> type, final Function<? super K, ? extends DataResult<? extends Encoder<? extends V>>> encoder, final V input) {
-        return type.apply(input).<Encoder<? extends V>>flatMap(k -> encoder.apply(k).map(Function.identity())).map(c -> ((Encoder<V>) c));
+    public static KeyDispatchCodec<QuestTaskType<?>, QuestTask<?, ?, ?>> of(final String typeKey, final Codec<QuestTaskType<?>> keyCodec, final Function<? super QuestTask<?, ?, ?>, ? extends DataResult<? extends QuestTaskType<?>>> type, final Function<? super QuestTaskType<?>, ? extends DataResult<? extends MapCodec<? extends QuestTask<?, ?, ?>>>> codec) {
+        return new KeyDispatchCodec<>(typeKey, keyCodec, type, codec);
     }
 
     private static DataResult<? extends QuestTaskType<?>> decode(ResourceLocation id) {

@@ -1,13 +1,16 @@
 package earth.terrarium.heracles.client.handlers;
 
 import earth.terrarium.heracles.Heracles;
+import earth.terrarium.heracles.api.quests.GroupDisplay;
 import earth.terrarium.heracles.api.quests.Quest;
 import earth.terrarium.heracles.common.handlers.progress.QuestProgress;
 import earth.terrarium.heracles.common.menus.quests.QuestsContent;
 import earth.terrarium.heracles.common.network.NetworkHandler;
 import earth.terrarium.heracles.common.network.packets.quests.ServerboundUpdateQuestPacket;
 import earth.terrarium.heracles.common.network.packets.quests.data.NetworkQuestData;
+import earth.terrarium.heracles.common.handlers.quests.GroupSettings;
 import earth.terrarium.heracles.common.utils.ModUtils;
+import net.minecraft.world.item.ItemStack;
 
 import java.util.*;
 import java.util.function.Function;
@@ -17,6 +20,8 @@ public class ClientQuests {
     private static final Map<String, ModUtils.QuestStatus> STATUS = new HashMap<>();
     private static final Map<String, List<QuestEntry>> BY_GROUPS = new HashMap<>();
     private static final List<String> GROUPS = new ArrayList<>();
+    private static final List<String> GROUP_ORDERS = new ArrayList<>();
+    private static final Map<String, GroupSettings> GROUP_SETTINGS = new HashMap<>();
 
     private static final Map<String, QuestProgress> PROGRESS = new HashMap<>();
 
@@ -24,8 +29,81 @@ public class ClientQuests {
         return Optional.ofNullable(ENTRIES.get(key));
     }
 
+    public static Optional<Quest> getQuest(String key) {
+        return get(key).map(QuestEntry::value);
+    }
+
     public static List<String> groups() {
         return GROUPS;
+    }
+
+    public static List<String> groupOrders() {
+        return GROUP_ORDERS;
+    }
+
+    public static Map<String, GroupSettings> groupSettings() {
+        return GROUP_SETTINGS;
+    }
+
+    public static GroupSettings getGroupSettings(String group) {
+        return GROUP_SETTINGS.computeIfAbsent(group, k -> new GroupSettings());
+    }
+
+    public static void syncGroupSettings(Map<String, GroupSettings> settings) {
+        GROUP_SETTINGS.clear();
+        GROUP_SETTINGS.putAll(settings);
+    }
+
+    public static void updateGroupSettings(String group, ItemStack icon, boolean iconEnabled, String background, int backgroundOpacity) {
+        GroupSettings settings = getGroupSettings(group);
+        settings.setIcon(icon);
+        settings.setIconEnabled(iconEnabled);
+        settings.setBackground(background);
+        settings.setBackgroundOpacity(backgroundOpacity);
+    }
+
+    public static void renameGroup(String oldName, String newName) {
+        if (oldName.equals(newName)) return;
+        if (GROUPS.contains(oldName)) {
+            int index = GROUPS.indexOf(oldName);
+            GROUPS.set(index, newName);
+        }
+        if (GROUP_ORDERS.contains(oldName)) {
+            int index = GROUP_ORDERS.indexOf(oldName);
+            GROUP_ORDERS.set(index, newName);
+        }
+        if (GROUP_SETTINGS.containsKey(oldName)) {
+            GROUP_SETTINGS.put(newName, GROUP_SETTINGS.remove(oldName));
+        }
+        if (BY_GROUPS.containsKey(oldName)) {
+            BY_GROUPS.put(newName, BY_GROUPS.remove(oldName));
+        }
+        for (QuestEntry entry : ENTRIES.values()) {
+            if (entry.value().display().groups().containsKey(oldName)) {
+                GroupDisplay display = entry.value().display().groups().remove(oldName);
+                entry.value().display().groups().put(newName, new GroupDisplay(newName, display.position()));
+            }
+        }
+    }
+
+    public static void syncGroupOrders(List<String> groupOrders) {
+        List<String> copy = new ArrayList<>(groupOrders);
+        GROUP_ORDERS.clear();
+        GROUP_ORDERS.addAll(copy);
+
+        List<String> reordered = new ArrayList<>();
+        for (String id : GROUP_ORDERS) {
+            if (GROUPS.contains(id)) {
+                reordered.add(id);
+            }
+        }
+        for (String id : GROUPS) {
+            if (!reordered.contains(id)) {
+                reordered.add(id);
+            }
+        }
+        GROUPS.clear();
+        GROUPS.addAll(reordered);
     }
 
     public static void sync(Map<String, Quest> quests, List<String> groups) {
@@ -41,6 +119,8 @@ public class ClientQuests {
         }
 
         GROUPS.addAll(groups);
+        GROUP_ORDERS.clear();
+        GROUP_ORDERS.addAll(groups);
         for (QuestEntry value : ENTRIES.values()) {
             for (String s : value.value.display().groups().keySet()) {
                 BY_GROUPS.computeIfAbsent(s, k -> new ArrayList<>()).add(value);
@@ -55,11 +135,6 @@ public class ClientQuests {
                 .map(Quest::display)
                 .ifPresent(display -> display.setDescription(List.of(entry.getValue().split("\n"))));
         }
-    }
-
-    public static void updateProgress(Map<String, QuestProgress> progress) {
-        PROGRESS.clear();
-        PROGRESS.putAll(progress);
     }
 
     public static void mergeProgress(Map<String, QuestProgress> progress) {

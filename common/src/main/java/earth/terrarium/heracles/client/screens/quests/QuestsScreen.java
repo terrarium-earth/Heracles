@@ -6,6 +6,7 @@ import earth.terrarium.heracles.client.HeraclesClient;
 import earth.terrarium.heracles.client.handlers.ClientQuests;
 import earth.terrarium.heracles.client.screens.AbstractQuestScreen;
 import earth.terrarium.heracles.client.screens.mousemode.MouseMode;
+import earth.terrarium.heracles.client.ui.QuestTab;
 import earth.terrarium.heracles.client.widgets.modals.ConfirmModal;
 import earth.terrarium.heracles.common.constants.ConstantComponents;
 import earth.terrarium.heracles.common.handlers.progress.QuestProgress;
@@ -14,7 +15,6 @@ import earth.terrarium.heracles.common.network.NetworkHandler;
 import earth.terrarium.heracles.common.network.packets.groups.OpenGroupPacket;
 import earth.terrarium.heracles.common.network.packets.rewards.ClaimRewardsPacket;
 import earth.terrarium.heracles.common.utils.ModUtils;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.ImageButton;
 import net.minecraft.client.gui.components.Tooltip;
@@ -40,14 +40,14 @@ public class QuestsScreen extends AbstractQuestScreen<QuestsContent> {
     @Override
     protected void init() {
         super.init();
-        if (Minecraft.getInstance().player != null && Minecraft.getInstance().player.hasPermissions(2)) {
-            addRenderableWidget(new ImageButton(this.width - 24, 1, 11, 11, 33, 15, 11, HEADING, 256, 256, (button) ->
-                NetworkHandler.CHANNEL.sendToServer(new OpenGroupPacket(this.content.group(), this.getClass() == QuestsScreen.class))
+        if (QuestTab.canEdit()) {
+            addRenderableWidget(new ImageButton(this.width - 24, 1, 11, 11, AbstractQuestScreen.getWidgetSprites("heading/edit"), (button) ->
+                NetworkHandler.CHANNEL.sendToServer(new OpenGroupPacket(this.content.group()))
             )).setTooltip(Tooltip.create(ConstantComponents.TOGGLE_EDIT));
         }
 
         if (!(this instanceof QuestsEditScreen)) {
-            addRenderableWidget(new ImageButton(sideBarWidth + 3, 1, 11, 11, 44, 15, 11, HEADING, 256, 256, (button) -> {
+            addRenderableWidget(new ImageButton(sideBarWidth + 3, 1, 11, 11, AbstractQuestScreen.getWidgetSprites("heading/claim"), (button) -> {
                 NetworkHandler.CHANNEL.sendToServer(new ClaimRewardsPacket());
             })).setTooltip(Tooltip.create(ConstantComponents.Rewards.CLAIM));
         }
@@ -88,7 +88,7 @@ public class QuestsScreen extends AbstractQuestScreen<QuestsContent> {
             this.height - 15,
             entry -> {
                 if (entry == null || this.content.group().equals(entry.name())) return;
-                NetworkHandler.CHANNEL.sendToServer(new OpenGroupPacket(entry.name(), this.getClass() != QuestsScreen.class));
+                NetworkHandler.CHANNEL.sendToServer(new OpenGroupPacket(entry.name()));
             }
         ));
         this.groupsList.update(ClientQuests.groups(), this.content.group());

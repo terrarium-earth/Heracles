@@ -5,7 +5,7 @@ import earth.terrarium.heracles.api.client.theme.QuestScreenTheme;
 import earth.terrarium.heracles.api.quests.QuestIcon;
 import earth.terrarium.heracles.api.rewards.defaults.LootTableReward;
 import earth.terrarium.heracles.client.handlers.ClientQuests;
-import earth.terrarium.heracles.client.screens.quest.BaseQuestScreen;
+import earth.terrarium.heracles.client.ui.quest.AbstractQuestScreen;
 import earth.terrarium.heracles.common.handlers.progress.QuestProgress;
 import earth.terrarium.heracles.common.network.NetworkHandler;
 import earth.terrarium.heracles.common.network.packets.rewards.ClaimRewardsPacket;
@@ -26,8 +26,9 @@ public record LootTableRewardWidget(LootTableReward reward, String quest, QuestP
     private static final String TOOLTIP_SINGULAR = "reward.heracles.loottable.tooltip.singular";
 
     public static LootTableRewardWidget of(LootTableReward reward, boolean interactive) {
-        if (Minecraft.getInstance().screen instanceof BaseQuestScreen screen) {
-            return new LootTableRewardWidget(reward, screen.getQuestId(), ClientQuests.getProgress(screen.getQuestId()), interactive);
+        if (Minecraft.getInstance().screen instanceof AbstractQuestScreen screen) {
+            String id = screen.content().id();
+            return new LootTableRewardWidget(reward, id, ClientQuests.getProgress(id), interactive);
         }
         return new LootTableRewardWidget(reward, "", null, interactive);
     }
@@ -64,7 +65,7 @@ public record LootTableRewardWidget(LootTableReward reward, String quest, QuestP
         );
         graphics.drawString(
             font,
-            Component.translatable(DESC_SINGULAR, this.reward.lootTable()), x + 48, y + 8 + font.lineHeight, QuestScreenTheme.getRewardDescription(),
+            Component.translatable(DESC_SINGULAR, this.reward.lootTable().toString()), x + 48, y + 8 + font.lineHeight, QuestScreenTheme.getRewardDescription(),
             false
         );
     }
@@ -72,6 +73,6 @@ public record LootTableRewardWidget(LootTableReward reward, String quest, QuestP
     @Override
     public List<Component> getTooltip() {
         return List.of(
-            Component.translatable(TOOLTIP_SINGULAR, this.reward.lootTable()).withStyle(ChatFormatting.GREEN));
+            Component.translatable(TOOLTIP_SINGULAR, this.reward.lootTable().toString()).withStyle(ChatFormatting.GREEN));
     }
 }

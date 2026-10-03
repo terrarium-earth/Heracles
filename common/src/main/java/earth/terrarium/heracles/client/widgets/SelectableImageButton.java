@@ -25,7 +25,7 @@ public class SelectableImageButton extends ImageButton implements ThemedButton {
     @Override
     public void renderWidget(GuiGraphics graphics, int i, int j, float f) {
         RenderSystem.enableDepthTest();
-        graphics.blitSprite(sprites.get(false, false), getX(), getY(), width, height);
+        graphics.blitSprite(sprites.get(isSelected(), isHoveredOrFocused()), getX(), getY(), width, height);
     }
 
     @Override

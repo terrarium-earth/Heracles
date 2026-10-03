@@ -34,7 +34,7 @@ public record ClientboundLootTablesDisplayPacket(
     private static class Type implements ClientboundPacketType<ClientboundLootTablesDisplayPacket> {
         @Override
         public ResourceLocation id() {
-            return ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "loottable_display");
+            return Heracles.id("loottable_display");
         }
 
         @Override

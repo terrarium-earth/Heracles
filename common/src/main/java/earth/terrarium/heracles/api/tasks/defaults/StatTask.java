@@ -1,6 +1,7 @@
 package earth.terrarium.heracles.api.tasks.defaults;
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.api.CustomizableQuestElement;
@@ -63,15 +64,15 @@ public record StatTask(
 
         @Override
         public ResourceLocation id() {
-            return ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "stat");
+            return Heracles.id("stat");
         }
 
         @Override
-        public Codec<StatTask> codec(String id) {
-            return RecordCodecBuilder.create(instance -> instance.group(
+        public MapCodec<StatTask> codec(String id) {
+            return RecordCodecBuilder.mapCodec(instance -> instance.group(
                 RecordCodecBuilder.point(id),
-                Codec.STRING.optionalFieldOf("title", "").forGetter(StatTask::title),
-                QuestIcons.CODEC.optionalFieldOf("icon", ItemQuestIcon.AIR).forGetter(StatTask::icon),
+                Codec.STRING.lenientOptionalFieldOf("title", "").forGetter(StatTask::title),
+                QuestIcons.CODEC.lenientOptionalFieldOf("icon", ItemQuestIcon.AIR).forGetter(StatTask::icon),
                 ResourceLocation.CODEC.fieldOf("stat").forGetter(StatTask::stat),
                 Codec.INT.fieldOf("target").forGetter(StatTask::target)
             ).apply(instance, StatTask::new));

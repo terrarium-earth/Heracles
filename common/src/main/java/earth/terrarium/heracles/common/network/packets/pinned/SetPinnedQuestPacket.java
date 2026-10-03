@@ -26,7 +26,7 @@ public record SetPinnedQuestPacket(String quest, boolean value) implements Packe
 
         @Override
         public ResourceLocation id() {
-            return ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "set_pinned_quest");
+            return Heracles.id("set_pinned_quest");
         }
 
         @Override

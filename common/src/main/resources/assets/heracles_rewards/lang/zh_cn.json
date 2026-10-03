@@ -7,7 +7,7 @@
     "gui.heracles.rewards.unlocks_quest.title": "解锁%s",
     "gui.heracles.rewards.unlocks_quest.desc": "授予您执行新任务的权限",
 
-    "reward.heracles.xp": "☠ 经验",
+    "rewards.heracles.xp": "☠ 经验",
     "reward.heracles.xp.title.singular": "获得：经验",
     "reward.heracles.xp.title.plural": "获得：经验",
     "reward.heracles.xp.desc.singular": "获得%s经验%s",
@@ -16,13 +16,13 @@
     "reward.heracles.xp.type.point": "值",
     "reward.heracles.xp.type.level": "等级",
 
-    "reward.heracles.item": "🧪 物品",
+    "rewards.heracles.item": "🧪 物品",
     "reward.heracles.item.title.singular": "获得：%s",
     "reward.heracles.item.title.plural": "获得：%s",
     "reward.heracles.item.desc.singular": "获得%sx%s",
     "reward.heracles.item.desc.plural": "获得%sx%s",
 
-    "reward.heracles.loottable": "↔ 战利品表",
+    "rewards.heracles.loottable": "↔ 战利品表",
     "reward.heracles.loottable.title.singular": "获得随机战利品",
     "reward.heracles.loottable.desc.singular": "来自%s",
     "reward.heracles.loottable.tooltip.singular": "战利品表：%s",
@@ -30,14 +30,15 @@
     "setting.heracles.loottable.icon": "图标覆盖：",
     "setting.heracles.loottable.loottable": "战利品表：",
 
-    "reward.heracles.select": "❓ 选择",
+    "rewards.heracles.select": "❓ 选择",
     "reward.heracles.select.title.singular": "选择奖励",
     "reward.heracles.select.title.plural": "选择奖励",
     "reward.heracles.select.desc.singular": "点击按钮选择%s个奖励",
     "reward.heracles.select.desc.plural": "单击按钮选择%s个奖励",
     "reward.heracles.select.modal.title.singular": "选择%s个奖励",
     "reward.heracles.select.modal.title.plural": "选择%s个奖励",
-    "reward.heracles.command": "/ 命令",
+
+    "rewards.heracles.command": "/ 命令",
     "reward.heracles.command.title.singular": "执行命令",
     "reward.heracles.command.desc.singular": "%s…",
     "reward.heracles.command.tooltip.singular": "命令：%s",

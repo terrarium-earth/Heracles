@@ -21,7 +21,7 @@ public record ClientboundRemoveQuestPacket(String id) implements Packet<Clientbo
 
         @Override
         public ResourceLocation id() {
-            return ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "remove_client_quest");
+            return Heracles.id("remove_client_quest");
         }
 
         @Override

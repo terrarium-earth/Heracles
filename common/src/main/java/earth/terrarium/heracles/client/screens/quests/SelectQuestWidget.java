@@ -7,7 +7,7 @@ import earth.terrarium.heracles.api.quests.defaults.ItemQuestIcon;
 import earth.terrarium.heracles.client.handlers.ClientQuestNetworking;
 import earth.terrarium.heracles.client.handlers.ClientQuests;
 import earth.terrarium.heracles.client.handlers.QuestClipboard;
-import earth.terrarium.heracles.client.screens.AbstractQuestScreen;
+import earth.terrarium.heracles.client.ui.quests.QuestSettingsInitializer;
 import earth.terrarium.heracles.client.utils.ClientUtils;
 import earth.terrarium.heracles.client.widgets.base.BaseWidget;
 import earth.terrarium.heracles.client.widgets.boxes.IntEditBox;
@@ -31,6 +31,8 @@ import net.minecraft.resources.ResourceLocation;
 import java.util.function.Function;
 
 public class SelectQuestWidget extends BaseWidget {
+
+    private static final ResourceLocation SEPARATOR = Heracles.id("heading/separator");
 
     private ClientQuests.QuestEntry entry;
 
@@ -151,13 +153,13 @@ public class SelectQuestWidget extends BaseWidget {
         addChild(ThemedButton.builder(Component.literal("\uD83D\uDD89"), b -> {
                 if (Minecraft.getInstance().screen instanceof QuestsEditScreen screen && this.entry != null) {
                     EditObjectModal edit = screen.findOrCreateEditWidget();
-                    ResourceLocation id = ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "quest");
+                    ResourceLocation id = Heracles.id("quest");
                     QuestSettings settings = this.entry.value().settings();
                     edit.init(
                         id,
-                        QuestSettingsInitalizer.INSTANCE.create(settings),
+                        QuestSettingsInitializer.INSTANCE.create(settings),
                         data -> updateQuest(quest -> {
-                            QuestSettings questSettings = QuestSettingsInitalizer.INSTANCE.create("quest", settings, data);
+                            QuestSettings questSettings = QuestSettingsInitializer.INSTANCE.create("quest", settings, data);
                             return NetworkQuestData.builder()
                                 .individualProgress(questSettings.individualProgress())
                                 .hiddenUntil(questSettings.hiddenUntil())
@@ -181,7 +183,7 @@ public class SelectQuestWidget extends BaseWidget {
         if (this.entry == null) return;
         updateWidgets();
 
-        graphics.blitRepeating(AbstractQuestScreen.HEADING, this.x - 2, this.y, 2, this.height, 128, 0, 2, 256);
+        graphics.blitSprite(SEPARATOR, this.x - 2, this.y, 2, this.height);
 
         //Title
         graphics.drawString(

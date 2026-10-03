@@ -1,11 +1,11 @@
 package earth.terrarium.heracles.api.client.settings;
 
-import net.minecraft.client.gui.components.Renderable;
-import net.minecraft.client.gui.layouts.LayoutElement;
+import net.minecraft.client.gui.components.AbstractWidget;
+import org.jetbrains.annotations.Nullable;
 
-public interface Setting<T, E extends Renderable & LayoutElement> {
+public interface Setting<T, E extends AbstractWidget> {
 
-    E createWidget(int width, T value);
+    E createWidget(@Nullable E old, int width, T value);
 
     T getValue(E widget);
 

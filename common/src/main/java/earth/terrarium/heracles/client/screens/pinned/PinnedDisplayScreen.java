@@ -17,7 +17,11 @@ import java.util.List;
 
 public class PinnedDisplayScreen extends Screen {
 
-    private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "textures/gui/pinned.png");
+    private static final ResourceLocation TEXTURE = Heracles.id("textures/gui/pinned.png");
+    private static final ResourceLocation PINNED = Heracles.id("pinned/pinned");
+    private static final ResourceLocation PINNED_HOVERED = Heracles.id("pinned/pinned_hovered");
+    private static final ResourceLocation PINNED_FAKE_POPUP_BACKGROUND = Heracles.id("pinned/pinned_fake_popup_background");
+    private static final ResourceLocation PINNED_FAKE_POPUP_BORDER = Heracles.id("pinned/pinned_fake_popup_border");
 
     private int sectionWidth = 0;
     private int sectionHeight = 0;
@@ -49,7 +53,7 @@ public class PinnedDisplayScreen extends Screen {
             for (int i = 0; i < 4; i++) {
                 int y = i * this.sectionHeight;
                 boolean hovered = dragging && mouseX > x && mouseX < x + this.sectionWidth && mouseY > y && mouseY < y + this.sectionHeight;
-                graphics.blitNineSliced(TEXTURE, x, y, this.sectionWidth, this.sectionHeight, 3, 64, 64, hovered ? 64 : 0, 64);
+                graphics.blitSprite(hovered ? PINNED_HOVERED : PINNED, x, y, this.sectionWidth, this.sectionHeight);
             }
         }
         RenderSystem.disableBlend();
@@ -61,8 +65,8 @@ public class PinnedDisplayScreen extends Screen {
 
     private void renderFakePopup(GuiGraphics graphics, int x, int y) {
         RenderSystem.enableBlend();
-        graphics.blitNineSliced(TEXTURE, x + 1, y + 1, this.sectionWidth - 2, 10, 3, 64, 10, 0, 0);
-        graphics.blitNineSliced(TEXTURE, x + 1, y + 11, this.sectionWidth - 2, this.sectionHeight - 30, 3, 64, 10, 0, 10);
+        graphics.blitSprite(PINNED_FAKE_POPUP_BACKGROUND, x + 1, y + 1, this.sectionWidth - 2, 10);
+        graphics.blitSprite(PINNED_FAKE_POPUP_BORDER, x + 1, y + 11, this.sectionWidth - 2, this.sectionHeight - 30);
         RenderSystem.disableBlend();
         graphics.drawString(
             font,

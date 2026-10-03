@@ -6,6 +6,8 @@ import earth.terrarium.heracles.common.network.packets.*;
 import earth.terrarium.heracles.common.network.packets.groups.CreateGroupPacket;
 import earth.terrarium.heracles.common.network.packets.groups.DeleteGroupPacket;
 import earth.terrarium.heracles.common.network.packets.groups.OpenGroupPacket;
+import earth.terrarium.heracles.common.network.packets.groups.ServerboundUpdateGroupSettingsPacket;
+import earth.terrarium.heracles.common.network.packets.groups.SyncGroupSettingsPacket;
 import earth.terrarium.heracles.common.network.packets.pinned.SetPinnedQuestPacket;
 import earth.terrarium.heracles.common.network.packets.pinned.SyncPinnedQuestsPacket;
 import earth.terrarium.heracles.common.network.packets.quests.*;
@@ -16,12 +18,11 @@ import earth.terrarium.heracles.common.network.packets.screens.OpenQuestsScreenP
 import earth.terrarium.heracles.common.network.packets.tasks.CheckTaskPacket;
 import earth.terrarium.heracles.common.network.packets.tasks.ManualItemTaskPacket;
 import earth.terrarium.heracles.common.network.packets.tasks.ManualXpTaskPacket;
-import net.minecraft.resources.ResourceLocation;
 
 @SuppressWarnings("UnstableApiUsage")
 public class NetworkHandler {
 
-    public static final Network CHANNEL = new Network(ResourceLocation.fromNamespaceAndPath(Heracles.MOD_ID, "main"), 1);
+    public static final Network CHANNEL = new Network(Heracles.id("main"), 1);
 
     public static void init() {
         CHANNEL.register(QuestRewardClaimedPacket.TYPE);
@@ -38,6 +39,8 @@ public class NetworkHandler {
         CHANNEL.register(QuestUnlockedPacket.TYPE);
         CHANNEL.register(ClientboundAdvancementDisplayPacket.TYPE);
         CHANNEL.register(ClientboundLootTablesDisplayPacket.TYPE);
+        CHANNEL.register(SyncGroupOrderPacket.TYPE);
+        CHANNEL.register(SyncGroupSettingsPacket.TYPE);
 
         CHANNEL.register(OpenGroupPacket.TYPE);
         CHANNEL.register(OpenQuestPacket.TYPE);
@@ -52,5 +55,9 @@ public class NetworkHandler {
         CHANNEL.register(CheckTaskPacket.TYPE);
         CHANNEL.register(ManualItemTaskPacket.TYPE);
         CHANNEL.register(ManualXpTaskPacket.TYPE);
+        CHANNEL.register(ServerboundUpdateGroupOrderPacket.TYPE);
+        CHANNEL.register(ServerboundUpdateGroupSettingsPacket.TYPE);
+        CHANNEL.register(ServerboundResetProgressPacket.TYPE);
+        CHANNEL.register(ServerboundResetQuestProgressPacket.TYPE);
     }
 }

@@ -49,9 +49,9 @@ jobs:
           modrinth-token: ${{ secrets.MODRINTH_TOKEN }}
 
           files: ./forge/build/libs/!(*-@(dev|sources|dev-shadow)).jar
-          name: "[Forge] Heracles ${{ steps.properties.outputs.version }}"
+          name: "[Forge] Odyssey Quests ${{ steps.properties.outputs.version }}"
           version: ${{ steps.properties.outputs.version }}
-          version-type: release
+          version-type: beta
           changelog-file: changelog.md
           loaders: forge
           game-versions: ${{ steps.properties.outputs.minecraftVersion }}
@@ -72,9 +72,9 @@ jobs:
           modrinth-token: ${{ secrets.MODRINTH_TOKEN }}
 
           files: ./fabric/build/libs/!(*-@(dev|sources|dev-shadow)).jar
-          name: "[Fabric] Heracles ${{ steps.properties.outputs.version }}"
+          name: "[Fabric] Odyssey Quests ${{ steps.properties.outputs.version }}"
           version: ${{ steps.properties.outputs.version }}
-          version-type: release
+          version-type: beta
           changelog-file: changelog.md
           loaders: fabric
           game-versions: ${{ steps.properties.outputs.minecraftVersion }}

@@ -2,7 +2,8 @@ package earth.terrarium.heracles.client.ui.quests;
 
 import com.teamresourceful.resourcefullib.client.screens.CursorScreen;
 import com.teamresourceful.resourcefullib.client.utils.CursorUtils;
-import com.teamresourceful.resourcefullib.common.color.Color;import earth.terrarium.heracles.Heracles;
+import com.teamresourceful.resourcefullib.common.color.Color;
+import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.client.components.base.ListWidget;
 import earth.terrarium.heracles.client.handlers.ClientQuests;
 import earth.terrarium.heracles.client.ui.QuestTab;
@@ -12,9 +13,11 @@ import earth.terrarium.heracles.common.handlers.quests.GroupSettings;
 import earth.terrarium.heracles.common.network.NetworkHandler;
 import earth.terrarium.heracles.common.network.packets.groups.OpenGroupPacket;
 import earth.terrarium.heracles.common.network.packets.quests.ServerboundUpdateGroupOrderPacket;
-import earth.terrarium.olympus.client.components.Widgets;import earth.terrarium.olympus.client.components.base.BaseWidget;
-import earth.terrarium.olympus.client.components.string.TextWidget;import earth.terrarium.olympus.client.ui.context.ContextMenu;
-import net.minecraft.Util;import net.minecraft.client.Minecraft;
+import earth.terrarium.olympus.client.components.Widgets;
+import earth.terrarium.olympus.client.components.base.BaseWidget;
+import earth.terrarium.olympus.client.ui.context.ContextMenu;
+import net.minecraft.Util;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -25,8 +28,8 @@ import java.util.List;
 
 public class GroupEntry extends BaseWidget implements ListWidget.Item {
 
-    private static final ResourceLocation NORMAL =  Heracles.id("groups/normal");
-    private static final ResourceLocation SELECTED =  Heracles.id("groups/selected");
+    private static final ResourceLocation NORMAL = Heracles.id("groups/normal");
+    private static final ResourceLocation SELECTED = Heracles.id("groups/selected");
     private static final ResourceLocation DRAG_HANDLE = Heracles.id("groups/drag_handle");
     private static final int PADDING = 4;
     private static final int DRAG_HANDLE_WIDTH = 8;
@@ -64,13 +67,13 @@ public class GroupEntry extends BaseWidget implements ListWidget.Item {
         }
 
         int availableWidth = this.getWidth() - (textX - this.getX()) - (2 * PADDING);
-        if(QuestTab.isEditing()) {
+        if (QuestTab.isEditing()) {
             availableWidth -= DRAG_HANDLE_WIDTH + PADDING;
         }
 
         int textWidth = Minecraft.getInstance().font.width(this.id);
         int finalTextX = textX;
-        if(textWidth > availableWidth) {
+        if (textWidth > availableWidth) {
 
             long time = Util.getMillis();
             double speed = 0.02; // 0.02 pixels per ms = 20 pixels per second
@@ -108,7 +111,7 @@ public class GroupEntry extends BaseWidget implements ListWidget.Item {
             graphics.disableScissor();
         } else {
             Widgets.text(Component.literal(this.id), textWidget -> {
-                textWidget.setPosition(finalTextX + PADDING , this.getY() + ((this.getHeight() - 10) / 2) + 1);
+                textWidget.setPosition(finalTextX + PADDING, this.getY() + ((this.getHeight() - 10) / 2) + 1);
                 textWidget.withColor(Color.parse("WHITE"));
                 textWidget.withShadow();
                 textWidget.withFont(Minecraft.getInstance().font);
@@ -196,5 +199,10 @@ public class GroupEntry extends BaseWidget implements ListWidget.Item {
     @Override
     public void onClick(double mouseX, double mouseY) {
         NetworkHandler.CHANNEL.sendToServer(new OpenGroupPacket(this.id));
+    }
+
+    @Override
+    public void setWidth(int width) {
+        this.width = width;
     }
 }

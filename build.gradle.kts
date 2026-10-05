@@ -66,7 +66,7 @@ subprojects {
         compileOnly(group = "org.jetbrains", name = "annotations", version = "24.0.1")
         "modImplementation"(group = "com.teamresourceful.resourcefullib", name = "resourcefullib-$modLoader-1.21", version = resourcefulLibVersion)
         val hermes = "modImplementation"(group = "earth.terrarium.hermes", name = "hermes-$modLoader-$minecraftVersion", version = hermesLibVersion)
-        "modImplementation"(group = "earth.terrarium.olympus", name = "olympus-$modLoader-1.21", version = olympusVersion)
+        val olympus = "modImplementation"(group = "earth.terrarium.olympus", name = "olympus-$modLoader-1.21", version = olympusVersion)
 
         // implementation("annotationProcessor"(group = "io.github.llamalad7", name = "mixinextras-common", version = mixinExtrasVersion))
 
@@ -76,6 +76,7 @@ subprojects {
 //                "include"(this)
 //            }
             "include"(hermes)
+            "include"(olympus)
 
 //            "modRuntimeOnly"("me.shedaniel:RoughlyEnoughItems-$modLoader:$reiVersion")
             "modCompileOnly"("me.shedaniel:RoughlyEnoughItems-$modLoader:$reiVersion")

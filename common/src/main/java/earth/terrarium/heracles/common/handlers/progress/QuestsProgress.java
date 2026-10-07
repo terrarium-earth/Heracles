@@ -21,6 +21,11 @@ import net.minecraft.server.level.ServerPlayer;
 
 import java.util.*;
 
+/**
+ * Records a player’s progress for all quests.
+ * @param progress a map between quest IDs and the progress for the corresponding quest
+ * @param completableQuests a record of which quests a player can make progress toward
+ */
 public record QuestsProgress(Map<String, QuestProgress> progress, CompletableQuests completableQuests) {
 
     public QuestsProgress(Map<String, QuestProgress> progress) {
@@ -29,7 +34,8 @@ public record QuestsProgress(Map<String, QuestProgress> progress, CompletableQue
 
     public <I, T extends QuestTask<I, ?, T>> void testAndProgressTaskType(ServerPlayer player, I input, QuestTaskType<T> taskType) {
         List<QuestEntry> editedQuests = new ArrayList<>();
-        for (String id : this.completableQuests.getQuests(this)) {
+        for (var e : this.completableQuests.getProgressableQuestEntries(this)) {
+            String id = e.id();
             QuestProgress questProgress = getProgress(id);
             Quest quest = QuestHandler.get(id);
             QuestEntry entry = QuestEntry.of(id, quest);
@@ -51,7 +57,7 @@ public record QuestsProgress(Map<String, QuestProgress> progress, CompletableQue
             questProgress.update(quest);
             this.progress.put(id, questProgress);
             if (questProgress.isComplete()) {
-                sendOutQuestComplete(entry, player);
+                sendOutQuestComplete(entry, player, e.provisional());
             }
         }
         if (editedQuests.isEmpty()) return;
@@ -95,7 +101,7 @@ public record QuestsProgress(Map<String, QuestProgress> progress, CompletableQue
     }
 
     public <I, T extends QuestTask<I, ?, T>> boolean testAndProgressTask(ServerPlayer player, String id, String task, I input, QuestTaskType<T> taskType) {
-        List<String> completableQuests = this.completableQuests.getQuests(this);
+        Collection<String> completableQuests = this.completableQuests.getQuests(this);
         if (!completableQuests.contains(id)) return false;
         QuestProgress questProgress = getProgress(id);
         Quest quest = QuestHandler.get(id);
@@ -116,7 +122,7 @@ public record QuestsProgress(Map<String, QuestProgress> progress, CompletableQue
         PinnedQuestHandler.syncIfChanged(player, List.of(id));
         QuestEntry entry = QuestEntry.of(id, quest);
         if (questProgress.isComplete()) {
-            sendOutQuestComplete(entry, player);
+            sendOutQuestComplete(entry, player, !questProgress.isUnlocked());
         }
         this.completableQuests.updateCompleteQuests(this, player);
         syncToTeam(player, List.of(entry));
@@ -135,19 +141,19 @@ public record QuestsProgress(Map<String, QuestProgress> progress, CompletableQue
                     var newTasks = copyTasks(questProgress.tasks());
                     memberProgress.progress.put(entry.id(), new QuestProgress(questProgress.isComplete(), Set.copyOf(Optionull.mapOrDefault(currentProgress, QuestProgress::claimedRewards, new HashSet<>())), newTasks));
                     if (serverPlayer != null && (questProgress.isComplete() && !wasComplete)) {
-                        sendOutQuestComplete(entry, player);
+                        sendOutQuestComplete(entry, player, !questProgress.isUnlocked());
                     }
                 }
                 memberProgress.completableQuests.updateCompleteQuests(memberProgress, serverPlayer);
-                List<String> questIds = memberProgress.completableQuests.getQuests(memberProgress);
+                Iterable<String> questIds = memberProgress.completableQuests.getProgressableQuests(memberProgress);
                 if (serverPlayer != null) {
                     QuestProgressHandler.sync(serverPlayer, questIds);
                 }
             });
     }
 
-    public static void sendOutQuestComplete(QuestEntry entry, ServerPlayer player) {
-        NetworkHandler.CHANNEL.sendToPlayer(new QuestCompletedPacket(entry.id()), player);
+    public static void sendOutQuestComplete(QuestEntry entry, ServerPlayer player, boolean provisional) {
+        NetworkHandler.CHANNEL.sendToPlayer(new QuestCompletedPacket(entry.id(), provisional), player);
         HeraclesEvents.QuestCompleteListener.fire(QuestEventTarget.create(entry, player));
     }
 
@@ -161,6 +167,34 @@ public record QuestsProgress(Map<String, QuestProgress> progress, CompletableQue
 
     public boolean isComplete(String id) {
         return Optionull.mapOrDefault(progress.get(id), QuestProgress::isComplete, false);
+    }
+
+    public boolean isUnlocked(String id) {
+        return Optionull.mapOrDefault(progress.get(id), QuestProgress::isUnlocked, false);
+    }
+
+    public void setUnlocked(String id, boolean unlocked) {
+        this.progress.compute(
+            id,
+            (k, v) -> {
+                if (v == null) {
+                    if (unlocked) {
+                        QuestProgress progress = new QuestProgress();
+                        progress.setUnlocked(true);
+                        return progress;
+                    } else {
+                        return null;
+                    }
+                } else {
+                    v.setUnlocked(true);
+                    return v;
+                }
+            }
+        );
+    }
+
+    public boolean calculateUnlockedStatus(Quest quest) {
+        return quest.dependencies().stream().allMatch(this::isComplete);
     }
 
     public boolean isClaimed(String id, Quest quest) {

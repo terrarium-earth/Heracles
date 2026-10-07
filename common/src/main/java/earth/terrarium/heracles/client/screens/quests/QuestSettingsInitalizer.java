@@ -4,6 +4,7 @@ import earth.terrarium.heracles.api.client.settings.SettingInitializer;
 import earth.terrarium.heracles.api.client.settings.base.BooleanSetting;
 import earth.terrarium.heracles.api.client.settings.base.EnumSetting;
 import earth.terrarium.heracles.api.quests.QuestDisplayStatus;
+import earth.terrarium.heracles.api.quests.QuestProgressionMode;
 import earth.terrarium.heracles.api.quests.QuestSettings;
 import org.jetbrains.annotations.Nullable;
 
@@ -20,6 +21,7 @@ public class QuestSettingsInitalizer implements SettingInitializer<QuestSettings
         settings.put("show_dependency_arrow", BooleanSetting.TRUE, object != null && object.showDependencyArrow());
         settings.put("repeatable", BooleanSetting.FALSE, object != null && object.repeatable());
         settings.put("auto_claim_rewards", BooleanSetting.FALSE, object != null && object.autoClaimRewards());
+        settings.put("progression_mode", new EnumSetting<>(QuestProgressionMode.class, QuestProgressionMode.LINEAR), object != null ? object.progressionMode() : QuestProgressionMode.LINEAR);
         return settings;
     }
 
@@ -31,7 +33,8 @@ public class QuestSettingsInitalizer implements SettingInitializer<QuestSettings
             data.get("unlock_notification", BooleanSetting.FALSE).orElse(object != null && object.unlockNotification()),
             data.get("show_dependency_arrow", BooleanSetting.TRUE).orElse(object != null && object.showDependencyArrow()),
             data.get("repeatable", BooleanSetting.FALSE).orElse(object != null && object.repeatable()),
-            data.get("auto_claim_rewards", BooleanSetting.FALSE).orElse(object != null && object.autoClaimRewards())
+            data.get("auto_claim_rewards", BooleanSetting.FALSE).orElse(object != null && object.autoClaimRewards()),
+            data.get("progression_mode", new EnumSetting<>(QuestProgressionMode.class, QuestProgressionMode.LINEAR)).orElse(object != null ? object.progressionMode() : QuestProgressionMode.LINEAR)
         );
     }
 }

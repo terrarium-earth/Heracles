@@ -4,10 +4,22 @@ import earth.terrarium.heracles.api.tasks.storage.TaskStorage;
 import net.minecraft.nbt.Tag;
 import net.minecraft.server.level.ServerPlayer;
 
+/**
+ * A task of a quest.
+ * <p>
+ * This contains the data about the particular task in addition to the generic type.
+ *
+ * @see QuestTaskType
+ * @param <I> the type of the input to test against
+ * @param <S> the type of the NBT tag used to record progress
+ * @param <T> the type implementing this interface
+ */
 public interface QuestTask<I, S extends Tag, T extends QuestTask<I, S, T>> {
 
     /**
      * The id of the task.
+     * <p>
+     * This is only unique within a single quest.
      *
      * @return The id.
      */

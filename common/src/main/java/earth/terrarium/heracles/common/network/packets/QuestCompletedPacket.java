@@ -8,7 +8,7 @@ import earth.terrarium.heracles.client.HeraclesClient;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 
-public record QuestCompletedPacket(String id) implements Packet<QuestCompletedPacket> {
+public record QuestCompletedPacket(String id, boolean provisional) implements Packet<QuestCompletedPacket> {
     public static final ClientboundPacketType<QuestCompletedPacket> TYPE = new Type();
 
     @Override
@@ -30,16 +30,17 @@ public record QuestCompletedPacket(String id) implements Packet<QuestCompletedPa
         @Override
         public void encode(QuestCompletedPacket message, FriendlyByteBuf buffer) {
             buffer.writeUtf(message.id);
+            buffer.writeBoolean(message.provisional);
         }
 
         @Override
         public QuestCompletedPacket decode(FriendlyByteBuf buffer) {
-            return new QuestCompletedPacket(buffer.readUtf());
+            return new QuestCompletedPacket(buffer.readUtf(), buffer.readBoolean());
         }
 
         @Override
         public Runnable handle(QuestCompletedPacket message) {
-            return () -> HeraclesClient.displayQuestCompleteToast(message.id());
+            return () -> HeraclesClient.displayQuestCompleteToast(message.id(), message.provisional());
         }
     }
 }

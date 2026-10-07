@@ -18,7 +18,7 @@ You can then add our mod as a dependency:
 ```gradle
 dependencies {
     <--- Other dependencies here --->
-    modImplementation "earth.terrarium.heracles:heracles-${modloader}-${mc_version}:${heracles_version}"
+    modImplementation "earth.terrarium.heracles:Heracles-${modloader}-${mc_version}:${heracles_version}"
 }
 ```
 

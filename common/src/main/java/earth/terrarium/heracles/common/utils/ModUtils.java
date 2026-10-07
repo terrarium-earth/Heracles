@@ -34,8 +34,10 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.stream.Stream;
 
 public class ModUtils {
 
@@ -159,7 +161,7 @@ public class ModUtils {
                 int length = ByteBufUtils.readVarInt(buf);
                 byte[] bytes = new byte[length];
                 buf.readBytes(bytes);
-                return codec.parse(RegistryOps.create(YabnOps.COMPRESSED, Heracles.getRegistryAccess()), YabnParser.parse(new ArrayByteReader(bytes)))
+                return codec.parse(RegistryOps.create(ModUtils.NETWORK_OPS, Heracles.getRegistryAccess()), YabnParser.parse(new ArrayByteReader(bytes)))
                     .result()
                     .orElseThrow(() -> new RuntimeException(failedToParse));
             }
@@ -187,4 +189,24 @@ public class ModUtils {
         }
         return string.substring(start, end);
     }
+
+    public static final YabnOps NETWORK_OPS = new YabnOps(true) {
+        @Override
+        public DataResult<Consumer<Consumer<YabnElement>>> getList(
+            YabnElement input
+        ) {
+            return super.getList(input).map(values -> consumer ->
+                values.accept(value ->
+                    consumer.accept(value.getOrNull())));
+        }
+
+        @Override
+        public DataResult<Stream<YabnElement>> getStream(
+            YabnElement input
+        ) {
+            return super.getStream(input)
+                .map(values -> values.map(YabnElement::getOrNull));
+        }
+    };
+
 }

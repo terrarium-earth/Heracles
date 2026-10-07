@@ -12,6 +12,7 @@ import com.teamresourceful.yabn.reader.ByteReader;
 import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.api.quests.Quest;
 import earth.terrarium.heracles.client.handlers.ClientQuests;
+import earth.terrarium.heracles.common.utils.ModUtils;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -52,7 +53,7 @@ public record SyncQuestsPacket(Map<String, Quest> quests, List<String> groups) i
             YabnElement element = YabnParser.parse(new ByteBufByteReader(buffer));
             try {
                 return new SyncQuestsPacket(
-                    QUEST_MAP_CODEC.parse(RegistryOps.create(YabnOps.COMPRESSED, Heracles.getRegistryAccess()), element).getOrThrow(),
+                    QUEST_MAP_CODEC.parse(RegistryOps.create(ModUtils.NETWORK_OPS, Heracles.getRegistryAccess()), element).getOrThrow(),
                     buffer.readList(FriendlyByteBuf::readUtf)
                 );
             } catch (Exception e) {

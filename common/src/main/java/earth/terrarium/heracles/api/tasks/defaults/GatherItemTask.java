@@ -141,10 +141,42 @@ public record GatherItemTask(
                 RegistryValue.codec(Registries.ITEM).fieldOf("item").forGetter(GatherItemTask::item),
                 DataComponentPredicate.CODEC.fieldOf("components").orElse(DataComponentPredicate.EMPTY).forGetter(GatherItemTask::components),
                 Codec.INT.fieldOf("amount").orElse(1).forGetter(GatherItemTask::target),
-                EnumCodec.of(CollectionType.class).fieldOf("collection").orElse(CollectionType.AUTOMATIC).forGetter(GatherItemTask::collectionType)
+                EnumCodec.of(CollectionType.class).fieldOf("collection").forGetter(GatherItemTask::collectionType)
             ).apply(instance, GatherItemTask::new));
 
-            MapCodec<GatherItemTask> legacy = legacyCodec(id);
+            // Guard against legacy item tasks containing a collection field is present
+            MapCodec<GatherItemTask> legacy = legacyCodec(id).mapResult(new MapCodec.ResultFunction<>() {
+                @Override
+                public <T> DataResult<GatherItemTask> apply(
+                    DynamicOps<T> ops,
+                    MapLike<T> input,
+                    DataResult<GatherItemTask> result
+                ) {
+                    boolean hasCollection = input.entries().anyMatch(entry ->
+                        ops.getStringValue(entry.getFirst())
+                            .result()
+                            .filter("collection"::equals)
+                            .isPresent()
+                    );
+
+                    if (hasCollection) {
+                        return DataResult.error(() ->
+                            "Legacy item task cannot contain a collection field"
+                        );
+                    }
+
+                    return result;
+                }
+
+                @Override
+                public <T> RecordBuilder<T> coApply(
+                    DynamicOps<T> ops,
+                    GatherItemTask input,
+                    RecordBuilder<T> result
+                ) {
+                    return result;
+                }
+            });
 
             return XorMapCodec.create(newCodec, legacy).xmap(
                 either -> either.map(t -> t, t -> t),

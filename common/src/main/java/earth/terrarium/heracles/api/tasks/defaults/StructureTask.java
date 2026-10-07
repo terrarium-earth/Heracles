@@ -11,17 +11,21 @@ import earth.terrarium.heracles.api.tasks.QuestTask;
 import earth.terrarium.heracles.api.tasks.QuestTaskType;
 import earth.terrarium.heracles.api.tasks.storage.defaults.BooleanTaskStorage;
 import earth.terrarium.heracles.common.utils.RegistryValue;
+import earth.terrarium.heracles.common.utils.StructureResolver;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.NumericTag;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.levelgen.structure.Structure;
+import com.mojang.datafixers.util.Either;
 
 import java.util.Collection;
 
 public record StructureTask(
-    String id, String title, QuestIcon<?> icon, RegistryValue<Structure> structures
+    String id, String title, QuestIcon<?> icon, RegistryValue<Structure> structures, String structureString
 ) implements QuestTask<Collection<Structure>, NumericTag, StructureTask>, CustomizableQuestElement {
 
     public static final QuestTaskType<StructureTask> TYPE = new Type();
@@ -29,11 +33,25 @@ public record StructureTask(
     @Override
     public NumericTag test(QuestTaskType<?> type, NumericTag progress, Collection<Structure> input) {
         final RegistryAccess access = Heracles.getRegistryAccess();
-        final Registry<Structure> registry = access.registry(Registries.STRUCTURE).orElse(null);
+        final Registry<Structure> registry = access != null ? access.registry(Registries.STRUCTURE).orElse(null) : null;
+        
         if (registry != null) {
-            for (Structure structure : input) {
-                if (structures().is(registry.wrapAsHolder(structure))) {
-                    return storage().of(progress, true);
+            // Try existing RegistryValue first
+            if (structures() != null) {
+                for (Structure structure : input) {
+                    if (structures().is(registry.wrapAsHolder(structure))) {
+                        return storage().of(progress, true);
+                    }
+                }
+            } else if (structureString() != null && !structureString().isEmpty()) {
+                // Resolve string to RegistryValue and test
+                RegistryValue<Structure> resolved = StructureResolver.resolveStructureString(structureString(), access);
+                if (resolved != null) {
+                    for (Structure structure : input) {
+                        if (resolved.is(registry.wrapAsHolder(structure))) {
+                            return storage().of(progress, true);
+                        }
+                    }
                 }
             }
         }
@@ -68,8 +86,10 @@ public record StructureTask(
                 RecordCodecBuilder.point(id),
                 Codec.STRING.optionalFieldOf("title", "").forGetter(StructureTask::title),
                 QuestIcons.CODEC.optionalFieldOf("icon", ItemQuestIcon.AIR).forGetter(StructureTask::icon),
-                RegistryValue.codec(Registries.STRUCTURE).fieldOf("structures").forGetter(StructureTask::structures)
-            ).apply(instance, StructureTask::new));
+                RegistryValue.codec(Registries.STRUCTURE).optionalFieldOf("structures").forGetter(task -> java.util.Optional.ofNullable(task.structures())),
+                Codec.STRING.optionalFieldOf("structureString", "").forGetter(StructureTask::structureString)
+            ).apply(instance, (taskId, title, icon, structures, structureString) -> 
+                new StructureTask(taskId, title, icon, structures.orElse(null), structureString)));
         }
     }
 }

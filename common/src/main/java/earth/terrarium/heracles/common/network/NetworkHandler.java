@@ -3,6 +3,7 @@ package earth.terrarium.heracles.common.network;
 import com.teamresourceful.resourcefullib.common.network.NetworkChannel;
 import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.common.network.packets.*;
+import earth.terrarium.heracles.common.network.packets.ClientboundStructureDisplayPacket;
 import earth.terrarium.heracles.common.network.packets.groups.CreateGroupPacket;
 import earth.terrarium.heracles.common.network.packets.groups.DeleteGroupPacket;
 import earth.terrarium.heracles.common.network.packets.groups.OpenGroupPacket;
@@ -37,6 +38,7 @@ public class NetworkHandler {
         CHANNEL.register(QuestUnlockedPacket.TYPE);
         CHANNEL.register(ClientboundAdvancementDisplayPacket.TYPE);
         CHANNEL.register(ClientboundLootTablesDisplayPacket.TYPE);
+        CHANNEL.register(ClientboundStructureDisplayPacket.TYPE);
 
         CHANNEL.register(OpenGroupPacket.TYPE);
         CHANNEL.register(OpenQuestPacket.TYPE);

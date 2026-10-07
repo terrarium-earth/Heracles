@@ -48,8 +48,8 @@ public class AutocompleteEditBox<T> extends EditBox {
     }
 
     @Override
-    public void renderWidget(GuiGraphics graphics, int i, int j, float f) {
-        super.renderWidget(graphics, i, j, f);
+    public void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+        super.renderWidget(graphics, mouseX, mouseY, partialTick);
         if (!isFocused()) return;
         int x = this.getX();
         int y = this.getY() + this.getHeight() + 1;

@@ -104,6 +104,7 @@
     "task.heracles.changed_dimension": "\uD83C\uDF0A Changed Dimension",
     "task.heracles.changed_dimension.title.singular": "Travel between dimensions",
     "task.heracles.changed_dimension.desc.singular": "From %s To %s",
+    "task.heracles.changed_dimension.desc.dim.any": "Any Dimension",
     "setting.heracles.changed_dimension.title": "Title Override:",
     "setting.heracles.changed_dimension.icon": "Icon Override:",
     "setting.heracles.changed_dimension.from": "From:",

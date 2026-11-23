@@ -45,7 +45,7 @@ public class DescriptionQuestScreen extends AbstractQuestScreen {
                 widget = new QuestError(this.contentWidth, this.contentHeight, e);
             }
         }
-        layout.addChild(widget, row.getAndIncrement(), 0);
+        layout.addChild(widget, row.getAndIncrement(), 0, layout.newCellSettings().paddingHorizontal(5));
         return layout;
     }
 

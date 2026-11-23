@@ -19,6 +19,7 @@ public class HeraclesFabricClient implements ClientModInitializer {
         QuestTutorial.load(FabricLoader.getInstance().getConfigDir());
         HudRenderCallback.EVENT.register((graphics, partialTicks) -> PinnedQuestDisplay.render(graphics));
         KeyBindingHelper.registerKeyBinding(HeraclesClient.OPEN_QUESTS);
+        HeraclesClient.init();
         ClientTickEvents.START_CLIENT_TICK.register(client -> HeraclesClient.clientTick());
 
         HeraclesClient.initReloadListeners((id, listener) ->

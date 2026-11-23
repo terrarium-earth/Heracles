@@ -31,7 +31,7 @@ public class HeraclesNeoForgeClient {
             DisplayConfig.load(FMLPaths.GAMEDIR.get());
             QuestTutorial.load(FMLPaths.CONFIGDIR.get());
         });
-
+        HeraclesClient.init();
         NeoForge.EVENT_BUS.addListener(HeraclesNeoForgeClient::onClientTick);
     }
 

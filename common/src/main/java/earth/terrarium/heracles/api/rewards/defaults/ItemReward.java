@@ -14,6 +14,7 @@ import earth.terrarium.heracles.api.rewards.RewardUtils;
 import earth.terrarium.heracles.common.utils.ItemStackCodec;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 
@@ -27,6 +28,13 @@ public record ItemReward(String id, String title, QuestIcon<?> icon, ItemStack s
     public Stream<ItemStack> reward(ServerPlayer player) {
         RewardUtils.giveItem(player, stack.copy());
         return Stream.of(stack.copy());
+    }
+
+    @Override
+    public boolean canClaim(ServerPlayer player) {
+        Inventory inventory = player.getInventory();
+        return inventory.getSlotWithRemainingSpace(stack) != -1
+            || inventory.getFreeSlot() != -1;
     }
 
     @Override

@@ -15,6 +15,15 @@ public interface QuestReward<T extends QuestReward<T>> {
     String id();
 
     /**
+     * Whether the reward can be claimed.
+     *
+     * @return True if it can be claimed, false otherwise.
+     */
+    default boolean canClaim(ServerPlayer player) {
+        return true;
+    }
+
+    /**
      * Whether the reward can be mass claimed.
      *
      * @return True if it can be mass claimed, false otherwise.

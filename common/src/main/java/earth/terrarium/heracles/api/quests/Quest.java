@@ -3,6 +3,7 @@ package earth.terrarium.heracles.api.quests;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.teamresourceful.resourcefullib.common.codecs.CodecExtras;
+import earth.terrarium.heracles.Heracles;
 import earth.terrarium.heracles.api.rewards.QuestReward;
 import earth.terrarium.heracles.api.rewards.QuestRewards;
 import earth.terrarium.heracles.api.tasks.QuestTask;
@@ -77,6 +78,7 @@ public record Quest(
             player,
             rewards().values().stream().
                 filter(QuestReward::canBeMassClaimed)
+                .filter(reward -> reward.canClaim(player))
                 .filter(reward -> !progress.claimedRewards().contains(reward.id()))
                 .peek(reward -> progresses.claimReward(id, reward.id(), player))
         );
@@ -91,13 +93,15 @@ public record Quest(
 
         if (rewards.containsKey(rewardId) && !questProgress.claimedRewards().contains(rewardId)) {
             var reward = rewards.get(rewardId);
-            if (reward.canBeMassClaimed()) {
+            if (reward.canBeMassClaimed() && reward.canClaim(player)) {
                 progress.claimReward(id, rewardId, player);
                 claimRewards(
                     id,
                     player,
                     Set.of(reward).stream()
                 );
+            } else {
+                Heracles.LOGGER.warn("Player '{}' attempted to claim reward '{}' for quest '{}', but they are not allowed to.", player.getName().getString(), rewardId, id);
             }
         }
     }

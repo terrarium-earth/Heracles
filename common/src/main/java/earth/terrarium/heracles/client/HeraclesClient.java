@@ -12,12 +12,14 @@ import earth.terrarium.heracles.client.toasts.QuestCompletedToast;
 import earth.terrarium.heracles.client.toasts.QuestUnlockedToast;
 import earth.terrarium.heracles.common.network.NetworkHandler;
 import earth.terrarium.heracles.common.network.packets.groups.OpenGroupPacket;
+import earth.terrarium.heracles.common.regisitries.ModSounds;
 import earth.terrarium.hermes.api.rendering.HtmlBlockquoteStyleConfig;
 import earth.terrarium.hermes.impl.HermesStyle;
 import earth.terrarium.hermes.libs.minemark.providers.DefaultImageProvider;
 import earth.terrarium.hermes.libs.minemark.style.*;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.PreparableReloadListener;
@@ -75,6 +77,11 @@ public class HeraclesClient {
 
     public static void displayQuestCompleteToast(String id) {
         QuestCompletedToast.add(Minecraft.getInstance().getToasts(), id);
+        Minecraft.getInstance().getSoundManager().play(
+            SimpleSoundInstance.forUI(
+                ModSounds.QUEST_COMPLETE.get(), 1.0f, 0.3f
+            )
+        );
     }
 
     public static void displayQuestUnlockedToast(String id) {
